@@ -13,13 +13,14 @@ const SearchBox = () => {
     console.log(data);
   };
   return (
-    <div className="relative">
+    <div className="relative ">
       <div className="p-1 border  border-gradieant rounded-full overflow-hidden  shadow-sm ">
         <MyForm
           onSubmit={handleSearch}
           className="flex justify-between items-center "
         >
           <MyInput
+            required={true}
             onChange={(e) => setIsOpen(e.target.value)}
             placeholder="What are you looking for?"
             className="rounded-full border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[240px] "
@@ -35,7 +36,7 @@ const SearchBox = () => {
           </div>
           <button
             type="submit"
-            className="btn-primary p-[10px] text-base font-medium rounded-full flex items-center   gap-[6px]"
+            className="btn-primary text-white hover:text-white p-[10px] text-base font-medium rounded-full flex items-center   gap-[6px]"
           >
             <Search /> Search
           </button>
@@ -46,7 +47,9 @@ const SearchBox = () => {
           visibility: isOpen ? "visible" : "hidden",
           opacity: isOpen ? 1 : 0,
         }}
-        className={cn("absolute top-[55px]  left-0 w-full duration-300   h-[200px]")}
+        className={cn(
+          "absolute top-[55px]  left-0 w-full duration-300   h-[200px]"
+        )}
       >
         <div className="border border-gradieant p-4 size-full py-2 text-sm text-gray-700 bg-white shadow-lg overflow-hidden rounded-md"></div>
       </div>
