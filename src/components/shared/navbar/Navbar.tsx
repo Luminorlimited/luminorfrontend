@@ -14,18 +14,27 @@ import {
 import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
 import { Search } from "lucide-react";
+import { MobileNavbar } from "./MobileNavbar";
 
 const Navbar = () => {
   return (
-    <nav className="py-6 p-5 2xl:px-[115px] flex items-center justify-between ">
+    <nav
+      style={{
+        background:
+          "linear-gradient(270deg, #FFF9F0 0%, #FDF0F5 51.5%, #F1F9FF 100%)",
+      }}
+      className="py-6 p-5 2xl:px-[115px] flex items-center justify-between "
+    >
       <Link href={"/"}>
-        <Logo />
+        <span className="lg:w-auto w-10">
+          <Logo />
+        </span>
       </Link>
       <div className="2xl:block hidden">
         <SearchBox />
       </div>
-      <div className="flex items-center gap-6">
-        <button className="btn-primary text-white rounded-full p-1">
+      <div className="lg:flex hidden items-center gap-6">
+        <button className="btn-primary text-white rounded-full p-1 2xl:hidden block">
           <Search />
         </button>
         <ul className="flex items-center gap-6">
@@ -77,6 +86,9 @@ const Navbar = () => {
         >
           <AvatarIcon /> Login
         </Link>
+      </div>
+      <div className="lg:hidden block">
+        <MobileNavbar />
       </div>
     </nav>
   );

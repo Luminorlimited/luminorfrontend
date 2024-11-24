@@ -14,7 +14,7 @@ const SearchBox = () => {
   };
   return (
     <div className="relative ">
-      <div className="p-1 border  border-gradieant rounded-full overflow-hidden  shadow-sm ">
+      <div className="p-1 border bg-white  border-gradieant rounded-full overflow-hidden  shadow-sm ">
         <MyForm
           onSubmit={handleSearch}
           className="flex justify-between items-center "
