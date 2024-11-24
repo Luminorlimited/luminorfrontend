@@ -9,6 +9,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        openSans: ["var(--font-open-sans)", "sans-serif"],
+      },
       container: {
         center: true,
         padding: "1rem",
