@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/lib/utils"; // Ensure you have this utility or replace with a className merge utility like clsx or classnames
+import { cn } from "@/lib/utils"; // Ensure you have this utility or replace it with a className merge utility like clsx or classnames
 import { Input } from "@/components/ui/input"; // Path to shadcn input component
 import { Label } from "@/components/ui/label"; // Path to shadcn label component
 
@@ -13,6 +13,7 @@ type TInputProps = {
   placeholder?: string;
   defaultValue?: string | number;
   className?: string; // Custom className for input
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void; // onChange event handler
 };
 
 const MyInput = ({
@@ -25,6 +26,7 @@ const MyInput = ({
   placeholder,
   defaultValue,
   className,
+  onChange, // Added onChange prop
 }: TInputProps) => {
   return (
     <div className="space-y-2">
@@ -42,6 +44,7 @@ const MyInput = ({
         disabled={disabled}
         required={required}
         className={cn(error && "border-red-500 focus:ring-red-500", className)}
+        onChange={onChange} // Pass the onChange handler
       />
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
