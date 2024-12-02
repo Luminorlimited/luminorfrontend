@@ -2,7 +2,6 @@
 import Dropdown from "@/components/dropdown/Dropdown";
 import MyForm from "@/components/myForm/MyForm";
 import MyInput from "@/components/myForm/MyInput";
-import { cn } from "@/lib/utils";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
@@ -29,20 +28,20 @@ const SearchBox = () => {
           />
           <div className="border-l px-6 flex gap-6 items-center justify-between flex-1 ">
             <Dropdown
-              className="w-[130px] focus:ring-offset-0 focus:ring-0 border-0  "
+              className="w-[130px] focus:ring-offset-0 focus:ring-0 border-0 text-textColor-secondary "
               defaultValue={"consultant"}
               options={[{ label: "Consultant", value: "consultant" }]}
             />
           </div>
           <button
             type="submit"
-            className="btn-primary text-white hover:text-white p-[10px] text-base font-medium rounded-full flex items-center   gap-[6px]"
+            className="btn-primary text-white hover:text-white px-[20px] py-[8px]  text-base font-medium rounded-full flex items-center   gap-[6px]"
           >
             <Search /> Search
           </button>
         </MyForm>
       </div>
-      <div
+      {/* <div
         style={{
           visibility: isOpen ? "visible" : "hidden",
           opacity: isOpen ? 1 : 0,
@@ -52,7 +51,7 @@ const SearchBox = () => {
         )}
       >
         <div className="border border-gradieant p-4 size-full py-2 text-sm text-gray-700 bg-white shadow-lg overflow-hidden rounded-md"></div>
-      </div>
+      </div> */}
     </div>
   );
 };

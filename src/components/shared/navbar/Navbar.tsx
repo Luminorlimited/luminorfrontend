@@ -43,7 +43,7 @@ const Navbar = () => {
               <li key={item.id}>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="" asChild>
-                    <button className="flex items-center gap-2 hover:text-primary">
+                    <button className="flex items-center gap-2 font-medium hover:text-primary">
                       {item?.title} <span>{item.icon && ""}</span>
                     </button>
                   </DropdownMenuTrigger>
@@ -53,7 +53,9 @@ const Navbar = () => {
                         <Fragment key={item.id}>
                           <DropdownMenuGroup>
                             <DropdownMenuItem>
-                              <Link href={item.link}>{item.title}</Link>
+                              <Link href={item.link} className="text-base">
+                                {item.title}
+                              </Link>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
                           <DropdownMenuSeparator />
@@ -65,7 +67,10 @@ const Navbar = () => {
               </li>
             ) : (
               <li key={item.id}>
-                <Link className="hover:text-primary" href={item.link}>
+                <Link
+                  className="font-medium hover:text-primary"
+                  href={item.link}
+                >
                   {item.title}
                 </Link>
               </li>
