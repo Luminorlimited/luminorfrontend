@@ -10,7 +10,7 @@ const Button: React.FC<ButtonProps> = ({ children, id, className, ...props }) =>
     return (
         <button
             id={id}
-            className={`rounded-[12px]  px-6 py-5 text-[16px] bg-primary font-medium text-white  transition-colors duration-200 ${className && className}`}
+            className={`rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white  transition-colors duration-200 ${className && className}`}
             {...props}
         >
             {children}

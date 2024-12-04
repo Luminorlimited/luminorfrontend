@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link";
 import { BsGlobe2 } from "react-icons/bs";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 // import Logo from "@/utils/Logo";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface FooterLink {
   label: string;
@@ -82,6 +84,10 @@ function FooterColumn({ title, links }: FooterColumn) {
 }
 
 export default function Footer() {
+  const pathname = usePathname()
+ if(pathname.startsWith('/chat')){
+  return 
+ }
   return (
     <footer className="bg-primary text-text_white">
       <div className="container mx-auto pt-24 pb-8">
