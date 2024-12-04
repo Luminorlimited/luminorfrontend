@@ -1,11 +1,11 @@
 'use client'
 
 import * as React from "react"
+import { useCallback, useState } from "react"
 import { HiChevronUp, HiChevronDown } from "react-icons/hi"
 
 export default function Sidebar() {
-    const [durationValue, setDurationValue] = React.useState(14)
-    const [budgetValue, setBudgetValue] = React.useState(500)
+
     const [openSections, setOpenSections] = React.useState({
         industry: true,
         timeline: true,
@@ -16,8 +16,79 @@ export default function Sidebar() {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }))
     }
 
+
+
+
+
+
+    const minGap = 0;
+    const minPrice = 1;
+    const maxPrice = 400;
+  
+    // State for Budget Preference Slider
+    const [budgetMinValue, setBudgetMinValue] = useState(1);
+    const [budgetMaxValue, setBudgetMaxValue] = useState(400);
+  
+    // State for Project Duration Slider
+    const [durationMinValue, setDurationMinValue] = useState(1);
+    const [durationMaxValue, setDurationMaxValue] = useState(400);
+  
+    // Handlers for Budget Preference Slider
+    const handleBudgetMinChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Math.min(Number(event.target.value), budgetMaxValue - minGap);
+        setBudgetMinValue(value);
+      },
+      [budgetMaxValue]
+    );
+  
+    const handleBudgetMaxChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Math.max(Number(event.target.value), budgetMinValue + minGap);
+        setBudgetMaxValue(value);
+      },
+      [budgetMinValue]
+    );
+  
+    const getBudgetProgressStyle = useCallback(() => {
+      const left = ((budgetMinValue - minPrice) / (maxPrice - minPrice)) * 100;
+      const right = 100 - ((budgetMaxValue - minPrice) / (maxPrice - minPrice)) * 100;
+      return {
+        left: `${left}%`,
+        right: `${right}%`,
+      };
+    }, [budgetMinValue, budgetMaxValue]);
+  
+    // Handlers for Project Duration Slider
+    const handleDurationMinChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Math.min(Number(event.target.value), durationMaxValue - minGap);
+        setDurationMinValue(value);
+      },
+      [durationMaxValue]
+    );
+  
+    const handleDurationMaxChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Math.max(Number(event.target.value), durationMinValue + minGap);
+        setDurationMaxValue(value);
+      },
+      [durationMinValue]
+    );
+  
+    const getDurationProgressStyle = useCallback(() => {
+      const left = ((durationMinValue - minPrice) / (maxPrice - minPrice)) * 100;
+      const right = 100 - ((durationMaxValue - minPrice) / (maxPrice - minPrice)) * 100;
+      return {
+        left: `${left}%`,
+        right: `${right}%`,
+      };
+    }, [durationMinValue, durationMaxValue]);
+  
+
+
     return (
-        <div className="container mx-auto my-4">
+        <div className="my-4">
             <div className="w-full max-w-md space-y-4 p-4  font-sans border rounded-[15px]">
                 {/* Industry Section */}
                 <div className="rounded-2xl border bg-white shadow-sm">
@@ -110,36 +181,71 @@ export default function Sidebar() {
                     )}
                 </div>
 
-                {/* Project Duration Range */}
-                <div className="rounded-2xl border bg-white p-4 shadow-sm">
-                    <h2 className="mb-6 text-lg font-semibold">Project Duration Range</h2>
-                    <input
-                        type="range"
-                        min="1"
-                        max="14"
-                        value={durationValue}
-                        onChange={(e) => setDurationValue(Number(e.target.value))}
-                        className="w-full mb-4"
-                    />
-                    <div className="rounded-lg border bg-gray-50 p-3 text-center">
-                        {durationValue === 1 ? '1 day' : `1 day - ${durationValue} days`}
+                <div className="grid grid-rows-2 gap-6 bg-white p-4 shadow-md rounded-[15px]">
+                    {/* Budget Preference Slider */}
+                    <div>
+                        <label className="block text-sm mb-4">Budget Preference</label>
+                        <div className="w-full py-8">
+                            <div className="relative h-2 mb-8">
+                                <div className="absolute w-full h-full bg-gray-200 rounded-full" />
+                                <div
+                                    className="absolute h-full bg-amber-400 rounded-full"
+                                    style={getBudgetProgressStyle()}
+                                />
+                                <input
+                                    type="range"
+                                    min={minPrice}
+                                    max={maxPrice}
+                                    value={budgetMinValue}
+                                    onChange={handleBudgetMinChange}
+                                    className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                />
+                                <input
+                                    type="range"
+                                    min={minPrice}
+                                    max={maxPrice}
+                                    value={budgetMaxValue}
+                                    onChange={handleBudgetMaxChange}
+                                    className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                />
+                            </div>
+                            <div className="w-full p-4 text-center border rounded-lg border-gray-200">
+                                ${budgetMinValue} - ${budgetMaxValue}
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                {/* Budget Range */}
-                <div className="rounded-2xl border bg-white p-4 shadow-sm">
-                    <h2 className="mb-6 text-lg font-semibold">Budget Range</h2>
-                    <input
-                        type="range"
-                        min="100"
-                        max="500"
-                        step="100"
-                        value={budgetValue}
-                        onChange={(e) => setBudgetValue(Number(e.target.value))}
-                        className="w-full mb-4"
-                    />
-                    <div className="rounded-lg border bg-gray-50 p-3 text-center">
-                        ${budgetValue === 100 ? '100' : `100 - $${budgetValue}`}
+                    {/* Project Duration Slider */}
+                    <div>
+                        <label className="block text-sm mb-4">Project Duration Range</label>
+                        <div className="w-full py-8">
+                            <div className="relative h-2 mb-8">
+                                <div className="absolute w-full h-full bg-gray-200 rounded-full" />
+                                <div
+                                    className="absolute h-full bg-amber-400 rounded-full"
+                                    style={getDurationProgressStyle()}
+                                />
+                                <input
+                                    type="range"
+                                    min={minPrice}
+                                    max={maxPrice}
+                                    value={durationMinValue}
+                                    onChange={handleDurationMinChange}
+                                    className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                />
+                                <input
+                                    type="range"
+                                    min={minPrice}
+                                    max={maxPrice}
+                                    value={durationMaxValue}
+                                    onChange={handleDurationMaxChange}
+                                    className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                />
+                            </div>
+                            <div className="w-full p-4 text-center border rounded-lg border-gray-200">
+                                ${durationMinValue} - ${durationMaxValue}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

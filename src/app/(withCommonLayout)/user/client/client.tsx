@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FaBuilding, FaCog, FaWrench, FaStethoscope, FaGraduationCap, FaDollarSign } from 'react-icons/fa';
 
 
@@ -40,7 +40,7 @@ export default function Client() {
     ];
 
 
-   
+
     const [selectedService, setSelectedService] = useState<number | null>(null)
 
     const handleSelect = (index: number) => {
@@ -50,6 +50,74 @@ export default function Client() {
             setSelectedService(index); // Setting to `number`
         }
     };
+
+
+
+
+      const minGap = 0;
+      const minPrice = 1;
+      const maxPrice = 400;
+    
+      // State for Budget Preference Slider
+      const [budgetMinValue, setBudgetMinValue] = useState(1);
+      const [budgetMaxValue, setBudgetMaxValue] = useState(400);
+    
+      // State for Project Duration Slider
+      const [durationMinValue, setDurationMinValue] = useState(1);
+      const [durationMaxValue, setDurationMaxValue] = useState(400);
+    
+      // Handlers for Budget Preference Slider
+      const handleBudgetMinChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+          const value = Math.min(Number(event.target.value), budgetMaxValue - minGap);
+          setBudgetMinValue(value);
+        },
+        [budgetMaxValue]
+      );
+    
+      const handleBudgetMaxChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+          const value = Math.max(Number(event.target.value), budgetMinValue + minGap);
+          setBudgetMaxValue(value);
+        },
+        [budgetMinValue]
+      );
+    
+      const getBudgetProgressStyle = useCallback(() => {
+        const left = ((budgetMinValue - minPrice) / (maxPrice - minPrice)) * 100;
+        const right = 100 - ((budgetMaxValue - minPrice) / (maxPrice - minPrice)) * 100;
+        return {
+          left: `${left}%`,
+          right: `${right}%`,
+        };
+      }, [budgetMinValue, budgetMaxValue]);
+    
+      // Handlers for Project Duration Slider
+      const handleDurationMinChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+          const value = Math.min(Number(event.target.value), durationMaxValue - minGap);
+          setDurationMinValue(value);
+        },
+        [durationMaxValue]
+      );
+    
+      const handleDurationMaxChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+          const value = Math.max(Number(event.target.value), durationMinValue + minGap);
+          setDurationMaxValue(value);
+        },
+        [durationMinValue]
+      );
+    
+      const getDurationProgressStyle = useCallback(() => {
+        const left = ((durationMinValue - minPrice) / (maxPrice - minPrice)) * 100;
+        const right = 100 - ((durationMaxValue - minPrice) / (maxPrice - minPrice)) * 100;
+        return {
+          left: `${left}%`,
+          right: `${right}%`,
+        };
+      }, [durationMinValue, durationMaxValue]);
+    
 
 
 
@@ -160,71 +228,70 @@ export default function Client() {
 
                         {/* Range Sliders (No change here, just kept as you had it originally) */}
                         <div className="grid grid-cols-2 gap-6">
+                            {/* Budget Preference Slider */}
                             <div>
                                 <label className="block text-sm mb-4">Budget Preference</label>
-                                {/* <Slider
-                                    getAriaLabel={() => 'Budget range'}
-                                    value={budgetValue}
-                                    onChange={handleBudgetChange}
-                                    valueLabelDisplay="auto"
-                                    min={0}
-                                    max={400}
-                                    step={1}
-                                    valueLabelPlacement="top"
-                                    sx={{
-                                        color: '#FFC06B', // Color for the progress (active track)
-                                        '& .MuiSlider-thumb': {
-                                            backgroundColor: '#fff', // Color for the thumb (handle)
-                                            border: '2px solid #FF9B00',
-                                            boxShadow: '5px 7px 19px #9f9f9f'
-                                        },
-                                        '& .MuiSlider-rail': {
-                                            backgroundColor: '#E0E0E0', // Color for the rail (inactive portion)
-                                        },
-                                        '& .MuiSlider-track': {
-                                            backgroundColor: '#FFC06B', // Color for the active track (progress color)
-                                        }
-                                    }}
-                                /> */}
-                                {/* Display the dynamically updated budget range */}
-                                {/* <div className="text-sm text-gray-600">
-                                    ${budgetValue[0]} - ${budgetValue[1]} 
-                                </div> */}
+                                <div className="w-full py-8">
+                                    <div className="relative h-2 mb-8">
+                                        <div className="absolute w-full h-full bg-gray-200 rounded-full" />
+                                        <div
+                                            className="absolute h-full bg-amber-400 rounded-full"
+                                            style={getBudgetProgressStyle()}
+                                        />
+                                        <input
+                                            type="range"
+                                            min={minPrice}
+                                            max={maxPrice}
+                                            value={budgetMinValue}
+                                            onChange={handleBudgetMinChange}
+                                            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                        />
+                                        <input
+                                            type="range"
+                                            min={minPrice}
+                                            max={maxPrice}
+                                            value={budgetMaxValue}
+                                            onChange={handleBudgetMaxChange}
+                                            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                        />
+                                    </div>
+                                    <div className="w-full p-4 text-center border rounded-lg border-gray-200">
+                                        ${budgetMinValue} - ${budgetMaxValue}
+                                    </div>
+                                </div>
                             </div>
 
-                            {/* Project Duration Range Slider */}
+                            {/* Project Duration Slider */}
                             <div>
                                 <label className="block text-sm mb-4">Project Duration Range</label>
-                                {/* <Slider
-                                    getAriaLabel={() => 'Project duration range'}
-                                    value={durationValue}
-                                    onChange={handleDurationChange}
-                                    valueLabelDisplay="auto"
-                                    min={1}
-                                    max={14}
-                                    step={1}
-                                    valueLabelPlacement="top"
-                                    sx={{
-                                        color: '#FFC06B', // Color for the progress (active track)
-                                        '& .MuiSlider-thumb': {
-                                            backgroundColor: '#fff', // Color for the thumb (handle)
-                                            border: '2px solid #FF9B00',
-                                            boxShadow: '5px 7px 19px #9f9f9f'
-                                        },
-                                        '& .MuiSlider-rail': {
-                                            backgroundColor: '#E0E0E0', // Color for the rail (inactive portion)
-                                        },
-                                        '& .MuiSlider-track': {
-                                            backgroundColor: '#FFC06B', // Color for the active track (progress color)
-                                        }
-                                    }}
-                                /> */}
-
-
-                                {/* Display the dynamically updated duration range */}
-                                {/* <div className="text-sm text-gray-600">
-                                    {durationValue[0]} day - {durationValue[1]} days 
-                                </div> */}
+                                <div className="w-full py-8">
+                                    <div className="relative h-2 mb-8">
+                                        <div className="absolute w-full h-full bg-gray-200 rounded-full" />
+                                        <div
+                                            className="absolute h-full bg-amber-400 rounded-full"
+                                            style={getDurationProgressStyle()}
+                                        />
+                                        <input
+                                            type="range"
+                                            min={minPrice}
+                                            max={maxPrice}
+                                            value={durationMinValue}
+                                            onChange={handleDurationMinChange}
+                                            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                        />
+                                        <input
+                                            type="range"
+                                            min={minPrice}
+                                            max={maxPrice}
+                                            value={durationMaxValue}
+                                            onChange={handleDurationMaxChange}
+                                            className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                                        />
+                                    </div>
+                                    <div className="w-full p-4 text-center border rounded-lg border-gray-200">
+                                        ${durationMinValue} - ${durationMaxValue}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
