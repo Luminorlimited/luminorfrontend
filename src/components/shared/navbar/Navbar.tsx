@@ -19,11 +19,7 @@ import { MobileNavbar } from "./MobileNavbar";
 const Navbar = () => {
   return (
     <nav
-      style={{
-        background:
-          "linear-gradient(270deg, #FFF9F0 0%, #FDF0F5 51.5%, #F1F9FF 100%)",
-      }}
-      className="py-6 p-5 2xl:px-[115px] flex items-center justify-between "
+      className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
       <Link href={"/"}>
         <span className="lg:w-auto w-10">

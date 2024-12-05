@@ -11,6 +11,49 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  interface Message {
+    id: string;
+    name: string;
+    avatar: string;
+    message: string;
+    time: string;
+    unread: boolean;
+  }
+  const messages: Message[] = [
+    {
+      id: "1",
+      name: "Kristin Watson",
+      avatar: "/images/palak.jpg", // Replace with actual image URL
+      message: "Sure! let me tell you about what we can offer",
+      time: "2 m Ago",
+      unread: true,
+    },
+    {
+      id: "2",
+      name: "Jane Cooper",
+      avatar: "/images/palak.jpg", // Replace with actual image URL
+      message: "Find out who is in charge of this portion...",
+      time: "2 m Ago",
+      unread: false,
+    },
+    {
+      id: "3",
+      name: "Theresa Webb",
+      avatar: "/images/palak.jpg", // Replace with actual image URL
+      message: "Sure! let me tell you about w...",
+      time: "2 m Ago",
+      unread: false,
+    },
+    {
+      id: "4",
+      name: "Courtney Henry",
+      avatar: "/images/palak.jpg", // Replace with actual image URL
+      message: "Sure! let me tell you about w...",
+      time: "2 m Ago",
+      unread: false,
+    },
+  ];
+  
   return (
     <div className=" flex max-w-[1320px] h-[820px] my-6 mx-auto shadow-sm border rounded-[15px] ">
       {/* Sidebar */}
@@ -25,9 +68,48 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
             />
           </div>
-        </div>
 
-        {/* User List (This could be dynamic) */}
+          {/* User List (This could be dynamic) */}
+          <div>
+          <div className="w-full max-w-md mx-auto bg-white shadow-md rounded-lg">
+      {/* Header */}
+      <div className="flex gap-6 p-4 border-b">
+        <h2 className="text-lg font-semibold">All</h2>
+        <h2 className="text-lg font-semibold">Unread (10)</h2>
+      </div>
+
+      {/* Messages */}
+      <ul className="divide-y">
+        {messages.map((msg) => (
+          <li
+            key={msg.id}
+            className={`flex items-center p-4 ${
+              msg.unread ? "bg-gray-100" : ""
+            }`}
+          >
+            {/* Avatar */}
+            <Image
+              src={msg.avatar}
+              alt={msg.name}
+              width={48}
+              height={48}
+              className="w-12 h-12 rounded-full mr-4"
+            />
+            {/* Message Details */}
+            <div className="flex-1">
+              <div className="flex justify-between items-center">
+                <h3 className="text-sm font-semibold">{msg.name}</h3>
+                <span className="text-xs text-gray-500">{msg.time}</span>
+              </div>
+              <p className="text-sm text-gray-600 truncate">{msg.message}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+          </div>
+        </div>
+        
         <div>
           {/* Add logic to render users here */}
         </div>

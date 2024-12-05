@@ -10,7 +10,9 @@ import p3 from "@/assets/3.png";
 import p4 from "@/assets/4.png";
 import p5 from "@/assets/5.png";
 import p6 from "@/assets/6.png";
+import featuredbg from "@/assets/images/featuredbg.png";
 import { motion } from "framer-motion";
+import Button from "../common/Button";
 
 interface Service {
   id: number;
@@ -157,21 +159,30 @@ function ServiceCard({ service }: { service: Service }) {
 
 export default function FeatureServices() {
   return (
-    <section className="py-[40px] md:py-[72px] lg:py-[96px]">
+    <section className="py-[40px] md:py-[72px] lg:py-[96px]"
+      style={{
+        backgroundImage: `url(${featuredbg.src})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="container h-full flex flex-col justify-center">
         <div className="space-y-5 mb-20">
           <h1 className="text-center text-xl md:text-xl lg:text-5xl text-textColor-primary font-bold leading-[100%]">
             Feature Services
           </h1>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-[40px]">
           {services.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
         </div>
-        <button className="mt-12 mx-auto w-56 px-5 py-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full">
+        {/* <button className="mt-12 mx-auto w-56 px-5 py-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full">
+          
+        </button> */}
+        <Button className="inline mx-auto rounded-[30px] ">
           Explore More Services
-        </button>
+        </Button>
       </div>
     </section>
   );

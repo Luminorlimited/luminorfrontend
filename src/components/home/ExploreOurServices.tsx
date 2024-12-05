@@ -11,6 +11,7 @@ import {
 import { MdVerifiedUser } from "react-icons/md";
 import chat from "@/assets/Frame.png";
 import Image from "next/image";
+import serviceShape from '@/assets/serviceshape.png'
 
 interface Service {
   icon: React.ReactNode;
@@ -77,19 +78,22 @@ export default function ExploreServices() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="grid grid-cols-1 justify-center md:grid-cols-3 lg:grid-cols-6 gap-2">
           {services.map((service, index) => (
             <div
               key={index}
-              className="group relative overflow-hidden rounded-xl border bg-white transition-all duration-300 hover:shadow-lg w-[214px]"
+              className="group relative overflow-hidden rounded-xl border bg-white transition-all duration-300 hover:shadow-lg lg:w-[214px] mx-auto"
             >
-              <div className="px-3 pt-3 bg-white text-black hover:bg-primary hover:text-white">
-                <div className="rounded-full w-12 h-12">{service.icon}</div>
-                <h3 className="text-lg font-semibold">{service.title}</h3>
-                <div className="overflow-hidden transition-[height] duration-300 ease-in-out h-0 group-hover:h-[250px] mt-2">
-                  <p className="text-sm font-normal leading-relaxed">
-                    {service.description}
-                  </p>
+              <div className=" relative px-3 pt-3 bg-white text-black hover:bg-primary hover:text-white">
+                <Image src={serviceShape} width={136} height={131} className="absolute top-0 left-0" alt="serviceShape" />
+                <div className="z-20">
+                  <div className="rounded-full w-12 h-12">{service.icon}</div>
+                  <h3 className="text-lg font-semibold">{service.title}</h3>
+                  <div className="overflow-hidden transition-[height] duration-300 ease-in-out h-0 group-hover:h-[250px] mt-2">
+                    <p className="text-sm font-normal leading-relaxed">
+                      {service.description}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

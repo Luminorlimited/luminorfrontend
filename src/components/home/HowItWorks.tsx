@@ -1,93 +1,99 @@
-import p1 from "@/assets/p1.png";
-import p2 from "@/assets/p2.png";
-import p3 from "@/assets/p3.png";
+import { MdPlayArrow } from "react-icons/md";
 import Image, { StaticImageData } from "next/image";
+import Photo1 from "@/assets/images/imgp1.png";
+import Photo2 from "@/assets/images/imgp2.png";
+import Photo3 from "@/assets/images/imgp3.png";
+import bg from '@/assets/images/howwork.png'
 
 interface ProcessStep {
   icon: string | StaticImageData;
   title: string;
   description: string;
   bgColor: string;
+  border: string;
   isLast?: boolean;
 }
 
 const processSteps: ProcessStep[] = [
   {
-    icon: p1,
+    icon: Photo1,
     title: "Join Luminor",
     description:
       "Join Luminor to inspire startups, share your expertise, and connect globally.",
-    bgColor: "#FF78AF",
+    bgColor: "#FFE4EF",
+    border: '#FF78AF'
   },
   {
-    icon: p2,
+    icon: Photo2,
     title: "Discover And Connect",
     description:
       "Discover experts, connect instantly, and empower your startup's journey forward.",
-    bgColor: "#FFC06B",
+    bgColor: "#FFF2E1",
+    border: '#FFC06B'
+
   },
   {
-    icon: p3,
+    icon: Photo3,
     title: "Collaborate and Execute",
     description:
       "Collaborate with experts to execute your startup vision effectively and confidently.",
-    bgColor: "#74C5FF",
+    bgColor: "#74C5FF33",
     isLast: true,
+    border: '#74C5FF'
+
   },
 ];
 
-const HowItWorks = () => {
+export default function HowItWorks() {
   return (
-    <section className="py-[40px] md:py-[72px] lg:py-[96px]">
-      <div className="container h-full flex flex-col justify-center">
-        <div className="space-y-5 mb-20">
-          <h1 className="text-center text-xl md:text-xl lg:text-5xl text-textColor-primary font-bold leading-[100%]">
-            How It Works
-          </h1>
-          <p className="text-center w-full lg:w-[50%] mx-auto text-textColor-secondary text-lg font-normal leading-[160%]">
-            Connect with expert retirees, book consultations, and gain valuable
-            insights to confidently grow your startup journey.
-          </p>
+    <div
+      className=" px-4 py-12"
+      style={{
+        background: `#F9F9FC url(${bg.src}) no-repeat center center`,
+        backgroundSize: 'cover',
+      }}
+    >
+      <div className="container mx-auto">
+        <div className="heading text-center py-[50px]">
+          <h2 className="font-bold  text-[48px]">How It Works</h2>
+          <p className="text-lg text-[#475467]">Connect with expert retirees, book consultations, and gain valuable <br/> insights to confidently grow your journey.</p>
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8 relative">
+        <div className="relative flex flex-col gap-16 md:flex-row md:gap-4 pb-[70px] md:justify-between items-center">
+          {/* Dotted lines connecting the circles - visible only on desktop */}
+          <div className="hidden md:block absolute top-[60px] left-[280px] right-[280px] h-[2px]">
+            <div className="w-full h-full flex justify-between items-center">
+              <div className="w-[calc(30%-10px)] h-[2px] border-t-2 border-dotted border-[#FFB6C1]"></div>
+              <MdPlayArrow className="text-[#FFB6C1]" />
+              <div className="w-[calc(30%-10px)] h-[2px] border-t-2 border-dotted border-[#87CEEB]"></div>
+              <MdPlayArrow className="text-[#87CEEB]" />
+            </div>
+          </div>
+
+          {/* Mapping through processSteps */}
           {processSteps.map((step, index) => (
             <div
               key={index}
-              className="flex flex-col items-center text-center w-full md:w-1/3 relative"
+              className="flex flex-col items-center text-center max-w-sm"
             >
               <div
-                className={`relative ${
-                  !step.isLast
-                    ? 'after:content-[""] after:absolute after:top-1/2 after:-right-[70%] after:w-full after:h-0.5 after:border-t-2 after:border-dashed after:border-primary/30 md:after:w-[calc(100%-2rem)] after:z-0'
-                    : ""
-                }`}
+                className="w-24 h-24 rounded-full flex items-center justify-center mb-6"
+                style={{ backgroundColor: step.bgColor, border: `2px solid ${step.border}` }}
               >
-                <div
-                  className="p-6 rounded-full flex items-center justify-center relative z-10"
-                  style={{
-                    backgroundColor: `${step.bgColor}35`,
-                    borderColor: step.bgColor,
-                    borderWidth: "2px",
-                  }}
-                >
-                  <Image
-                    src={step.icon}
-                    alt={`Icon for ${step.title}`}
-                    width={48}
-                    height={48}
-                  />
-                </div>
+                <Image
+                  src={step.icon}
+                  alt={step.title}
+                  width={48}
+                  height={48}
+                  className="object-contain"
+                />
               </div>
-              <h3 className="mt-6 text-2xl font-bold ">{step.title}</h3>
-              <p className="mt-2 text-muted-foreground max-w-[355px] text-base font-normal text-textColor-secondary">
-                {step.description}
-              </p>
+              <h2 className="text-2xl font-bold mb-4">{step.title}</h2>
+              <p className="text-gray-600">{step.description}</p>
             </div>
           ))}
         </div>
-      </div>
-    </section>
-  );
-};
 
-export default HowItWorks;
+      </div>
+    </div>
+  );
+}
