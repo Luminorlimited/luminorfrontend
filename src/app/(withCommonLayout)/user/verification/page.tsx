@@ -42,7 +42,7 @@ export default function Page() {
                                     <input
                                         id="verifycode"
                                         name="verifycode"
-                                        type="number"
+                                        type="string"
                                         required
                                         className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                         placeholder="Enter verification code"

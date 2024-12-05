@@ -35,7 +35,7 @@ export default function Signup() {
                 width={200}
                 className="absolute top-0 left-0"
               />
-              <Link href="/signup/professional" className="space-y-4">
+              <Link href="/" className="space-y-4">
                 <User className="text-4xl mx-auto" />
                 <p className="text-2xl font-semibold text-center">
                   I&apos;m a Retired <br /> Professional, looking <br />
@@ -51,7 +51,7 @@ export default function Signup() {
                 width={200}
                 className="absolute top-0 left-0"
               />
-              <Link href="/signup/client" className="space-y-4">
+              <Link href="/user/login" className="space-y-4">
                 <User className="text-4xl mx-auto" />
                 <p className="text-2xl font-semibold text-center">
                   I&apos;m a Client, <br /> looking for a Retired <br />
