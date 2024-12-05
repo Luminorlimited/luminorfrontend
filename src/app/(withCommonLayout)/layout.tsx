@@ -1,13 +1,21 @@
+'use client'
 import Footer from "@/components/shared/footer/Footer";
 import Navbar from "@/components/shared/navbar/Navbar";
+import { usePathname } from "next/navigation";
 import React, { ReactNode } from "react";
 
 const CommonLayout = ({ children }: { children: ReactNode }) => {
+  const pathname = usePathname()
+  console.log(pathname)
+  // if(pathname.startsWith('/usertype')){
+  //   return
+  // }
   return (
     <div>
-      <Navbar />
+      {pathname !== '/usertype' && pathname !==  '/user/login' &&  pathname !==  '/user/verification' ? <Navbar /> : ''}
+
       <div className="text-textColor-primary">{children}</div>
-      <Footer />
+      {pathname !== '/usertype' && pathname !==  '/user/login' &&  pathname !==  '/user/verification' ? <Footer /> : ''}
     </div>
   );
 };

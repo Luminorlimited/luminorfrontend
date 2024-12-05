@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindconfig from 'tailwindcss-animate'
 
 export default {
   darkMode: ["class"],
@@ -52,5 +53,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindconfig],
 } satisfies Config;

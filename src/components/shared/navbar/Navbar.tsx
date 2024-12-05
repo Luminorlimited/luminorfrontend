@@ -76,7 +76,7 @@ const Navbar = () => {
         <LanguageSwitcher />
         <Link
           className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-          href={"/sign-up"}
+          href={"/usertype"}
         >
           <SignUpIcon />
           Sign Up
