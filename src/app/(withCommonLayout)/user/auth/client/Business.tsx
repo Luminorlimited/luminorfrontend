@@ -3,15 +3,38 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 
+import { FaCheck } from "react-icons/fa";
 type BusinessProps = {
-    handleNext: () => void;
-    handleSubmit: (e: React.FormEvent) => void
-    
+  handleNext: () => void;
+  handleSubmit: (e: React.FormEvent) => void;
+  formData: {
+    businessType: string;
+    companyName: string;
+    jobTitle: string;
+    linkedIn: string;
+    [key: string]: any;
+  };
+
 };
 
-export default function Business({ handleNext, handleSubmit }: BusinessProps) {
+
+export default function Business({
+  handleNext,
+  handleSubmit,
+  formData,
+  setFormData,
+}: BusinessProps) {
+  
+  
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+     const { name, value } = e.target; // Destructure the event target
+     setFormData((prev) => ({
+       ...prev,
+       [name]: value, // Dynamically update the formData field
+     }));
+   };
+
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
@@ -35,6 +58,8 @@ export default function Business({ handleNext, handleSubmit }: BusinessProps) {
                   id="business-type"
                   placeholder="Business type"
                   required
+                  value={formData.businessType} // Bind to state
+                  onChange={handleInputChange} // Handle change correctly
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
               </div>
@@ -43,6 +68,8 @@ export default function Business({ handleNext, handleSubmit }: BusinessProps) {
                 <Input
                   id="company-name"
                   placeholder="Company Name"
+                  value={formData.companyName} // Bind to state
+                  onChange={handleInputChange} // Handle change correctly
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
               </div>
@@ -55,6 +82,8 @@ export default function Business({ handleNext, handleSubmit }: BusinessProps) {
                 id="job-title"
                 placeholder="Job title"
                 required
+                value={formData.jobTitle} // Bind to state
+                onChange={handleInputChange} // Handle change correctly
                 className="h-12 rounded-xl border-[#E5E7EB]"
               />
             </div>
@@ -62,6 +91,8 @@ export default function Business({ handleNext, handleSubmit }: BusinessProps) {
               <Label htmlFor="linkedin">LinkedIn Profile (Optional)</Label>
               <Input
                 id="linkedin"
+                value={formData.linkedIn} // Bind to state
+                onChange={handleInputChange} // Handle change correctly
                 placeholder="Share LinkedIn profile link"
                 className="h-12 rounded-xl border-[#E5E7EB]"
               />
@@ -74,18 +105,16 @@ export default function Business({ handleNext, handleSubmit }: BusinessProps) {
             Next
           </Button>
         </form>
-        <div className="mt-8 flex items-center justify-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-[#7C3AED]" />
-          <div className="h-[2px] w-4 bg-[#7C3AED]" />
-          <div
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#7C3AED] text-sm font-medium text-[#7C3AED]"
-            )}
-          >
+        <div className="flex items-center justify-center gap-2 pt-8">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
+            <FaCheck />
+          </div>
+          <div className="h-[2px] w-12 bg-[#1877F2]" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2] text-[#1877F2]">
             2
           </div>
-          <div className="h-[2px] w-4 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-sm font-medium text-gray-400">
+          <div className="h-[2px] w-12 bg-gray-200" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
             3
           </div>
         </div>

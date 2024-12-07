@@ -23,8 +23,8 @@ export default function SuccessPage() {
             growth
           </p>
 
-          <Link href="/" className="text-center">
-            <SuccessBtn/>
+          <Link href="/" className="text-center font-semibold">
+            Go to Home page
           </Link>
         </div>
       </div>

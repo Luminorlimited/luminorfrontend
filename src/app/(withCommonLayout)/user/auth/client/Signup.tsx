@@ -18,7 +18,21 @@ export default function Signup() {
     dateOfBirth: "",
     email: "",
     phoneNumber: "",
+    businessType: "",
+    companyName: "",
+    jobTitle: "",
+    linkedIn: "",
+    password: "",
   });
+
+ const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const { name, value } = e.target; // Destructure the event target
+   setFormData((prev) => ({
+     ...prev,
+      [name]: value, // Dynamically update the formData field
+   }));
+ };
+
 
   const [step, setStep] = useState(1); // Step control: 1 = Signup, 2 = Business, 3 = Password
 
@@ -28,7 +42,6 @@ export default function Signup() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
     handleNext();
   };
 
@@ -57,7 +70,6 @@ export default function Signup() {
         className="absolute left-[700px] top-0 lg:flex hidden"
       />
 
-      {/* Logo */}
       <div className="absolute top-0 left-0 mt-7 ml-28">
         <Logo />
       </div>
@@ -83,12 +95,11 @@ export default function Signup() {
                   </Label>
                   <Input
                     id="firstName"
+                    // name="firstname"
                     placeholder="First Name"
                     required
                     value={formData.firstName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, firstName: e.target.value })
-                    }
+                    onChange={handleInputChange}
                     className="rounded-lg border-gray-200"
                   />
                 </div>
@@ -98,12 +109,11 @@ export default function Signup() {
                   </Label>
                   <Input
                     id="lastName"
+                    // name="lastname"
                     placeholder="Last Name"
                     required
                     value={formData.lastName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, lastName: e.target.value })
-                    }
+                    onChange={handleInputChange}
                     className="rounded-lg border-gray-200"
                   />
                 </div>
@@ -114,13 +124,12 @@ export default function Signup() {
                 </Label>
                 <Input
                   id="dateOfBirth"
+                  // name="dob"
                   type="date"
                   placeholder="Date of birth"
                   required
                   value={formData.dateOfBirth}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dateOfBirth: e.target.value })
-                  }
+                  onChange={handleInputChange}
                   className="rounded-lg border-gray-200"
                 />
               </div>
@@ -132,11 +141,10 @@ export default function Signup() {
                   id="email"
                   type="email"
                   placeholder="Email address"
+                  // name="email"
                   required
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={handleInputChange}
                   className="rounded-lg border-gray-200"
                 />
               </div>
@@ -147,12 +155,11 @@ export default function Signup() {
                 <Input
                   id="phoneNumber"
                   type="tel"
+                  // name="phone"
                   placeholder="Phone number"
                   required
                   value={formData.phoneNumber}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phoneNumber: e.target.value })
-                  }
+                  onChange={handleInputChange}
                   className="rounded-lg border-gray-200"
                 />
               </div>
@@ -166,7 +173,7 @@ export default function Signup() {
               </div>
             </form>
             <div className="flex items-center justify-center gap-2 pt-8">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#6938EF] bg-[#6938EF] text-white">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">
                 1
               </div>
               <div className="h-[2px] w-12 bg-gray-200" />
@@ -182,18 +189,23 @@ export default function Signup() {
         </div>
       )}
 
-      {/* Step 2: Business Component */}
       {step === 2 && (
-        <Business handleNext={handleNext} handleSubmit={handleSubmit} />
+        <Business
+          formData={formData}
+          handleNext={handleNext}
+          handleSubmit={handleSubmit}
+          setFormData={setFormData}
+        />
       )}
 
-      {/* Step 3: Password Component */}
       {step === 3 && (
-        <Password handleNext={handleNext} handleSubmit={handleSubmit} />
+        <Password
+          formData={formData}
+          handleNext={handleNext}
+          handleSubmit={handleSubmit}
+        />
       )}
-      {step === 4 && (
-        <SuccessPage  />
-      )}
+      {step === 4 && <SuccessPage />}
     </div>
   );
 }

@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Circle, CheckCircle2 } from "lucide-react";
+import { FaCheck } from "react-icons/fa";
+
 
 type PasswordProps = {
   handleNext: () => void;
@@ -83,12 +84,17 @@ export default function Password({ handleNext, handleSubmit }: PasswordProps) {
             Done
           </Button>
 
-          <div className="flex items-center justify-center space-x-2 pt-8">
-            <CheckCircle2 className="w-5 h-5 text-[#6C3CE1] fill-[#6C3CE1]" />
-            <div className="w-8 h-0.5 bg-[#6C3CE1]" />
-            <CheckCircle2 className="w-5 h-5 text-[#6C3CE1] fill-[#6C3CE1]" />
-            <div className="w-8 h-0.5 bg-[#6C3CE1]" />
-            <div className="w-5 h-5 rounded-full border-2 border-[#6C3CE1] flex items-center justify-center text-[#6C3CE1] text-sm">
+          <div className="flex items-center justify-center gap-2 pt-8">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2   text-white bg-[#34DC48] border-[#34DC48]">
+              <FaCheck />
+            </div>
+            <div className="h-[2px] w-12 bg-[#1877F2]" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2   text-white bg-[#34DC48] border-[#34DC48]">
+              <FaCheck />
+            </div>
+            <div className="h-[2px] w-12 bg-[#1877F2]" />
+
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">
               3
             </div>
           </div>
