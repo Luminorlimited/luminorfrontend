@@ -5,6 +5,7 @@ import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RiInstagramFill } from "react-icons/ri";
+import bg from "@/assets/images/footerbg.png";
 import logo from "@/assets/Logo2.png";
 import {
   DropdownMenu,
@@ -89,7 +90,13 @@ export default function Footer() {
   return 
  }
   return (
-    <footer className="bg-primary text-text_white">
+    <footer
+      style={{
+        background: `#5633D1 url(${bg.src}) no-repeat center center`,
+        backgroundSize: "cover",
+      }}
+      className="text-text_white "
+    >
       <div className="container mx-auto pt-24 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {footerData.map((column, index) => (
