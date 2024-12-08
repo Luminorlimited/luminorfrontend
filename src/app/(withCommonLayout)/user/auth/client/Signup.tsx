@@ -141,7 +141,7 @@ export default function Signup() {
                   id="email"
                   type="email"
                   placeholder="Email address"
-                  // name="email"
+                  // name="email" 
                   required
                   value={formData.email}
                   onChange={handleInputChange}
@@ -194,13 +194,13 @@ export default function Signup() {
           formData={formData}
           handleNext={handleNext}
           handleSubmit={handleSubmit}
-          setFormData={setFormData}
+          // setFormData={setFormData}
         />
       )}
 
       {step === 3 && (
         <Password
-          formData={formData}
+          // formData={formData}
           handleNext={handleNext}
           handleSubmit={handleSubmit}
         />

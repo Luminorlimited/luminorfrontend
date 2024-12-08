@@ -23,17 +23,17 @@ export default function Business({
   handleNext,
   handleSubmit,
   formData,
-  setFormData,
+  // setFormData,
 }: BusinessProps) {
   
   
-   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-     const { name, value } = e.target; // Destructure the event target
-     setFormData((prev) => ({
-       ...prev,
-       [name]: value, // Dynamically update the formData field
-     }));
-   };
+  //  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //    const { name, value } = e.target; // Destructure the event target
+  //    setFormData((prev) => ({
+  //      ...prev,
+  //      [name]: value, // Dynamically update the formData field
+  //    }));
+  //  };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -59,7 +59,7 @@ export default function Business({
                   placeholder="Business type"
                   required
                   value={formData.businessType} // Bind to state
-                  onChange={handleInputChange} // Handle change correctly
+                  // onChange={handleInputChange} // Handle change correctly
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
               </div>
@@ -69,7 +69,7 @@ export default function Business({
                   id="company-name"
                   placeholder="Company Name"
                   value={formData.companyName} // Bind to state
-                  onChange={handleInputChange} // Handle change correctly
+                  // onChange={handleInputChange} // Handle change correctly
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
               </div>
@@ -83,7 +83,7 @@ export default function Business({
                 placeholder="Job title"
                 required
                 value={formData.jobTitle} // Bind to state
-                onChange={handleInputChange} // Handle change correctly
+                // onChange={handleInputChange} // Handle change correctly
                 className="h-12 rounded-xl border-[#E5E7EB]"
               />
             </div>
@@ -92,7 +92,7 @@ export default function Business({
               <Input
                 id="linkedin"
                 value={formData.linkedIn} // Bind to state
-                onChange={handleInputChange} // Handle change correctly
+                // onChange={handleInputChange} // Handle change correctly
                 placeholder="Share LinkedIn profile link"
                 className="h-12 rounded-xl border-[#E5E7EB]"
               />
