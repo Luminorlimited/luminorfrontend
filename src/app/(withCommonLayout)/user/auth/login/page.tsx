@@ -25,9 +25,9 @@ export default function Page() {
                 <Logo />
             </div>
 
-            <div className="mx-auto min-h-screen">
-                <div className=" lg:flex gap-[288px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-                    <div className="lg:w-[500px] w-full space-y-8 lg:mt-0 mt-[150px]">
+            <div className="mx-auto min-h-screen flex justify-center items-center">
+                <div className=" lg:flex gap-[188px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+                    <div className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]">
                         <div className="text-center">
                             <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
                                 Welcome to Luminor!
@@ -88,15 +88,6 @@ export default function Page() {
                                 Log in
                             </button>
 
-                            <div className="relative my-8">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-[#E5E7EB]"></div>
-                                </div>
-                                <div className="relative flex justify-center">
-                                    <span className="px-4 bg-white text-[#666666] text-lg">Or</span>
-                                </div>
-                            </div>
-
                             <button
                                 type="button"
                                 className="w-full flex items-center justify-center px-4 py-4 border border-[#E5E7EB] rounded-xl shadow-sm bg-white text-lg font-medium text-gray-700 hover:bg-gray-50 mb-4"
@@ -120,14 +111,7 @@ export default function Page() {
                                 Log In with Facebook
                             </button>
 
-                            <div className="relative my-8">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-[#E5E7EB]"></div>
-                                </div>
-                                <div className="relative flex justify-center">
-                                    <span className="px-4 bg-white text-[#666666] text-lg">Or</span>
-                                </div>
-                            </div>
+                         
 
                             <div className="text-center">
                                 <p className="text-[#1A1A1A] text-lg">
@@ -154,7 +138,7 @@ export default function Page() {
                         </form>
                     </div>
                     <div className="relative  lg:block  hidden">
-                        <Image src={loginimg} width={715} height={932} alt="titl" className="z-10" />
+                        <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" />
                     </div>
                 </div>
             </div>

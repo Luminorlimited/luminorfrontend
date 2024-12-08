@@ -21,38 +21,40 @@ export default function AllUsers({
         </div>
 
         {/* Messages */}
-        <ul className="divide-y  ">
-          {conversations.map((user: Conversation, idx) => (
-            <li
-              key={idx}
-              onClick={() => showMessage(user?.conversationId)}
-              className={`flex items-center p-4 cursor-pointer hover:bg-[#F2FAFF] focus:bg-[#F2FAFF] ${
-                user.participants.sender ? "bg-white" : ""
-              }`}
-            >
-              {/* Avatar */}
-              <Image
-                src={demoimg}
-                alt={"plsc"}
-                width={48}
-                height={48}
-                className="w-12 h-12 rounded-full mr-4"
-              />
-              {/* Message Details */}
-              <div className="flex-1">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-semibold">
-                    {user.participants.receiver}
-                  </h3>
-                  <span className="text-xs text-gray-500">
-                    {user.participants.receiver}
-                  </span>
+        <div>
+          <ul className="divide-y ">
+            {conversations.map((user: Conversation, idx) => (
+              <li
+                key={idx}
+                onClick={() => showMessage(user?.conversationId)}
+                className={`flex items-center p-4 cursor-pointer hover:bg-[#F2FAFF] focus:bg-[#F2FAFF] ${user.participants.sender ? "bg-white" : ""
+                  }`}
+              >
+                {/* Avatar */}
+                <Image
+                  src={demoimg}
+                  alt={"plsc"}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+                {/* Message Details */}
+                <div className="flex-1">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-sm font-semibold">
+                      {user.participants.receiver}
+                    </h3>
+                    <span className="text-xs text-gray-500">
+                      {user.participants.receiver}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 truncate">dfndf</p>
                 </div>
-                <p className="text-sm text-gray-600 truncate">dfndf</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+
+        </div>
       </div>
     </div>
   );

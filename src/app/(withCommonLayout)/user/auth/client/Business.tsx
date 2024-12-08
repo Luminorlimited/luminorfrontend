@@ -5,38 +5,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { FaCheck } from "react-icons/fa";
-type BusinessProps = {
-  handleNext: () => void;
-  handleSubmit: (e: React.FormEvent) => void;
-  formData: {
-    businessType: string;
-    companyName: string;
-    jobTitle: string;
-    linkedIn: string;
-    [key: string]: any;
-  };
-
-};
 
 
-export default function Business({
-  handleNext,
-  handleSubmit,
-  formData,
-  // setFormData,
-}: BusinessProps) {
+export default function Business({register, handleNext, getValues}: any) {
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const data = {
+      businessType: getValues("businessType"),
+      companyName: getValues("companyName"),
+      jobTitle: getValues("jobTitle"),
+      linkedIn: getValues("linkedIn"),
+    };
+    handleNext(data)
+  }
+
   
-  
-  //  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //    const { name, value } = e.target; // Destructure the event target
-  //    setFormData((prev) => ({
-  //      ...prev,
-  //      [name]: value, // Dynamically update the formData field
-  //    }));
-  //  };
-
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
         <div className="space-y-2 text-center lg:mt-0 mt-40">
           <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
@@ -47,7 +32,7 @@ export default function Business({
           </h2>
           <p className="text-lg text-muted-foreground">Empower Your Journey</p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
           <div className="space-y-4">
             <div className="flex gap-4">
               <div className="space-y-2 w-full">
@@ -58,8 +43,7 @@ export default function Business({
                   id="business-type"
                   placeholder="Business type"
                   required
-                  value={formData.businessType} // Bind to state
-                  // onChange={handleInputChange} // Handle change correctly
+                  {...register("businessType")}
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
               </div>
@@ -68,8 +52,7 @@ export default function Business({
                 <Input
                   id="company-name"
                   placeholder="Company Name"
-                  value={formData.companyName} // Bind to state
-                  // onChange={handleInputChange} // Handle change correctly
+                  {...register("companyName")}
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
               </div>
@@ -82,8 +65,7 @@ export default function Business({
                 id="job-title"
                 placeholder="Job title"
                 required
-                value={formData.jobTitle} // Bind to state
-                // onChange={handleInputChange} // Handle change correctly
+                {...register("jobTitle")}
                 className="h-12 rounded-xl border-[#E5E7EB]"
               />
             </div>
@@ -91,8 +73,7 @@ export default function Business({
               <Label htmlFor="linkedin">LinkedIn Profile (Optional)</Label>
               <Input
                 id="linkedin"
-                value={formData.linkedIn} // Bind to state
-                // onChange={handleInputChange} // Handle change correctly
+                {...register("linkedIn")}
                 placeholder="Share LinkedIn profile link"
                 className="h-12 rounded-xl border-[#E5E7EB]"
               />

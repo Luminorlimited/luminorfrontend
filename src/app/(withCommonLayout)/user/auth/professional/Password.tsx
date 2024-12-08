@@ -1,5 +1,5 @@
+import CheckBox from "@/components/common/checkbox/CheckBox";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaCheck } from "react-icons/fa";
@@ -47,10 +47,7 @@ export default function Password({ register, handleNext, handleSubmit }: any) {
 
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Checkbox
-                id="terms"
-                className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
-              />
+              <CheckBox />
               <label
                 htmlFor="terms"
                 className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -59,18 +56,16 @@ export default function Password({ register, handleNext, handleSubmit }: any) {
               </label>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="marketing"
-                className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
-              />
+            {/* <div className="flex items-center space-x-2">
+              <CheckBox />
+
               <label
                 htmlFor="marketing"
                 className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 I agree to email marketing
               </label>
-            </div>
+            </div> */}
           </div>
 
           <Button
@@ -81,17 +76,20 @@ export default function Password({ register, handleNext, handleSubmit }: any) {
           </Button>
 
           <div className="flex items-center justify-center gap-2 pt-8">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2   text-white bg-[#34DC48] border-[#34DC48]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
               <FaCheck />
             </div>
             <div className="h-[2px] w-12 bg-[#1877F2]" />
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2   text-white bg-[#34DC48] border-[#34DC48]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
               <FaCheck />
             </div>
             <div className="h-[2px] w-12 bg-[#1877F2]" />
-
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">
-              3
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
+              <FaCheck />
+            </div>
+            <div className="h-[2px] w-12 bg-gray-200" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
+              4
             </div>
           </div>
         </form>

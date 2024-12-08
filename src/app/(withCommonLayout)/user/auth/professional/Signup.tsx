@@ -25,7 +25,7 @@ export default function Signup({ register, handleNext, getValues }: any) {
           <h1 className="mb-2 text-4xl font-semibold tracking-tight">
             Join Luminor Today as client
           </h1>
-          <h2 className="mb-1 text-xl text-gray-600">Sign up as a Client</h2>
+          <h2 className="mb-1 text-xl text-gray-600">Sign up as a professional</h2>
           <p className="text-gray-600">Empower Your Journey</p>
         </div>
         <form onSubmit={handleFormSubmit} className="space-y-6">
@@ -114,6 +114,10 @@ export default function Signup({ register, handleNext, getValues }: any) {
           <div className="h-[2px] w-12 bg-gray-200" />
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
             3
+          </div>
+          <div className="h-[2px] w-12 bg-gray-200" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
+            4
           </div>
         </div>
       </div>

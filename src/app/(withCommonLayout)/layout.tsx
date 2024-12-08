@@ -15,6 +15,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       {pathname !== "/usertype" &&
       pathname !== "/user/auth/login" &&
       pathname !== "/user/auth/client" &&
+      pathname !== "/user/auth/professional" &&
       pathname !== "/user/verification" ? (
         <Navbar />
       ) : (
@@ -25,6 +26,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       {pathname !== "/usertype" &&
       pathname !== "/user/auth/login" &&
       pathname !== "/user/auth/client" &&
+      pathname !== "/user/auth/professional" &&
       pathname !== "/user/verification" ? (
         <Footer />
       ) : (
