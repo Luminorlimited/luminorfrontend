@@ -21,7 +21,7 @@ export default function Page() {
             <Image src={usertypeshape} width={558} height={766} alt="imgshape2" className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48" />
             <Image src={circleshape} width={173} height={167} alt="imgshape2" className="absolute left-[700px] top-0  lg:flex hidden" />
 
-            <div className="absolute top-0 left-0 mt-7 ml-28">
+            <div className="absolute top-0 left-0 mt-7 ml-28 lg:block hidden">
                 <Logo />
             </div>
 
@@ -117,7 +117,7 @@ export default function Page() {
                                 <p className="text-[#1A1A1A] text-lg">
                                     {"Don't have an account? "}
                                     <Link
-                                        href="/signup"
+                                        href="/usertype"
                                         className="text-[#0066FF] hover:text-blue-700 font-medium inline-flex items-center"
                                     >
                                         Create Account

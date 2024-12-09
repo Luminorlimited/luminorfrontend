@@ -1,9 +1,10 @@
-import { MdPlayArrow } from "react-icons/md";
 import Image, { StaticImageData } from "next/image";
 import Photo1 from "@/assets/images/imgp1.png";
 import Photo2 from "@/assets/images/imgp2.png";
 import Photo3 from "@/assets/images/imgp3.png";
 import bg from '@/assets/images/howwork.png'
+import rightarrow from "@/assets/shapes/arrowright.png"
+import leftarrow from "@/assets/shapes/arrowleft.png"
 
 interface ProcessStep {
   icon: string | StaticImageData;
@@ -59,13 +60,16 @@ export default function HowItWorks() {
           <p className="text-lg text-[#475467]">Connect with expert retirees, book consultations, and gain valuable <br/> insights to confidently grow your journey.</p>
         </div>
         <div className="relative flex flex-col gap-16 md:flex-row md:gap-4 pb-[70px] md:justify-between items-center">
-          {/* Dotted lines connecting the circles - visible only on desktop */}
+          {/* Dotted lines connecting  the circles - visible only on desktop */}
           <div className="hidden md:block absolute top-[60px] left-[280px] right-[280px] h-[2px]">
-            <div className="w-full h-full flex justify-between items-center">
-              <div className="w-[calc(30%-10px)] h-[2px] border-t-2 border-dotted border-[#FFB6C1]"></div>
-              <MdPlayArrow className="text-[#FFB6C1]" />
-              <div className="w-[calc(30%-10px)] h-[2px] border-t-2 border-dotted border-[#87CEEB]"></div>
-              <MdPlayArrow className="text-[#87CEEB]" />
+            <div className="w-full h-full flex gap-36 justify-between items-center">
+              <div>
+                <Image src={rightarrow} width={370}  height={2} alt="righarrow" />
+              </div>
+              <div>
+                <Image src={leftarrow} width={370}  height={2} alt="leftarrow" />
+
+              </div>
             </div>
           </div>
 

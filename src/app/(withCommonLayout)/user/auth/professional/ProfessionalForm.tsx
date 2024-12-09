@@ -49,7 +49,7 @@ export default function ProfessionalForm() {
           alt="imgshape2"
           className="absolute left-[700px] top-0 lg:flex hidden"
         />
-        <div className="absolute top-0 left-0 mt-7 ml-28">
+        <div className="absolute top-0 left-0 mt-7 ml-28 lg:block hidden">
           <Logo />
         </div>
 
