@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, {  useRef, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Conversation } from "@/lib/fakeData/allMessage";
+import OffersModal from "@/components/common/modal/OffersModal";
 
 interface Message {
   id: number;
@@ -22,16 +23,18 @@ interface CommunicationProps {
     senderBg: string;
     receiverBg: string;
   };
+  handleOpenModal: () => void;
+  isModalOpen: boolean
 }
 
 const Communication: React.FC<CommunicationProps> = ({
   messages,
-  setMessages,
   senderName,
   senderType,
   colorScheme,
+  handleOpenModal,
+  isModalOpen
 }) => {
-  const [newMessage, setNewMessage] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -42,22 +45,22 @@ const Communication: React.FC<CommunicationProps> = ({
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      const newMsg: Message = {
-        id: messages.messages.length + 1,
-        content: `${senderType}: ${newMessage}`,
-        sender: senderType,
-        timestamp: new Date(),
-      };
-      setMessages([...messages.messages, newMsg]);
-      setNewMessage("");
-    }
-  };
+  // const handleSendMessage = () => {
+  //   if (newMessage.trim()) {
+  //     const newMsg: Message = {
+  //       id: messages.messages.length + 1,
+  //       content: `${senderType}: ${newMessage}`,
+  //       sender: senderType,
+  //       timestamp: new Date(),
+  //     };
+  //     setMessages([...messages.messages, newMsg]);
+  //     setNewMessage("");
+  //   }
+  // };
 
   console.log(messages.messages);
   return (
-    <div className="flex flex-col ">
+    <div className="flex  flex-col ">
       <header className="p-4 flex justify-between items-center rounded-tr-md">
         <h1 className="text-xl font-bold">{senderName}</h1>
       </header>
@@ -75,8 +78,12 @@ const Communication: React.FC<CommunicationProps> = ({
           <div ref={containerRef} />
         </ScrollArea>
 
-     
+
       </div>
+      {isModalOpen && <OffersModal
+        onClose={handleOpenModal}
+      
+      />}
     </div>
   );
 };
@@ -87,31 +94,32 @@ interface MessageBubbleProps {
   colorScheme: {
     senderBg: string;
     receiverBg: string;
+
   };
+
 }
 
 const MessageBubble: React.FC<MessageBubbleProps> = ({
   message,
   senderType,
   colorScheme,
-}) => {
-  const isSender = message.sender === senderType; // Determine if the message is from the sender or receiver
 
+
+}) => {
+  const isSender = message.sender === senderType;
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
       <div
-        className={`flex items-start max-w-[70%] ${
-          isSender ? "flex-row-reverse" : "flex-row"
-        }`}
+        className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"
+          }`}
       >
         <Avatar className="w-10 h-10">
           <AvatarFallback>{isSender ? "S" : "R"}</AvatarFallback>
         </Avatar>
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
-            className={`p-3 rounded-lg inline-block ${
-              isSender ? colorScheme.senderBg : colorScheme.receiverBg
-            }`}
+            className={`p-3 rounded-lg inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
+              }`}
           >
             {message.content.substring(message.content.indexOf(":") + 1).trim()}
           </div>
@@ -123,6 +131,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
           </div>
         </div>
       </div>
+
     </div>
   );
 };

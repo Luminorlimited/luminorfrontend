@@ -1,5 +1,9 @@
+import ProjectList from "./ProjectList";
+
 export default function Page() {
     return (
-        <>lk dlkl kdf</>
+        <>
+            <ProjectList/>
+        </>
     );
 }

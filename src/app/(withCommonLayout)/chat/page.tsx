@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import ChatWindow from "./ChatWindow";
-
 import Button from "@/components/common/Button";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
@@ -12,47 +11,48 @@ import AllUsers from "./AllUsers";
 import { Conversation, conversations } from "@/lib/fakeData/allMessage";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
-import OffersModal from "@/components/common/modal/OffersModal";
-import OrderDetailsModal from "@/components/common/modal/[id]/OrderDetailsModal";
+import ProjectModal  from "@/components/common/modal/ProjectModal";
 
 const Page: React.FC = () => {
   const [messages, setMessages] = useState<Conversation | null>(null);
-  const [isModalOpen, setModalOpen] = useState(false);
 
-  const defaultMessages = conversations[0]; // Default conversation
+  // Set default message template for one user
+  const defaultMessages = conversations[0]; // Set initial conversation to the first one
 
-  const showMessage = (id: number) => {
-    const data = conversations.find((conversation) => conversation.conversationId === id);
-    if (data) setMessages(data);
+  const showMessage = (e: number) => {
+    console.log(e);
+    const data = conversations.find((data) => data.conversationId === e);
+    if (data) {
+      setMessages(data);
+    }
   };
 
-  // const toggleModal = () => {
-  //   setModalOpen(!isModalOpen);
-  // };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProjectModal, setProjectModal] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Add state to disable the button
 
-  const [isOffersModalOpen, setOffersModalOpen] = useState(true);
-  const [selectedOffer, setSelectedOffer] = useState<any>(null);
+  // Toggle for project modal
+  const handleProjectModal = () => {
+    if (isButtonDisabled) return; // Prevent multiple clicks
+    setIsButtonDisabled(true); // Disable button temporarily
 
-  const handleOfferClick = (offer: any) => {
-    setSelectedOffer(offer); // Set the clicked offer
-    setOffersModalOpen(false); // Close the offers modal
+    setProjectModal((prevState) => !prevState); // Toggle modal
+
+    setTimeout(() => {
+      setIsButtonDisabled(false); // Re-enable button after a short delay
+    }, 300); // 300ms delay to prevent multiple clicks
   };
 
-
-  const toggleOffersModal = () => {
-    setModalOpen((prevState) => !prevState);
-  };
-
-  const handleCloseOrderDetails = () => {
-    setSelectedOffer(null); // Clear the selected offer
-    setOffersModalOpen(true); // Reopen the offers modal
+  const handleOpenModal = () => {
+    setIsModalOpen((e) => !e);
   };
 
   return (
     <section>
       <div className="flex max-w-[1320px] h-[732px] my-6 mx-auto shadow-sm border rounded-[15px]">
         {/* Sidebar */}
-        <div className="w-1/3 border-r border-gray-300 bg-white overflow-y-scroll">
+        <div className="w-1/3 border-r border-gray-300 bg-white overflow-y-scroll ">
+          {/* Search Bar */}
           <div className="p-4">
             <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2">
               <BiSearch className="text-gray-500 text-lg" />
@@ -62,16 +62,18 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
+
             <AllUsers conversations={conversations} showMessage={showMessage} />
           </div>
         </div>
 
         {/* Chat Window */}
         <div className="w-2/3 flex flex-col relative">
+          {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white">
             <div className="flex items-center">
               <Image
-                src="/images/palak.jpg"
+                src="/images/palak.jpg" // Replace with dynamic image
                 alt="Jane Cooper"
                 width={40}
                 height={40}
@@ -84,41 +86,29 @@ const Page: React.FC = () => {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-6 relative">
+            <div className="flex items-center gap-6">
               <button
+                onClick={handleOpenModal}
                 className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
-                onClick={toggleOffersModal}
               >
                 Current Offers
               </button>
-              <Button >Create an Offer</Button>
 
-
-              {isOffersModalOpen && (
-                <OffersModal
-                  isOpen={isOffersModalOpen}
-                  onClose={() => setOffersModalOpen(false)}
-                  onOfferClick={handleOfferClick}
-                />
-              )}
-              {selectedOffer && (
-                <OrderDetailsModal
-                  offer={selectedOffer}
-                  onClose={handleCloseOrderDetails}
-                />
-              )}
-
-
-              <Link href={"/"} className="hover:bg-slate-100 hover:shadow-xl">
-                <HiOutlineDotsVertical />
-              </Link>
+              <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
+                Create an Offer
+              </Button>
+              {isProjectModal && <ProjectModal onClose={handleProjectModal}/>}
+              <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
             </div>
           </div>
 
+          {/* Dynamic Chat Content */}
           <div className="flex-1">
             <div className="mx-auto bg-white p-4 h-full rounded-[10px]">
               <div className="flex flex-col overflow-y-auto justify-end h-full">
                 <ChatWindow
+                  isModalOpen={isModalOpen}
+                  handleOpenModal={handleOpenModal}
                   messages={messages || defaultMessages}
                   setMessages={() => { }}
                   senderType="sender"
@@ -133,6 +123,7 @@ const Page: React.FC = () => {
             </div>
           </div>
 
+          {/* Message Input */}
           <div className="p-4 border-t border-gray-300 bg-white flex items-center">
             <AiOutlinePaperClip className="text-xl text-gray-500 cursor-pointer mr-3" />
             <input

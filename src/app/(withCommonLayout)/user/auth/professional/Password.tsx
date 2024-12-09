@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FaCheck } from "react-icons/fa";
 
-export default function Password({ register, handleNext, handleSubmit }: any) {
+export default function Password({ register,  handleSubmit }: any) {
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
