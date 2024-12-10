@@ -18,6 +18,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
     const totalSteps = 5;
 
     const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
+    // console.log(step)
 
 
 
@@ -76,7 +77,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                     step === 4 ?
                                         <div ><MilestoneModal /></div> :
                                         step === 5 ?
-                                            <div ><MilestoneList /></div> : ""
+                                            <div ><MilestoneList /></div> : "Thank You"
                         }
 
                         {/* Next Button */}
@@ -103,7 +104,14 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                         Submit
                                     </Button>
                                 </div>
-                            ) : (
+                                ) : step === 6 ? (
+                                        <Button
+                                            className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
+                                            onClick={onClose}
+                                        >
+                                            Closes
+                                        </Button>         
+                            ): (
                                 <div className="flex gap-4 justify-between w-full">
                                     <button
                                         className="bg-[#eeeeee] text-black px-6 py-4 font-medium rounded-[12px]"

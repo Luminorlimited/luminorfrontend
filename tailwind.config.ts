@@ -29,6 +29,9 @@ export default {
           DEFAULT: "#5633D1",
           light: "#8B6FE3",
         },
+        icon: {
+          primary: '#74C5FF',
+        },
         secondary: {
           DEFAULT: "#FFC06B",
           light: "#FFD7A1",

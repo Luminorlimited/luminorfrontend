@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Download } from "lucide-react";
 import Button from "@/components/common/Button";
 import RequirementsStep from "./RequirementStep";
+import PaymentInfoStep from "./PaymentInfoStep";
 
 interface Step {
     id: number;
@@ -26,6 +27,8 @@ export default function ProjectDetails() {
         }
     };
 
+    console.log(steps);
+
     const goToPreviousStep = () => {
         if (currentStepId > 1) {
             setCurrentStepId(currentStepId - 1);
@@ -33,12 +36,12 @@ export default function ProjectDetails() {
     };
 
     return (
-        <div className="max-w-[1100px] mx-auto py-6">
+        <div className="max-w-[1300px] mx-auto py-6">
             {/* Stepper */}
-            <div className="flex items-center justify-between mb-12">
+            <div className="lg:flex items-center  mb-12">
                 {steps.map((step, index) => (
                     <React.Fragment key={step.id}>
-                        <div className="flex flex-col items-center flex-1">
+                        <div className="flex flex-col items-center flex-1 lg:gap-y-0 gap-y-24 lg:gap-0">
                             <div className="flex items-center">
                                 <div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
@@ -71,9 +74,9 @@ export default function ProjectDetails() {
                                     )}
                                 </div>
                                 {index < steps.length - 1 && (
-                                    <div className="w-full h-[2px] bg-gray-200">
+                                    <div className="lg:w-full w-[2px] h-[2px] bg-gray-200 relative">
                                         <div
-                                            className={`h-full transition-all w-[250px]  ${step.id < currentStepId
+                                            className={`transition-all lg:w-[250px] w-[3px] lg:h-full h-[90px] lg:static absolute top-4 left-[-16px]  ${step.id < currentStepId
                                                 ? "bg-[#7C3AED]"
                                                 : step.id === currentStepId
                                                     ? "bg-gray-300 w-1/2"
@@ -118,29 +121,31 @@ export default function ProjectDetails() {
                 )}
                 {currentStepId === 3 && (
                     <div className="space-y-4">
-                        <h2 className="text-xl font-semibold">Payment Information</h2>
-                        <p className="text-sm text-gray-600">
-                            Provide payment information to proceed with the project.
-                        </p>
+                        <PaymentInfoStep />
                     </div>
                 )}
-                    {/* Navigation */}
-                <div className="flex justify-end gap-4 mt-8">
-                    <button
-                        className="px-4 py-2 bg-[#E9E9EA] text-black rounded-[10px] hover:bg-[#eeeeee] transition-colors"
-                        onClick={goToPreviousStep}
-                        disabled={currentStepId === 1}
-                    >
-                        Back
-                    </button>
-                    <Button
-                        className="px-4 py-2 bg-primary text-white rounded-[10px] hover:bg-[#6D28D9] transition-colors"
-                        onClick={goToNextStep}
-                        disabled={currentStepId === steps.length}
-                    >
-                        Next
-                    </Button>
-                </div>
+                {/* Navigation */}
+                {
+                    currentStepId !== 3 && (
+                        <div className="flex justify-end gap-4 mt-8">
+                            <button
+                                className="px-4 py-2 bg-[#E9E9EA] text-black rounded-[10px] hover:bg-[#eeeeee] transition-colors"
+                                onClick={goToPreviousStep}
+                                disabled={currentStepId === 1}
+                            >
+                                Back
+                            </button>
+                            <Button
+                                className="px-4 py-2 bg-primary text-white rounded-[10px] hover:bg-[#6D28D9] transition-colors"
+                                onClick={goToNextStep}
+                                disabled={currentStepId === steps.length}
+                            >
+                                Next
+                            </Button>
+                        </div>
+                    )
+                }
+
             </div>
 
         </div>
