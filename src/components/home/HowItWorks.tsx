@@ -20,7 +20,7 @@ const processSteps: ProcessStep[] = [
     icon: Photo1,
     title: "Join Luminor",
     description:
-      "Join Luminor to inspire startups, share your expertise, and connect globally.",
+      "Join Luminor to inspire startups, share your expertise, and connect globally  login or sign up today",
     bgColor: "#FFE4EF",
     border: '#FF78AF'
   },
@@ -28,7 +28,7 @@ const processSteps: ProcessStep[] = [
     icon: Photo2,
     title: "Discover And Connect",
     description:
-      "Discover experts, connect instantly, and empower your startup's journey forward.",
+      "Discover retired professionals, connect instantly and get years of knowledge on how to move your business forward",
     bgColor: "#FFF2E1",
     border: '#FFC06B'
 
@@ -37,7 +37,7 @@ const processSteps: ProcessStep[] = [
     icon: Photo3,
     title: "Collaborate and Execute",
     description:
-      "Collaborate with experts to execute your startup vision effectively and confidently.",
+      "Collaborate with retired professionals to execute your vision effectively and confidently",
     bgColor: "#74C5FF33",
     isLast: true,
     border: '#74C5FF'
