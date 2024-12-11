@@ -39,7 +39,7 @@ export default function OrderCard() {
 
 
                 {/* Order Details Grid */}
-                <div className=" space-y-6 ">
+                <div className=" space-y-6 mt-4">
                     <div className="grid grid-cols-2 gap-y-3 bg-[#FAFAFA] rounded-[10px] p-2">
                         <div>
                             <h3 className="text-lg text-gray-600">Order form</h3>

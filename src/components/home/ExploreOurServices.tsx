@@ -80,7 +80,7 @@ export default function ExploreServices() {
           {services.map((service, index) => (
             <div
               key={index}
-              className="group cursor-pointer relative overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg w-[214px]"
+              className="group cursor-pointer relative overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg lg:mx-0 mx-auto max-w-[214px] "
             >
               <div className="px-3 pt-3 bg-white text-black hover:bg-primary hover:text-white">
                 <div className="rounded-full w-12 h-12 mb-5 hover:text-white">{service.icon}</div>

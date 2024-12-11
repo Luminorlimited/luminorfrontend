@@ -23,7 +23,7 @@ export default function Business({register, handleNext, getValues}: any) {
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
-        <div className="space-y-2 text-center lg:mt-0 mt-40">
+        <div className="space-y-2 text-center lg:mt-0 mt-6">
           <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
             Join Luminor Today
           </h1>
@@ -34,7 +34,7 @@ export default function Business({register, handleNext, getValues}: any) {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
           <div className="space-y-4">
-            <div className="flex gap-4">
+            <div className="flex lg:flex-row flex-col md:flex-row gap-4">
               <div className="space-y-2 w-full">
                 <Label htmlFor="business-type">
                   Business type <span className="text-red-500">*</span>

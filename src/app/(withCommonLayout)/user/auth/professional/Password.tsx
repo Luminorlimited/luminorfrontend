@@ -26,7 +26,7 @@ export default function Password({ register,  handleSubmit }: any) {
               id="password"
               type="password"
               placeholder="********"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0"
               required
             />
           </div>
@@ -40,7 +40,7 @@ export default function Password({ register,  handleSubmit }: any) {
               type="password"
               {...register("confirmPassword")}
               placeholder="********"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0"
               required
             />
           </div>

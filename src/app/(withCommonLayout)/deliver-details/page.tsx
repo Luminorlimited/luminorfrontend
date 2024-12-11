@@ -11,7 +11,7 @@ import Timeline from "@/components/reviewdetails/timeline";
 export default function Page() {
     return (
         <div className="max-w-[1300px] mx-auto p-6 space-y-6">
-            <div className="flex gap-8 w-full">
+            <div className="lg:flex lg:flex-row flex-col gap-8 w-full">
                 <div className="">
                     <OrderHeader />
                     <ConversationHeader />

@@ -13,7 +13,7 @@ export default function FeedbackForm() {
     const maxLength = 700
 
     return (
-        <div className="container flex items-start p-6 gap-6">
+        <div className="container flex lg:flex-row flex-col items-start p-6 gap-6">
             <div className="space-y-6 max-w-[800px]">
                 {/* Header */}
                 <h1 className="text-xl text-gray-600">

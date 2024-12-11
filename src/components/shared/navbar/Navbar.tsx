@@ -21,11 +21,11 @@ const Navbar = () => {
     <nav
       className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
-      <Link href={"/"}>
+      {/* <Link href={"/"}> */}
         <span className="lg:w-auto w-10">
           <Logo />
         </span>
-      </Link>
+      {/* </Link> */}
       <div className="2xl:block hidden">
         <SearchBox />
       </div>
