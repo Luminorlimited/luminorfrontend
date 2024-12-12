@@ -62,12 +62,12 @@ export default function HowItWorks() {
         <div className="relative flex flex-col gap-16 md:flex-row md:gap-4 pb-[70px] md:justify-between items-center">
           {/* Dotted lines connecting  the circles - visible only on desktop */}
           <div className="hidden md:block absolute top-[60px] left-[280px] right-[280px] h-[2px]">
-            <div className="w-full h-full flex gap-36 justify-between items-center">
-              <div>
-                <Image src={rightarrow} width={370}  height={2} alt="righarrow" />
+            <div className="w-full h-full flex relative justify-between items-center">
+              <div >
+                <Image className="absolute top-[-16px] left-[-39px]" src={rightarrow} width={350}  height={2} alt="righarrow" />
               </div>
               <div>
-                <Image src={leftarrow} width={370}  height={2} alt="leftarrow" />
+                <Image src={leftarrow} width={348} className="absolute top-[-10px] right-[-30px]"  height={2} alt="leftarrow" />
 
               </div>
             </div>

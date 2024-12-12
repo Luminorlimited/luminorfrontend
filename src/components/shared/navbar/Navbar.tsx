@@ -83,7 +83,7 @@ const Navbar = () => {
         </Link>
         <Link
           className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-          href={"/login"}
+          href={"/user/auth/login"}
         >
           <AvatarIcon /> Login
         </Link>

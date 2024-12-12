@@ -112,17 +112,17 @@ export default function Chat() {
                                         <div
                                             className={`flex py-2 ${message.isSender ? "justify-end" : "justify-start"}`}
                                         >
-                                            <a
+                                            {/* <a
                                                 href={message.attachments[0].preview}
-                                                download="attachment.jpg" // Replace "attachment.jpg" with the desired filename and extension
-                                            >
+                                                download="attachment.jpg"
+                                            > */}
                                                 <Image
                                                     src={message.attachments[0].preview}
                                                     width={200}
                                                     height={117}
                                                     alt="attachment"
                                                 />
-                                            </a>
+                                            {/* </a> */}
                                         </div>
                                     )
                                 }

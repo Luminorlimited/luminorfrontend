@@ -9,6 +9,7 @@ import Financial from '@/components/svg/Financial';
 
 import { MdVerifiedUser } from "react-icons/md";
 import chat from "@/assets/Frame.png";
+import shape2 from "@/assets/serviceshape.png";
 import Image from "next/image";
 
 interface Service {
@@ -25,7 +26,7 @@ const services: Service[] = [
       "Connect with experts in strategy, operations, and management who can offer seasoned guidance on improving processes, scaling efficiently, and building strong business foundations.",
   },
   {
-    icon: <Settings/>,
+    icon: <Settings />,
     title: "Engineering services",
     description:
       "Access a range of engineering expertise, from design and structural analysis to process improvement. Retired engineers bring critical problem-solving skills and experience to innovate and optimize your projects.",
@@ -49,7 +50,7 @@ const services: Service[] = [
       "Benefit from experienced educators and trainers who can develop and deliver programs, workshops, or curriculum. Ideal for companies looking to train employees or enhance their learning and development offerings.",
   },
   {
-    icon: <Financial  />,
+    icon: <Financial />,
     title: "Legal and financial services",
     description:
       "Get practical advice from retired legal and financial experts on compliance, contracts, budgeting, and risk management, ensuring you have reliable guidance on navigating complex regulatory landscapes.",
@@ -76,17 +77,30 @@ export default function ExploreServices() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 transition-all duration-500">
           {services.map((service, index) => (
             <div
               key={index}
-              className="group cursor-pointer relative overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg lg:mx-0 mx-auto max-w-[214px] "
+              className="group relative cursor-pointer overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg lg:mx-0 mx-auto max-w-[214px]"
             >
-              <div className="px-3 pt-3 bg-white text-black hover:bg-primary hover:text-white">
-                <div className="rounded-full w-12 h-12 mb-5 hover:text-white">{service.icon}</div>
-                <h3 className="text-lg font-semibold">{service.title}</h3>
+              <div className="absolute top-0 left-0">
+                <Image
+                  className="transition-opacity duration-500 group-hover:opacity-100"
+                  width={136}
+                  height={131}
+                  src={shape2}
+                  alt="exploreshape"
+                />
+              </div>
+              <div className="px-3 pt-3 bg-white text-black transition-all duration-500 group-hover:bg-primary group-hover:text-white z-[30]">
+                <div className="rounded-full w-12 h-12 mb-5 text-black group-hover:text-white">
+                  {service.icon}
+                </div>
+                <h3 className="text-lg font-semibold text-black group-hover:text-white">
+                  {service.title}
+                </h3>
                 <div className="overflow-hidden transition-[height] duration-300 ease-in-out h-0 group-hover:h-[250px] mt-2">
-                  <p className="text-sm font-normal leading-relaxed">
+                  <p className="text-sm font-normal leading-relaxed text-black group-hover:text-white">
                     {service.description}
                   </p>
                 </div>
@@ -94,6 +108,9 @@ export default function ExploreServices() {
             </div>
           ))}
         </div>
+
+
+
       </div>
     </section>
   );

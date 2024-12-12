@@ -2,10 +2,10 @@
 import Image from "next/image";
 import Logo from "@/utils/Logo";
 import usertypeshape from '@/assets/shapes/usertypeshape.png'
-import loginimg from '@/assets/images/loginimg1.png'
 import circleshape from '@/assets/shapes/circleshape.png'
 import Link from "next/link";
 import { useState } from "react";
+import ImageCarousel from "./ImageCarousel/ImageCarousel";
 
 export default function Page() {
     const [email, setEmail] = useState("")
@@ -17,9 +17,9 @@ export default function Page() {
     }
     return (
         <div className="  relative">
-            <Image src={usertypeshape} width={558} height={766} alt="imgshape1" className="absolute top-0 right-0 lg:w-[558px] w-48" />
-            <Image src={usertypeshape} width={558} height={766} alt="imgshape2" className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48" />
-            <Image src={circleshape} width={173} height={167} alt="imgshape2" className="absolute left-[700px] top-0  lg:flex hidden" />
+            <Image src={usertypeshape} width={558} height={766} alt="imgshape1" className="absolute top-0 right-0 lg:w-[558px] w-48 z-[-60]" />
+            <Image src={usertypeshape} width={558} height={766} alt="imgshape2" className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48 z-[-60]" />
+            <Image src={circleshape} width={173} height={167} alt="imgshape2" className="absolute left-[700px] top-0  lg:flex hidden z-[-60]" />
 
             <div className="absolute top-0 left-0 mt-7 ml-28 lg:block hidden">
                 <Logo />
@@ -137,8 +137,9 @@ export default function Page() {
                             </div>
                         </form>
                     </div>
-                    <div className="relative  lg:block  hidden">
-                        <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" />
+                    <div className="relative  lg:block  hidden w-[650px]  ">
+                        <ImageCarousel/>
+                        {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
                     </div>
                 </div>
             </div>

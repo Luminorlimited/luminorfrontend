@@ -11,7 +11,6 @@ import p4 from "@/assets/4.png";
 import p5 from "@/assets/5.png";
 import p6 from "@/assets/6.png";
 import featuredbg from "@/assets/images/featuredbg.png";
-import { motion } from "framer-motion";
 import Button from "../common/Button";
 
 interface Service {
@@ -103,7 +102,7 @@ function ServiceCard({ service }: { service: Service }) {
       <div className="relative">
         <div
           // variant="ghost"
-          className="absolute top-4 right-4 z-10 "
+          className="absolute top-4 right-4 z-10 cursor-pointer"
           onClick={() => setIsLiked(!isLiked)}
         >
           <Heart
@@ -114,19 +113,18 @@ function ServiceCard({ service }: { service: Service }) {
             )}
           />
         </div>
-        <motion.div
+        <div
           className="max-h-72 overflow-hidden"
-          whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 900, damping: 90 }}
+         
         >
           <Image
             src={service.img}
             alt={`${service.consultant} - ${service.category}`}
             width={420}
             height={320}
-            className="object-cover"
+            className="object-cover hover:scale-105 transition-all duration-500" 
           />
-        </motion.div>
+        </div>
       </div>
       <div className="px-6 pt-5 pb-6 space-y-3 hover:bg-[#777980]/10">
         <div className="flex justify-between items-center">

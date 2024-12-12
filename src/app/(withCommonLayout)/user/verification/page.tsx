@@ -2,9 +2,9 @@
 import Image from "next/image";
 import Logo from "@/utils/Logo";
 import usertypeshape from "@/assets/shapes/usertypeshape.png";
-import loginimg from "@/assets/images/loginimg1.png";
 import circleshape from "@/assets/shapes/circleshape.png";
 import CheckBox from "@/components/common/checkbox/CheckBox";
+import ImageCarousel from "../auth/login/ImageCarousel/ImageCarousel";
 
 export default function Page() {
   const handleSubmit = (e: React.FormEvent) => {
@@ -17,28 +17,28 @@ export default function Page() {
         width={558}
         height={766}
         alt="imgshape1"
-        className="absolute top-0 right-0 lg:w-[558px] w-48"
+        className="absolute top-0 right-0 lg:w-[558px] w-48 z-[-48]"
       />
       <Image
         src={usertypeshape}
         width={558}
         height={766}
         alt="imgshape2"
-        className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48"
+        className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48 z-[-48]"
       />
       <Image
         src={circleshape}
         width={173}
         height={167}
         alt="imgshape2"
-        className="absolute left-[700px] top-0  lg:flex hidden"
+        className="absolute left-[700px] top-0  lg:flex hidden z-[-48]"
       />
 
       <div className="absolute top-0 left-0 mt-7 ml-28">
         <Logo />
       </div>
 
-      <div className="mx-auto min-h-screen">
+      <div className="mx-auto min-h-screen z-30">
         <div className=" lg:flex gap-[288px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
           <div className="lg:w-[500px] w-full space-y-8 lg:mt-0 mt-[150px]">
             <div className="text-center">
@@ -50,7 +50,7 @@ export default function Page() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <form onSubmit={handleSubmit} className="mt-8 space-y-6 ">
               <div className="space-y-6">
                 <div>
                   <label
@@ -83,15 +83,10 @@ export default function Page() {
               </div>
             </form>
           </div>
-          <div className="relative  lg:block  hidden">
-            <Image
-              src={loginimg}
-              width={715}
-              height={932}
-              alt="titl"
-              className="z-10"
-            />
-          </div>
+          <div className="relative  lg:block  hidden w-[650px]  ">
+                                 <ImageCarousel/>
+                                 {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
+                             </div>
         </div>
       </div>
     </div>

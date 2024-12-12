@@ -278,7 +278,7 @@ export function MobileSidebar() {
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button variant="outline" className="lg:hidden bg-primary mt-3">
+                <Button variant="outline" className="lg:hidden text-white rounded-[10px] mt-3 bg-primary ">
                     Filters
                 </Button>
                 

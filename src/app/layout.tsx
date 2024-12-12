@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import ReduxProvider from "@/redux/ReduxProvider";
 
 const OpenSans = localFont({
   src: "./fonts/OpenSans-VariableFont_wdth,wght.ttf",
@@ -23,8 +24,9 @@ export default function RootLayout({
       <body
         className={`${OpenSans.variable} font-openSans  antialiased text-textColor-primary`}
       >
-        
-        {children}
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );
