@@ -1,31 +1,37 @@
+import { UserInterface } from '@/utils/Interfaces'
 import { createSlice } from '@reduxjs/toolkit'
-// Define a type for the slice state
-interface CounterState {
-    name: string,
-    role: string,
+
+interface AuthInterFace {
+    user: UserInterface | null;
+    loading?: boolean;
+    error?: string;
+    token: string | null;
 }
 
-// Define the initial state using that type
-const initialState: CounterState = {
-    name: "",
-    role: "",
+const initialState: AuthInterFace = {
+    user: null,
+    token: null
 }
+
 
 export const adminAuth = createSlice({
     name: 'Auth',
-    // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {
         setUser: (state, action) => {
-            state.name = action.payload.name
-            state.role = action.payload.role
+            state.user = action.payload
+
         },
-      
+        logOut: (state) => {
+            state.user = null
+            state.token = null
+
+        }
+
     },
 })
 
-export const { setUser } = adminAuth.actions
+export const { setUser, logOut } = adminAuth.actions
 
-// Other code such as selectors can use the imported `RootState` type
 
 export default adminAuth.reducer

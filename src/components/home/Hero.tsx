@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import professionalhero from '@/assets/images/professionalhero.png'
+import clientherobg from '@/assets/images/clientherobg.png'
 
 const Hero = () => {
   return (
@@ -37,7 +39,7 @@ const Hero = () => {
                 Get Started
               </Link>
             </div>
-            <Image src={'/images/professionalhero.png'} width={208} height={338} className="absolute bottom-0 left-0" alt="profimg" />
+            <Image src={professionalhero} width={208} height={338} className="absolute bottom-0 left-0" alt="profimg" />
           </div>
           <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#E6AD60] relative overflow-hidden">
             <div className="z-30">
@@ -52,7 +54,7 @@ const Hero = () => {
                 Get Started
               </Link>
             </div>
-            <Image src={'/images/clientherobg.png'} width={208} height={338} className="absolute top-0 left-0" alt="profimg" />
+            <Image src={clientherobg} width={208} height={338} className="absolute top-0 left-0" alt="profimg" />
           </div>
         </div>
       </div>

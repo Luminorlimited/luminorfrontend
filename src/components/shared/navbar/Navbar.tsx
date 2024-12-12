@@ -15,16 +15,35 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
 import { Search } from "lucide-react";
 import { MobileNavbar } from "./MobileNavbar";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { logOut } from "@/redux/ReduxFunction";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const dispatch = useDispatch()
+  const router = useRouter();
+
+
+  const user = useSelector((state: RootState) => state.Auth.user);
+  console.log(user)
+
+  const handleLogOut = () => {
+    dispatch(logOut())
+    // cookies.remove("token")
+    router.push('/')
+  }
+
+
+
   return (
     <nav
       className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
       {/* <Link href={"/"}> */}
-        <span className="lg:w-auto w-10">
-          <Logo />
-        </span>
+      <span className="lg:w-auto w-10">
+        <Logo />
+      </span>
       {/* </Link> */}
       <div className="2xl:block hidden">
         <SearchBox />
@@ -74,19 +93,32 @@ const Navbar = () => {
           })}
         </ul>
         <LanguageSwitcher />
-        <Link
-          className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-          href={"/usertype"}
-        >
-          <SignUpIcon />
-          Sign Up
-        </Link>
-        <Link
-          className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-          href={"/user/auth/login"}
-        >
-          <AvatarIcon /> Login
-        </Link>
+        {user ? (
+            <Link
+              className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+              href={"/user/auth/login"}
+            >
+              <AvatarIcon /> Log out
+            </Link>
+        ) : (
+            <div className="flex gap-3">
+              <Link
+                className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
+                href={"/usertype"}
+              >
+                <SignUpIcon />
+                Sign Up
+              </Link>
+              <button
+                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+                onClick={handleLogOut}
+              >
+                <AvatarIcon /> Login
+              </button>
+            </div>
+        )}
+
+
       </div>
       <div className="lg:hidden block">
         <MobileNavbar />
