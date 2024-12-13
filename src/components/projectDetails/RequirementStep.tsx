@@ -1,7 +1,8 @@
 "use client"
 
+import { AiOutlinePaperClip } from "react-icons/ai";
 import React from 'react'
-import { Plus, Upload } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
 interface FileUpload {
     id: number
@@ -63,9 +64,11 @@ export default function RequirementsStep() {
                     </div>
 
                     <div className="flex items-center gap-3 mt-4">
-                        <label className="inline-flex items-center px-4 py-2 bg-[#7C3AED] text-white rounded-md hover:bg-[#6D28D9] transition-colors cursor-pointer">
-                            <Upload className="w-4 h-4 mr-2" />
+                        <label className="inline-flex gap-2 items-center px-4 py-2 bg-primary text-white rounded-[20px] hover:bg-[#6D28D9] transition-colors cursor-pointer">
                             Upload
+                            <AiOutlinePaperClip
+                                className="text-[15px] bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-7 h-7 p-1"
+                            />
                             <input
                                 type="file"
                                 className="hidden"
@@ -80,10 +83,13 @@ export default function RequirementsStep() {
                         <button
                             type="button"
                             onClick={addMoreFiles}
-                            className="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm"
+                            className="inline-flex gap-2 rounded-[20px] items-center px-3 py-1.5 bg-[#E9E9EA] text-[#030304]  hover:bg-gray-200 transition-colors text-sm"
                         >
-                            <Plus className="w-4 h-4 mr-1" />
                             Add more
+                            {/* <Plus className="w-7 h-w-7 ml-1 bg-white rounded-full p-2" /> */}
+                            <Plus
+                                className="text-[15px] bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-7 h-7 p-1"
+                            />
                         </button>
                     </div>
                 </div>
@@ -100,7 +106,7 @@ export default function RequirementsStep() {
                     />
                 </div>
 
-             
+
             </form>
         </div>
     )

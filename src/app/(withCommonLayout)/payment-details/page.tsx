@@ -32,14 +32,14 @@ export default function Page() {
             <div className="max-w-[869px] rounded-lg bg-white p-6 shadow-sm">
                 <div className="space-y-6">
                     {/* Header */}
-                    <div>
+                    <div className='flex flex-col gap-[17px]'>
                         <div className='text-[16px] flex gap-2'>
                             <Link href={'/'} className='text-gray-700'>Home - </Link>
                             <Link href={'/payment-details'} className='font-semibold'>Payement-Details</Link>
                         </div>
                         <h1 className="text-[32px] font-semibold">Payment Details for Retired Professionals</h1>
-                        <p className="mt-1 text-sm text-gray-500">
-                            Please fill in your bank details below to receive payments once your project is completed.
+                        <p className="mt-1 text-lg text-[#4A4C56]">
+                            Please fill in your bank details below to receive payments once <br/> your project is completed.
                         </p>
                     </div>
 
@@ -47,21 +47,21 @@ export default function Page() {
                     <div className="space-y-4">
                         <h2 className="text-[32px] font-semibold ">Project Overview</h2>
                         <div className="space-y-2 text-[24px]">
-                            <div className="flex items-center justify-start gap-2 text-sm">
+                            <div className="flex items-center justify-start gap-2">
                                 <span className="text-black font-semibold">Project Name:</span>
-                                <span className="font-medium text-gray-900">{projectDetails.name}</span>
+                                <span className="font-medium text-[#4A4C56]">{projectDetails.name}</span>
                             </div>
-                            <div className="flex items-center justify-start gap-2 text-sm">
+                            <div className="flex items-center justify-start gap-2">
                                 <span className="text-black font-semibold">Order Number:</span>
-                                <span className="font-medium text-gray-900">{projectDetails.orderNumber}</span>
+                                <span className="font-medium text-[#4A4C56]">{projectDetails.orderNumber}</span>
                             </div>
-                            <div className="flex items-center justify-start gap-2 text-sm">
+                            <div className="flex items-center justify-start gap-2">
                                 <span className="text-black font-semibold">Service Fee:</span>
-                                <span className="font-medium text-gray-900">£{projectDetails.serviceFee.toFixed(2)}</span>
+                                <span className="font-medium text-[#4A4C56]">£{projectDetails.serviceFee.toFixed(2)}</span>
                             </div>
-                            <div className="flex items-center justify-start gap-2 text-sm">
+                            <div className="flex items-center justify-start gap-2">
                                 <span className="text-black font-semibold">Total Amount:</span>
-                                <span className="font-medium text-gray-900">£{projectDetails.totalAmount.toFixed(2)}</span>
+                                <span className="font-medium text-[#4A4C56]">£{projectDetails.totalAmount.toFixed(2)}</span>
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@ export default function Page() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
                             <h2 className="text-lg font-medium text-gray-900 mb-4">Bank Transfer Information</h2>
-                            <div className="space-y-4">
+                            <div className="space-y-4 border p-8 rounded-[15px]">
                                 <div>
                                     <label htmlFor="accountHolder" className="block text-sm font-medium text-black mb-1">
                                         Account Holder Name

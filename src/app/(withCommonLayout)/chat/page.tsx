@@ -146,7 +146,7 @@ const Page: React.FC = () => {
           <div className="p-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
             <AiOutlinePaperClip
               onClick={handleClick}
-              className="text-xl absolute left-7 hover:bg-white rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1"
+              className="text-xl absolute left-7 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
             />
 
             {/* File and Image Buttons */}
@@ -154,11 +154,11 @@ const Page: React.FC = () => {
               className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
                 }`}
             >
-              <span className="bg-primary rounded-full">
-                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+              <span className="bg-primary rounded-full ">
+                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
               </span>
-              <span className="bg-primary rounded-full">
-                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+              <span className="bg-primary rounded-full ">
+                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
               </span>
             </div>
             <input
@@ -170,9 +170,9 @@ const Page: React.FC = () => {
               <FiSend className="text-lg text-white cursor-pointer flex items-center justify-center w-8 h-8 p-2" />
             </span>
 
-            <FaRegSmile className="text-xl  bg-[#F2FAFF] rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1" />
-            <MdOutlineKeyboardVoice className="text-xl  bg-[#F2FAFF] rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1" />
-            <Video className="text-xl  bg-[#F2FAFF] rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1" />
+            <FaRegSmile className="text-xl  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <MdOutlineKeyboardVoice className="text-xl  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <Video className="text-xl  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
 
 
           </div>

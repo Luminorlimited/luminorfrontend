@@ -1,8 +1,10 @@
-import { Check, MessageSquare, Zap } from 'lucide-react'
+import { Check, Zap } from 'lucide-react'
+import { TiDocumentText } from "react-icons/ti";
+
 
 const timelineItems = [
     {
-        icon: <MessageSquare className="w-4 h-4" />,
+        icon: <TiDocumentText className="w-4 h-4" />,
         text: "Jane Cooper has placed the order",
         time: "19 Oct, 16:27"
     },
@@ -18,6 +20,8 @@ const timelineItems = [
         time: "19 Oct, 17:29"
     }
 ]
+
+
 
 export default function Timeline() {
     return (

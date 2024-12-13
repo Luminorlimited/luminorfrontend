@@ -16,8 +16,9 @@ export default function OrderHeader() {
                     Your order is now in the works
                 </h1>
                 <p className="text-gray-600">
-                    Jane Cooper has accept the order. You should complete the order by{' '}
-                    <span className="font-medium">26 Oct 2024, 11:59 AM</span>
+                    Jane Cooper has accept the order. You should complete the order
+                    <br/>by{' '}
+                    <span className="font-semibold">26 Oct 2024, 11:59 AM</span>
                 </p>
             </div>
 

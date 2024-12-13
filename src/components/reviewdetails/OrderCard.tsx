@@ -17,7 +17,7 @@ export default function OrderCard() {
 
                 {/* Banner Image Section */}
                 <div className="relative bg-[#FAFAFA] px-2">
-                    <div className="absolute top-0 right-0 z-10">
+                    <div className="absolute top-1 right-2 z-10">
                         <span className="px-4 py-2 rounded-[8px] bg-[#D3F4EF] text-[#black]  font-medium">
                             In Process
                         </span>

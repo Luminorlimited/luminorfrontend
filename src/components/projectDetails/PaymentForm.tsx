@@ -6,6 +6,8 @@ import visa from "@/assets/payment/visa.jpg"
 import venmo from "@/assets/payment/venmo.png"
 import paypal from "@/assets/payment/paypal.png"
 import offer from "@/assets/images/offer.png"
+import { FaArrowRightLong } from "react-icons/fa6";
+
 import Link from 'next/link'
 
 export default function PaymentForm() {
@@ -193,7 +195,7 @@ export default function PaymentForm() {
 
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
-                                    <svg className="h-4 w-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <svg className="h-4 w-4 text-[#25314C]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span className="text-gray-600">Service fee</span>
@@ -203,7 +205,7 @@ export default function PaymentForm() {
 
                             <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
-                                    <svg className="h-4 w-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <svg className="h-4 w-4 text-[#25314C]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                     </svg>
                                     <span className="text-gray-600">Delivery Time</span>
@@ -239,8 +241,8 @@ export default function PaymentForm() {
                             </div>
 
 
-                            <Link href={'/payment-details'} className="w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium text-white rounded-[8px] hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
-                                Confirm & Pay →
+                            <Link href={'/payment-details'} className="w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium text-white rounded-[8px] hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 items-center gap-2">
+                                Confirm & Pay <FaArrowRightLong/>
                             </Link>
                         </div>
                     </div>
