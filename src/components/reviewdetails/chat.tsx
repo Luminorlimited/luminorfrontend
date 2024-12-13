@@ -144,7 +144,7 @@ export default function Chat() {
                 <input
                     type="text"
                     placeholder="Write message here..."
-                    className="flex-1 bg-transparent focus:outline-none text-gray-700 bg-white rounded-[18px] py-2 px-3 border border-gray-300"
+                    className="flex-1 bg-transparent focus:outline-none text-gray-700 bg-white rounded-[18px] py-2 px-3 border border-gray-300 rounded-["
                 />
                 <button className="p-2 bg-white rounded-full">
                     <Smile className="w-5 h-5 text-black" />

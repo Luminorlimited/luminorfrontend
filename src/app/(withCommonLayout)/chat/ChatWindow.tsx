@@ -1,10 +1,12 @@
 "use client";
 
-import React, {  useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Conversation } from "@/lib/fakeData/allMessage";
 import OffersModal from "@/components/common/modal/OffersModal";
+import { CheckCheck } from 'lucide-react';
+
 
 interface Message {
   id: number;
@@ -29,7 +31,6 @@ interface CommunicationProps {
 
 const Communication: React.FC<CommunicationProps> = ({
   messages,
-  senderName,
   senderType,
   colorScheme,
   handleOpenModal,
@@ -60,13 +61,13 @@ const Communication: React.FC<CommunicationProps> = ({
 
   console.log(messages.messages);
   return (
-    <div className="flex  flex-col ">
-      <header className="p-4 flex justify-between items-center rounded-tr-md">
+    <div className=" flex-1 h-full">
+      {/* <header className="p-4 flex justify-between items-center rounded-tr-md">
         <h1 className="text-xl font-bold">{senderName}</h1>
-      </header>
+      </header> */}
 
       <div className="h-full">
-        <ScrollArea className="p-4 h-[50vh] md:h-[60vh] overflow-y-auto">
+        <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
           {messages.messages?.map((message, idx) => (
             <MessageBubble
               key={idx}
@@ -82,7 +83,7 @@ const Communication: React.FC<CommunicationProps> = ({
       </div>
       {isModalOpen && <OffersModal
         onClose={handleOpenModal}
-      
+
       />}
     </div>
   );
@@ -118,16 +119,19 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         </Avatar>
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
-            className={`p-3 rounded-lg inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
+            className={`p-3 ${isSender ? "rounded-l-[10px] rounded-b-[10px]" : 'rounded-r-[10px] rounded-b-[10px]'} inline-block  ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
               }`}
           >
             {message.content.substring(message.content.indexOf(":") + 1).trim()}
           </div>
-          <div className="text-xs text-muted-foreground mt-1">
+          <div className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"}`}>
             {message.timestamp.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             })}
+            {isSender && (
+              <CheckCheck className="" />
+              )}
           </div>
         </div>
       </div>

@@ -11,7 +11,12 @@ import AllUsers from "./AllUsers";
 import { Conversation, conversations } from "@/lib/fakeData/allMessage";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
-import ProjectModal  from "@/components/common/modal/ProjectModal";
+import ProjectModal from "@/components/common/modal/ProjectModal";
+import { MdOutlineKeyboardVoice } from "react-icons/md";
+import { Video, FileText, Images } from 'lucide-react';
+
+
+
 
 const Page: React.FC = () => {
   const [messages, setMessages] = useState<Conversation | null>(null);
@@ -29,7 +34,15 @@ const Page: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // Add state to disable the button
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [fileBtn, showFileBtn] = useState(false)
+
+  const handleClick = () => {
+    setTimeout(() => {
+      // showFileBtn(false)
+      showFileBtn((prev) => !prev)
+    }, 200)
+  }
 
   // Toggle for project modal
   const handleProjectModal = () => {
@@ -49,12 +62,18 @@ const Page: React.FC = () => {
 
   return (
     <section>
-      <div className="flex max-w-[1320px] h-[732px] my-6 mx-auto shadow-sm border rounded-[15px]">
+      <div className="container mx-auto pt-[20px]">
+        <div className='text-[16px] flex gap-2'>
+          <Link href={'/'} className='text-gray-700'>Home - </Link>
+          <Link href={'/chat'} className='font-semibold'>Chat</Link>
+        </div>
+      </div>
+      <div className="flex max-w-[1320px] overflow-hidden h-[720px]  my-4 mx-auto shadow-sm border rounded-[15px]">
         {/* Sidebar */}
         <div className="w-1/3 border-r border-gray-300 bg-white overflow-y-scroll ">
           {/* Search Bar */}
           <div className="p-4">
-            <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2">
+            <div className="flex items-center border  rounded-[12px] px-3 py-4">
               <BiSearch className="text-gray-500 text-lg" />
               <input
                 type="text"
@@ -97,15 +116,15 @@ const Page: React.FC = () => {
               <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
                 Create an Offer
               </Button>
-              {isProjectModal && <ProjectModal onClose={handleProjectModal}/>}
+              {isProjectModal && <ProjectModal onClose={handleProjectModal} />}
               <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
             </div>
           </div>
 
           {/* Dynamic Chat Content */}
           <div className="flex-1">
-            <div className="mx-auto bg-white p-4 h-full rounded-[10px]">
-              <div className="flex flex-col overflow-y-auto justify-end h-full">
+            <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
+              <div className="flex flex-col overflow-y-auto  h-full">
                 <ChatWindow
                   isModalOpen={isModalOpen}
                   handleOpenModal={handleOpenModal}
@@ -124,15 +143,38 @@ const Page: React.FC = () => {
           </div>
 
           {/* Message Input */}
-          <div className="p-4 border-t border-gray-300 bg-white flex items-center">
-            <AiOutlinePaperClip className="text-xl text-gray-500 cursor-pointer mr-3" />
+          <div className="p-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
+            <AiOutlinePaperClip
+              onClick={handleClick}
+              className="text-xl absolute left-7 hover:bg-white rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1"
+            />
+
+            {/* File and Image Buttons */}
+            <div
+              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
+                }`}
+            >
+              <span className="bg-primary rounded-full">
+                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+              </span>
+              <span className="bg-primary rounded-full">
+                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+              </span>
+            </div>
             <input
               type="text"
               placeholder="Write message here..."
-              className="flex-1 bg-gray-100 px-4 py-2 rounded-lg text-gray-700 focus:outline-none"
+              className="flex-1 bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none"
             />
-            <FaRegSmile className="text-xl text-gray-500 cursor-pointer mx-3" />
-            <FiSend className="text-xl text-purple-500 cursor-pointer" />
+            <span className="bg-primary rounded-full">
+              <FiSend className="text-lg text-white cursor-pointer flex items-center justify-center w-8 h-8 p-2" />
+            </span>
+
+            <FaRegSmile className="text-xl  bg-[#F2FAFF] rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1" />
+            <MdOutlineKeyboardVoice className="text-xl  bg-[#F2FAFF] rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1" />
+            <Video className="text-xl  bg-[#F2FAFF] rounded-full text-gray-500 cursor-pointer w-8 h-8 p-1" />
+
+
           </div>
         </div>
       </div>

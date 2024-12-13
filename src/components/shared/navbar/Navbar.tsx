@@ -94,12 +94,14 @@ const Navbar = () => {
         </ul>
         <LanguageSwitcher />
         {user ? (
-            <Link
-              className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-              href={"/user/auth/login"}
-            >
-              <AvatarIcon /> Log out
-            </Link>
+           
+          
+            <button
+                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+                onClick={handleLogOut}
+              >
+                <AvatarIcon /> Log out
+              </button>
         ) : (
             <div className="flex gap-3">
               <Link
@@ -109,12 +111,14 @@ const Navbar = () => {
                 <SignUpIcon />
                 Sign Up
               </Link>
-              <button
+
+              <Link
                 className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-                onClick={handleLogOut}
+                href={"/user/auth/login"}
               >
-                <AvatarIcon /> Login
-              </button>
+                <AvatarIcon /> Log in
+              </Link>
+            
             </div>
         )}
 
