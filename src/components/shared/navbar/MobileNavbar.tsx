@@ -66,7 +66,7 @@ export function MobileNavbar() {
           <div className="flex items-center flex-wrap gap-4">
             <Link
               className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-              href={"/sign-up"}
+              href={"/usertype"}
             >
               <SignUpIcon />
               Sign Up

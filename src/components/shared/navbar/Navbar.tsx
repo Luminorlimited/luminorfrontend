@@ -15,21 +15,36 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
 import { Search } from "lucide-react";
 import { MobileNavbar } from "./MobileNavbar";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { logOut } from "@/redux/ReduxFunction";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const dispatch = useDispatch()
+  const router = useRouter();
+
+
+  const user = useSelector((state: RootState) => state.Auth.user);
+  console.log(user)
+
+  const handleLogOut = () => {
+    dispatch(logOut())
+    // cookies.remove("token")
+    router.push('/')
+  }
+
+
+
   return (
     <nav
-      style={{
-        background:
-          "linear-gradient(270deg, #FFF9F0 0%, #FDF0F5 51.5%, #F1F9FF 100%)",
-      }}
-      className="py-6 p-5 2xl:px-[115px] flex items-center justify-between "
+      className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
-      <Link href={"/"}>
-        <span className="lg:w-auto w-10">
-          <Logo />
-        </span>
-      </Link>
+      {/* <Link href={"/"}> */}
+      <span className="lg:w-auto w-10">
+        <Logo />
+      </span>
+      {/* </Link> */}
       <div className="2xl:block hidden">
         <SearchBox />
       </div>
@@ -43,7 +58,7 @@ const Navbar = () => {
               <li key={item.id}>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="" asChild>
-                    <button className="flex items-center gap-2 hover:text-primary">
+                    <button className="flex items-center gap-2 font-medium hover:text-primary">
                       {item?.title} <span>{item.icon && ""}</span>
                     </button>
                   </DropdownMenuTrigger>
@@ -53,7 +68,9 @@ const Navbar = () => {
                         <Fragment key={item.id}>
                           <DropdownMenuGroup>
                             <DropdownMenuItem>
-                              <Link href={item.link}>{item.title}</Link>
+                              <Link href={item.link} className="text-base">
+                                {item.title}
+                              </Link>
                             </DropdownMenuItem>
                           </DropdownMenuGroup>
                           <DropdownMenuSeparator />
@@ -65,7 +82,10 @@ const Navbar = () => {
               </li>
             ) : (
               <li key={item.id}>
-                <Link className="hover:text-primary" href={item.link}>
+                <Link
+                  className="font-medium hover:text-primary"
+                  href={item.link}
+                >
                   {item.title}
                 </Link>
               </li>
@@ -73,19 +93,36 @@ const Navbar = () => {
           })}
         </ul>
         <LanguageSwitcher />
-        <Link
-          className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-          href={"/sign-up"}
-        >
-          <SignUpIcon />
-          Sign Up
-        </Link>
-        <Link
-          className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-          href={"/login"}
-        >
-          <AvatarIcon /> Login
-        </Link>
+        {user ? (
+           
+          
+            <button
+                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+                onClick={handleLogOut}
+              >
+                <AvatarIcon /> Log out
+              </button>
+        ) : (
+            <div className="flex gap-3">
+              <Link
+                className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
+                href={"/usertype"}
+              >
+                <SignUpIcon />
+                Sign Up
+              </Link>
+
+              <Link
+                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+                href={"/user/auth/login"}
+              >
+                <AvatarIcon /> Log in
+              </Link>
+            
+            </div>
+        )}
+
+
       </div>
       <div className="lg:hidden block">
         <MobileNavbar />

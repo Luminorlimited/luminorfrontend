@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindconfig from 'tailwindcss-animate'
 
 export default {
   darkMode: ["class"],
@@ -28,6 +29,9 @@ export default {
           DEFAULT: "#5633D1",
           light: "#8B6FE3",
         },
+        icon: {
+          primary: '#74C5FF',
+        },
         secondary: {
           DEFAULT: "#FFC06B",
           light: "#FFD7A1",
@@ -52,5 +56,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindconfig],
 } satisfies Config;
