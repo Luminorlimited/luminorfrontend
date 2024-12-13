@@ -42,13 +42,13 @@ const Navbar = () => {
   }
 
   const [fileBtn, showFileBtn] = useState(false)
-  
-    const handleClick = () => {
-      setTimeout(() => {
-        // showFileBtn(false)
-        showFileBtn((prev) => !prev)
-      }, 200)
-    }
+
+  const handleClick = () => {
+    setTimeout(() => {
+      // showFileBtn(false)
+      showFileBtn((prev) => !prev)
+    }, 200)
+  }
 
 
 
@@ -110,40 +110,45 @@ const Navbar = () => {
         </ul>
         <LanguageSwitcher />
         {user ? (
-           
+
           <div className="flex gap-3 items-center relative">
-            <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
-            <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
+            <Link href={'/user/editProfile/client'}>
+              <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
+            <Link href={'/project-list'}>
+
+              <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
             <Link href={'/chat'}><BiMessage className="cursor-pointer text-[24px] hover:text-primary" /></Link>
             <Image src={demoimg} width={40} height={40} alt="profile" className={`rounded-full cursor-pointer hover:opacity-90 transition-all`} onClick={handleClick} />
-            
+
             <ul className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0  ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
               }`}>
-              <Link href={'/project-details'}><li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li></Link> 
+              <Link href={'/project-details'}><li  className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li></Link>
               <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">logout</li>
             </ul>
 
 
-           
+
           </div>
         ) : (
-            <div className="flex gap-3">
-              <Link
-                className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-                href={"/usertype"}
-              >
-                <SignUpIcon />
-                Sign Up
-              </Link>
+          <div className="flex gap-3">
+            <Link
+              className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
+              href={"/usertype"}
+            >
+              <SignUpIcon />
+              Sign Up
+            </Link>
 
-              <Link
-                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-                href={"/user/auth/login"}
-              >
-                <AvatarIcon /> Log in
-              </Link>
-            
-            </div>
+            <Link
+              className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+              href={"/user/auth/login"}
+            >
+              <AvatarIcon /> Log in
+            </Link>
+
+          </div>
         )}
 
 
