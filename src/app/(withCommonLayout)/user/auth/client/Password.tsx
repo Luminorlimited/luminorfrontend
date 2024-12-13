@@ -1,10 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { FaCheck } from "react-icons/fa";
 
-export default function Password({ register,  handleSubmit }: any) {
+import { useState } from "react";
+import { FaCheck, FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa6";
+
+export default function Password({ register, handleSubmit }: any) {
+
+  const [password, setPassword] = useState("")
+  // const [confirmPassword, setconfirmPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false);
+
+
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
@@ -17,34 +24,58 @@ export default function Password({ register,  handleSubmit }: any) {
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-gray-700">
+
+
+          <div>
+            <label htmlFor="password" className="block text-lg font-medium text-[#1A1A1A] mb-2">
               Password *
-            </Label>
-            <Input
-              {...register("password")}
-              id="password"
-              type="password"
-              placeholder="********"
-              className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0"
-              required
-            />
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                {...register("password")}
+                type={showPassword ? "text" : "password"}
+                required
+                className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+          </div>
+          <div>
+            <label htmlFor="confirm-password" className="block text-lg font-medium text-[#1A1A1A] mb-2">
+              Password *
+            </label>
+            <div className="relative">
+              <input
+                id="confirm-password"
+                {...register("confirmPassword")}
+                type={showPassword ? "text" : "password"}
+                required
+                className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="confirm-password" className="text-gray-700">
-              Confirm password
-            </Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              {...register("confirmPassword")}
-              placeholder="********"
-              className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0"
-              required
-            />
-          </div>
-
+         
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Checkbox

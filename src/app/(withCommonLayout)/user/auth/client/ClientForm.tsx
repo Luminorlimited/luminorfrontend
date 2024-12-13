@@ -19,7 +19,8 @@ export default function ClientForm() {
   };
 
   const onSubmit = (data: any) => {
-      console.log({ ...data });
+    console.log({ ...data });
+    
       setStep(4)
   };
 

@@ -1,6 +1,6 @@
 import Logo from "@/utils/Logo";
 import Link from "next/link";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
 import {
@@ -19,6 +19,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
+import { BiMessage } from "react-icons/bi";
+
+import { FaRegHeart } from "react-icons/fa";
+import { GoBell } from "react-icons/go";
+import Image from "next/image";
+import demoimg from '@/assets/images/demoimg.png'
+
 
 const Navbar = () => {
   const dispatch = useDispatch()
@@ -33,6 +40,15 @@ const Navbar = () => {
     // cookies.remove("token")
     router.push('/')
   }
+
+  const [fileBtn, showFileBtn] = useState(false)
+  
+    const handleClick = () => {
+      setTimeout(() => {
+        // showFileBtn(false)
+        showFileBtn((prev) => !prev)
+      }, 200)
+    }
 
 
 
@@ -95,13 +111,21 @@ const Navbar = () => {
         <LanguageSwitcher />
         {user ? (
            
-          
-            <button
-                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-                onClick={handleLogOut}
-              >
-                <AvatarIcon /> Log out
-              </button>
+          <div className="flex gap-3 items-center relative">
+            <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
+            <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
+            <Link href={'/chat'}><BiMessage className="cursor-pointer text-[24px] hover:text-primary" /></Link>
+            <Image src={demoimg} width={40} height={40} alt="profile" className={`rounded-full cursor-pointer hover:opacity-90 transition-all`} onClick={handleClick} />
+            
+            <ul className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0  ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
+              }`}>
+              <Link href={'/project-details'}><li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li></Link> 
+              <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">logout</li>
+            </ul>
+
+
+           
+          </div>
         ) : (
             <div className="flex gap-3">
               <Link

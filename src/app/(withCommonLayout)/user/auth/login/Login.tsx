@@ -31,37 +31,44 @@ export default function Login() {
 
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const data = { email, password }
-        console.log(email, password)
-        const res = await LogInUser(data)
-        console.log(res);
-        if (res) {
-            dispatch(setUser({ name: `${res?.data?.data?.user.name.firstName} ${res?.data?.data?.user.name.lastName}`, role: `${res?.data?.data?.user.role}` }))
-            ShowToastify({ success: "Login Successfully" })
-            router.push('/')
+        e.preventDefault(); // Prevent default form submission
+        const data = { email, password }; // Gather email and password
+        console.log(email, password); // Debugging: Log email and password
+
+        try {
+            // Attempt to log in the user
+            const res = await LogInUser(data);
+            console.log(res); 
+
+            if (res) {
+                // Dispatch user data to the store if login is successful
+                dispatch(setUser({
+                    name: `${res?.data?.data?.user.name.firstName} ${res?.data?.data?.user.name.lastName}`,
+                    role: `${res?.data?.data?.user.role}`
+                }));
+
+                // Show a success toast
+                ShowToastify({ success: "Login Successfully" });
+
+                // Redirect to the home page
+                router.push('/');
+            }
+        } catch (error) {
+            // Type guard for error to handle it safely
+            if (error instanceof Error) {
+                // Show an error toast if login fails
+                ShowToastify({ error: error.message || "Login Failed" });
+
+                // Optionally log the error for debugging
+                console.error(error);
+            } else {
+                // Handle unexpected error types
+                ShowToastify({ error: "An unknown error occurred" });
+                console.error("Unexpected error:", error);
+            }
         }
-
-
-
-        // try {
-        //     const response = await LogInUser(data) // Unwraps to handle errors
-        //     if (response) {
-        //         // Assuming the API returns user info in `response.data`
-        //         dispatch(setUser({ name: `${response.data.user.firstName} ${response.data.user.firstName}`, role: response.data.user.role }));
-        //         localStorage.setItem("token", response.data.accessToken); // Store token
-        //         router.push('/')
-
-
-        //     } else {
-        //         ShowToastify({ error: "Check your email /password again" })
-        //         alert("Invalid credentials");
-        //     }
-        // } catch (err) {
-        //     console.error("Login failed", err);
-        //     alert("An error occurred during login.");
-        // }
     };
+
     return (
         <div className="  relative">
             <Image src={usertypeshape} width={558} height={766} alt="imgshape1" className="absolute top-0 right-0 lg:w-[558px] w-48 z-[-60]" />
@@ -207,7 +214,7 @@ export default function Login() {
                 </div>
             </div>
 
-        <ToastContainer position="bottom-center" />
+        <ToastContainer position="top-right" />
 
         </div>
     );

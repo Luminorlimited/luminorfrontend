@@ -1,6 +1,4 @@
-// import build from "next/dist/build";
 import baseApi from "./baseApi";
-
 
 
 const userApi = baseApi.injectEndpoints({
@@ -18,5 +16,13 @@ const userApi = baseApi.injectEndpoints({
         })
     })
 })
+
+// const CreateClient = baseApi.injectEndpoints({
+//     endpoints: (build) => {
+//         clientUser: build.mutation({
+//             query:
+//         })
+//     }
+// })
 
 export const {useLoginUserMutation} = userApi

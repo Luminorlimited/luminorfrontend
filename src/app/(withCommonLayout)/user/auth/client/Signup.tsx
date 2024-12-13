@@ -38,7 +38,7 @@ export default function Signup({ register, handleNext, getValues }: any) {
                 {...register("firstName")}
                 placeholder="First Name"
                 required
-                className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0 "
+                className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
               />
             </div>
             <div className="space-y-2">
@@ -50,7 +50,7 @@ export default function Signup({ register, handleNext, getValues }: any) {
                 {...register("lastName")}
                 placeholder="Last Name"
                 required
-                className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0 "
+                className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
               />
             </div>
           </div>
@@ -64,7 +64,7 @@ export default function Signup({ register, handleNext, getValues }: any) {
               type="date"
               placeholder="Date of birth"
               required
-              className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0 "
+              className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
             />
           </div>
           <div className="space-y-2">
@@ -77,7 +77,7 @@ export default function Signup({ register, handleNext, getValues }: any) {
               placeholder="Email address"
               {...register('email')}
               required
-              className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0 "
+              className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
             />
           </div>
           <div className="space-y-2">
@@ -90,7 +90,7 @@ export default function Signup({ register, handleNext, getValues }: any) {
               {...register('phone')}
               placeholder="Phone number"
               required
-              className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0 "
+              className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
             />
           </div>
           <div className="space-y-6">
