@@ -7,17 +7,7 @@ import { Label } from "@/components/ui/label";
 import { FaCheck } from "react-icons/fa";
 
 
-export default function Business({register, handleNext, getValues}: any) {
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const data = {
-      businessType: getValues("businessType"),
-      companyName: getValues("companyName"),
-      jobTitle: getValues("jobTitle"),
-      linkedIn: getValues("linkedIn"),
-    };
-    handleNext(data)
-  }
+export default function Business({register, handleNext}: any) {
 
   
   return (
@@ -32,7 +22,7 @@ export default function Business({register, handleNext, getValues}: any) {
           </h2>
           <p className="text-lg text-muted-foreground">Empower Your Journey</p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
+        {/* <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}> */}
           <div className="space-y-4">
             <div className="flex lg:flex-row flex-col md:flex-row gap-4">
               <div className="space-y-2 w-full">
@@ -79,13 +69,16 @@ export default function Business({register, handleNext, getValues}: any) {
               />
             </div>
           </div>
+        <div className="py-2">
           <Button
             className="h-12 w-full rounded-xl bg-[#7C3AED] text-white hover:bg-[#6D28D9]"
-            type="submit"
+            type="button"
+            onClick={handleNext}
           >
             Next
           </Button>
-        </form>
+         </div>
+        {/* </form> */}
         <div className="flex items-center justify-center gap-2 pt-8">
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
             <FaCheck />

@@ -5,20 +5,14 @@ import { useState } from "react";
 import { FaCheck, FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 
-export default function Password({ register, handleSubmit }: any) {
+export default function Password({ register }: any) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   console.log(passwordError, setConfirmPassword, confirmPassword, setPasswordError)
-
-  // const onSubmit = (data: any) => {
-  //   if (password !== confirmPassword) {
-  //     setPasswordError("Passwords do not match");
-  //   } else {
-  //     setPasswordError(""); 
-  //   }
-  // };
+  
+  
 
 
   return (
@@ -32,7 +26,7 @@ export default function Password({ register, handleSubmit }: any) {
           <p className="text-gray-500">Empower Your Journey</p>
         </div>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* <form className="space-y-6" onSubmit={handleSubmit}> */}
 
 
           <div>
@@ -113,12 +107,14 @@ export default function Password({ register, handleSubmit }: any) {
             </div>
           </div>
 
+        <div className="py-2">
           <Button
             type="submit"
             className="w-28 bg-[#6C3CE1] hover:bg-[#5B32C2] text-white"
           >
-            Done
+            Submit
           </Button>
+          </div>
 
           <div className="flex items-center justify-center gap-2 pt-8">
             <div className="flex h-8 w-8 items-center justify-center rounded-full border-2   text-white bg-[#34DC48] border-[#34DC48]">
@@ -134,7 +130,7 @@ export default function Password({ register, handleSubmit }: any) {
               3
             </div>
           </div>
-        </form>
+        {/* </form> */}
       </div>
     </div>
   );

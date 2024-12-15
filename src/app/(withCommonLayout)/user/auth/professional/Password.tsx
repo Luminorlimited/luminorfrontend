@@ -9,16 +9,7 @@ export default function Password({ register }: any) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  // const [passwordError, setPasswordError] = useState("");
-
-  // const onSubmit = (data: any) => {
-  //   if (password !== confirmPassword) {
-  //     setPasswordError("Passwords do not match");
-  //   } else {
-  //     setPasswordError(""); // clear error if passwords match
-  //     // handle submit logic here (e.g., sending data to backend)
-  //   }
-  // };
+ 
   
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
@@ -119,7 +110,7 @@ export default function Password({ register }: any) {
             type="submit"
             className="w-28 bg-[#6C3CE1] hover:bg-[#5B32C2] text-white"
           >
-            Done
+            Submit
           </Button>
           </div>
 

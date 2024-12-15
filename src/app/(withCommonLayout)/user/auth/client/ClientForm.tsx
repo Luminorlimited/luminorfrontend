@@ -85,33 +85,35 @@ export default function ClientForm() {
           <Logo />
         </div>
 
-        {step === 1 && (
-          <Signup
-            register={register}
-            handleNext={handleNext}
-            getValues={getValues}
-            setValue={setValue}
-          />
-        )}
-        {step === 2 && (
-          <Business
-            register={register}
-            handleNext={handleNext}
-            getValues={getValues}
-            setValue={setValue}
-          />
-        )}
+        <form onSubmit={handleSubmit(handleSubmitForm)}>
+          {step === 1 && (
+            <Signup
+              register={register}
+              handleNext={handleNext}
+              getValues={getValues}
+              setValue={setValue}
+            />
+          )}
+          {step === 2 && (
+            <Business
+              register={register}
+              handleNext={handleNext}
+              getValues={getValues}
+              setValue={setValue}
+            />
+          )}
 
-        {step === 3 && (
-          <Password
-            register={register}
-            handleNext={handleNext}
-            handleSubmit={handleSubmit(handleSubmitForm)}
-          />
-        )}
-        {step === 4 && <SuccessPage />}
-        {isLoading && <p>Loading...</p>}
-        {/* {isError && <p className="text-red-500">{error?.message || 'Failed to create client'}</p>} */}
+          {step === 3 && (
+            <Password
+              register={register}
+              handleNext={handleNext}
+              // handleSubmit={handleSubmit(handleSubmitForm)}
+            />
+          )}
+          {step === 4 && <SuccessPage />}
+          {isLoading && <p>Loading...</p>} 
+       </form>
+       
       </div>
     </div>
   );
