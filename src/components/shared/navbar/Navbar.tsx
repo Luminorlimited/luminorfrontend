@@ -33,7 +33,9 @@ const Navbar = () => {
 
 
   const user = useSelector((state: RootState) => state.Auth.user);
+  const client = useSelector((state: RootState) => state.Auth.client);
   console.log(user)
+  console.log(client)
 
   const handleLogOut = () => {
     dispatch(logOut())
@@ -109,7 +111,7 @@ const Navbar = () => {
           })}
         </ul>
         <LanguageSwitcher />
-        {user ? (
+        {user || client ? (
 
           <div className="flex gap-3 items-center relative">
             <Link href={'/user/editProfile/client'}>

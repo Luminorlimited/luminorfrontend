@@ -9,6 +9,8 @@ import Password from "./Password";
 import SuccessPage from "./Success";
 import Signup from "./Signup";
 import { useForm } from "react-hook-form";
+import { useClientUserMutation } from "@/redux/api/userApi";
+import ShowToastify from "@/utils/ShowToastify";
 
 export default function ClientForm() {
   const [step, setStep] = useState(1);
@@ -18,10 +20,40 @@ export default function ClientForm() {
     setStep((prev) => prev + 1);
   };
 
-  const onSubmit = (data: any) => {
-    console.log({ ...data });
-    
-      setStep(4)
+  const [createClient, { isLoading }] = useClientUserMutation()
+
+
+
+  const handleSubmitForm = async (data: any) => {
+    const clientData = {
+      name: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+      },
+      email: data.email,
+      password: data.password,
+      dateOfBirth: data.dob,
+      phoneNumber: data.phone,
+      businessType: data.businessType,
+      jobTitle: data.jobTitle,
+      role: 'client',
+      linkedinProfile: data.linkedIn,
+    };
+    console.log(`my client data: `, clientData)
+
+    try {
+      const res = await createClient(clientData);
+      if (res?.data) {
+        // Adjust condition based on your API's success response format
+        ShowToastify({ success: 'Client created successfully!' });
+        setStep(4); // Navigate to success page
+      } else {
+        throw new Error('Unexpected API response'); // Handle unexpected response structure
+      }
+    } catch (err) {
+      ShowToastify({ error: "Failed to create client user" })
+      console.error('Failed to create client:', err);
+    }
   };
 
   return (
@@ -74,10 +106,12 @@ export default function ClientForm() {
           <Password
             register={register}
             handleNext={handleNext}
-            handleSubmit={handleSubmit(onSubmit)}
+            handleSubmit={handleSubmit(handleSubmitForm)}
           />
         )}
         {step === 4 && <SuccessPage />}
+        {isLoading && <p>Loading...</p>}
+        {/* {isError && <p className="text-red-500">{error?.message || 'Failed to create client'}</p>} */}
       </div>
     </div>
   );

@@ -6,10 +6,19 @@ import { FaCheck, FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 
 export default function Password({ register, handleSubmit }: any) {
-
-  const [password, setPassword] = useState("")
-  // const [confirmPassword, setconfirmPassword] = useState("")
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  console.log(passwordError, setConfirmPassword, confirmPassword, setPasswordError)
+
+  // const onSubmit = (data: any) => {
+  //   if (password !== confirmPassword) {
+  //     setPasswordError("Passwords do not match");
+  //   } else {
+  //     setPasswordError(""); 
+  //   }
+  // };
 
 
   return (
@@ -52,7 +61,7 @@ export default function Password({ register, handleSubmit }: any) {
           </div>
           <div>
             <label htmlFor="confirm-password" className="block text-lg font-medium text-[#1A1A1A] mb-2">
-              Password *
+             Confirm Password *
             </label>
             <div className="relative">
               <input

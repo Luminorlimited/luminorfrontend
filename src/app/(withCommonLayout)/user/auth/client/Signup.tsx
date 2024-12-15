@@ -36,8 +36,8 @@ export default function Signup({ register, handleNext, getValues }: any) {
               <Input
                 id="firstName"
                 {...register("firstName")}
-                placeholder="First Name"
-                required
+                placeholder="Write First Name"
+                
                 className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
               />
             </div>

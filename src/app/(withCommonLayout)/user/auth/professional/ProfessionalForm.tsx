@@ -10,6 +10,9 @@ import Signup from "./Signup";
 import { useForm } from "react-hook-form";
 import Experience from "./Experience";
 import Education from "./Education";
+import ShowToastify from "@/utils/ShowToastify";
+import { IProfessional } from "@/utils/Interfaces";
+import { useProfessionalUserMutation } from "@/redux/api/userApi";
 
 export default function ProfessionalForm() {
   const [step, setStep] = useState(1);
@@ -18,11 +21,70 @@ export default function ProfessionalForm() {
   const handleNext = () => {
     setStep((prev) => prev + 1);
   };
+  const [createProfessional] = useProfessionalUserMutation()
 
-  const onSubmit = (data: any) => {
-    console.log({ ...data });
-    setStep(5);
+
+  const handleSubmitProfessionalForm = async (data: any) => {
+    // data.preventDefault()
+
+
+
+    const professionalData: IProfessional = {
+      name: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+      },
+      dateOfBirth: new Date(data.dob),
+      email: data.email,
+      phoneNumber: data.phone,
+      role: 'retireProfessional',
+      password: data.password,
+
+      previousPositions: data.prevPos1
+        ? [
+          data.prevPos1,
+          data.prevPos2,
+          data.prevPos3
+        ]
+        : [],
+
+      references: [
+        { name: data.refName1, emailOrPhone: data.refcontact1 },
+        { name: data.refName2, emailOrPhone: data.refcontact2 },
+      ],
+
+      educationalBackground: data.edubackground,
+      relevantQualification: data.eduqualification,
+      // technicalSkill: data.skills,
+      linkedinProfile: data.linkedIn,
+
+      location: data.location,
+      description: data.description,
+      industry: data.industry || [],
+      businessType: data.businessType,
+
+    };
+
+    console.log(`Professional data:`, professionalData);
+    console.log(data, "from data")
+
+    try {
+     
+        const res = await createProfessional(professionalData);
+        if (res?.data) {
+          // Adjust condition based on your API's success response format
+          ShowToastify({ success: 'Professional created successfully!' });
+          setStep(5); // Navigate to success page
+        
+      } else {
+        throw new Error('Unexpected API response'); // Handle unexpected response structure
+      }
+    } catch (err) {
+      ShowToastify({ error: "Failed to create professional user" });
+      console.error('Failed to create professional:', err);
+    }
   };
+
 
   return (
     <div>
@@ -52,40 +114,41 @@ export default function ProfessionalForm() {
         <div className="absolute top-0 left-0 mt-7 ml-28 lg:block hidden">
           <Logo />
         </div>
+        <form onSubmit={handleSubmit(handleSubmitProfessionalForm)}>
 
-        {step === 1 && (
-          <Signup
-            register={register}
-            handleNext={handleNext}
-            getValues={getValues}
-            setValue={setValue}
-          />
-        )}
-        {step === 2 && (
-          <Experience
-            register={register}
-            handleNext={handleNext}
-            getValues={getValues}
-            setValue={setValue}
-          />
-        )}
-        {step === 3 && (
-          <Education
-            register={register}
-            handleNext={handleNext}
-            getValues={getValues}
-            setValue={setValue}
-          />
-        )}
+          {step === 1 && (
+            <Signup
+              register={register}
+              handleNext={handleNext}
+              getValues={getValues}
+              setValue={setValue}
+            />
+          )}
+          {step === 2 && (
+            <Experience
+              register={register}
+              handleNext={handleNext}
+              getValues={getValues}
+              setValue={setValue}
+            />
+          )}
+          {step === 3 && (
+            <Education
+              register={register}
+              handleNext={handleNext}
+              getValues={getValues}
+              setValue={setValue}
+            />
+          )}
 
-        {step === 4 && (
-          <Password
-            register={register}
-            handleNext={handleNext}
-            handleSubmit={handleSubmit(onSubmit)}
-          />
-        )}
-        {step === 5 && <SuccessPage />}
+          {step === 4 && (
+            <Password
+              register={register}
+              handleNext={handleNext}
+            />
+          )}
+          {step === 5 && <SuccessPage />}
+        </form>
       </div>
     </div>
   );

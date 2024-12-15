@@ -6,21 +6,32 @@ import { Label } from "@/components/ui/label";
 
 import { FaCheck } from "react-icons/fa";
 
-export default function Experience({ register, handleNext, getValues }: any) {
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const data = {
-      industry: getValues("industry"),
-      prevPos: [
-        getValues("prevPos1"),
-        getValues("prevPos2"),
-        getValues("prevPos3"),
-      ],
-      reference1: [getValues("refName1"), getValues("refcontact1")],
-      reference2: [getValues("refName2"), getValues("refcontact2")],
-    };
-    handleNext(data);
-  };
+export default function Experience({ register, handleNext }: any) {
+
+
+
+  // const handleFormSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const data = {
+  //     industry: getValues("industry"),
+  //     prevPos: [
+  //       getValues("prevPos1"),
+  //       getValues("prevPos2"),
+  //       getValues("prevPos3")
+  //     ],
+  //     references: [
+  //       {
+  //         name: getValues("refName1"),
+  //         emailOrPhone: getValues("refcontact1")
+  //       },
+  //       {
+  //         name: getValues("refName2"),
+  //         emailOrPhone: getValues("refcontact2")
+  //       }
+  //     ]
+  //   };
+  //   handleNext(data);
+  // };
 
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
@@ -30,11 +41,11 @@ export default function Experience({ register, handleNext, getValues }: any) {
             Join Luminor Today
           </h1>
           <h2 className="text-xl text-muted-foreground md:text-2xl">
-            Sign up as a Client
+            Sign up as a Professional
           </h2>
           <p className="text-lg text-muted-foreground">Empower Your Journey</p>
         </div>
-        <form className="mt-8 space-y-2" onSubmit={handleFormSubmit}>
+        {/* <form className="mt-8 space-y-2" onSubmit={handleFormSubmit}> */}
           <div className="space-y-2">
             <Label htmlFor="industry">Industry</Label>
             <select
@@ -46,12 +57,10 @@ export default function Experience({ register, handleNext, getValues }: any) {
               <option value="" disabled selected>
                 Select Previous Position
               </option>
-              <option value="Software Developer">Software Developer</option>
-              <option value="Frontend Developer">Frontend Developer</option>
-              <option value="Backend Developer">Backend Developer</option>
-              <option value="Full Stack Developer">Full Stack Developer</option>
-              <option value="Project Manager">Project Manager</option>
-              <option value="Designer">Designer</option>
+              <option value="tech">Tech</option>
+              <option value="marketing">marketing</option>
+              <option value="financer">finance</option>
+
             </select>
           </div>
 
@@ -131,13 +140,16 @@ export default function Experience({ register, handleNext, getValues }: any) {
               </div>
             </div>
           </div>
+        <div className="py-2">
           <Button
+            onClick={handleNext}
             className="h-12 w-full rounded-xl bg-[#7C3AED] text-white hover:bg-[#6D28D9]"
-            type="submit"
+            type="button"
           >
             Next
           </Button>
-        </form>
+       </div>
+        {/* </form> */}
         <div className="flex items-center justify-center gap-2 pt-8">
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
             <FaCheck />
