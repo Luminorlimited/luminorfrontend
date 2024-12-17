@@ -11,6 +11,7 @@ import { MdVerifiedUser } from "react-icons/md";
 import chat from "@/assets/Frame.png";
 import shape2 from "@/assets/serviceshape.png";
 import Image from "next/image";
+import { useState } from 'react';
 
 interface Service {
   icon: JSX.Element;
@@ -58,6 +59,8 @@ const services: Service[] = [
 ];
 
 export default function ExploreServices() {
+
+  const [isAnyHovered, setIsAnyHovered] = useState<number | null>(null);
   return (
     <section className="py-[40px] md:py-[72px] lg:py-[96px]">
       <div className="container h-full flex flex-col justify-center">
@@ -77,32 +80,36 @@ export default function ExploreServices() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2 transition-all duration-500">
-          {services.map((service, index) => (
+        <div className="grid grid-cols-1 group md:grid-cols-3 lg:grid-cols-6 gap-2 transition-all duration-500">
+          {services.map((service: any, index: number) => (
             <div
+              onMouseEnter={() => setIsAnyHovered(index)}
+              onMouseLeave={() => setIsAnyHovered(null)}
               key={index}
-              className="group relative cursor-pointer overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg lg:mx-0 mx-auto max-w-[214px]"
+              className={` relative cursor-pointer overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg lg:mx-0 mx-auto max-w-[214px]`}
             >
-              <div className="absolute top-0 left-0">
-                <Image
-                  className="transition-opacity duration-500 group-hover:opacity-100"
-                  width={136}
-                  height={131}
-                  src={shape2}
-                  alt="exploreshape"
-                />
-              </div>
-              <div className="px-3 pt-3 bg-white text-black transition-all duration-500 group-hover:bg-primary group-hover:text-white z-[30]">
-                <div className="rounded-full w-12 h-12 mb-5 text-black group-hover:text-white">
-                  {service.icon}
+              <div className='transition-[height] hover:bg-primary duration-300 ease-in-out h-48 group-hover:h-[400px]'>
+                <div className="absolute top-0 left-0">
+                  <Image
+                    className="transition-opacity duration-500 group-hover:opacity-100"
+                    width={136}
+                    height={131}
+                    src={shape2}
+                    alt="exploreshape"
+                  />
                 </div>
-                <h3 className="text-lg font-semibold text-black group-hover:text-white">
-                  {service.title}
-                </h3>
-                <div className="overflow-hidden transition-[height] duration-300 ease-in-out h-0 group-hover:h-[250px] mt-2">
-                  <p className="text-sm font-normal leading-relaxed text-black group-hover:text-white">
-                    {service.description}
-                  </p>
+                <div className="px-3 pt-3  text-black transition-all duration-500  hover:text-white z-[30]">
+                  <div className={`rounded-full w-12 h-12 mb-5  ${isAnyHovered === index ? "text-white" : 'text-black'}`}>
+                    {service.icon}
+                  </div>
+                  <h3 className={`text-lg font-semibold text-black ${isAnyHovered === index ? "text-white" : 'text-black'} `}>
+                    {service.title}
+                  </h3>
+                  <div className="overflow-hidden  mt-2">
+                    <p className={`text-sm font-normal hidden group-hover:block leading-relaxed  ${isAnyHovered === index ? "text-white" : "text-black"}`}>
+                      {service.description}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -9,20 +9,22 @@ export default function Password({ register }: any) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
- 
-  
+
+
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-1">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
             Join Luminor Today
           </h1>
-          <p className="text-gray-500">Sign up as a Client</p>
-          <p className="text-gray-500">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a professional</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
 
         {/* <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}> */}
+        <div className="flex flex-col gap-y-3">
           <div>
             <label
               htmlFor="password"
@@ -79,54 +81,61 @@ export default function Password({ register }: any) {
             </div>
           </div>
 
-          {/* {passwordError && (
+          <div className="flex items-center space-x-2">
+            <CheckBox />
+            <label
+              htmlFor="terms"
+              className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I agree to terms and condition
+            </label>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <CheckBox />
+            <label
+              htmlFor="marketing"
+              className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              I agree to email marketing
+            </label>
+          </div>
+        </div>
+
+        {/* {passwordError && (
             <p className="text-red-500 text-sm mt-2">{passwordError}</p>
           )} */}
 
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <CheckBox />
-              <label
-                htmlFor="terms"
-                className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                I agree to terms and condition
-              </label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <CheckBox />
-              <label
-                htmlFor="marketing"
-                className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                I agree to email marketing
-              </label>
-            </div>
-          </div>
+        {/* <div className="space-y-4">
+           
+          </div> */}
 
         <div className="py-2">
           <Button
             type="submit"
-            className="w-28 bg-[#6C3CE1] hover:bg-[#5B32C2] text-white"
+            className="w-28 bg-primary rounded-[10px] hover:bg-[#5B32C2] text-white"
           >
-            Submit
+            Done
           </Button>
-          </div>
+        </div>
 
-          <div className="flex items-center justify-center gap-2 pt-8">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
-              <FaCheck />
-            </div>
-            <div className="h-[2px] w-12 bg-[#1877F2]" />
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
-              <FaCheck />
-            </div>
-            <div className="h-[2px] w-12 bg-[#1877F2]" />
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2] text-[#1877F2]">
-              3
-            </div>
+        <div className="flex items-center justify-center gap-2 pt-8">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
+            <FaCheck />
           </div>
+          <div className="h-[2px] w-12 bg-[#1877F2]" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
+            <FaCheck />
+          </div>
+          <div className="h-[2px] w-12 bg-[#1877F2]" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
+            <FaCheck />
+          </div>
+          <div className="h-[2px] w-12 bg-[#1877F2]" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2] text-[#1877F2]">
+            4
+          </div>
+        </div>
         {/* </form> */}
       </div>
     </div>

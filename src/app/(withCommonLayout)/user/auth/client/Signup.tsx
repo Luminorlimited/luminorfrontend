@@ -6,28 +6,22 @@ import { Label } from "@/components/ui/label";
 
 
 export default function Signup({ register, handleNext }: any) {
-  // const handleFormSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   const data = {
-  //     firstName: getValues("firstName"),
-  //     lastName: getValues("lastName"),
-  //     dob: getValues("dob"),
-  //     email: getValues("email"),
-  //     phone: getValues("phone")
-  //   }
-  //   handleNext(data)
-  // }
+
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 text-4xl font-semibold tracking-tight">
-            Join Luminor Today as client
+        
+
+        <div className="space-y-2 text-center lg:mt-0 mt-6 mb-7">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Join Luminor Today
           </h1>
-          <h2 className="mb-1 text-xl text-gray-600">Sign up as a Client</h2>
-          <p className="text-gray-600">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a Client</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
         {/* <form onSubmit={handleFormSubmit} className="space-y-6"> */}
+        <div className="flex flex-col gap-y-4">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="firstName">
@@ -37,8 +31,8 @@ export default function Signup({ register, handleNext }: any) {
                 id="firstName"
                 {...register("firstName")}
                 placeholder="Write First Name"
-                
-                className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+
+                className="w-full border focus:border-0 outline-none focus:outline-none py-[21px] focus:border-primary rounded-[10px] p-3"
               />
             </div>
             <div className="space-y-2">
@@ -50,7 +44,7 @@ export default function Signup({ register, handleNext }: any) {
                 {...register("lastName")}
                 placeholder="Last Name"
                 required
-                className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                className="w-full border focus:border-0 outline-none focus:outline-none py-[21px] focus:border-primary rounded-[10px] p-3"
               />
             </div>
           </div>
@@ -60,11 +54,11 @@ export default function Signup({ register, handleNext }: any) {
             </Label>
             <Input
               id="dateOfBirth"
-             {...register("dob")}
+              {...register("dob")}
               type="date"
               placeholder="Date of birth"
               required
-              className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+              className="w-full border focus:border-0 outline-none focus:outline-none py-[21px] focus:border-primary rounded-[10px] p-3"
             />
           </div>
           <div className="space-y-2">
@@ -77,7 +71,7 @@ export default function Signup({ register, handleNext }: any) {
               placeholder="Email address"
               {...register('email')}
               required
-              className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+              className="w-full border focus:border-0 outline-none focus:outline-none py-[21px] focus:border-primary rounded-[10px] p-3"
             />
           </div>
           <div className="space-y-2">
@@ -90,18 +84,20 @@ export default function Signup({ register, handleNext }: any) {
               {...register('phone')}
               placeholder="Phone number"
               required
-              className="w-full border focus:border-0 outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+              className="w-full border focus:border-0 outline-none focus:outline-none py-[21px] focus:border-primary rounded-[10px] p-3"
             />
           </div>
-          <div className="space-y-6">
+          <div className="py-6">
             <Button
-            type="button"
-            onClick={handleNext}
-              className="w-full rounded-lg bg-[#6938EF] px-8 py-6 text-lg font-medium text-white hover:bg-[#5F32D6]"
+              type="button"
+              onClick={handleNext}
+              className="w-full rounded-[12px] bg-[#6938EF] px-8 py-6 text-lg font-medium text-white hover:bg-[#5F32D6]"
             >
               Next
             </Button>
           </div>
+        </div>
+
         {/* </form> */}
         <div className="flex items-center justify-center gap-2 pt-8">
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">

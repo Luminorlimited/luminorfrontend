@@ -7,8 +7,6 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import ImageCarousel from "./ImageCarousel/ImageCarousel";
 import { useLoginUserMutation } from "@/redux/api/userApi";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/ReduxFunction";
 import ShowToastify from "@/utils/ShowToastify";
 import { useRouter } from "next/navigation";
 import { ToastContainer } from "react-toastify";
@@ -24,8 +22,9 @@ export default function Login() {
 
     const router = useRouter()
 
+
     const [LogInUser, { isLoading }] = useLoginUserMutation()
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
 
 
@@ -34,37 +33,25 @@ export default function Login() {
         e.preventDefault(); // Prevent default form submission
         const data = { email, password }; // Gather email and password
         console.log(email, password); // Debugging: Log email and password
+        
 
         try {
-            // Attempt to log in the user
-            const res = await LogInUser(data);
-            console.log(res); 
-
-            if (res) {
-                // Dispatch user data to the store if login is successful
-                dispatch(setUser({
-                    name: `${res?.data?.data?.user.name.firstName} ${res?.data?.data?.user.name.lastName}`,
-                    role: `${res?.data?.data?.user.role}`
-                }));
-
-                // Show a success toast
-                ShowToastify({ success: "Login Successfully" });
-
-                // Redirect to the home page
-                router.push('/');
+            const res: any = await LogInUser(data);
+            console.log("Login Response:", res);
+            if (res?.data?.success) {
+                localStorage.setItem("email", email); 
+                ShowToastify({ success: "Check your email for verification" }); 
+                router.push("/user/verification"); 
+            } else {
+                ShowToastify({ error: res?.data?.message || "Wrong email or password" });
             }
         } catch (error) {
-            // Type guard for error to handle it safely
             if (error instanceof Error) {
-                // Show an error toast if login fails
                 ShowToastify({ error: error.message || "Login Failed" });
-
-                // Optionally log the error for debugging
-                console.error(error);
+                console.error("Login Error:", error);
             } else {
-                // Handle unexpected error types
                 ShowToastify({ error: "An unknown error occurred" });
-                console.error("Unexpected error:", error);
+                console.error("Unexpected Error:", error);
             }
         }
     };

@@ -1,6 +1,7 @@
-import { ClientData, IProfessional, UserInterface } from '@/utils/Interfaces';
+import { IProfessional, UserInterface, ClientData } from '@/utils/Interfaces';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+// Define the interface for the state
 interface AuthInterFace {
     user: UserInterface | null;
     client: ClientData | null;
@@ -10,6 +11,7 @@ interface AuthInterFace {
     token: string | null;
 }
 
+// Initial state
 const initialState: AuthInterFace = {
     user: null,
     client: null,
@@ -19,37 +21,58 @@ const initialState: AuthInterFace = {
     error: '',
 };
 
+// Create the slice
 export const adminAuthSlice = createSlice({
     name: 'Auth',
     initialState,
     reducers: {
-        setUser: (state, action: PayloadAction<UserInterface>) => {
-            state.user = action.payload;
-            state.error = ''; // Clear any errors when user is set
+        // Corrected setUser reducer with proper type validation
+        setUser: (
+            state,
+            action: PayloadAction<{ user: UserInterface; token: string }>
+        ) => {
+            state.user = action.payload.user; // Set the user data
+            state.token = action.payload.token; // Set the token
+            state.error = '';
         },
+        // Log out the user and reset relevant fields
         logOut: (state) => {
             state.user = null;
             state.token = null;
-            state.client = null; // Reset client on logout
+            state.client = null;
+            state.professional = null;
             state.error = '';
         },
+        // Create client data
         createClient: (state, action: PayloadAction<ClientData>) => {
             state.client = action.payload;
-            state.error = ''; // Clear any errors when client is created
+            state.error = '';
         },
+        // Create professional data
         createProfessional: (state, action: PayloadAction<IProfessional>) => {
             state.professional = action.payload;
-            state.error = ''; // Clear any errors when client is created
+            state.error = '';
         },
+        // Set the loading state
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
         },
+        // Set an error message
         setError: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
         },
     },
 });
 
-export const { setUser, logOut, createClient, setLoading, setError, createProfessional } = adminAuthSlice.actions;
+// Export the actions
+export const {
+    setUser,
+    logOut,
+    createClient,
+    setLoading,
+    setError,
+    createProfessional,
+} = adminAuthSlice.actions;
 
+// Export the reducer
 export default adminAuthSlice.reducer;

@@ -1,10 +1,14 @@
 export interface UserInterface {
-    name: string
+    name?: string; // optional, as not all responses may include it
+    email: string;
     role: string;
+    photoUrl?: string;
+    token?: string; // add token if needed for user convenience
 }
 
 
-export interface ClientData {
+
+export interface  ClientData {
     name: {
         firstName: string;
         lastName: string;
@@ -27,15 +31,14 @@ export interface IProfessional {
     email: string;
     phoneNumber: string;
     role: string;
+    cvOrCoverLetter: string;
     password: string;
     previousPositions: { position: string }[];  // Updated type here
     references: { name: string; emailOrPhone: string }[];  // Keep this as it is
     educationalBackground: string;
     relevantQualification: string;
-    // technicalSkill?: string;
+    technicalSkill?: string;
     linkedinProfile: string;
-    location: string;
-    description: string;
     industry: string[];
     businessType: string;
 }

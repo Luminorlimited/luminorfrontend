@@ -33,9 +33,9 @@ const Navbar = () => {
 
 
   const user = useSelector((state: RootState) => state.Auth.user);
-  const client = useSelector((state: RootState) => state.Auth.client);
+  // const client = useSelector((state: RootState) => state.Auth.client);
   console.log(user)
-  console.log(client)
+  // console.log("my client is", client)
 
   const handleLogOut = () => {
     dispatch(logOut())
@@ -59,15 +59,16 @@ const Navbar = () => {
       className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
       {/* <Link href={"/"}> */}
-      <span className="lg:w-auto w-10">
+      <span className="lg:w-auto ">
         <Logo />
       </span>
       {/* </Link> */}
-      <div className="2xl:block hidden">
+      <div className="hidden  lg:block max-[820px]:hidden">
         <SearchBox />
       </div>
-      <div className="lg:flex hidden items-center gap-6">
-        <button className="btn-primary text-white rounded-full p-1 2xl:hidden block">
+
+      <div className="lg:flex md:flex hidden items-center gap-6">
+        <button className="btn-primary text-white rounded-full p-1 hidden ">
           <Search />
         </button>
         <ul className="flex items-center gap-6">
@@ -111,7 +112,7 @@ const Navbar = () => {
           })}
         </ul>
         <LanguageSwitcher />
-        {user || client ? (
+        {user ? (
 
           <div className="flex gap-3 items-center relative">
             <Link href={'/user/editProfile/client'}>

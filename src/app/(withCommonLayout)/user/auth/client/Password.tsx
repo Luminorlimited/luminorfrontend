@@ -9,8 +9,6 @@ export default function Password({ register }: any) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
-  console.log(passwordError, setConfirmPassword, confirmPassword, setPasswordError)
   
   
 
@@ -18,19 +16,24 @@ export default function Password({ register }: any) {
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-1">
+        <div className="space-y-2 text-center lg:mt-0 mt-6 mb-7">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
             Join Luminor Today
           </h1>
-          <p className="text-gray-500">Sign up as a Client</p>
-          <p className="text-gray-500">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a Client</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
 
         {/* <form className="space-y-6" onSubmit={handleSubmit}> */}
 
 
+        <div className="flex flex-col gap-y-3">
           <div>
-            <label htmlFor="password" className="block text-lg font-medium text-[#1A1A1A] mb-2">
+            <label
+              htmlFor="password"
+              className="block text-[17px] font-medium text-[#1A1A1A] mb-2"
+            >
               Password *
             </label>
             <div className="relative">
@@ -53,9 +56,13 @@ export default function Password({ register }: any) {
               </button>
             </div>
           </div>
+
           <div>
-            <label htmlFor="confirm-password" className="block text-lg font-medium text-[#1A1A1A] mb-2">
-             Confirm Password *
+            <label
+              htmlFor="confirm-password"
+              className="block text-[17px] font-medium text-[#1A1A1A] mb-2"
+            >
+              Confirm Password *
             </label>
             <div className="relative">
               <input
@@ -64,9 +71,9 @@ export default function Password({ register }: any) {
                 type={showPassword ? "text" : "password"}
                 required
                 className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <button
                 type="button"
@@ -77,12 +84,14 @@ export default function Password({ register }: any) {
               </button>
             </div>
           </div>
+       </div>
 
          
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
+          <div className="py-4">
+            <div className="flex items-center space-x-2 pb-2">
               <Checkbox
-                id="terms"
+              id="terms"
+              required
                 className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
               />
               <label
@@ -94,11 +103,13 @@ export default function Password({ register }: any) {
             </div>
 
             <div className="flex items-center space-x-2">
-              <Checkbox
+            <Checkbox
+              required
                 id="marketing"
                 className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
               />
-              <label
+            <label
+              
                 htmlFor="marketing"
                 className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
@@ -110,10 +121,11 @@ export default function Password({ register }: any) {
         <div className="py-2">
           <Button
             type="submit"
-            className="w-28 bg-[#6C3CE1] hover:bg-[#5B32C2] text-white"
+            className="w-28 bg-primary rounded-[10px] hover:bg-[#5B32C2] text-white"
           >
-            Submit
+            Done
           </Button>
+           
           </div>
 
           <div className="flex items-center justify-center gap-2 pt-8">

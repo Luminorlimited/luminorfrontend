@@ -52,17 +52,13 @@ export default function ProfessionalForm() {
         { name: data.refName1, emailOrPhone: data.refcontact1 },
         { name: data.refName2, emailOrPhone: data.refcontact2 },
       ],
-
       educationalBackground: data.edubackground,
       relevantQualification: data.eduqualification,
-      // technicalSkill: data.skills,
+      technicalSkill: data.skills,
       linkedinProfile: data.linkedIn,
-
-      location: data.location,
-      description: data.description,
+      cvOrCoverLetter: data.file,
       industry: data.industry || [],
       businessType: data.businessType,
-
     };
 
     console.log(`Professional data:`, professionalData);

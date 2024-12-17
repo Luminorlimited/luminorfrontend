@@ -15,6 +15,17 @@ const userApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['User']
         }),
+        verifyUser: build.mutation({
+            query: (data: any) => {
+                console.log(data)
+                return {
+                    url: '/auth/otp-enter',
+                    method: 'POST',
+                    body: data
+                }
+            },
+            invalidatesTags: ['User']
+        }),
         
         clientUser: build.mutation<ClientData, any>({
             query: (data) => {
@@ -36,11 +47,15 @@ const userApi = baseApi.injectEndpoints({
                     method: 'POST',
                     body: data,
                 }
-            }
-        })
+            },
+            invalidatesTags: ['User']
+
+        }), 
+
+
     })
 })
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation } = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation } = userApi

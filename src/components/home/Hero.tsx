@@ -44,7 +44,7 @@ const Hero = () => {
           <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#E6AD60] relative overflow-hidden">
             <div className="z-30">
               <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
-                I&apos;m a client
+                I&apos;m a Client
               </h2>
               <p className="leading-[160%] text-base pb-10 text-white">
                 Start your journey as a client to gain valuable insights and turn

@@ -11,6 +11,8 @@ import Signup from "./Signup";
 import { useForm } from "react-hook-form";
 import { useClientUserMutation } from "@/redux/api/userApi";
 import ShowToastify from "@/utils/ShowToastify";
+import { useRouter } from "next/navigation";
+
 
 export default function ClientForm() {
   const [step, setStep] = useState(1);
@@ -22,6 +24,7 @@ export default function ClientForm() {
 
   const [createClient, { isLoading }] = useClientUserMutation()
 
+    const router = useRouter()
 
 
   const handleSubmitForm = async (data: any) => {
@@ -45,8 +48,8 @@ export default function ClientForm() {
       const res = await createClient(clientData);
       if (res?.data) {
         // Adjust condition based on your API's success response format
-        ShowToastify({ success: 'Client created successfully!' });
-        setStep(4); // Navigate to success page
+        ShowToastify({ success: 'Verify your otp' });
+        router.push('/user/verification')
       } else {
         throw new Error('Unexpected API response'); // Handle unexpected response structure
       }

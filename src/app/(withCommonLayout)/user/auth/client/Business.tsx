@@ -13,14 +13,13 @@ export default function Business({register, handleNext}: any) {
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
-        <div className="space-y-2 text-center lg:mt-0 mt-6">
-          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+        <div className="space-y-2 text-center lg:mt-0 mt-6 mb-7">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
             Join Luminor Today
           </h1>
-          <h2 className="text-xl text-muted-foreground md:text-2xl">
-            Sign up as a Client
-          </h2>
-          <p className="text-lg text-muted-foreground">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a Client</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
         {/* <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}> */}
           <div className="space-y-4">

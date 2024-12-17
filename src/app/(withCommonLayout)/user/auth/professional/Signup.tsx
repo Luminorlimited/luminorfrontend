@@ -6,18 +6,20 @@ import { Label } from "@/components/ui/label";
 
 
 export default function Signup({ register, handleNext }: any) {
- 
+
   return (
     <div className="flex justify-center items-center min-h-screen z-10 relative">
       <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
         <div className="mb-8 text-center">
-          <h1 className="mb-2 text-4xl font-semibold tracking-tight">
-            Join Luminor Today as client
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Join Luminor Today
           </h1>
-          <h2 className="mb-1 text-xl text-gray-600">Sign up as a professional</h2>
-          <p className="text-gray-600">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a professional</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
         {/* <form onSubmit={handleFormSubmit} className="space-y-6"> */}
+        <div className="flex flex-col gap-y-4">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="firstName">
@@ -50,7 +52,7 @@ export default function Signup({ register, handleNext }: any) {
             </Label>
             <Input
               id="dateOfBirth"
-             {...register("dob")}
+              {...register("dob")}
               type="date"
               placeholder="Date of birth"
               required
@@ -84,14 +86,15 @@ export default function Signup({ register, handleNext }: any) {
             />
           </div>
           <div className="space-y-6 py-3">
-          <Button
-            onClick={handleNext}
+            <Button
+              onClick={handleNext}
               type="button"
-              className="w-full  rounded-lg bg-[#6938EF] px-8 py-6 text-lg font-medium text-white hover:bg-[#5F32D6]"
+              className="w-full  rounded-[10px] bg-primary px-8 py-6 text-lg font-medium text-white hover:bg-[#5F32D6]"
             >
               Next
             </Button>
           </div>
+        </div>
         {/* </form> */}
         <div className="flex items-center justify-center gap-2 pt-8">
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">

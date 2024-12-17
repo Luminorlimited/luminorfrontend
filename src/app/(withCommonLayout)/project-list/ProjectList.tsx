@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react';
+import {  useState } from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
 import Pagination from '@/components/common/pagination/Pagination';
 import Button from '@/components/common/Button';
+import { useProjectListQuery } from '@/redux/api/projectApi';
 
 const consultingData = [
     {
@@ -65,7 +66,14 @@ const consultingData = [
     },
 ];
 
+
+
+
+
 export default function ProjectList() {
+    const { data: projectList } = useProjectListQuery(undefined);
+    console.log(projectList?.data)
+    // const allProject = projectList.data
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
@@ -89,13 +97,15 @@ export default function ProjectList() {
                     >
                         {/* Card Image Section */}
                         <div className="relative  w-full">
-                            <Image
-                                src={data.imageUrl}
-                                alt="Consulting service"
-                                width={500}
-                                height={218}
-                                className="object-cover rounded-xl hover:scale-105 transition-all"
-                            />
+                            <div className='overflow-hidden rounded-xl'>
+                                <Image
+                                    src={data.imageUrl}
+                                    alt="Consulting service"
+                                    width={500}
+                                    height={218}
+                                    className="object-cover  hover:scale-105 transition-all"
+                                />
+                           </div>
 
                             <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                                 <BiTime className="h-4 w-4" />

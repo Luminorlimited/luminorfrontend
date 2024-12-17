@@ -23,7 +23,7 @@ const SearchBox = () => {
             required={true}
             onChange={(e) => setIsOpen(e.target.value)}
             placeholder="What are you looking for?"
-            className="rounded-full border-0 focus-visible:ring-0 focus-visible:ring-offset-0 min-w-[240px] "
+            className="rounded-full border-0 focus-visible:ring-0 focus-visible:ring-offset-0 max-w-[240px] "
             name="search"
             type="text"
           />
@@ -36,9 +36,10 @@ const SearchBox = () => {
           </div>
           <button
             type="submit"
-            className="btn-primary text-white hover:text-white px-[20px] py-[8px]  text-base font-medium rounded-full flex items-center   gap-[6px]"
+            className="btn-primary text-white hover:text-white px-[16px] sm:px-[20px] py-[8px] text-sm sm:text-base font-medium rounded-full lg:flex items-center gap-[4px] sm:gap-[6px]"
           >
-            <Search /> Search
+            <Search size={18} />{" "}
+            <span className="lg:block hidden">Search</span>
           </button>
         </MyForm>
       </div>
