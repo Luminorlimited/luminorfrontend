@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { FaCheck } from "react-icons/fa";
 
 export default function Experience({ register, handleNext }: any) {
 
@@ -34,8 +33,7 @@ export default function Experience({ register, handleNext }: any) {
   // };
 
   return (
-    <div className="flex justify-center items-center min-h-screen z-10 relative">
-      <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
+      <div >
         <div className="space-y-2 text-center lg:mt-0 mt-6">
           <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
             Join Luminor Today
@@ -51,7 +49,7 @@ export default function Experience({ register, handleNext }: any) {
             <select
               id="industry"
               {...register("industry")}
-              multiple
+              // multiple
               className="h-12 rounded-xl border cursor-pointer w-full px-3"
             >
               <option value="" disabled selected>
@@ -152,7 +150,7 @@ export default function Experience({ register, handleNext }: any) {
           </Button>
         </div>
         {/* </form> */}
-        <div className="flex items-center justify-center gap-2 pt-8">
+        {/* <div className="flex items-center justify-center gap-2 pt-8">
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
             <FaCheck />
           </div>
@@ -168,8 +166,7 @@ export default function Experience({ register, handleNext }: any) {
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
             4
           </div>
-        </div>
+        </div> */}
       </div>
-    </div>
   );
 }

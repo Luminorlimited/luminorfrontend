@@ -8,8 +8,7 @@ import { Label } from "@/components/ui/label";
 export default function Signup({ register, handleNext }: any) {
 
   return (
-    <div className="flex justify-center items-center min-h-screen z-10 relative">
-      <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
+      <div >
         
 
         <div className="space-y-2 text-center lg:mt-0 mt-6 mb-7">
@@ -99,20 +98,8 @@ export default function Signup({ register, handleNext }: any) {
         </div>
 
         {/* </form> */}
-        <div className="flex items-center justify-center gap-2 pt-8">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">
-            1
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            2
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            3
-          </div>
-        </div>
+      
       </div>
-    </div>
+   
   );
 }

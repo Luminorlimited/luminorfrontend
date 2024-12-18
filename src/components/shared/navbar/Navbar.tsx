@@ -118,18 +118,23 @@ const Navbar = () => {
             <Link href={'/user/editProfile/client'}>
               <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
-            <Link href={'/project-list'}>
+            <Link href={'/project-list/professional'}>
 
               <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
             <Link href={'/chat'}><BiMessage className="cursor-pointer text-[24px] hover:text-primary" /></Link>
             <Image src={demoimg} width={40} height={40} alt="profile" className={`rounded-full cursor-pointer hover:opacity-90 transition-all`} onClick={handleClick} />
 
-            <ul className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0  ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
-              }`}>
-              <Link href={'/project-details'}><li  className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li></Link>
+            <ul
+              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-[130px]  ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none z-[10]"} ${fileBtn ? "z-[50]" : "z-[10]"}`}
+              style={{ position: 'relative' }} // Ensure this has a positioned context
+            >
+              <Link href={'/project-details'}>
+                <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li>
+              </Link>
               <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">logout</li>
             </ul>
+
 
 
 

@@ -6,12 +6,12 @@ import usertypeshape from "@/assets/shapes/usertypeshape.png";
 import circleshape from "@/assets/shapes/circleshape.png";
 import Business from "./Business";
 import Password from "./Password";
-import SuccessPage from "./Success";
 import Signup from "./Signup";
 import { useForm } from "react-hook-form";
 import { useClientUserMutation } from "@/redux/api/userApi";
 import ShowToastify from "@/utils/ShowToastify";
 import { useRouter } from "next/navigation";
+import Stepper from "./Stepper";
 
 
 export default function ClientForm() {
@@ -19,6 +19,7 @@ export default function ClientForm() {
   const { register, handleSubmit, setValue, getValues } = useForm();
 
   const handleNext = () => {
+    ShowToastify({ success: "Form submitted successfully!" });
     setStep((prev) => prev + 1);
   };
 
@@ -48,8 +49,8 @@ export default function ClientForm() {
       const res = await createClient(clientData);
       if (res?.data) {
         // Adjust condition based on your API's success response format
-        ShowToastify({ success: 'Verify your otp' });
-        router.push('/user/verification')
+        ShowToastify({ success: 'Successfully Created your Account' });
+        router.push('/user/auth/login')
       } else {
         throw new Error('Unexpected API response'); // Handle unexpected response structure
       }
@@ -89,6 +90,8 @@ export default function ClientForm() {
         </div>
 
         <form onSubmit={handleSubmit(handleSubmitForm)}>
+          <div className="flex justify-center items-center min-h-screen z-10 relative">
+            <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
           {step === 1 && (
             <Signup
               register={register}
@@ -113,8 +116,10 @@ export default function ClientForm() {
               // handleSubmit={handleSubmit(handleSubmitForm)}
             />
           )}
-          {step === 4 && <SuccessPage />}
-          {isLoading && <p>Loading...</p>} 
+              <Stepper currentStep={step} setStep={setStep} />
+              {isLoading && <p>Loading...</p>} 
+              </div>
+              </div>
        </form>
        
       </div>

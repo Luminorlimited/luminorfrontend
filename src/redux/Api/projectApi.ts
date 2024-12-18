@@ -2,9 +2,17 @@ import baseApi from './baseApi';
 
 const projectApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        projectList: build.query({ 
+        clientList: build.query({ 
             query: () => ({
                 url: '/client',
+                method: 'GET',
+            }),
+            providesTags: ['projects'], // Properly typed array of strings
+        }),
+        professionalList: build.query({ 
+            query: () => ({
+                
+                url: '/retireProfessional',
                 method: 'GET',
             }),
             providesTags: ['projects'], // Properly typed array of strings
@@ -12,4 +20,4 @@ const projectApi = baseApi.injectEndpoints({
     }),
 });
 
-export  const { useProjectListQuery } = projectApi; 
+export  const { useClientListQuery, useProfessionalListQuery } = projectApi; 

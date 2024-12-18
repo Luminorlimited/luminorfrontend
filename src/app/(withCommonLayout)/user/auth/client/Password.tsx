@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import { useState } from "react";
-import { FaCheck, FaEye } from "react-icons/fa";
+import {  FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 
 export default function Password({ register }: any) {
@@ -14,8 +14,7 @@ export default function Password({ register }: any) {
 
 
   return (
-    <div className="flex justify-center items-center min-h-screen z-10 relative">
-      <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
+      <div>
         <div className="space-y-2 text-center lg:mt-0 mt-6 mb-7">
           <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
             Join Luminor Today
@@ -128,22 +127,8 @@ export default function Password({ register }: any) {
            
           </div>
 
-          <div className="flex items-center justify-center gap-2 pt-8">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2   text-white bg-[#34DC48] border-[#34DC48]">
-              <FaCheck />
-            </div>
-            <div className="h-[2px] w-12 bg-[#1877F2]" />
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2   text-white bg-[#34DC48] border-[#34DC48]">
-              <FaCheck />
-            </div>
-            <div className="h-[2px] w-12 bg-[#1877F2]" />
-
-            <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">
-              3
-            </div>
-          </div>
-        {/* </form> */}
+         
       </div>
-    </div>
+   
   );
 }
