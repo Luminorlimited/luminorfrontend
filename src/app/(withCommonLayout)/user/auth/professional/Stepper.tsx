@@ -1,4 +1,3 @@
-// Stepper.tsx
 import React from "react";
 
 interface StepperProps {
@@ -7,14 +6,19 @@ interface StepperProps {
 }
 
 const Stepper: React.FC<StepperProps> = ({ currentStep, setStep }) => {
-    const steps = [1, 2, 3, 4]; // Define the steps
+    const steps = [1, 2, 3,4]; // Define the steps
 
     return (
         <div className="flex items-center justify-center gap-2 pt-8">
             {steps.map((step, index) => (
                 <React.Fragment key={step}>
                     <div
-                        onClick={() => setStep(step)} // Update the step when clicked
+                        onClick={() => {
+                            // Allow the user to go to the previous step only
+                            if (step < currentStep) {
+                                setStep(step);
+                            }
+                        }}
                         className={`flex h-8 w-8 items-center justify-center rounded-full border-2 cursor-pointer transition-all duration-200 ${currentStep > step
                                 ? "text-white bg-[#34DC48] border-[#34DC48]" // Completed step
                                 : currentStep === step

@@ -30,7 +30,7 @@ export default function Signup({ register, handleNext }: any) {
                 id="firstName"
                 {...register("firstName")}
                 placeholder="Write First Name"
-
+                required
                 className="w-full border focus:border-0 outline-none focus:outline-none py-[21px] focus:border-primary rounded-[10px] p-3"
               />
             </div>
