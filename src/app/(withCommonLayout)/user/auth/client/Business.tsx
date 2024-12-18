@@ -37,7 +37,8 @@ export default function Business({register, handleNext}: any) {
               <div className="space-y-2 w-full">
                 <Label htmlFor="company-name">Company Name (Optional)</Label>
                 <Input
-                  id="company-name"
+              id="company-name"
+              
                   placeholder="Company Name"
                   {...register("companyName")}
                   className="h-12 rounded-xl border-[#E5E7EB]"

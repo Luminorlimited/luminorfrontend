@@ -19,7 +19,7 @@ export default function ClientForm() {
   const { register, handleSubmit, setValue, getValues } = useForm();
 
   const handleNext = () => {
-    ShowToastify({ success: "Form submitted successfully!" });
+    // ShowToastify({ success: "Form submitted successfully!" });
     setStep((prev) => prev + 1);
   };
 

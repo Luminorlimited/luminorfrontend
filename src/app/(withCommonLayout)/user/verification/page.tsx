@@ -46,7 +46,7 @@ export default function Page() {
           token: accessToken
         }));
 
-        router.push("/");
+        router.push("//user/editProfile/client  ");
       } else if (res?.message) {
         ShowToastify({ error: res.message || "Verification failed" });
       } else {
