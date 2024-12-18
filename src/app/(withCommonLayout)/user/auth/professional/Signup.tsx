@@ -5,29 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 
-export default function Signup({ register, handleNext, getValues }: any) {
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const data = {
-      firstName: getValues("firstName"),
-      lastName: getValues("lastName"),
-      dob: getValues("dob"),
-      email: getValues("email"),
-      phone: getValues("phone")
-    }
-    handleNext(data)
-  }
+export default function Signup({ register, handleNext }: any) {
+
   return (
-    <div className="flex justify-center items-center min-h-screen z-10 relative">
-      <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
+      <div>
         <div className="mb-8 text-center">
-          <h1 className="mb-2 text-4xl font-semibold tracking-tight">
-            Join Luminor Today as client
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Join Luminor Today
           </h1>
-          <h2 className="mb-1 text-xl text-gray-600">Sign up as a professional</h2>
-          <p className="text-gray-600">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a professional</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
-        <form onSubmit={handleFormSubmit} className="space-y-6">
+        {/* <form onSubmit={handleFormSubmit} className="space-y-6"> */}
+        <div className="flex flex-col gap-y-4">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="firstName">
@@ -60,7 +51,7 @@ export default function Signup({ register, handleNext, getValues }: any) {
             </Label>
             <Input
               id="dateOfBirth"
-             {...register("dob")}
+              {...register("dob")}
               type="date"
               placeholder="Date of birth"
               required
@@ -93,33 +84,18 @@ export default function Signup({ register, handleNext, getValues }: any) {
               className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0 "
             />
           </div>
-          <div className="space-y-6">
+          <div className="space-y-6 py-3">
             <Button
-              type="submit"
-              className="w-full rounded-lg bg-[#6938EF] px-8 py-6 text-lg font-medium text-white hover:bg-[#5F32D6]"
+              onClick={handleNext}
+              type="button"
+              className="w-full  rounded-[10px] bg-primary px-8 py-6 text-lg font-medium text-white hover:bg-[#5F32D6]"
             >
               Next
             </Button>
           </div>
-        </form>
-        <div className="flex items-center justify-center gap-2 pt-8">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2]  text-[#1877F2]">
-            1
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            2
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            3
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            4
-          </div>
         </div>
+        {/* </form> */}
+        
       </div>
-    </div>
   );
 }

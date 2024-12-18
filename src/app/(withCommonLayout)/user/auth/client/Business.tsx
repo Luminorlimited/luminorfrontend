@@ -4,35 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { FaCheck } from "react-icons/fa";
 
 
-export default function Business({register, handleNext, getValues}: any) {
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const data = {
-      businessType: getValues("businessType"),
-      companyName: getValues("companyName"),
-      jobTitle: getValues("jobTitle"),
-      linkedIn: getValues("linkedIn"),
-    };
-    handleNext(data)
-  }
+export default function Business({register, handleNext}: any) {
 
   
   return (
-    <div className="flex justify-center items-center min-h-screen z-10 relative">
-      <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
-        <div className="space-y-2 text-center lg:mt-0 mt-6">
-          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+      <div>
+        <div className="space-y-2 text-center lg:mt-0 mt-6 mb-7">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
             Join Luminor Today
           </h1>
-          <h2 className="text-xl text-muted-foreground md:text-2xl">
-            Sign up as a Client
-          </h2>
-          <p className="text-lg text-muted-foreground">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a Client</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}>
+        {/* <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}> */}
           <div className="space-y-4">
             <div className="flex lg:flex-row flex-col md:flex-row gap-4">
               <div className="space-y-2 w-full">
@@ -79,27 +66,18 @@ export default function Business({register, handleNext, getValues}: any) {
               />
             </div>
           </div>
+        <div className="py-2">
           <Button
             className="h-12 w-full rounded-xl bg-[#7C3AED] text-white hover:bg-[#6D28D9]"
-            type="submit"
+            type="button"
+            onClick={handleNext}
           >
             Next
           </Button>
-        </form>
-        <div className="flex items-center justify-center gap-2 pt-8">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
-            <FaCheck />
-          </div>
-          <div className="h-[2px] w-12 bg-[#1877F2]" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2] text-[#1877F2]">
-            2
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            3
-          </div>
-        </div>
+         </div>
+        {/* </form> */}
+     
       </div>
-    </div>
+   
   );
 }

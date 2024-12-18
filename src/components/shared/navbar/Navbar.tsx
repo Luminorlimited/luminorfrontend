@@ -1,6 +1,6 @@
 import Logo from "@/utils/Logo";
 import Link from "next/link";
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
 import {
@@ -19,6 +19,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
+import { BiMessage } from "react-icons/bi";
+
+import { FaRegHeart } from "react-icons/fa";
+import { GoBell } from "react-icons/go";
+import Image from "next/image";
+import demoimg from '@/assets/images/demoimg.png'
+
 
 const Navbar = () => {
   const dispatch = useDispatch()
@@ -26,12 +33,23 @@ const Navbar = () => {
 
 
   const user = useSelector((state: RootState) => state.Auth.user);
+  // const client = useSelector((state: RootState) => state.Auth.client);
   console.log(user)
+  // console.log("my client is", client)
 
   const handleLogOut = () => {
     dispatch(logOut())
     // cookies.remove("token")
     router.push('/')
+  }
+
+  const [fileBtn, showFileBtn] = useState(false)
+
+  const handleClick = () => {
+    setTimeout(() => {
+      // showFileBtn(false)
+      showFileBtn((prev) => !prev)
+    }, 200)
   }
 
 
@@ -41,15 +59,16 @@ const Navbar = () => {
       className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
       {/* <Link href={"/"}> */}
-      <span className="lg:w-auto w-10">
+      <span className="lg:w-auto ">
         <Logo />
       </span>
       {/* </Link> */}
-      <div className="2xl:block hidden">
+      <div className="hidden  lg:block max-[820px]:hidden">
         <SearchBox />
       </div>
-      <div className="lg:flex hidden items-center gap-6">
-        <button className="btn-primary text-white rounded-full p-1 2xl:hidden block">
+
+      <div className="lg:flex md:flex hidden items-center gap-6">
+        <button className="btn-primary text-white rounded-full p-1 hidden ">
           <Search />
         </button>
         <ul className="flex items-center gap-6">
@@ -94,32 +113,50 @@ const Navbar = () => {
         </ul>
         <LanguageSwitcher />
         {user ? (
-           
-          
-            <button
-                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-                onClick={handleLogOut}
-              >
-                <AvatarIcon /> Log out
-              </button>
-        ) : (
-            <div className="flex gap-3">
-              <Link
-                className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-                href={"/usertype"}
-              >
-                <SignUpIcon />
-                Sign Up
-              </Link>
 
-              <Link
-                className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-                href={"/user/auth/login"}
-              >
-                <AvatarIcon /> Log in
+          <div className="flex gap-3 items-center relative">
+            <Link href={'/user/editProfile/client'}>
+              <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
+            <Link href={'/project-list/professional'}>
+
+              <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
+            <Link href={'/chat'}><BiMessage className="cursor-pointer text-[24px] hover:text-primary" /></Link>
+            <Image src={demoimg} width={40} height={40} alt="profile" className={`rounded-full cursor-pointer hover:opacity-90 transition-all`} onClick={handleClick} />
+
+            <ul
+              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-[130px]  ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none z-[10]"} ${fileBtn ? "z-[50]" : "z-[10]"}`}
+              style={{ position: 'relative' }} // Ensure this has a positioned context
+            >
+              <Link href={'/project-details'}>
+                <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li>
               </Link>
-            
-            </div>
+              <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">logout</li>
+            </ul>
+
+
+
+
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <Link
+              className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
+              href={"/usertype"}
+            >
+              <SignUpIcon />
+              Sign Up
+            </Link>
+
+            <Link
+              className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+              href={"/user/auth/login"}
+            >
+              <AvatarIcon /> Log in
+            </Link>
+
+          </div>
         )}
 
 

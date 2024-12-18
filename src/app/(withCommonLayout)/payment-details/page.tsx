@@ -4,6 +4,7 @@ import {  FormEvent } from 'react'
 import Button from '@/components/common/Button'
 import Link from 'next/link'
 import CheckBox from '@/components/common/checkbox/CheckBox'
+import { useRouter } from 'next/navigation'
 
 interface ProjectDetails {
     name: string
@@ -21,11 +22,22 @@ export default function Page() {
         totalAmount: 240.00
     }
 
+    const router = useRouter()
+    // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    //     e.preventDefault()
+    //     // Handle form submission
+    //     console.log('Form submitted')
+    //     router.push('/deliver-details')
+    // }
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        // Handle form submission
-        console.log('Form submitted')
-    }
+        e.preventDefault(); // Prevent default form submission
+        console.log('Form submitted'); // Debugging
+        router.push('/deliver-details'); // Navigate to the payment page
+    };
+
+    // const handleClick = () => {
+    // }
 
     return (
         <div className="min-h-screen container  p-4 md:p-6">
@@ -151,8 +163,9 @@ export default function Page() {
                                 </label>
                             </div>
 
-                            
-                            <Button className='w-full'>Submit & Save Payment Detais</Button>
+                            {/* <Link href={'/payment-details'}> */}
+                            <Button type='submit'  className='w-full'>Submit & Save Payment Detais</Button>
+                            {/* </Link>  */}
                         </div>
                     </form>
                 </div>

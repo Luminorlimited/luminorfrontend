@@ -5,11 +5,64 @@ import usertypeshape from "@/assets/shapes/usertypeshape.png";
 import circleshape from "@/assets/shapes/circleshape.png";
 import CheckBox from "@/components/common/checkbox/CheckBox";
 import ImageCarousel from "../auth/login/ImageCarousel/ImageCarousel";
+import ShowToastify from "@/utils/ShowToastify";
+import { useState } from "react";
+// import { setVerify } from "@/redux/ReduxFunction";
+import { useRouter } from "next/navigation";
+import { useVerifyUserMutation } from "@/redux/api/userApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/ReduxFunction";
+
 
 export default function Page() {
-  const handleSubmit = (e: React.FormEvent) => {
-    console.log(e);
+  const [otp, setOtp] = useState("")
+
+  const [setVerify,  { isLoading }] = useVerifyUserMutation()
+  const dispatch = useDispatch();
+
+  
+
+
+      const router = useRouter()
+  
+
+  // Inside verify.ts after OTP verification
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const email = localStorage.getItem("email");
+      const data = { email, otp };
+
+      const res = await setVerify(data).unwrap(); // Verify OTP API call
+      console.log(res);
+
+      if (res?.success) {
+        ShowToastify({ success: "Verification Complete" });
+        const { email, role } = res.data.user; // Destructure the user
+        const accessToken = res.data.accessToken;
+
+        dispatch(setUser({
+          user: { email, role },
+          token: accessToken
+        }));
+
+        router.push("/");
+      } else if (res?.message) {
+        ShowToastify({ error: res.message || "Verification failed" });
+      } else {
+        ShowToastify({ error: "Verification failed" });
+      }
+    } catch (error: any) {
+      // Handle API errors or rejected promises
+      if (error?.data?.message) {
+        ShowToastify({ error: error.data.message }); // Use server error message if provided
+      } else {
+        ShowToastify({ error: "An error occurred during verification" });
+      }
+      console.error(error);
+    }
   };
+
   return (
     <div className="  relative">
       <Image
@@ -46,7 +99,7 @@ export default function Page() {
                 2 Step Verification!
               </h1>
               <p className="text-[#666666] text-xl">
-                Get your verification code from your <b>karim@gmail.com</b>
+                Get your verification code from your <b>{localStorage.getItem('email')}</b>
               </p>
             </div>
 
@@ -63,7 +116,8 @@ export default function Page() {
                     id="verifycode"
                     name="verifycode"
                     type="string"
-                    required
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
                     className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Enter verification code"
                   />
@@ -73,8 +127,9 @@ export default function Page() {
               <button
                 type="submit"
                 className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium text-white bg-primary hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF]"
+                disabled={isLoading}
               >
-                Log in
+                {isLoading ? "Verifying..." : "Verify"}
               </button>
 
               <div className="flex items-center gap-3">

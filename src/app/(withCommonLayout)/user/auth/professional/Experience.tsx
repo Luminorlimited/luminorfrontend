@@ -4,59 +4,66 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { FaCheck } from "react-icons/fa";
 
-export default function Experience({ register, handleNext, getValues }: any) {
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const data = {
-      industry: getValues("industry"),
-      prevPos: [
-        getValues("prevPos1"),
-        getValues("prevPos2"),
-        getValues("prevPos3"),
-      ],
-      reference1: [getValues("refName1"), getValues("refcontact1")],
-      reference2: [getValues("refName2"), getValues("refcontact2")],
-    };
-    handleNext(data);
-  };
+export default function Experience({ register, handleNext }: any) {
+
+
+
+  // const handleFormSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   const data = {
+  //     industry: getValues("industry"),
+  //     prevPos: [
+  //       getValues("prevPos1"),
+  //       getValues("prevPos2"),
+  //       getValues("prevPos3")
+  //     ],
+  //     references: [
+  //       {
+  //         name: getValues("refName1"),
+  //         emailOrPhone: getValues("refcontact1")
+  //       },
+  //       {
+  //         name: getValues("refName2"),
+  //         emailOrPhone: getValues("refcontact2")
+  //       }
+  //     ]
+  //   };
+  //   handleNext(data);
+  // };
 
   return (
-    <div className="flex justify-center items-center min-h-screen z-10 relative">
-      <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
+      <div >
         <div className="space-y-2 text-center lg:mt-0 mt-6">
-          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
             Join Luminor Today
           </h1>
-          <h2 className="text-xl text-muted-foreground md:text-2xl">
-            Sign up as a Client
-          </h2>
-          <p className="text-lg text-muted-foreground">Empower Your Journey</p>
+          <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a professional</h2>
+
+          <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
-        <form className="mt-8 space-y-2" onSubmit={handleFormSubmit}>
+        <div className="flex flex-col space-y-3">
+
           <div className="space-y-2">
             <Label htmlFor="industry">Industry</Label>
             <select
               id="industry"
               {...register("industry")}
-              required
+              // multiple
               className="h-12 rounded-xl border cursor-pointer w-full px-3"
             >
               <option value="" disabled selected>
                 Select Previous Position
               </option>
-              <option value="Software Developer">Software Developer</option>
-              <option value="Frontend Developer">Frontend Developer</option>
-              <option value="Backend Developer">Backend Developer</option>
-              <option value="Full Stack Developer">Full Stack Developer</option>
-              <option value="Project Manager">Project Manager</option>
-              <option value="Designer">Designer</option>
+              <option value="tech">Tech</option>
+              <option value="marketing">marketing</option>
+              <option value="financer">finance</option>
+
             </select>
           </div>
 
-          <div>
-            <Label htmlFor="prevPosistion" className="pb-6">
+          <div className="flex flex-col gap-y-[12px]">
+            <Label htmlFor="prevPosistion">
               Previous Positions (at least last 3) *
             </Label>
             <Input
@@ -95,11 +102,11 @@ export default function Experience({ register, handleNext, getValues }: any) {
               </div>
               <div className="space-y-2 w-full">
                 <Label htmlFor="refcontact1">
-                  reference email/phone number
+                  Reference Email/Phone Number
                 </Label>
                 <Input
                   id="refcontact1"
-                  placeholder="reference email/phone number"
+                  placeholder="Reference Email/Phone Number"
                   {...register("refcontact1")}
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
@@ -120,25 +127,30 @@ export default function Experience({ register, handleNext, getValues }: any) {
               </div>
               <div className="space-y-2 w-full">
                 <Label htmlFor="refcontact2">
-                  reference email/phone number
+                  Reference Email/Phone Number
                 </Label>
                 <Input
                   id="refcontact2"
-                  placeholder="reference email/phone number"
+                  placeholder="Reference Email/Phone Number"
                   {...register("refcontact2")}
                   className="h-12 rounded-xl border-[#E5E7EB]"
                 />
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="py-2">
           <Button
-            className="h-12 w-full rounded-xl bg-[#7C3AED] text-white hover:bg-[#6D28D9]"
-            type="submit"
+            onClick={handleNext}
+            className="h-12 rounded-xl bg-primary text-white hover:bg-[#6D28D9] px-[50px]"
+            type="button"
           >
             Next
           </Button>
-        </form>
-        <div className="flex items-center justify-center gap-2 pt-8">
+        </div>
+        {/* </form> */}
+        {/* <div className="flex items-center justify-center gap-2 pt-8">
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
             <FaCheck />
           </div>
@@ -154,8 +166,7 @@ export default function Experience({ register, handleNext, getValues }: any) {
           <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
             4
           </div>
-        </div>
+        </div> */}
       </div>
-    </div>
   );
 }

@@ -7,8 +7,6 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import ImageCarousel from "./ImageCarousel/ImageCarousel";
 import { useLoginUserMutation } from "@/redux/api/userApi";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/ReduxFunction";
 import ShowToastify from "@/utils/ShowToastify";
 import { useRouter } from "next/navigation";
 import { ToastContainer } from "react-toastify";
@@ -24,44 +22,40 @@ export default function Login() {
 
     const router = useRouter()
 
+
     const [LogInUser, { isLoading }] = useLoginUserMutation()
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
 
 
 
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const data = { email, password }
-        console.log(email, password)
-        const res = await LogInUser(data)
-        console.log(res);
-        if (res) {
-            dispatch(setUser({ name: `${res?.data?.data?.user.name.firstName} ${res?.data?.data?.user.name.lastName}`, role: `${res?.data?.data?.user.role}` }))
-            ShowToastify({ success: "Login Successfully" })
-            router.push('/')
+        e.preventDefault(); // Prevent default form submission
+        const data = { email, password }; // Gather email and password
+        console.log(email, password); // Debugging: Log email and password
+        
+
+        try {
+            const res: any = await LogInUser(data);
+            console.log("Login Response:", res);
+            if (res?.data?.success) {
+                localStorage.setItem("email", email); 
+                ShowToastify({ success: "Check your email for verification" }); 
+                router.push("/user/verification"); 
+            } else {
+                ShowToastify({ error: res?.data?.message || "Wrong email or password" });
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                ShowToastify({ error: error.message || "Login Failed" });
+                console.error("Login Error:", error);
+            } else {
+                ShowToastify({ error: "An unknown error occurred" });
+                console.error("Unexpected Error:", error);
+            }
         }
-
-
-
-        // try {
-        //     const response = await LogInUser(data) // Unwraps to handle errors
-        //     if (response) {
-        //         // Assuming the API returns user info in `response.data`
-        //         dispatch(setUser({ name: `${response.data.user.firstName} ${response.data.user.firstName}`, role: response.data.user.role }));
-        //         localStorage.setItem("token", response.data.accessToken); // Store token
-        //         router.push('/')
-
-
-        //     } else {
-        //         ShowToastify({ error: "Check your email /password again" })
-        //         alert("Invalid credentials");
-        //     }
-        // } catch (err) {
-        //     console.error("Login failed", err);
-        //     alert("An error occurred during login.");
-        // }
     };
+
     return (
         <div className="  relative">
             <Image src={usertypeshape} width={558} height={766} alt="imgshape1" className="absolute top-0 right-0 lg:w-[558px] w-48 z-[-60]" />
@@ -207,7 +201,7 @@ export default function Login() {
                 </div>
             </div>
 
-        <ToastContainer position="bottom-center" />
+        <ToastContainer position="top-right" />
 
         </div>
     );
