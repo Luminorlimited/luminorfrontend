@@ -49,8 +49,17 @@ const userApi = baseApi.injectEndpoints({
                 }
             },
             invalidatesTags: ['User']
-
         }), 
+        editclientprofile: build.mutation({
+            query: (id) => {
+                // console.log(data)
+                return {
+                    url: `/client/profile/${id}`,
+                    method: 'POST',
+                    // body: data
+                }
+            }
+        })
 
 
     })
@@ -58,4 +67,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation } = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation } = userApi

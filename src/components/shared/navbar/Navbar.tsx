@@ -34,7 +34,7 @@ const Navbar = () => {
 
   const user = useSelector((state: RootState) => state.Auth.user);
   // const client = useSelector((state: RootState) => state.Auth.client);
-  console.log(user)
+  console.log(user?.id)
   // console.log("my client is", client)
 
   const handleLogOut = () => {
@@ -56,7 +56,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
+      className=" p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
       {/* <Link href={"/"}> */}
       <span className="lg:w-auto ">
@@ -114,31 +114,38 @@ const Navbar = () => {
         <LanguageSwitcher />
         {user ? (
 
-          <div className="flex gap-3 items-center relative">
+            <div className="flex gap-3 items-center relative">
             <Link href={'/user/editProfile/client'}>
               <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
             <Link href={'/project-list/professional'}>
-
               <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
-            <Link href={'/chat'}><BiMessage className="cursor-pointer text-[24px] hover:text-primary" /></Link>
-            <Image src={demoimg} width={40} height={40} alt="profile" className={`rounded-full cursor-pointer hover:opacity-90 transition-all`} onClick={handleClick} />
-
+            <Link href={'/chat'}>
+              <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
+            <Image 
+              src={demoimg} 
+              width={40} 
+              height={40} 
+              alt="profile" 
+              className="rounded-full cursor-pointer hover:opacity-90 transition-all" 
+              onClick={handleClick} 
+            />
             <ul
-              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-[130px]  ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none z-[10]"} ${fileBtn ? "z-[50]" : "z-[10]"}`}
-              style={{ position: 'relative' }} // Ensure this has a positioned context
+              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${
+              fileBtn ? "opacity-100 translate-y-0 z-[50]" : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+              }`}
             >
               <Link href={'/project-details'}>
-                <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li>
+              <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li>
               </Link>
-              <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">logout</li>
+              <Link href={`/user/editProfile/${user?.id}`}>
+              <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Edit Profile</li>
+              </Link>
+              <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Logout</li>
             </ul>
-
-
-
-
-          </div>
+            </div>
         ) : (
           <div className="flex gap-3">
             <Link

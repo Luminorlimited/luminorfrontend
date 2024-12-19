@@ -21,9 +21,9 @@ export default function Page() {
   const dispatch = useDispatch();
 
   
+ 
 
-
-      const router = useRouter()
+  const router = useRouter()
   
 
   // Inside verify.ts after OTP verification
@@ -36,29 +36,31 @@ export default function Page() {
       const res = await setVerify(data).unwrap(); // Verify OTP API call
       console.log(res);
 
-      if (res?.success) {
+      if (res) {
         ShowToastify({ success: "Verification Complete" });
-        const { email, role } = res.data.user; // Destructure the user
+        const { role } = res.data.user; // Destructure role from the response
         const accessToken = res.data.accessToken;
 
-        dispatch(setUser({
-          user: { email, role },
-          token: accessToken
-        }));
+        // Dispatch the correctly structured object
+        dispatch(
+          setUser({
+            user: {
+              email: email || "", role,
+              id: ""
+            }, // Provide a fallback for email
+            token: accessToken,
+          })
+        );
 
-        router.push("//user/editProfile/client  ");
-      } else if (res?.message) {
-        ShowToastify({ error: res.message || "Verification failed" });
+        router.push("/");
       } else {
-        ShowToastify({ error: "Verification failed" });
+        ShowToastify({ error: res.message || "Verification failed" });
       }
     } catch (error: any) {
       // Handle API errors or rejected promises
-      if (error?.data?.message) {
-        ShowToastify({ error: error.data.message }); // Use server error message if provided
-      } else {
-        ShowToastify({ error: "An error occurred during verification" });
-      }
+      ShowToastify({
+        error: "Error Validation. Check your mail.",
+      });
       console.error(error);
     }
   };

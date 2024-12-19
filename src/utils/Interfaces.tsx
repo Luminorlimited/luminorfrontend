@@ -1,4 +1,10 @@
+
+
+
+
+
 export interface UserInterface {
+    id: string,
     name?: string; // optional, as not all responses may include it
     email: string;
     role: string;
@@ -47,13 +53,13 @@ export interface IProfessional {
     email: string;
     phoneNumber: string;
     role: string;
-    cvOrCoverLetter: string;
+    cvOrCoverLetter:  File;
     password: string;
     previousPositions: { position: string }[];  // Updated type here
     references: { name: string; emailOrPhone: string }[];  // Keep this as it is
     educationalBackground: string;
     relevantQualification: string;
-    technicalSkill?: string;
+    technicalSkill?: string [];
     linkedinProfile: string;
     industry: string[];
     businessType: string;
