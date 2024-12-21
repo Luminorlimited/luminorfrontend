@@ -2,7 +2,7 @@
 'use client'
 import Image from "next/image";
 import React, { useState } from "react";
-import {  FaCog } from 'react-icons/fa';
+import { FaCog } from 'react-icons/fa';
 import { AiOutlinePlus, AiOutlineUpload } from 'react-icons/ai'
 import CheckBox from "@/components/common/checkbox/CheckBox";
 import { useForm } from "react-hook-form";
@@ -12,6 +12,9 @@ import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
+import ShowToastify from "@/utils/ShowToastify";
+import { useEditprofessionalprofileMutation } from "@/redux/api/userApi";
+import { useParams } from "next/navigation";
 
 
 export default function Professional() {
@@ -67,12 +70,12 @@ export default function Professional() {
     ];
 
 
-  
+
 
     const [selectedImage, setSelectedImage] = useState('/images/profilepix.jpg')
 
-    const handleImageChange = (e: { target: { files: any[]; }; }) => {
-        const file = e.target.files[0]
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
         if (file) {
             const imageURL = URL.createObjectURL(file)
             setSelectedImage(imageURL)
@@ -82,12 +85,33 @@ export default function Professional() {
 
 
 
-    const { register, handleSubmit, setValue,  watch, reset } = useForm();
+    const { register, handleSubmit, setValue, watch, reset } = useForm();
+
+    const [editprofessionalProfile] = useEditprofessionalprofileMutation()
+    const userId = useParams()
+
+    const userIdValue = userId.id;
+    // console.log(userIdValue);
 
     const handleSubmitForm = async (data: any) => {
-        console.log(data)
-        reset()
+        // const selectedService = servicesData[data.selectedService]?.title || "";
+        // const formData = { ...data, skills: selectedService };
+        // console.log(formData);
+        
+        try {
+            const res = await editprofessionalProfile({ id: userIdValue, data })
+            if (res.data) { 
+                ShowToastify({ success: "Profile Updated Successfully" })
 
+            } else {
+                ShowToastify({ error: "Profile Update Failed" })
+            }
+            ShowToastify({ success: "Profile Updated Successfully" })
+            reset();
+        } catch (error) {
+            ShowToastify({ error: "Profile Update Failed" })
+            console.log(error);
+        }
     }
 
     const watchSelectedService = watch("selectedService");
@@ -110,6 +134,7 @@ export default function Professional() {
                                 <Image
                                     src={selectedImage}
                                     alt="profile-img"
+                                    {...register('profileUrl')}
                                     width={160}
                                     height={160}
                                     className="rounded-full border-4 border-white object-cover w-40 h-40"
@@ -119,7 +144,7 @@ export default function Professional() {
                                     accept="image/*"
                                     id="fileInput"
                                     className="hidden-input hidden"
-                                    onChange={() => handleImageChange}
+                                    onChange={handleImageChange}
                                 />
                                 {/* Cog button to trigger file input */}
                                 <button
@@ -131,12 +156,10 @@ export default function Professional() {
                                         }
                                     }}
                                 >
-                                    <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105  transition-all rounded-full">
+                                    <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105 transition-all rounded-full">
                                         <FaCog className="cog-icon text-3xl text-primary " />
                                     </div>
                                 </button>
-
-
                             </div>
 
                             <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
@@ -150,11 +173,11 @@ export default function Professional() {
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" {...register("fname", { required: "First name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
+                                    <input id="fname" {...register("fname", { required: "First name is required" })} placeholder="John" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" {...register("lname", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
+                                    <input id="lname" placeholder="Watson" {...register("lname", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
                                 </div>
                             </div>
 
@@ -167,7 +190,7 @@ export default function Professional() {
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm mb-2">Email *</label>
-                                    <input id="email" {...register("email")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" />
+                                    <input id="email" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" />
                                 </div>
                             </div>
 
@@ -191,26 +214,23 @@ export default function Professional() {
                                     rows={5}
                                 />
                             </div>
-
-                            {/* Industry Preferences */}
                             <div>
                                 <h3 className="text-sm mb-4">Skills / Expertise</h3>
                                 <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                                     {servicesData.map((service, index) => {
                                         const isSelected = watchSelectedService === index;
-                                        const selectedClass = isSelected
-                                            ? "bg-primary text-white"
-                                            : "bg-slate-100";
-
+                                        const selectedClass = isSelected ? "bg-primary text-white" : "bg-slate-100";
                                         return (
                                             <div
                                                 key={index}
-                                                onClick={() => setValue("selectedService", index)}
+                                                onClick={() => {
+                                                    setValue("selectedService", index);
+                                                    console.log(`Selected service: ${service.title}`);
+                                                }}
                                                 className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all `}
                                             >
-                                                {/* <Icon /> */}
                                                 <div className="w-12 h-12">{service.icon}</div>
-                                                <span className="text-[14px] pt-2 font-[400] text-left">{service.title}</span>
+                                                <span {...register('skills')} className="text-[14px] pt-2 font-[400] text-left">{service.title}</span>
                                             </div>
                                         );
                                     })}

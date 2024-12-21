@@ -1,12 +1,14 @@
 // src/features/api/baseApi.js
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { store } from "@/redux/store";
 
 export const baseApi = createApi({
     reducerPath: 'baseApi', // The key for this API in the Redux store
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://luminor-bakcend.onrender.com/api/v1', // Replace with your API's base URL
+        baseUrl: 'http://localhost:5001/api/v1',
         prepareHeaders: (headers) => {
-            const token = localStorage.getItem("token") // Assuming token is stored in the auth slice
+            const token = store.getState().Auth.token;
+
             if (token) {
                 headers.set('Authorization', `${token}`);
             }

@@ -12,7 +12,10 @@ import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { jwtDecode } from "jwt-decode"; // Import jwt-decode
+import { jwtDecode } from "jwt-decode";
+import { useParams } from "next/navigation";
+import { useEditclientprofileMutation } from "@/redux/api/userApi";
+import ShowToastify from "@/utils/ShowToastify";
 
 
 const servicesData = [
@@ -55,14 +58,15 @@ const maxPrice = 400;
 export default function Client() {
 
     interface DecodedToken {
-            id: string;
-            email: string;
-            role: string;
-       
+        id: string;
+        email: string;
+        role: string;
+
     }
 
 
     const token = useSelector((state: RootState) => state.Auth.token);
+
 
     // Decode the token
     let decodedToken: DecodedToken | null = null;
@@ -85,7 +89,6 @@ export default function Client() {
     const [durationMinValue, setDurationMinValue] = useState(minPrice);
     const [durationMaxValue, setDurationMaxValue] = useState(maxPrice);
 
-    console.log(token)
 
     const handleMinChange = useCallback(
         (setter: React.Dispatch<React.SetStateAction<number>>, maxValue: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,16 +125,53 @@ export default function Client() {
 
     const { register, handleSubmit, setValue, watch, reset } = useForm();
 
+
+    const userId = useParams()
+
+    const userIdValue = userId.id;
+    console.log(userIdValue);
+
+    const [editclientProfile] = useEditclientprofileMutation();
+
     const handleSubmitForm = async (data: any) => {
         data.minBudget = budgetMinValue;
         data.maxBudget = budgetMaxValue;
         data.minDuration = durationMinValue;
         data.maxDuration = durationMaxValue;
-        console.log(data);
+
+        try {
+            const res = await editclientProfile({ id: userIdValue, data });
+            if (res) {
+                ShowToastify({ success: "Profile updated successfully" })
+
+            } else {
+                ShowToastify({ error: "Profile can't updated successfully" })
+            }
+        } catch (error) {
+            ShowToastify({ error: "can't  successfully" })
+            console.log(error);
+        }
         reset();
+
     };
 
     const watchSelectedService = watch("selectedService");
+
+    const [selectedImage, setSelectedImage] = useState('/images/profilepix.jpg')
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            const imageURL = URL.createObjectURL(file)
+            setSelectedImage(imageURL)
+        }
+    }
+
+
+
+
+
+
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -141,16 +181,36 @@ export default function Client() {
                     <div className="relative text-center mb-12">
                         <div className="relative inline-block">
                             <Image
-                                src="/images/profilepix.jpg"
-                                alt="John Watson"
+                                src={selectedImage}
+                                alt="profile-img"
                                 width={160}
+                                {...register('profileUrl')}
                                 height={160}
                                 className="rounded-full border-4 border-white object-cover w-40 h-40"
                             />
-                            <button className="absolute bottom-4 right-4 bg-[#6C38FF] p-2 rounded-full">
-                                <FaCog className="h-4 w-4 text-white" />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                id="fileInput"
+                                className="hidden-input hidden"
+                                onChange={handleImageChange}
+                            />
+                            {/* Cog button to trigger file input */}
+                            <button
+                                className="cog-button absolute bottom-5 right-0"
+                                onClick={() => {
+                                    const fileInput = document.getElementById("fileInput") as HTMLInputElement | null;
+                                    if (fileInput) {
+                                        fileInput.click();
+                                    }
+                                }}
+                            >
+                                <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105 transition-all rounded-full">
+                                    <FaCog className="cog-icon text-3xl text-primary " />
+                                </div>
                             </button>
                         </div>
+
                         <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
                         <p className="text-gray-600">I&apos;m a healthcare and medical specialist</p>
                     </div>
@@ -183,13 +243,7 @@ export default function Client() {
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm mb-2">Email *</label>
-                                    <input id="email" {...register("email", {
-                                        required: "Email is required",
-                                        pattern: {
-                                            value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                            message: "Enter a valid email",
-                                        },
-                                    })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" />
+                                    <input id="email" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" disabled />
                                 </div>
                             </div>
                             <div>

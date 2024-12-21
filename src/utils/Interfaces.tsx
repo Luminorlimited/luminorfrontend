@@ -12,23 +12,23 @@ export interface UserInterface {
     token?: string; // add token if needed for user convenience
 }
 
-export interface clientProfile {
-    fname: string;
-    lname: string;
-    companyname: string;
-    companyweb: string;
-    phn: string;
-    email: string;
-    loc: string;
-    problemArea: string;
-    mainDesc: string;
-    budgetMinValue: number;
-    budgetMaxValue: number;
-    durationMinValue: number;
-    durationMaxValue: number;
-    projectdesc: string;
-    selectedService: number | null;
-}
+// export interface clientProfile {
+//     fname: string;
+//     lname: string;
+//     companyname: string;
+//     companyweb: string;
+//     phn: string;
+//     email: string;
+//     loc: string;
+//     problemArea: string;
+//     mainDesc: string;
+//     budgetMinValue: number;
+//     budgetMaxValue: number;
+//     durationMinValue: number;
+//     durationMaxValue: number;
+//     projectdesc: string;
+//     selectedService: number | null;
+// }
 
 export interface  ClientData {
     name: {
@@ -37,13 +37,28 @@ export interface  ClientData {
     };
     email: string;
     password: string;
-    dateOfBirth: string; 
     phoneNumber: string;
+    companyName: string; 
+    companyWebsite: string; 
+    description: string; 
+    problemAreas: string; 
+    industry: string; 
+    projectListing: string; 
+    budgetRange: {
+        min: number;
+        max: number;
+    }
+    projectDurationRange: {
+        min: number;
+        max: number;
+    }
     businessType: string;
     jobTitle: string;
     role: string;
     linkedinProfile: string;
 }
+
+
 export interface IProfessional {
     name: {
         firstName: string;

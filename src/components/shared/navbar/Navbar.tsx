@@ -25,16 +25,26 @@ import { FaRegHeart } from "react-icons/fa";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import demoimg from '@/assets/images/demoimg.png'
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 
 const Navbar = () => {
   const dispatch = useDispatch()
   const router = useRouter();
 
+  interface DecodedToken extends JwtPayload {
+    id: string;
+   }
 
-  const user = useSelector((state: RootState) => state.Auth.user);
+
+  const token = useSelector((state: RootState) => state.Auth.token);
+
+  const decodedToken = token ? (jwt.decode(token) as DecodedToken) : null;
+  console.log(decodedToken);
+
+
   // const client = useSelector((state: RootState) => state.Auth.client);
-  console.log(user?.id)
+
   // console.log("my client is", client)
 
   const handleLogOut = () => {
@@ -112,7 +122,7 @@ const Navbar = () => {
           })}
         </ul>
         <LanguageSwitcher />
-        {user ? (
+        {decodedToken && decodedToken.id ? (
 
             <div className="flex gap-3 items-center relative">
             <Link href={'/user/editProfile/client'}>
@@ -140,7 +150,8 @@ const Navbar = () => {
               <Link href={'/project-details'}>
               <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li>
               </Link>
-              <Link href={`/user/editProfile/${user?.id}`}>
+              <Link href={decodedToken && decodedToken.id ? `/user/editProfile/${decodedToken.role}/${decodedToken.id}` : '#'}>
+                
               <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Edit Profile</li>
               </Link>
               <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Logout</li>

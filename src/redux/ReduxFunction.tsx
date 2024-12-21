@@ -27,8 +27,8 @@ export const adminAuthSlice = createSlice({
     initialState,
     reducers: {
         setUser: ( state,  action: PayloadAction<{ user: UserInterface; token: string }> ) => {
-            state.user = action.payload.user; // Set the user data
-            state.token = action.payload.token; // Set the token
+            state.user = action.payload.user; 
+            state.token = action.payload.token;
             state.error = '';
         },
         logOut: (state) => {
