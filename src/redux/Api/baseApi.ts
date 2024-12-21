@@ -8,7 +8,6 @@ export const baseApi = createApi({
         baseUrl: 'http://localhost:5001/api/v1',
         prepareHeaders: (headers) => {
             const token = store.getState().Auth.token;
-
             if (token) {
                 headers.set('Authorization', `${token}`);
             }

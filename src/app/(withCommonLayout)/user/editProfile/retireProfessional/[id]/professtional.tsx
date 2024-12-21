@@ -94,25 +94,31 @@ export default function Professional() {
     // console.log(userIdValue);
 
     const handleSubmitForm = async (data: any) => {
-        // const selectedService = servicesData[data.selectedService]?.title || "";
-        // const formData = { ...data, skills: selectedService };
-        // console.log(formData);
-        
+        // Filter out empty fields
+        const filteredData = Object.fromEntries(
+            Object.entries(data).filter(([, value]) => value !== undefined && value !== "")
+        );
+    
+        console.log("Filtered Data:", filteredData);
+    
         try {
-            const res = await editprofessionalProfile({ id: userIdValue, data })
-            if (res.data) { 
-                ShowToastify({ success: "Profile Updated Successfully" })
-
-            } else {
-                ShowToastify({ error: "Profile Update Failed" })
+            if (!filteredData || Object.keys(filteredData).length === 0) {
+                throw new Error("No data provided");
             }
-            ShowToastify({ success: "Profile Updated Successfully" })
+    
+            const res = await editprofessionalProfile({ id: userIdValue, data: filteredData });
+            console.log(res);
+            if (res.data) {
+                ShowToastify({ success: "Profile Updated Successfully" });
+            } else {
+                ShowToastify({ error: "Profile Update Failed" });
+            }
             reset();
         } catch (error) {
-            ShowToastify({ error: "Profile Update Failed" })
+            ShowToastify({ error: "Profile Update Failed" });
             console.log(error);
         }
-    }
+    };
 
     const watchSelectedService = watch("selectedService");
 
@@ -173,11 +179,11 @@ export default function Professional() {
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" {...register("fname", { required: "First name is required" })} placeholder="John" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
+                                    <input id="fname" {...register("fname")} placeholder="John" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" placeholder="Watson" {...register("lname", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
+                                    <input id="lname" placeholder="Watson" {...register("lname")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
                                 </div>
                             </div>
 
@@ -186,11 +192,11 @@ export default function Professional() {
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
                                     <label htmlFor="phn" className="block text-sm mb-2">Phone Number *</label>
-                                    <input {...register("phone", { required: "phone required" })} id="phn" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="0987654 456" />
+                                    <input {...register("phone")} id="phn" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="0987654 456" />
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm mb-2">Email *</label>
-                                    <input id="email" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" />
+                                    <input id="email" {...register('email')} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" />
                                 </div>
                             </div>
 
@@ -290,7 +296,7 @@ export default function Professional() {
                                     type="file"
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     accept=".pdf,.docx,.doc,.rtf,.txt"
-                                    {...register("file", { required: true })} // Add validation rules
+                                    {...register("file")} // Add validation rules
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (file) {
