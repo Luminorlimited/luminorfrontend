@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "next/navigation";
-import { useEditclientprofileMutation } from "@/redux/api/userApi";
+import { useEditclientprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import ShowToastify from "@/utils/ShowToastify";
 
 
@@ -133,6 +133,9 @@ export default function Client() {
 
     const [editclientProfile] = useEditclientprofileMutation();
 
+    const { data: profileData } = useGetProfileQuery(userIdValue);
+    console.log('Profile Data:', profileData);
+
     const handleSubmitForm = async (data: any) => {
         data.minBudget = budgetMinValue;
         data.maxBudget = budgetMaxValue;
@@ -155,9 +158,9 @@ export default function Client() {
 
     };
 
-    const watchSelectedService = watch("selectedService");
+    // const watchSelectedService = watch("selectedService");
 
-    const [selectedImage, setSelectedImage] = useState('/images/profilepix.jpg')
+    const [selectedImage, setSelectedImage] = useState('https://avatar.iran.liara.run/public');
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -173,77 +176,83 @@ export default function Client() {
 
 
 
+
+
     return (
         <div className="min-h-screen flex flex-col">
             <div className="bg-cover bg-center h-[324px]" style={{ backgroundImage: 'url(/images/profilebanner.png)' }} />
             <main className="flex-1 -mt-24">
                 <div className="max-w-[1100px] mx-auto px-6">
-                    <div className="relative text-center mb-12">
-                        <div className="relative inline-block">
-                            <Image
-                                src={selectedImage}
-                                alt="profile-img"
-                                width={160}
-                                {...register('profileUrl')}
-                                height={160}
-                                className="rounded-full border-4 border-white object-cover w-40 h-40"
-                            />
-                            <input
-                                type="file"
-                                accept="image/*"
-                                id="fileInput"
-                                className="hidden-input hidden"
-                                onChange={handleImageChange}
-                            />
-                            {/* Cog button to trigger file input */}
-                            <button
-                                className="cog-button absolute bottom-5 right-0"
-                                onClick={() => {
-                                    const fileInput = document.getElementById("fileInput") as HTMLInputElement | null;
-                                    if (fileInput) {
-                                        fileInput.click();
-                                    }
-                                }}
-                            >
-                                <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105 transition-all rounded-full">
-                                    <FaCog className="cog-icon text-3xl text-primary " />
-                                </div>
-                            </button>
-                        </div>
+                    <form encType="multipart/form-data" onSubmit={handleSubmit(handleSubmitForm)} className="flex flex-col gap-y-3">
+                        <div className="relative text-center mb-12">
+                            <div className="relative inline-block">
+                                <Image
+                                    src={selectedImage}
+                                    alt="profile-img"
+                                    {...register('profileUrl')}
+                                    onChange={(e) => setValue("profileUrl", (e.target as HTMLInputElement).value)}
+                                    width={160}
+                                    height={160}
+                                    className="rounded-full border-4 border-white object-cover w-40 h-40"
+                                />
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    id="fileInput"
+                                    className="hidden-input hidden"
+                                    onChange={handleImageChange}
+                                />
+                                {/* Cog button to trigger file input */}
+                                <button
+                                    className="cog-button absolute bottom-5 right-0"
+                                    onClick={() => {
+                                        const fileInput = document.getElementById("fileInput") as HTMLInputElement | null;
+                                        if (fileInput) {
+                                            fileInput.click();
+                                        }
+                                    }}
+                                >
+                                    <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105 transition-all rounded-full">
+                                        <FaCog className="cog-icon text-3xl text-primary " />
+                                    </div>
+                                </button>
+                            </div>
 
-                        <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
-                        <p className="text-gray-600">I&apos;m a healthcare and medical specialist</p>
-                    </div>
-                    <div className="space-y-8">
-                        <form onSubmit={handleSubmit(handleSubmitForm)} className="flex flex-col gap-y-3">
-                            <div className="grid grid-cols-2 gap-6">
+                            <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
+                            <p className="text-gray-600">I&apos;m a healthcare and medical specialist</p>
+                        </div>
+                        <div className="space-y-8">
+
+                            <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" {...register("fname", { required: "First name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="first name" />
+                                    <input id="fname" defaultValue={profileData?.data?.client?.name?.firstName || ''} {...register("firstName", { required: "First name is required" })}
+                                        className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="first name" />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname"  {...register("lname", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="last name" />
+                                    <input id="lname" defaultValue={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="last name" />
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="companyname" className="block text-sm mb-2">Company name *</label>
-                                    <input {...register("companyname", { required: "Company name is required" })} id="companyname" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write company name" />
+                                    <input {...register("companyName", { required: "Company name is required" })}
+                                        defaultValue={profileData?.data?.companyName || ''} id="companyname" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write company name" />
                                 </div>
                                 <div>
                                     <label htmlFor="companyweb" className="block text-sm mb-2">Company website *</label>
-                                    <input id="companyweb" {...register("companyweb", { required: "Company website is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="www.companyname.com" />
+                                    <input id="companyweb" defaultValue={profileData?.data?.companyWebsite || ''} {...register("companyWebsite", { required: "Company website is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="www.companyname.com" />
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="phn" className="block text-sm mb-2">Phone Number *</label>
-                                    <input id="phn" {...register("phn", { required: "Phone number is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="0987654 456" />
+                                    <input id="phn" defaultValue={profileData?.data?.phoneNumber || ''} {...register("phoneNumber", { required: "Phone number is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="0987654 456" />
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm mb-2">Email *</label>
-                                    <input id="email" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" disabled />
+                                    <input id="email" defaultValue={profileData?.data?.client.email || ''} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" disabled />
                                 </div>
                             </div>
                             <div>
@@ -252,13 +261,14 @@ export default function Client() {
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="problemArea">Problem areas or Skills needed</label>
-                                <input id="problemArea" {...register("problemArea")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="I'm a healthcare and medical specialist" />
+                                <input id="problemArea" {...register("problemAreas")} defaultValue={profileData?.data?.client.problemAreas || ''} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="I'm a healthcare and medical specialist" />
                             </div>
                             <div>
                                 <label htmlFor="mainDesc" className="block text-sm mb-2">Description</label>
                                 <textarea
                                     id="mainDesc"
-                                    {...register("mainDesc")}
+                                    {...register("description")}
+                                    defaultValue={profileData?.data?.description || ''}
                                     placeholder="Write your Description"
                                     className="w-full border p-3 rounded-[10px]  focus:border-primary focus:outline-none"
                                     rows={5}
@@ -268,25 +278,36 @@ export default function Client() {
                                 <h3 className="text-sm mb-4">Industry / Service preferences</h3>
                                 <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                                     {servicesData.map((service, index) => {
-                                        const isSelected = watchSelectedService === index;
-                                        const selectedClass = isSelected ? "bg-primary text-white" : "bg-slate-100";
+                                        // Determine if the service is selected
+                                        const isSelected =
+                                            watch("servicePreference") === service.title ||
+                                            profileData?.data?.servicePreference === service.title;
+
+                                        const selectedClass = isSelected
+                                            ? "bg-primary text-white"
+                                            : "bg-slate-100";
+
                                         return (
                                             <div
                                                 key={index}
                                                 onClick={() => {
-                                                    setValue("selectedService", index);
+                                                    // Update form state with the selected service
+                                                    setValue("servicePreference", service.title);
                                                     console.log(`Selected service: ${service.title}`);
                                                 }}
-                                                className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all `}
+                                                className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all`}
                                             >
                                                 <div className="w-12 h-12">{service.icon}</div>
-                                                <span {...register('industry')} className="text-[14px] pt-2 font-[400] text-left">{service.title}</span>
+                                                <span className="text-[14px] pt-2 font-[400] text-left">
+                                                    {service.title}
+                                                </span>
                                             </div>
                                         );
                                     })}
+
                                 </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label className="block text-sm mb-4">Budget Preference</label>
                                     <div className="w-full py-3">
@@ -311,9 +332,9 @@ export default function Client() {
                                             />
                                         </div>
                                         <div className="w-full p-4 text-center border rounded-lg border-gray-200">
-                                            <span>${budgetMinValue}</span>
+                                            <span>${budgetMinValue || profileData?.data?.budgetRange?.min || 0}</span>
                                             <span> - </span>
-                                            <span>${budgetMaxValue}</span>
+                                            <span>${budgetMaxValue || profileData?.data?.budgetRange?.max || 0}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -341,9 +362,12 @@ export default function Client() {
                                             />
                                         </div>
                                         <div className="w-full p-4 text-center border rounded-lg border-gray-200">
-                                            <span>${durationMinValue}</span>
+                                            {/* <span>${durationMinValue}</span>
                                             <span> - </span>
-                                            <span>${durationMaxValue}</span>
+                                            <span>${durationMaxValue}</span> */}
+                                            <span>${durationMinValue || profileData?.data?.projectDurationRange.min || 0}</span>
+                                            <span> - </span>
+                                            <span>${durationMaxValue || profileData?.data?.projectDurationRange.max || 0}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -356,6 +380,7 @@ export default function Client() {
                                     </button>
                                 </div>
                                 <textarea
+                                    defaultValue={profileData?.data?.projectListing || ''}
                                     id="projectdesc"
                                     {...register('projectDesc')}
                                     placeholder="Write your Description"
@@ -364,12 +389,12 @@ export default function Client() {
                                 />
                             </div>
                             <div className="flex justify-center">
-                                <button className="bg-primary hover:bg-blue-900 transition-all py-5 px-7 rounded-[50px] my-14 text-white">
+                                <button type="submit" className="bg-primary hover:bg-blue-900 transition-all py-5 px-7 rounded-[50px] my-14 text-white">
                                     Save Information
                                 </button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </main>
         </div>

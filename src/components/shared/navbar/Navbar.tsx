@@ -180,7 +180,7 @@ const Navbar = () => {
 
       </div>
       <div className="lg:hidden block">
-        <MobileNavbar />
+        <MobileNavbar decodedToken={decodedToken} />
       </div>
     </nav>
   );

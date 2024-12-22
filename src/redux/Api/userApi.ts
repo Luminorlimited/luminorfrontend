@@ -71,14 +71,15 @@ const userApi = baseApi.injectEndpoints({
             }
         }),
         getProfile: build.query({
-            query: ({}) => {
+            query: () => {
                 return {
                     url: `/auth/get-profile`,
                     method: 'GET',
 
                 }
             }
-        })
+        }),
+        
       
 
 

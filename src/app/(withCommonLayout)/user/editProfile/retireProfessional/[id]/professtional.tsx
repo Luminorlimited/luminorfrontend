@@ -16,8 +16,6 @@ import ShowToastify from "@/utils/ShowToastify";
 import { useEditprofessionalprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import { useParams } from "next/navigation";
 
-
-
 export default function Professional() {
 
     const [isDragging, setIsDragging] = useState(false)
@@ -70,7 +68,6 @@ export default function Professional() {
         }
     ];
 
-
     const [selectedImage, setSelectedImage] = useState('https://avatar.iran.liara.run/public');
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,68 +78,60 @@ export default function Professional() {
         }
     }
 
-    const { register, handleSubmit, setValue, watch, reset } = useForm();
+    const { register, handleSubmit, setValue, watch } = useForm();
 
     const [editprofessionalProfile] = useEditprofessionalprofileMutation()
     const userId = useParams()
 
     const userIdValue = userId.id;
-    // console.log(userIdValue);
+
+    //   const watchSelectedService = watch("selectedService");
+
+    const { data: profileData } = useGetProfileQuery(userIdValue);
+    console.log(profileData?.data);
 
     const handleSubmitForm = async (data: any) => {
-        // Filter out empty fields
-        const filteredData = Object.fromEntries(
-            Object.entries(data).filter(([, value]) => value !== undefined && value !== "")
-        );
+        if (!data || typeof data !== "object") {
+            console.error("Invalid form data");
+            ShowToastify({ error: "Invalid form data" });
+            return;
+        }
 
-        console.log("Filtered Data:", filteredData);
+        console.log("Form Data:", data);
+
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== undefined && value !== "") {
+                formData.append(key, value as string);
+            }
+        });
+
+        if (data.profileUrl instanceof File) {
+            formData.append("profileUrl", data.profileUrl);
+            console.log("Profile Image:", data.profileUrl);
+            // formData.append("cvorcoverLetter", data.cvorcoverLetter);
+            // console.log("Profile Image:", data.cvorcoverLetter);
+        } else {
+            console.error("No valid file selected for profile image");
+        }
 
         try {
-            if (!filteredData || Object.keys(filteredData).length === 0) {
-                throw new Error("No data provided");
-            }
+            const res = await editprofessionalProfile({ id: userIdValue, data: formData });
 
-            const res = await editprofessionalProfile({ id: userIdValue, data: filteredData });
-            console.log(res);
-            
-            reset();
-        } catch (error) {
-            ShowToastify({ error: "Profile Update Failed" });
-            console.log(error);
+            if (!res || typeof res !== "object") {
+                throw new Error("Invalid response from the server");
+            }
+            ShowToastify({ success: "Profile Updated Successfully" });
+
+            console.log("API Response:", res);
+            // reset();
+        } catch (error: any) {
+            console.error("Error occurred:", error);
+            ShowToastify({ error: error.message || "Profile Update Failed" });
         }
     };
 
-    const watchSelectedService = watch("selectedService");
-
-
-    const { data: profileData } = useGetProfileQuery(userIdValue);
-
-    // React.useEffect(() => {
-    //     if (profileData) {
-    //         setValue("fname", profileData.fname);
-    //         setValue("lname", profileData.lname);
-    //         setValue("phone", profileData.phone);
-    //         setValue("email", profileData.email);
-    //         setValue("loc", profileData.loc);
-    //         setValue("bio", profileData.bio);
-    //         setValue("maindesc", profileData.maindesc);
-    //         setValue("selectedService", profileData.selectedService);
-    //         setValue("abailability", profileData.abailability);
-    //         setValue("project", profileData.project);
-    //         setValue("hourlyRate", profileData.hourlyRate);
-    //         setSelectedImage(profileData.profileUrl || 'https://avatar.iran.liara.run/public');
-    //     }
-    // }, [profileData, setValue]);
-    console.log(profileData?.data);
-
-    // if (isLoading) {
-    //     console.log("Loading profile data...");
-    // } else if (error) {
-    //     console.error("Error fetching profile data:", error);
-    //     ShowToastify({ error: "Error fetching profile data:" });
-    // } else {
-    //     console.log("Profile data:", profileData?.data);
-    // }
+  
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -154,7 +143,7 @@ export default function Professional() {
             {/* Main Content */}
             <main className="flex-1 -mt-24">
                 <div className="max-w-[1100px] mx-auto px-6">
-                    <form onSubmit={handleSubmit(handleSubmitForm)}>
+                    <form onSubmit={handleSubmit(handleSubmitForm)} encType="multipart/form-data">
                         {/* Profile Section */}
                         <div className="relative text-center mb-12">
                             <div className="relative inline-block">
@@ -162,6 +151,7 @@ export default function Professional() {
                                     src={selectedImage}
                                     alt="profile-img"
                                     {...register('profileUrl')}
+                                    onChange={(e) => setValue("profileUrl", (e.target as HTMLInputElement).value)}
                                     width={160}
                                     height={160}
                                     className="rounded-full border-4 border-white object-cover w-40 h-40"
@@ -190,13 +180,11 @@ export default function Professional() {
                             </div>
 
                             <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
-                            <p className="text-gray-600"> I am {profileData?.data.expertise }</p>
+                            <p className="text-gray-600"> I am {profileData?.data?.expertise || 'an expert'}</p>
                         </div>
 
                         {/* Form */}
                         <div className="space-y-4">
-
-
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
@@ -204,7 +192,7 @@ export default function Professional() {
                                         id="fname"
                                         {...register("fname")}
                                         placeholder="John"
-                                        defaultValue={profileData?.data.retireProfessional.name.firstName}
+                                        defaultValue={profileData?.data?.retireProfessional?.name?.firstName || ''}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                                         onChange={(e) => setValue("fname", e.target.value)}
                                         required
@@ -212,12 +200,10 @@ export default function Professional() {
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" placeholder="Watson" {...register("lname")} defaultValue={profileData?.data.retireProfessional.name.lastName} onChange={(e) => setValue("lname", e.target.value)}
+                                    <input id="lname" placeholder="Watson" {...register("lastName")} defaultValue={profileData?.data.retireProfessional.name.lastName} onChange={(e) => setValue("lname", e.target.value)}
                                         required className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
                                 </div>
                             </div>
-
-
 
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
@@ -244,9 +230,9 @@ export default function Professional() {
                                 <label htmlFor="mainDesc" className="block text-sm mb-2">Description</label>
                                 <textarea
                                     id="mainDesc"
-                                    {...register("maindesc")}
-                                    defaultValue={profileData?.data.description}
-                                    onChange={(e) => setValue("maindesc", e.target.value)}
+                                    {...register("description")}
+                                    defaultValue={profileData?.data?.description || ''}
+                                    // onChange={(e) => setValue("description", e.target.value)}
                                     placeholder="Write your Description"
                                     className="w-full border p-3 rounded-[10px]  focus:border-primary focus:outline-none"
                                     rows={5}
@@ -255,50 +241,51 @@ export default function Professional() {
                             <div>
                                 <h3 className="text-sm mb-4">Skills / Expertise</h3>
                                 <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
-                                  
-                                {servicesData.map((service, index) => {
-                                    const isSelected = watchSelectedService === index || profileData?.data.expertise.includes(service.title);
-                                    const selectedClass = isSelected ? "bg-primary text-white" : "bg-slate-100";
-                                    return (
-                                        <div
-                                            key={index}
-                                            onClick={() => {
-                                                setValue("selectedService", index);
-                                                console.log(`Selected service: ${service.title}`);
-                                            }}
-                                            className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all `}
-                                        >
-                                            <div className="w-12 h-12">{service.icon}</div>
-                                            <span
-                                                {...register('skills')}
-                                                className="text-[14px] pt-2 font-[400] text-left"
-                                                onChange={(e) => setValue("skills", (e.target as HTMLSpanElement).innerText)}
+                                    {servicesData.map((service, index) => {
+                                        // Determine if the service is selected
+                                        const isSelected =
+                                            watch("expertise") === service.title || 
+                                            profileData?.data?.expertise === service.title; 
+
+                                        const selectedClass = isSelected
+                                            ? "bg-primary text-white"
+                                            : "bg-slate-100";
+
+                                        return (
+                                            <div
+                                                key={index}
+                                                onClick={() => {
+                                                    // Update form state with the selected service
+                                                    setValue("expertise", service.title);
+                                                    console.log(`Selected service: ${service.title}`);
+                                                }}
+                                                className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all`}
                                             >
-                                                {service.title}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                                                <div className="w-12 h-12">{service.icon}</div>
+                                                <span className="text-[14px] pt-2 font-[400] text-left">
+                                                    {service.title}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
+
                                 </div>
                             </div>
 
                             <div>
-                                {/* <label className="block text-sm mb-2" htmlFor="prefProject">Abailabil*</label> */}
                                 <select {...register('abailability')} id="countries" onChange={(e) => setValue("abailability", e.target.value)} className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2" value={profileData?.data.availability}>
-                                    <option selected>Availability</option>
+                                    <option>Availability</option>
                                     <option value="US">United States</option>
                                 </select>
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="prefProject">Preferred Projects*</label>
-                                <input  {...register('project')} id="prefProject" defaultValue={profileData?.data.preferedProjects} required onChange={(e) => setValue("project", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
+                                <input  {...register('project')} id="prefProject" defaultValue={profileData?.data.preferedProjects} required onChange={(e) => setValue("preferedProjects", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="hourlyRate">Hourly Rate (USD) *</label>
-                                <input {...register('hourlyRate')} id="hourlyRate" defaultValue={profileData?.data.hourlyRate} onChange={(e) => setValue("hourlyRate", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="$100" />
+                                <input {...register('hourlyRate')} id="hourlyRate" type="number" defaultValue={profileData?.data.hourlyRate} onChange={(e) => setValue("hourlyRate", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="$100" />
                             </div>
-
-                            {/* Project Listing */}
 
                             <div className="flex items-center gap-3">
                                 <CheckBox /><p>Project Based Pricing</p>
@@ -335,8 +322,8 @@ export default function Professional() {
                                     type="file"
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     accept=".pdf,.docx,.doc,.rtf,.txt"
-                                    value={profileData?.data.cvOrCoverLetter}
-                                    {...register("file")} // Add validation rules
+                                    defaultValue={profileData?.data?.workSample || ''}
+                                    {...register("workSample")} // Add validation rules
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (file) {
