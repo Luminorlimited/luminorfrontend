@@ -26,16 +26,11 @@ export const adminAuthSlice = createSlice({
     name: 'Auth',
     initialState,
     reducers: {
-        // Corrected setUser reducer with proper type validation
-        setUser: (
-            state,
-            action: PayloadAction<{ user: UserInterface; token: string }>
-        ) => {
-            state.user = action.payload.user; // Set the user data
-            state.token = action.payload.token; // Set the token
+        setUser: ( state,  action: PayloadAction<{ user: UserInterface; token: string }> ) => {
+            state.user = action.payload.user; 
+            state.token = action.payload.token;
             state.error = '';
         },
-        // Log out the user and reset relevant fields
         logOut: (state) => {
             state.user = null;
             state.token = null;
@@ -43,17 +38,7 @@ export const adminAuthSlice = createSlice({
             state.professional = null;
             state.error = '';
         },
-        // Create client data
-        createClient: (state, action: PayloadAction<ClientData>) => {
-            state.client = action.payload;
-            state.error = '';
-        },
-        // Create professional data
-        createProfessional: (state, action: PayloadAction<IProfessional>) => {
-            state.professional = action.payload;
-            state.error = '';
-        },
-        // Set the loading state
+       
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
         },
@@ -68,10 +53,10 @@ export const adminAuthSlice = createSlice({
 export const {
     setUser,
     logOut,
-    createClient,
+    // createClient,
     setLoading,
     setError,
-    createProfessional,
+    // createProfessional,
 } = adminAuthSlice.actions;
 
 // Export the reducer

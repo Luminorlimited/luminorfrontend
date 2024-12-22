@@ -19,7 +19,7 @@ export const conversations: Conversation[] = [
     conversationId: 1,
     participants: {
       sender: "John Doe",
-      receiver: "Fast Fix Garage",
+      receiver: "Shahed",
     },
     messages: [
       {

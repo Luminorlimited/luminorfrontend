@@ -36,16 +36,17 @@ export default function Education({ register, handleNext, setValue }: any) {
       e.preventDefault();
       if (!tags.includes(inputValue.trim())) {
         const updatedTags = [...tags, inputValue.trim()];
-        setTags(updatedTags);
+        setTags(updatedTags); // Update state
         setValue("skills", updatedTags); // Update form value
       }
       setInputValue(""); // Clear input
     }
   };
 
+  // Remove a skill
   const removeTag = (tag: string) => {
     const updatedTags = tags.filter((t) => t !== tag);
-    setTags(updatedTags);
+    setTags(updatedTags); // Update state
     setValue("skills", updatedTags); // Update form value
   };
 
@@ -92,6 +93,7 @@ export default function Education({ register, handleNext, setValue }: any) {
             Technical and soft skills<span className="text-red-500">*</span>
           </Label>
           <div className="flex flex-wrap items-center gap-2 p-2 border rounded-xl border-[#E5E7EB]">
+            {/* Render Tags */}
             {tags.map((tag, index) => (
               <div
                 key={index}
@@ -107,7 +109,8 @@ export default function Education({ register, handleNext, setValue }: any) {
                 </button>
               </div>
             ))}
-            <Input
+            {/* Input Field */}
+            <input
               id="techskill"
               placeholder="Enter skills and press Enter"
               value={inputValue}
@@ -116,6 +119,8 @@ export default function Education({ register, handleNext, setValue }: any) {
               className="h-10 border-none outline-none flex-grow"
             />
           </div>
+
+          {/* Hidden Input to Register Skills */}
           <input
             type="hidden"
             {...register("skills")} // Register skills as a form field

@@ -2,7 +2,7 @@
 'use client'
 import Image from "next/image";
 import React, { useState } from "react";
-import {  FaCog } from 'react-icons/fa';
+import { FaCog } from 'react-icons/fa';
 import { AiOutlinePlus, AiOutlineUpload } from 'react-icons/ai'
 import CheckBox from "@/components/common/checkbox/CheckBox";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,9 @@ import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
-
+import ShowToastify from "@/utils/ShowToastify";
+import { useEditprofessionalprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
+import { useParams } from "next/navigation";
 
 export default function Professional() {
 
@@ -66,32 +68,70 @@ export default function Professional() {
         }
     ];
 
+    const [selectedImage, setSelectedImage] = useState('https://avatar.iran.liara.run/public');
 
-  
-
-    const [selectedImage, setSelectedImage] = useState('/images/profilepix.jpg')
-
-    const handleImageChange = (e: { target: { files: any[]; }; }) => {
-        const file = e.target.files[0]
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
         if (file) {
             const imageURL = URL.createObjectURL(file)
             setSelectedImage(imageURL)
         }
     }
 
+    const { register, handleSubmit, setValue, watch } = useForm();
 
+    const [editprofessionalProfile] = useEditprofessionalprofileMutation()
+    const userId = useParams()
 
+    const userIdValue = userId.id;
 
-    const { register, handleSubmit, setValue,  watch, reset } = useForm();
+    //   const watchSelectedService = watch("selectedService");
+
+    const { data: profileData } = useGetProfileQuery(userIdValue);
+    console.log(profileData?.data);
 
     const handleSubmitForm = async (data: any) => {
-        console.log(data)
-        reset()
+        if (!data || typeof data !== "object") {
+            console.error("Invalid form data");
+            ShowToastify({ error: "Invalid form data" });
+            return;
+        }
 
-    }
+        console.log("Form Data:", data);
 
-    const watchSelectedService = watch("selectedService");
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== undefined && value !== "") {
+                formData.append(key, value as string);
+            }
+        });
 
+        if (data.profileUrl instanceof File) {
+            formData.append("profileUrl", data.profileUrl);
+            console.log("Profile Image:", data.profileUrl);
+            // formData.append("cvorcoverLetter", data.cvorcoverLetter);
+            // console.log("Profile Image:", data.cvorcoverLetter);
+        } else {
+            console.error("No valid file selected for profile image");
+        }
+
+        try {
+            const res = await editprofessionalProfile({ id: userIdValue, data: formData });
+
+            if (!res || typeof res !== "object") {
+                throw new Error("Invalid response from the server");
+            }
+            ShowToastify({ success: "Profile Updated Successfully" });
+
+            console.log("API Response:", res);
+            // reset();
+        } catch (error: any) {
+            console.error("Error occurred:", error);
+            ShowToastify({ error: error.message || "Profile Update Failed" });
+        }
+    };
+
+  
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -103,13 +143,15 @@ export default function Professional() {
             {/* Main Content */}
             <main className="flex-1 -mt-24">
                 <div className="max-w-[1100px] mx-auto px-6">
-                    <form onSubmit={handleSubmit(handleSubmitForm)}>
+                    <form onSubmit={handleSubmit(handleSubmitForm)} encType="multipart/form-data">
                         {/* Profile Section */}
                         <div className="relative text-center mb-12">
                             <div className="relative inline-block">
                                 <Image
                                     src={selectedImage}
                                     alt="profile-img"
+                                    {...register('profileUrl')}
+                                    onChange={(e) => setValue("profileUrl", (e.target as HTMLInputElement).value)}
                                     width={160}
                                     height={160}
                                     className="rounded-full border-4 border-white object-cover w-40 h-40"
@@ -119,7 +161,7 @@ export default function Professional() {
                                     accept="image/*"
                                     id="fileInput"
                                     className="hidden-input hidden"
-                                    onChange={() => handleImageChange}
+                                    onChange={handleImageChange}
                                 />
                                 {/* Cog button to trigger file input */}
                                 <button
@@ -131,73 +173,80 @@ export default function Professional() {
                                         }
                                     }}
                                 >
-                                    <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105  transition-all rounded-full">
+                                    <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105 transition-all rounded-full">
                                         <FaCog className="cog-icon text-3xl text-primary " />
                                     </div>
                                 </button>
-
-
                             </div>
 
                             <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
-                            <p className="text-gray-600">Im a healthcare and medical specialist</p>
+                            <p className="text-gray-600"> I am {profileData?.data?.expertise || 'an expert'}</p>
                         </div>
 
                         {/* Form */}
                         <div className="space-y-4">
-
-
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" {...register("fname", { required: "First name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
+                                    <input
+                                        id="fname"
+                                        {...register("fname")}
+                                        placeholder="John"
+                                        defaultValue={profileData?.data?.retireProfessional?.name?.firstName || ''}
+                                        className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                                        onChange={(e) => setValue("fname", e.target.value)}
+                                        required
+                                    />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" {...register("lname", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
+                                    <input id="lname" placeholder="Watson" {...register("lastName")} defaultValue={profileData?.data.retireProfessional.name.lastName} onChange={(e) => setValue("lname", e.target.value)}
+                                        required className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
                                 </div>
                             </div>
 
-
-
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="phn" className="block text-sm mb-2">Phone Number *</label>
-                                    <input {...register("phone", { required: "phone required" })} id="phn" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="0987654 456" />
+                                    <input required defaultValue={profileData?.data.phoneNumber} {...register("phone")} id="phn" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("phone", e.target.value)} placeholder="0987654 456" />
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm mb-2">Email *</label>
-                                    <input id="email" {...register("email")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="abc@xyz.com" />
+                                    <input value={profileData?.data.retireProfessional.email} id="email" {...register('email')} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("email", e.target.value)} disabled />
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="loc">Location *</label>
-                                <input id="loc" {...register("loc")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="USA" />
+                                <input id="loc" {...register("loc")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("loc", e.target.value)} placeholder="USA" />
                             </div>
 
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="problemArea">Bio (Under 30 word)</label>
-                                <input id="problemArea" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" {...register("bio")} placeholder="I'm a healthcare and medical specialist" />
+                                <input id="problemArea" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" {...register("bio")} defaultValue={profileData?.data.bio} onChange={(e) => setValue("bio", e.target.value)} placeholder="I'm a healthcare and medical specialist" />
                             </div>
 
                             <div>
                                 <label htmlFor="mainDesc" className="block text-sm mb-2">Description</label>
                                 <textarea
                                     id="mainDesc"
-                                    {...register("maindesc")}
+                                    {...register("description")}
+                                    defaultValue={profileData?.data?.description || ''}
+                                    // onChange={(e) => setValue("description", e.target.value)}
                                     placeholder="Write your Description"
                                     className="w-full border p-3 rounded-[10px]  focus:border-primary focus:outline-none"
                                     rows={5}
                                 />
                             </div>
-
-                            {/* Industry Preferences */}
                             <div>
                                 <h3 className="text-sm mb-4">Skills / Expertise</h3>
                                 <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                                     {servicesData.map((service, index) => {
-                                        const isSelected = watchSelectedService === index;
+                                        // Determine if the service is selected
+                                        const isSelected =
+                                            watch("expertise") === service.title || 
+                                            profileData?.data?.expertise === service.title; 
+
                                         const selectedClass = isSelected
                                             ? "bg-primary text-white"
                                             : "bg-slate-100";
@@ -205,35 +254,38 @@ export default function Professional() {
                                         return (
                                             <div
                                                 key={index}
-                                                onClick={() => setValue("selectedService", index)}
-                                                className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all `}
+                                                onClick={() => {
+                                                    // Update form state with the selected service
+                                                    setValue("expertise", service.title);
+                                                    console.log(`Selected service: ${service.title}`);
+                                                }}
+                                                className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all`}
                                             >
-                                                {/* <Icon /> */}
                                                 <div className="w-12 h-12">{service.icon}</div>
-                                                <span className="text-[14px] pt-2 font-[400] text-left">{service.title}</span>
+                                                <span className="text-[14px] pt-2 font-[400] text-left">
+                                                    {service.title}
+                                                </span>
                                             </div>
                                         );
                                     })}
+
                                 </div>
                             </div>
 
                             <div>
-                                {/* <label className="block text-sm mb-2" htmlFor="prefProject">Abailabil*</label> */}
-                                <select {...register('abailability')} id="countries" className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2">
-                                    <option selected>Availability</option>
+                                <select {...register('abailability')} id="countries" onChange={(e) => setValue("abailability", e.target.value)} className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2" value={profileData?.data.availability}>
+                                    <option>Availability</option>
                                     <option value="US">United States</option>
                                 </select>
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="prefProject">Preferred Projects*</label>
-                                <input {...register('project')} id="prefProject" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
+                                <input  {...register('project')} id="prefProject" defaultValue={profileData?.data.preferedProjects} required onChange={(e) => setValue("preferedProjects", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="hourlyRate">Hourly Rate (USD) *</label>
-                                <input {...register('hourlyRate')} id="hourlyRate" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="$100" />
+                                <input {...register('hourlyRate')} id="hourlyRate" type="number" defaultValue={profileData?.data.hourlyRate} onChange={(e) => setValue("hourlyRate", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="$100" />
                             </div>
-
-                            {/* Project Listing */}
 
                             <div className="flex items-center gap-3">
                                 <CheckBox /><p>Project Based Pricing</p>
@@ -270,7 +322,8 @@ export default function Professional() {
                                     type="file"
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     accept=".pdf,.docx,.doc,.rtf,.txt"
-                                    {...register("file", { required: true })} // Add validation rules
+                                    defaultValue={profileData?.data?.workSample || ''}
+                                    {...register("workSample")} // Add validation rules
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (file) {

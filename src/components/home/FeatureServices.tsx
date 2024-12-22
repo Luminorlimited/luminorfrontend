@@ -92,6 +92,50 @@ const services: Service[] = [
     price: 50,
     image: "/placeholder.svg?height=400&width=300",
   },
+  {
+    id: 7,
+    img: p1,
+    category: "Business consultancy and Management",
+    title: "I will setup and manage your startup business...",
+    consultant: "Adam Smith",
+    rating: 5.0,
+    reviews: 123,
+    price: 50,
+    image: "/placeholder.svg?height=400&width=300",
+  },
+  {
+    id: 8,
+    img: p2,
+    category: "Engineering services",
+    title: "I will setup and manage your startup business...",
+    consultant: "Adam Smith",
+    rating: 5.0,
+    reviews: 123,
+    price: 50,
+    image: "/placeholder.svg?height=400&width=300",
+  },
+  {
+    id: 9,
+    img: p3,
+    category: "Technical services",
+    title: "I will setup and manage your startup business...",
+    consultant: "Adam Smith",
+    rating: 5.0,
+    reviews: 123,
+    price: 50,
+    image: "/placeholder.svg?height=400&width=300",
+  },
+  {
+    id: 10,
+    img: p4,
+    category: "Healthcare and Medical consultancy",
+    title: "I will setup and manage your startup business...",
+    consultant: "Adam Smith",
+    rating: 5.0,
+    reviews: 123,
+    price: 50,
+    image: "/placeholder.svg?height=400&width=300",
+  },
 ];
 
 function ServiceCard({ service }: { service: Service }) {
@@ -101,28 +145,22 @@ function ServiceCard({ service }: { service: Service }) {
     <div className="group relative bg-white overflow-hidden shadow-lg transition-shadow rounded-xl">
       <div className="relative">
         <div
-          // variant="ghost"
           className="absolute top-4 right-4 z-10 cursor-pointer"
           onClick={() => setIsLiked(!isLiked)}
         >
           <Heart
             className={cn(
-              // "text-5xl",
-              // "group-hover:fill-red-600 group-hover:stroke-red-600",
               isLiked ? "fill-red-600 stroke-red-600" : "text-white"
             )}
           />
         </div>
-        <div
-          className="max-h-72 overflow-hidden"
-         
-        >
+        <div className="max-h-72 overflow-hidden">
           <Image
             src={service.img}
             alt={`${service.consultant} - ${service.category}`}
             width={420}
             height={320}
-            className="object-cover hover:scale-105 transition-all duration-500" 
+            className="object-cover hover:scale-105 transition-all duration-500"
           />
         </div>
       </div>
@@ -156,8 +194,11 @@ function ServiceCard({ service }: { service: Service }) {
 }
 
 export default function FeatureServices() {
+  const [showAll, setShowAll] = useState(false);
+
   return (
-    <section className="py-[40px] md:py-[72px] lg:py-[96px]"
+    <section
+      className="py-[40px] md:py-[72px] lg:py-[96px]"
       style={{
         backgroundImage: `url(${featuredbg.src})`,
         backgroundSize: "cover",
@@ -171,15 +212,15 @@ export default function FeatureServices() {
           </h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-[40px]">
-          {services.map((service) => (
+          {services.slice(0, showAll ? services.length : 6).map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
         </div>
-        {/* <button className="mt-12 mx-auto w-56 px-5 py-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full">
-          
-        </button> */}
-        <Button className="inline mx-auto rounded-[30px] ">
-          Explore More Services
+        <Button
+          className="inline mx-auto rounded-[30px]"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? "Show Less" : "Explore More Services"}
         </Button>
       </div>
     </section>

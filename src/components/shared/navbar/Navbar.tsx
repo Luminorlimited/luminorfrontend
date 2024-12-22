@@ -25,16 +25,26 @@ import { FaRegHeart } from "react-icons/fa";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import demoimg from '@/assets/images/demoimg.png'
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 
 const Navbar = () => {
   const dispatch = useDispatch()
   const router = useRouter();
 
+  interface DecodedToken extends JwtPayload {
+    id: string;
+   }
 
-  const user = useSelector((state: RootState) => state.Auth.user);
+
+  const token = useSelector((state: RootState) => state.Auth.token);
+
+  const decodedToken = token ? (jwt.decode(token) as DecodedToken) : null;
+  console.log(decodedToken);
+
+
   // const client = useSelector((state: RootState) => state.Auth.client);
-  console.log(user)
+
   // console.log("my client is", client)
 
   const handleLogOut = () => {
@@ -56,7 +66,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="py-6 p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
+      className=" p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b"
     >
       {/* <Link href={"/"}> */}
       <span className="lg:w-auto ">
@@ -112,33 +122,41 @@ const Navbar = () => {
           })}
         </ul>
         <LanguageSwitcher />
-        {user ? (
+        {decodedToken && decodedToken.id ? (
 
-          <div className="flex gap-3 items-center relative">
+            <div className="flex gap-3 items-center relative">
             <Link href={'/user/editProfile/client'}>
               <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
             <Link href={'/project-list/professional'}>
-
               <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
-            <Link href={'/chat'}><BiMessage className="cursor-pointer text-[24px] hover:text-primary" /></Link>
-            <Image src={demoimg} width={40} height={40} alt="profile" className={`rounded-full cursor-pointer hover:opacity-90 transition-all`} onClick={handleClick} />
-
+            <Link href={'/chat'}>
+              <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
+            <Image 
+              src={demoimg} 
+              width={40} 
+              height={40} 
+              alt="profile" 
+              className="rounded-full cursor-pointer hover:opacity-90 transition-all" 
+              onClick={handleClick} 
+            />
             <ul
-              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-[130px]  ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none z-[10]"} ${fileBtn ? "z-[50]" : "z-[10]"}`}
-              style={{ position: 'relative' }} // Ensure this has a positioned context
+              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${
+              fileBtn ? "opacity-100 translate-y-0 z-[50]" : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+              }`}
             >
               <Link href={'/project-details'}>
-                <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li>
+              <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Project Details</li>
               </Link>
-              <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">logout</li>
+              <Link href={decodedToken && decodedToken.id ? `/user/editProfile/${decodedToken.role}/${decodedToken.id}` : '#'}>
+                
+              <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Edit Profile</li>
+              </Link>
+              <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Logout</li>
             </ul>
-
-
-
-
-          </div>
+            </div>
         ) : (
           <div className="flex gap-3">
             <Link
@@ -162,7 +180,7 @@ const Navbar = () => {
 
       </div>
       <div className="lg:hidden block">
-        <MobileNavbar />
+        <MobileNavbar decodedToken={decodedToken} />
       </div>
     </nav>
   );

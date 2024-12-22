@@ -49,8 +49,38 @@ const userApi = baseApi.injectEndpoints({
                 }
             },
             invalidatesTags: ['User']
-
         }), 
+        editclientprofile: build.mutation({
+            query: ({id, data}) => {
+                console.log(id)
+                return {
+                    url: `/client/profile/${id}`,
+                    method: 'PATCH',
+                    body: data
+                }
+            },
+            invalidatesTags: ['User'] 
+        }),
+        editprofessionalprofile: build.mutation({
+            query: ({ id, data }) => {
+                return {
+                    url: `/retireProfessional/profile/${id}`,
+                    method: 'PATCH',
+                    body: data
+                }
+            }
+        }),
+        getProfile: build.query({
+            query: () => {
+                return {
+                    url: `/auth/get-profile`,
+                    method: 'GET',
+
+                }
+            }
+        }),
+        
+      
 
 
     })
@@ -58,4 +88,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation } = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation, useGetProfileQuery} = userApi

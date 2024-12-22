@@ -49,15 +49,14 @@ export default function Experience({ register, handleNext }: any) {
             <select
               id="industry"
               {...register("industry")}
-              // multiple
               className="h-12 rounded-xl border cursor-pointer w-full px-3"
             >
               <option value="" disabled selected>
                 Select Previous Position
               </option>
-              <option value="tech">Tech</option>
+              <option value="tech">tech</option>
               <option value="marketing">marketing</option>
-              <option value="financer">finance</option>
+              <option value="finance">finance</option>
 
             </select>
           </div>

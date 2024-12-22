@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import ChatWindow from "./ChatWindow";
 import Button from "@/components/common/Button";
@@ -13,10 +13,9 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
+import EmojiPicker from 'emoji-picker-react';
+
 import { Video, FileText, Images } from 'lucide-react';
-
-
-
 
 const Page: React.FC = () => {
   const [messages, setMessages] = useState<Conversation | null>(null);
@@ -43,8 +42,35 @@ const Page: React.FC = () => {
       showFileBtn((prev) => !prev)
     }, 200)
   }
+  const [inputMessage, setInputMessage] = useState('');
 
-  // Toggle for project modal
+  const handleEmojiClick = (emojiObject: any) => {
+    setInputMessage((prevInput) => prevInput + emojiObject.emoji);
+  };
+
+  const toggleEmojiPicker = () => {
+    setShowEmojiPicker((prev) => !prev);
+  };
+
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleOpenModal = () => {
+    setIsModalOpen((e) => !e);
+  };
   const handleProjectModal = () => {
     if (isButtonDisabled) return; // Prevent multiple clicks
     setIsButtonDisabled(true); // Disable button temporarily
@@ -53,11 +79,7 @@ const Page: React.FC = () => {
 
     setTimeout(() => {
       setIsButtonDisabled(false); // Re-enable button after a short delay
-    }, 300); // 300ms delay to prevent multiple clicks
-  };
-
-  const handleOpenModal = () => {
-    setIsModalOpen((e) => !e);
+    }, 200); // 300ms delay to prevent multiple clicks
   };
 
   return (
@@ -161,20 +183,24 @@ const Page: React.FC = () => {
                 <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
               </span>
             </div>
-            <input
-              type="text"
+            <textarea              
               placeholder="Write message here..."
-              className="flex-1 bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              className="flex-1 bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
             />
             <span className="bg-primary rounded-full">
-              <FiSend className="text-lg text-white cursor-pointer flex items-center justify-center w-8 h-8 p-2" />
+              <FiSend className="text-lg  text-white cursor-pointer flex items-center justify-center w-8 h-8 p-2" />
             </span>
 
-            <FaRegSmile className="text-xl  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            <MdOutlineKeyboardVoice className="text-xl  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            <Video className="text-xl  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-
-
+            <FaRegSmile onClick={toggleEmojiPicker} className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            {showEmojiPicker && (
+              <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
+                <EmojiPicker onEmojiClick={handleEmojiClick} />
+              </div>
+            )}
+            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <Video className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
           </div>
         </div>
       </div>

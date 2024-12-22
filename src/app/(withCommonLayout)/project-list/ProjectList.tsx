@@ -146,7 +146,7 @@ export default function ProjectList() {
 
                             <div className="p-5">
                                 <div className="mb-3 flex items-center gap-3">
-                                    <h2>Preference: </h2>
+                                    <h2>Preferencesss: </h2>
                                     <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
                                         {data.servicePreference?.[0] || "Not Specified"}
                                     </span>
