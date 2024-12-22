@@ -70,15 +70,16 @@ const userApi = baseApi.injectEndpoints({
                 }
             }
         }),
-        // professionalImg.mutation({
-        //     query: ({ id, data }) => {
-        //         return {
-        //             url: `/retireProfessional/profile/${id}`,
-        //             method: 'PATCH',
-        //             body: data
-        //         }
-        //     }
-        // })
+        getProfile: build.query({
+            query: ({}) => {
+                return {
+                    url: `/auth/get-profile`,
+                    method: 'GET',
+
+                }
+            }
+        })
+      
 
 
     })
@@ -86,4 +87,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation} = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation, useGetProfileQuery} = userApi

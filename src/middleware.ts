@@ -4,15 +4,30 @@ import { jwtDecode } from "jwt-decode"; // Ensure proper import for jwtDecode
 
 export function middleware(request: NextRequest) {
     const homeRoute = request.nextUrl.origin
-        ? `${request.nextUrl.origin}/not-found`
+        ? `${request.nextUrl.origin}/`
         : "/not-found";
 
     // Get token from cookies
     const token = request.cookies.get("token")?.value;
-    if (!token) {
-        // Redirect to home if no token is present
-        return NextResponse.redirect(new URL(homeRoute, request.url));
+
+    const currentPath = request.nextUrl.pathname;
+
+    // Restrict access to '/user/auth/login' and '/user/auth/professional' if a token exists
+    if (token && ["/user/auth/login", "/user/auth/professional", '/project-details', '/deliver-details', "/deliver-details/addreview"].includes(currentPath)) {
+        // Redirect authenticated users to a default page (e.g., home)
+        return NextResponse.redirect(new URL("/", request.url)); // Redirect to homepage
     }
+
+    // Restrict access to '/user/editProfile/client/:id' if no token exists
+    const isEditProfileClientPath = currentPath.startsWith("/user/editProfile/client/");
+    if (!token && isEditProfileClientPath) {
+        return NextResponse.redirect(new URL(homeRoute, request.url)); // Redirect to not-found or home if no token
+    }
+
+    // Restrict access to '/chat' if no token exists
+    // if (!token && currentPath === "/chat") {
+    //     return NextResponse.redirect(new URL(homeRoute, request.url)); // Redirect to not-found or home if no token
+    // }
 
     // Decode token to get user info
     let userInfo: { role?: string };
@@ -25,7 +40,6 @@ export function middleware(request: NextRequest) {
         return;
     }
 
-    const currentPath = request.nextUrl.pathname;
     const adminPaths = ["/manage-courses", "/create-a-course", "/profile"];
 
     // Restrict access to admin paths if user is not an ADMIN
@@ -41,5 +55,13 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/manage-courses", "/create-a-course", "/profile"], // Apply middleware to admin-specific routes
+    matcher: [
+        // "/user/auth/login",
+        "/user/auth/client",
+        // "/user/auth/professional",
+        "/project-details",
+        "/deliver-details",
+        "/deliver-details/addreview",
+       
+    ],
 };

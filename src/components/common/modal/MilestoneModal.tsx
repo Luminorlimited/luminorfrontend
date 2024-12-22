@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch } from "react";
 
 interface Milestone {
     name: string;
@@ -8,28 +8,30 @@ interface Milestone {
     description: string;
 }
 
-export default function MilestoneModal() {
-    const [milestones, setMilestones] = React.useState<Milestone[]>([
-        {
-            name: "",
-            revisions: "3",
-            delivery: "2",
-            price: "",
-            description: "",
-        },
-    ]);
+export default function MilestoneModal({  milestones, setMileStones }: { register: any, handleNext: () => void, handleBack: () => void, setMileStones: Dispatch<React.SetStateAction<Milestone[] | undefined>>, milestones: Milestone[] | undefined}) {
+    // const [milestones, setMilestones] = React.useState<Milestone[]>([
+    //     {
+    //         name: "",
+    //         revisions: "3",
+    //         delivery: "2",
+    //         price: "",
+    //         description: "",
+    //     },
+    // ]);
 
     const addMilestone = () => {
-        setMilestones([
-            ...milestones,
-            {
-                name: "",
-                revisions: "3",
-                delivery: "2",
-                price: "",
-                description: "",
-            },
-        ]);
+        if (milestones !== undefined) {
+            setMileStones([
+                ...milestones,
+                {
+                    name: "",
+                    revisions: "3",
+                    delivery: "2",
+                    price: "",
+                    description: "",
+                },
+            ]);
+        }
     };
 
     const updateMilestone = (
@@ -37,23 +39,24 @@ export default function MilestoneModal() {
         field: keyof Milestone,
         value: string
     ) => {
-        const updatedMilestones = milestones.map((milestone, i) => {
+        const updatedMilestones = milestones?.map((milestone, i) => {
             if (i === index) {
                 return { ...milestone, [field]: value };
             }
             return milestone;
         });
-        setMilestones(updatedMilestones);
+        if(milestones !== undefined) setMileStones(updatedMilestones);
     };
 
-    const totalDays = milestones.reduce(
+    const totalDays = milestones?.reduce(
         (sum, milestone) => sum + Number(milestone.delivery),
         0
     );
-    const totalPrice = milestones.reduce(
+    const totalPrice = milestones?.reduce(
         (sum, milestone) => sum + Number(milestone.price || 0),
         0
     );
+    console.log(milestones);
 
     return (
         <div className="space-y-6">
@@ -64,7 +67,7 @@ export default function MilestoneModal() {
                 </p>
             </div>
 
-            {milestones.map((milestone, index) => (
+            {milestones?.map((milestone, index) => (
                 <div key={index} className="space-y-4 ">
                     <div className="grid grid-cols-4 gap-4">
                         <div className="col-span-1">
@@ -146,11 +149,11 @@ export default function MilestoneModal() {
                 className="px-4 py-2 flex justify-center bg-[#E9E9EA] rounded-[20px] ml-auto mt-4  hover:bg-gray-100"
                 onClick={addMilestone}
             >
-                 Add a milestone<span className="ml-2 h-4 w-4">+</span>
+                Add a milestone<span className="ml-2 h-4 w-4">+</span>
             </button>
 
             <div className="flex items-center justify-between border-t pt-4">
-            
+
                 <div className="text-sm">
                     <span className="text-gray-500">
                         Total: {totalDays} days
