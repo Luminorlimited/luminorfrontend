@@ -100,12 +100,15 @@ export default function Professional() {
         console.log("Form Data:", data);
 
         const formData = new FormData();
-        Object.entries(data).forEach(([key, value]) => {
+        Object.entries(data).forEach(([Key, value]) => {
             if (value !== undefined && value !== "") {
-                formData.append(key, value as string);
+                formData.append(Key, value as string);
             }
         });
 
+        formData.append('name[firstName]', data.firstName);
+        formData.append('name[lastName]', data.lastName);
+        
         if (data.profileUrl instanceof File) {
             formData.append("profileUrl", data.profileUrl);
             console.log("Profile Image:", data.profileUrl);

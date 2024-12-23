@@ -64,30 +64,31 @@ export default function Client() {
 
     }
 
-
     const token = useSelector((state: RootState) => state.Auth.token);
 
 
     // Decode the token
-    let decodedToken: DecodedToken | null = null;
     try {
         if (token) {
-            decodedToken = jwtDecode<DecodedToken>(token);
+            jwtDecode<DecodedToken>(token);
         }
     } catch (error) {
         console.error("Invalid token:", error);
     }
 
-    console.log("Decoded Token:", decodedToken);
+    const { id: userIdValue } = useParams();
+
+    const [editclientProfile] = useEditclientprofileMutation();
+
+    const { data: profileData } = useGetProfileQuery(userIdValue);
+   
 
 
 
-
-
-    const [budgetMinValue, setBudgetMinValue] = useState(minPrice);
-    const [budgetMaxValue, setBudgetMaxValue] = useState(maxPrice);
-    const [durationMinValue, setDurationMinValue] = useState(minPrice);
-    const [durationMaxValue, setDurationMaxValue] = useState(maxPrice);
+    const [budgetMinValue, setBudgetMinValue] = useState(profileData?.data?.budgetRange?.min || minPrice);
+    const [budgetMaxValue, setBudgetMaxValue] = useState(profileData?.data?.budgetRange?.max || maxPrice);
+    const [durationMinValue, setDurationMinValue] = useState(profileData?.data?.projectDurationRange?.min || minPrice);
+    const [durationMaxValue, setDurationMaxValue] = useState(profileData?.data?.projectDurationRange?.max || maxPrice);
 
 
     const handleMinChange = useCallback(
@@ -97,9 +98,7 @@ export default function Client() {
         },
         []
     );
-
-
-    console.log(localStorage.token)
+    // console.log(localStorage.token)
     const handleMaxChange = useCallback(
         (setter: React.Dispatch<React.SetStateAction<number>>, minValue: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
             const value = Math.max(Number(event.target.value), minValue + minGap);
@@ -123,27 +122,39 @@ export default function Client() {
     const budgetProgressStyle = useMemo(() => getProgressStyle(budgetMinValue, budgetMaxValue), [budgetMinValue, budgetMaxValue, getProgressStyle]);
     const durationProgressStyle = useMemo(() => getProgressStyle(durationMinValue, durationMaxValue), [durationMinValue, durationMaxValue, getProgressStyle]);
 
-    const { register, handleSubmit, setValue, watch, reset } = useForm();
+    const { register, handleSubmit, setValue, watch } = useForm();
 
 
-    const userId = useParams()
-
-    const userIdValue = userId.id;
-    console.log(userIdValue);
-
-    const [editclientProfile] = useEditclientprofileMutation();
-
-    const { data: profileData } = useGetProfileQuery(userIdValue);
-    console.log('Profile Data:', profileData);
-
+    // console.log(profileData?.data?.budgetRange?.min);
     const handleSubmitForm = async (data: any) => {
         data.minBudget = budgetMinValue;
         data.maxBudget = budgetMaxValue;
         data.minDuration = durationMinValue;
         data.maxDuration = durationMaxValue;
 
+        const formData = new FormData();
+        Object.entries(data).forEach(([Key, value]) => {
+            if (value !== undefined && value !== "") {
+                formData.append(Key, value as string);
+            }
+        });
+
+        formData.append('name[firstName]', data.firstName);
+        formData.append('name[lastName]', data.lastName);
+        // console.log('my data is', data.minBudget);
+        // console.log('my data is', data.maxBudget);
+
+        formData.append('projectDurationRange[max]', data.maxDuration);
+        formData.append('projectDurationRange[min]', data.minDuration);
+        formData.append('budgetRange[min]', data.minBudget);
+        formData.append('budgetRange[max]', data.maxBudget);
+
+        if (selectedImage instanceof File) {
+            formData.append('profileUrl', selectedImage);
+        }
         try {
-            const res = await editclientProfile({ id: userIdValue, data });
+            const res = await editclientProfile({ id: userIdValue, data: formData });
+            console.log(res);
             if (res) {
                 ShowToastify({ success: "Profile updated successfully" })
 
@@ -154,29 +165,44 @@ export default function Client() {
             ShowToastify({ error: "can't  successfully" })
             console.log(error);
         }
-        reset();
+        // reset();
 
     };
 
     // const watchSelectedService = watch("selectedService");
 
-    const [selectedImage, setSelectedImage] = useState('https://avatar.iran.liara.run/public');
+    const [selectedImage, setSelectedImage] = useState<string | File>(
+        profileData?.data?.profileUrl || "https://avatar.iran.liara.run/public"
+    );
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
+        const file = e.target.files?.[0];
         if (file) {
-            const imageURL = URL.createObjectURL(file)
-            setSelectedImage(imageURL)
+            // Ensure only image files are processed
+            if (!file.type.startsWith("image/")) {
+                alert("Please select a valid image file.");
+                return;
+            }
+            setSelectedImage(file); // Set the file directly
         }
-    }
+    };
 
+    const imageSrc = useMemo(() => {
+        if (selectedImage instanceof File) {
+            return URL.createObjectURL(selectedImage);
+        } else if (typeof selectedImage === "string" && selectedImage.length) {
+            return selectedImage;
+        } else {
+            return "https://avatar.iran.liara.run/public";
+        }
+    }, [selectedImage]);
 
-
-
-
-
-
-
+    useMemo(() => {
+        if (selectedImage instanceof File) {
+            const url = URL.createObjectURL(selectedImage);
+            return () => URL.revokeObjectURL(url);
+        }
+    }, [selectedImage]);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -187,9 +213,9 @@ export default function Client() {
                         <div className="relative text-center mb-12">
                             <div className="relative inline-block">
                                 <Image
-                                    src={selectedImage}
+                                    src={imageSrc}
                                     alt="profile-img"
-                                    {...register('profileUrl')}
+                                    // {...register('profileUrl')}
                                     onChange={(e) => setValue("profileUrl", (e.target as HTMLInputElement).value)}
                                     width={160}
                                     height={160}
@@ -226,12 +252,12 @@ export default function Client() {
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" defaultValue={profileData?.data?.client?.name?.firstName || ''} {...register("firstName", { required: "First name is required" })}
+                                    <input id="fname" defaultValue={profileData?.data?.client?.name?.firstName || ''} {...register("firstName", { required: "First name is required" })} onChange={(e) => setValue("firstName", e.target.value)}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="first name" />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" defaultValue={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="last name" />
+                                    <input id="lname" defaultValue={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("lastName", e.target.value)} placeholder="last name" />
                                 </div>
                             </div>
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
@@ -261,7 +287,7 @@ export default function Client() {
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="problemArea">Problem areas or Skills needed</label>
-                                <input id="problemArea" {...register("problemAreas")} defaultValue={profileData?.data?.client.problemAreas || ''} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="I'm a healthcare and medical specialist" />
+                                <input id="problemArea" {...register("problemAreas")} defaultValue={profileData?.data?.problemAreas || ''} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="I'm a healthcare and medical specialist" />
                             </div>
                             <div>
                                 <label htmlFor="mainDesc" className="block text-sm mb-2">Description</label>
@@ -374,16 +400,16 @@ export default function Client() {
                             </div>
                             <div>
                                 <div className="flex justify-between items-center mb-4">
-                                    <label htmlFor="projectdesc" className="block text-sm">Project Listing (Optional)</label>
+                                    <label htmlFor="projectListing')}" className="block text-sm">Project Listing (Optional)</label>
                                     <button className="text-[#6C38FF] border-[#6C38FF]">
                                         Add Project
                                     </button>
                                 </div>
                                 <textarea
                                     defaultValue={profileData?.data?.projectListing || ''}
-                                    id="projectdesc"
-                                    {...register('projectDesc')}
-                                    placeholder="Write your Description"
+                                    id="projectListing')}"
+                                    {...register('projectListing')}
+                                    placeholder="Write your listing project" {...register("projectListing")}
                                     className="w-full border p-3 rounded-[10px] focus:border-primary focus:outline-none"
                                     rows={5}
                                 />
