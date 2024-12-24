@@ -1,30 +1,50 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
 import Pagination from '@/components/common/pagination/Pagination';
-import { useClientListQuery, useProfessionalListQuery } from '@/redux/api/projectApi';
+import { useClientFilterListQuery, useClientListQuery, useProfessionalListQuery } from '@/redux/api/projectApi';
 import profileImgFallback from '@/assets/images/profilepix.jpg'; // Fallback profile image
 import projectImgFallback from '@/assets/images/package.png'; // Fallback project image
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { setclientFilter } from '@/redux/ReduxFunction';
+import { RootState } from '@/redux/store';
 
-export default function ProjectList() {
-    const route = usePathname();
-    console.log(route);
 
-    // Fetch professional data
+interface ProjectListProps {
+    FilteredData: {  industry: string[]; timeline: string[]; skillType: string[] };
+}
+
+
+const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
+
+    const dispatch = useDispatch();
+
+    const { data: consultingData } = useClientListQuery({});
+    const { data: filteredData, } = useClientFilterListQuery(FilteredData);
+
+
+    const servicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
+        ? filteredData
+        : consultingData;
+
+    console.log(servicesToShow);
+
+    useEffect(() => {
+        if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
+            // Clear filters on initial load or when filters are reset
+            dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
+        }
+    }, [FilteredData, dispatch]);
+
     const { data: professionalData } = useProfessionalListQuery(undefined);
-
-    // Fetch client data
-    const { data: consultingData, isLoading, isError } = useClientListQuery(undefined);
-    console.log('client data is ', consultingData?.data);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
 
-    // Ensure consultingData has a fallback to an empty array to avoid errors
     const data = consultingData?.data || [];
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -36,13 +56,7 @@ export default function ProjectList() {
         setCurrentPage(pageNumber);
     };
 
-    if (isLoading) {
-        return <div className='h-screen flex justify-center items-center'>Loading...</div>;
-    }
-
-    if (isError) {
-        return <div>Failed to load data. Please try again later.</div>;
-    }
+    const route = usePathname();
 
     return (
         <div>
@@ -122,7 +136,7 @@ export default function ProjectList() {
                         </div>
                     ))
                 ) : (
-                    currentItems.map((data: any, index: number) => (
+                    currentItems?.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -140,13 +154,13 @@ export default function ProjectList() {
 
                                 <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                                     <BiTime className="h-4 w-4" />
-                                    <span className="text-xs">{data.projectDurationRange.max} days | Duration</span>
+                                    {/* <span className="text-xs">{data.projectDurationRange.max} days | Duration</span> */}
                                 </div>
                             </div>
 
                             <div className="p-5">
                                 <div className="mb-3 flex items-center gap-3">
-                                    <h2>Preferencesss: </h2>
+                                    <h2>Preferences: </h2>
                                     <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
                                         {data.servicePreference?.[0] || "Not Specified"}
                                     </span>
@@ -203,3 +217,5 @@ export default function ProjectList() {
         </div>
     );
 }
+
+export default ProjectList;

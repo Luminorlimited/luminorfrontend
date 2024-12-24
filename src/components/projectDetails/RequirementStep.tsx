@@ -41,7 +41,7 @@ export default function RequirementsStep() {
     }
 
     return (
-        <div className=" mx-auto p-6">
+        <div className=" mx-auto lg:p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Add further Requirements</h2>

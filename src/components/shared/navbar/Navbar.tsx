@@ -128,7 +128,7 @@ const Navbar = () => {
             <Link href={'/user/editProfile/client'}>
               <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
-            <Link href={'/project-list/professional'}>
+            <Link href={`/project-list/${decodedToken.role}`}>
               <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
             <Link href={'/chat'}>

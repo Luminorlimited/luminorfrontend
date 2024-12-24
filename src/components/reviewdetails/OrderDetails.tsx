@@ -6,7 +6,7 @@ export default function OrderDetails() {
         <div className="max-w-[550px] ">
            <OrderCard/>
 
-            <div className='mt-6  bg-[#FAFAFA] p-6'>
+            <div className='mt-6  bg-[#FAFAFA] lg:p-6 md:p-6 p-2'>
                 <div className="space-y-1">
                     <h1 className="text-2xl text-gray-900">
                         Project Details

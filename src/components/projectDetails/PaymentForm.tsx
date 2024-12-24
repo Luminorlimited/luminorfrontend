@@ -15,11 +15,11 @@ export default function PaymentForm() {
     const [saveCard, setSaveCard] = useState(false)
 
     return (
-        <div className="min-h-screen p-6">
-            <div className="mx-auto max-w-[1300px] rounded-xl bg-white p-6 shadow-sm">
+        <div className="min-h-screen lg:p-6">
+            <div className="mx-auto max-w-[1300px] rounded-xl bg-white lg:p-6 md:p-6 p-1 shadow-sm">
                 <div className="grid gap-8 lg:grid-cols-[1fr,400px]">
                     {/* Left Column - Payment Form */}
-                    <div className="space-y-6 border p-6 rounded-xl">
+                    <div className="space-y-6 lg:border md:border border-none lg:p-6 md:p-6 p-0 rounded-xl">
                         <div className="rounded-[8px] border-none bg-primary">
                             <div className="bg-[#F2FAFF] ml-1 border-none rounded-[8px] p-4">
                                 Your card details are secure and payments will be held until the project is marked as completed

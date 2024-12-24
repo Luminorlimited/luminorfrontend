@@ -1,23 +1,26 @@
-import { configureStore } from '@reduxjs/toolkit'
-import { persistStore, persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
-// import adminAuth from './ReduxFunction'
-// import baseApi from './Api/baseApi'
-import  adminAuth  from './ReduxFunction'
-import baseApi from './api/baseApi'
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import adminAuth from './ReduxFunction'; // Assuming your auth slice is here
 
+import baseApi from './api/baseApi'; // RTK Query API
+// import { projectSlice } from './slice/projectslice';
 
-const persistConfig = {
-    key: 'root',
+// Persist configuration for Auth
+const authPersistConfig = {
+    key: 'auth',
     storage,
-}
+};
 
-const persistedReducer = persistReducer(persistConfig, adminAuth)
+// Persisted reducers for Auth
+const persistedAuthReducer = persistReducer(authPersistConfig, adminAuth);
 
+// Configure the store without persisting project
 export const store = configureStore({
     reducer: {
-        Auth: persistedReducer,
-        [baseApi.reducerPath]: baseApi.reducer, // Add this line
+        Auth: persistedAuthReducer,
+        // project: projectSlice.reducer, // No persistence for project
+        [baseApi.reducerPath]: baseApi.reducer, // RTK Query API reducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
@@ -26,11 +29,11 @@ export const store = configureStore({
                 ignoredPaths: ['Auth.somePathWithNonSerializableValues'],
             },
         }).concat(baseApi.middleware),
-})
+});
 
+// Persistor configuration
+export const persistor = persistStore(store);
 
-export const persistor = persistStore(store)
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
+// Type definitions for RootState and AppDispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

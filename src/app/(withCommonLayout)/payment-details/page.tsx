@@ -41,7 +41,7 @@ export default function Page() {
 
     return (
         <div className="min-h-screen container  p-4 md:p-6">
-            <div className="max-w-[869px] rounded-lg bg-white p-6 shadow-sm">
+            <div className="max-w-[869px] rounded-lg bg-white lg:p-6 md:p-6 p-0  shadow-sm">
                 <div className="space-y-6">
                     {/* Header */}
                     <div className='flex flex-col gap-[17px]'>
@@ -82,7 +82,7 @@ export default function Page() {
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
                             <h2 className="text-lg font-medium text-gray-900 mb-4">Bank Transfer Information</h2>
-                            <div className="space-y-4 border p-8 rounded-[15px]">
+                            <div className="space-y-4 lg:border md:border border-none lg:p-8 md:p-5 p-1 rounded-[15px]">
                                 <div>
                                     <label htmlFor="accountHolder" className="block text-sm font-medium text-black mb-1">
                                         Account Holder Name

@@ -1,9 +1,8 @@
-import ProjectList from "../ProjectList";
+// page.tsx
+import ClientService from "./ClientService";
 
-export default function Page() {
-    return (
-        <div>
-            <ProjectList/>
-        </div>
-    );
+const Page = () => {
+    return <ClientService />;
 }
+
+export default Page;

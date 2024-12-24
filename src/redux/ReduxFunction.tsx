@@ -1,7 +1,5 @@
 import { IProfessional, UserInterface, ClientData } from '@/utils/Interfaces';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-// Define the interface for the state
 interface AuthInterFace {
     user: UserInterface | null;
     client: ClientData | null;
@@ -9,6 +7,11 @@ interface AuthInterFace {
     loading: boolean;
     error: string;
     token: string | null;
+    selectedFilters: {
+        industry: [],
+        timeline: [],
+        skillType: [],
+    },
 }
 
 // Initial state
@@ -19,18 +22,27 @@ const initialState: AuthInterFace = {
     token: null,
     loading: false,
     error: '',
+
+    selectedFilters: {
+        industry: [],
+        timeline: [],
+        skillType: [],
+    },
 };
+
 
 // Create the slice
 export const adminAuthSlice = createSlice({
     name: 'Auth',
     initialState,
     reducers: {
-        setUser: ( state,  action: PayloadAction<{ user: UserInterface; token: string }> ) => {
-            state.user = action.payload.user; 
+        // Set user and token
+        setUser: (state, action: PayloadAction<{ user: UserInterface; token: string }>) => {
+            state.user = action.payload.user;
             state.token = action.payload.token;
             state.error = '';
         },
+        // Log out the user
         logOut: (state) => {
             state.user = null;
             state.token = null;
@@ -38,13 +50,16 @@ export const adminAuthSlice = createSlice({
             state.professional = null;
             state.error = '';
         },
-       
+        // Set loading state
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
         },
         // Set an error message
         setError: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
+        },
+        setclientFilter: (state, action) => {
+            state.selectedFilters = action.payload; // Save the selected filters
         },
     },
 });
@@ -53,10 +68,9 @@ export const adminAuthSlice = createSlice({
 export const {
     setUser,
     logOut,
-    // createClient,
     setLoading,
     setError,
-    // createProfessional,
+    setclientFilter
 } = adminAuthSlice.actions;
 
 // Export the reducer

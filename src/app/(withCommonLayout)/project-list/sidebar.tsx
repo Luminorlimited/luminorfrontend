@@ -6,13 +6,27 @@ import { useCallback, useState } from "react"
 import { HiChevronUp, HiChevronDown } from "react-icons/hi"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
+import { useDispatch, useSelector } from "react-redux"
+import { RootState } from "@/redux/store"
+import { useClientFilterListQuery } from "@/redux/api/projectApi"
+import { setclientFilter } from "@/redux/ReduxFunction"
 
-export function Sidebar() {
+export type Filters = {
+    industry: string[];
+    timeline: string[];
+    skillType: string[];
+    [key: string]: string[];
+};
+
+export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetStateAction<Filters>> }) {
     const [openSections, setOpenSections] = React.useState({
         industry: true,
         timeline: true,
         skillType: true
+
     })
+
+ 
 
     const toggleSection = (section: keyof typeof openSections) => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }))
@@ -79,7 +93,81 @@ export function Sidebar() {
 
     const pathName = usePathname()
 
+    const industry = ["tech", "marketing", "finance"]
 
+    // add query params to the url
+    const { data: filterData } = useClientFilterListQuery({ industry })
+
+    // const dispatch = useDispatch()
+    // dispatch()
+    // console.log(filterData);
+    // setclientFilter(filterData)
+
+    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+    // const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const { value, checked } = event.target;
+    //     setSelectedFilters(prev =>
+    //         checked ? [...prev, value] : prev.filter(filter => filter !== value)
+    //     );
+    // };
+
+
+
+
+    const industryOptions = [
+        { label: 'Tech', value: 'Tech' },
+        { label: 'Marketing', value: 'Marketing' },
+        { label: 'Finance', value: 'Finance' },
+    ];
+
+    const timelineOptions = [
+        { label: 'Short Term', value: 'Short Term' },
+        { label: 'Long Term', value: 'Long Term' },
+    ];
+
+    const skillTypeOptions = [
+        { label: 'Business consultancy and management', value: 'Business consultancy and management' },
+        { label: 'Engineering services', value: 'Engineering services' },
+        { label: 'Technical services', value: 'Technical services' },
+        { label: 'Healthcare and medical consultancy', value: 'Healthcare and medical consultancy' },
+        { label: 'Education and training', value: 'Education and training' },
+        { label: 'Legal and financial services', value: 'Legal and financial services' },
+    ];
+
+    type SelectedItems = {
+        industry: string[];
+        timeline: string[];
+        skillType: string[];
+    };
+
+
+    const [selectedItems, setSelectedItems] = useState<SelectedItems>({
+        industry: [],
+        timeline: [],
+        skillType: [],
+    });
+
+    const dispatch = useDispatch();
+
+    const handleFilterChange = (section: keyof SelectedItems, value: string) => {
+        setSelectedItems((prevSelected) => {
+            const updatedSelection = { ...prevSelected };
+            const sectionArray = updatedSelection[section];
+            if (sectionArray.includes(value)) {
+                updatedSelection[section] = sectionArray.filter((item) => item !== value);
+            } else {
+                updatedSelection[section] = [...sectionArray, value];
+            }
+            setFilters((prevFilters) => ({
+                ...prevFilters,
+                [section]: updatedSelection[section],  
+            }));
+
+            dispatch(setclientFilter(updatedSelection));
+            return updatedSelection;
+        });
+    };
 
 
     return (
@@ -94,24 +182,22 @@ export function Sidebar() {
                 </button>
                 {openSections.industry && (
                     <div className="space-y-3 p-4 pt-0">
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-300" />
-                            <span className="font-medium">Tech</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                            <span className="text-gray-600">Marketing</span>
-                        </label>
-                        {Array(3).fill(null).map((_, i) => (
-                            <label key={i} className="flex items-center space-x-2">
-                                <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                                <span className="text-gray-600">Finance</span>
+                        {industryOptions.map(option => (
+                            <label key={option.value} className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    checked={(selectedItems.industry as string[]).includes(option.value)}
+                                    onChange={() => handleFilterChange('industry', option.value)}
+                                    className="h-4 w-4 rounded border-gray-300"
+                                />
+                                <span className="font-medium">{option.label}</span>
                             </label>
                         ))}
                     </div>
                 )}
             </div>
 
+            {/* Timeline Section */}
             <div className="rounded-2xl border bg-white shadow-sm">
                 <button
                     onClick={() => toggleSection('timeline')}
@@ -122,18 +208,22 @@ export function Sidebar() {
                 </button>
                 {openSections.timeline && (
                     <div className="space-y-3 p-4 pt-0">
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-300" />
-                            <span className="font-medium">Short Term</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                            <span className="text-gray-600">Long Term</span>
-                        </label>
+                        {timelineOptions.map(option => (
+                            <label key={option.value} className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    checked={(selectedItems.timeline as string[]).includes(option.value)}
+                                    onChange={() => handleFilterChange('timeline', option.value)}
+                                    className="h-4 w-4 rounded border-gray-300"
+                                />
+                                <span className="font-medium">{option.label}</span>
+                            </label>
+                        ))}
                     </div>
                 )}
             </div>
 
+            {/* Skill Type Section */}
             <div className="rounded-2xl border bg-white shadow-sm">
                 <button
                     onClick={() => toggleSection('skillType')}
@@ -144,33 +234,22 @@ export function Sidebar() {
                 </button>
                 {openSections.skillType && (
                     <div className="space-y-3 p-4 pt-0">
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" defaultChecked className="h-4 w-4 rounded border-gray-300" />
-                            <span className="font-medium">Business consultancy and management</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                            <span className="text-gray-600">Engineering services</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                            <span className="text-gray-600">Technical services</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                            <span className="text-gray-600">Healthcare and medical consultancy</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                            <span className="text-gray-600">Education and training</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input type="checkbox" className="h-4 w-4 rounded border-gray-300" />
-                            <span className="text-gray-600">Legal and financial services</span>
-                        </label>
+                        {skillTypeOptions.map(option => (
+                            <label key={option.value} className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    checked={(selectedItems.skillType as string[]).includes(option.value)}
+                                    onChange={() => handleFilterChange('skillType', option.value)}
+                                    className="h-4 w-4 rounded border-gray-300"
+                                />
+                                <span className="font-medium">{option.label}</span>
+                            </label>
+                        ))}
                     </div>
                 )}
             </div>
+
+
 
             {pathName === '/project-list/professional' ? (
                 <div className="grid grid-rows-2 gap-6 bg-white p-4 shadow-md rounded-[15px]">
@@ -277,7 +356,8 @@ export function Sidebar() {
     )
 }
 
-export function MobileSidebar() {
+
+export function MobileSidebar({ setFilters }: { setFilters: React.Dispatch<React.SetStateAction<Filters>> }) {
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -286,7 +366,7 @@ export function MobileSidebar() {
                 </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[300px] sm:w-[400px] ">
-                <Sidebar />
+                <Sidebar setFilters={setFilters} />
             </SheetContent>
         </Sheet>
     )

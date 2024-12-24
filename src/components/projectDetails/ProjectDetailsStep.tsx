@@ -97,7 +97,7 @@ export default function ProjectDetails() {
             </div>
 
             {/* Content */}
-            <div className="border p-[32px] rounded-[20px]">
+            <div className="border lg:p-[32px] p-[10px] rounded-[20px]">
 
                 {currentStepId === 1 && (
                     <div className="space-y-4 ">

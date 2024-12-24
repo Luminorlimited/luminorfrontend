@@ -1,8 +1,13 @@
+'use client'
 import Image, { StaticImageData } from 'next/image';
 import { Paperclip, Send, Smile } from 'lucide-react';
 import demoprofile from '@/assets/images/demoimg.png';
 import { IoVideocamOutline } from 'react-icons/io5';
 import offer from '@/assets/images/offer.png'
+import EmojiPicker from 'emoji-picker-react';
+import { useEffect, useRef, useState } from 'react';
+import { FaRegSmile } from 'react-icons/fa';
+
 
 interface Message {
     sender: string;
@@ -63,6 +68,31 @@ const messages: Message[] = [
 ];
 
 export default function Chat() {
+
+  const [inputMessage, setInputMessage] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+    const handleEmojiClick = (emojiObject: any) => {
+        setInputMessage((prevInput) => prevInput + emojiObject.emoji);
+    };
+
+    const toggleEmojiPicker = () => {
+        setShowEmojiPicker((prev) => !prev);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+            setShowEmojiPicker(false);
+          }
+        };
+    
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
     return (
         <div className="bg-[#FAFAFA] rounded-lg shadow-sm rounded-b-[18px] max-w-lg mx-auto md:max-w-3xl">
             {/* Header */}
@@ -137,18 +167,24 @@ export default function Chat() {
             </div>
 
             {/* Input Section */}
-            <div className="p-4 border-t flex items-center gap-3 bg-white sticky bottom-0">
+            <div className="lg:p-4 md:p-4 p-0 border-t flex items-center lg:gap-3 md:gap-3 gap-1 bg-white sticky bottom-0">
                 <button className="p-2 hover:bg-gray-100 rounded-lg">
                     <Paperclip className="w-5 h-5 text-gray-500" />
                 </button>
                 <input
                     type="text"
                     placeholder="Write message here..."
-                    className="flex-1 bg-transparent focus:outline-none text-gray-700 bg-white rounded-[18px] py-2 px-3 border border-gray-300 rounded-["
+                    className="flex-1 bg-transparent focus:outline-none text-gray-700 bg-white rounded-[10px] py-2 px-3 border border-gray-300 rounded-["
                 />
-                <button className="p-2 bg-white rounded-full">
-                    <Smile className="w-5 h-5 text-black" />
+                <button onClick={toggleEmojiPicker} className="p-2 bg-white rounded-full">
+                    <FaRegSmile className="w-5 h-5 text-black" />
                 </button>
+                {/* <FaRegSmile onClick={toggleEmojiPicker} className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" /> */}
+                            {showEmojiPicker && (
+                              <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
+                                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                              </div>
+                            )}
                 <button className="p-2 bg-white rounded-full">
                     <IoVideocamOutline className="w-5 h-5 text-black" />
                 </button>

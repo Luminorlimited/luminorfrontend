@@ -16,6 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import { useParams } from "next/navigation";
 import { useEditclientprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import ShowToastify from "@/utils/ShowToastify";
+import avatar from '@/assets/images/avatar.jpg';
 
 
 const servicesData = [
@@ -172,7 +173,7 @@ export default function Client() {
     // const watchSelectedService = watch("selectedService");
 
     const [selectedImage, setSelectedImage] = useState<string | File>(
-        profileData?.data?.profileUrl || "https://avatar.iran.liara.run/public"
+        profileData?.data?.profileUrl || avatar
     );
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,7 +194,7 @@ export default function Client() {
         } else if (typeof selectedImage === "string" && selectedImage.length) {
             return selectedImage;
         } else {
-            return "https://avatar.iran.liara.run/public";
+            return avatar;
         }
     }, [selectedImage]);
 
@@ -203,6 +204,7 @@ export default function Client() {
             return () => URL.revokeObjectURL(url);
         }
     }, [selectedImage]);
+    console.log(profileData);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -252,29 +254,29 @@ export default function Client() {
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" defaultValue={profileData?.data?.client?.name?.firstName || ''} {...register("firstName", { required: "First name is required" })} onChange={(e) => setValue("firstName", e.target.value)}
+                                    <input id="fname" defaultValue={profileData?.data?.client?.name?.firstName || ''} {...register("firstName")} onChange={(e) => setValue("firstName", e.target.value)}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="first name" />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" defaultValue={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName", { required: "Last name is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("lastName", e.target.value)} placeholder="last name" />
+                                    <input id="lname" defaultValue={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("lastName", e.target.value)} placeholder="last name" />
                                 </div>
                             </div>
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="companyname" className="block text-sm mb-2">Company name *</label>
-                                    <input {...register("companyName", { required: "Company name is required" })}
+                                    <input {...register("companyName")}
                                         defaultValue={profileData?.data?.companyName || ''} id="companyname" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write company name" />
                                 </div>
                                 <div>
                                     <label htmlFor="companyweb" className="block text-sm mb-2">Company website *</label>
-                                    <input id="companyweb" defaultValue={profileData?.data?.companyWebsite || ''} {...register("companyWebsite", { required: "Company website is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="www.companyname.com" />
+                                    <input id="companyweb" defaultValue={profileData?.data?.companyWebsite || ''} {...register("companyWebsite")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="www.companyname.com" />
                                 </div>
                             </div>
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="phn" className="block text-sm mb-2">Phone Number *</label>
-                                    <input id="phn" defaultValue={profileData?.data?.phoneNumber || ''} {...register("phoneNumber", { required: "Phone number is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="0987654 456" />
+                                    <input id="phn" defaultValue={profileData?.data?.phoneNumber || ''} {...register("phoneNumber")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="0987654 456" />
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm mb-2">Email *</label>
@@ -283,7 +285,7 @@ export default function Client() {
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="loc">Location *</label>
-                                <input id="loc"  {...register("loc", { required: "Location is required" })} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="USA" />
+                                <input id="loc"  {...register("loc")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="USA" />
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="problemArea">Problem areas or Skills needed</label>

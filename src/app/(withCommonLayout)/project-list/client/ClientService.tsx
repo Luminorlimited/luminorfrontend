@@ -1,26 +1,17 @@
-'use client'
-import { ReactNode, useEffect, useState } from "react";
-import { MobileSidebar, Sidebar } from "./Sidebar";
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-// import { initializeFilteredData } from "@/redux/api/filterSlice";
+// ClientService.tsx
+'use client';
+import { useState } from "react";
+import ProjectList from "../ProjectList";
+import { MobileSidebar, Sidebar } from "../Sidebar";
 
 export type Filters = {
     industry: string[];
     timeline: string[];
     skillType: string[];
-    [key:string]: string[];
+    [key: string]: string[];
 };
-export default function FilteredComponent({ children }: { children: ReactNode }) {
 
-    // const dispatch = useDispatch();
-
-    // const filteredData = useSelector((state: RootState) => state.filter.filteredData);
-
-    // useEffect(() => {
-    //     dispatch(initializeFilteredData());
-    // }, [dispatch]);
+const ClientService = () => {
     const [filters, setFilters] = useState<Filters>({
         industry: [],
         timeline: [],
@@ -38,10 +29,12 @@ export default function FilteredComponent({ children }: { children: ReactNode })
                         <Sidebar setFilters={setFilters} />
                     </div>
                     <div className="py-3 w-full">
-                        {children && React.cloneElement(children as React.ReactElement)}
+                        <ProjectList FilteredData={filters} />
                     </div>
                 </div>
             </div>
         </div>
     );
-}
+};
+
+export default ClientService;
