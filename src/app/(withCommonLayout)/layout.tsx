@@ -4,6 +4,7 @@ import Navbar from "@/components/shared/navbar/Navbar";
 import { usePathname } from "next/navigation";
 import React, { ReactNode } from "react";
 
+
 const CommonLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   console.log(pathname);

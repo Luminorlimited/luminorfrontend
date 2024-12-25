@@ -18,7 +18,6 @@ import { useEditclientprofileMutation, useGetProfileQuery } from "@/redux/api/us
 import ShowToastify from "@/utils/ShowToastify";
 import avatar from '@/assets/images/avatar.jpg';
 
-
 const servicesData = [
     {
         icon: <BusinesSvg />,
@@ -172,8 +171,10 @@ export default function Client() {
 
     // const watchSelectedService = watch("selectedService");
 
+    console.log(profileData?.data?.profileUrl);
+
     const [selectedImage, setSelectedImage] = useState<string | File>(
-        profileData?.data?.profileUrl || avatar
+        profileData?.data?.profileUrl || avatar.src
     );
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,23 +189,24 @@ export default function Client() {
         }
     };
 
+    // Determine the image source to display
     const imageSrc = useMemo(() => {
         if (selectedImage instanceof File) {
-            return URL.createObjectURL(selectedImage);
-        } else if (typeof selectedImage === "string" && selectedImage.length) {
-            return selectedImage;
-        } else {
-            return avatar;
+            return URL.createObjectURL(selectedImage); // If it's a file, create an object URL
         }
+        if (typeof selectedImage === "string" && selectedImage.length) {
+            return selectedImage; // If it's a valid string URL, use it
+        }
+        return avatar.src; // Fallback to default avatar
     }, [selectedImage]);
 
+    // Revoke object URLs when the component unmounts or the file changes
     useMemo(() => {
         if (selectedImage instanceof File) {
             const url = URL.createObjectURL(selectedImage);
-            return () => URL.revokeObjectURL(url);
+            return () => URL.revokeObjectURL(url); // Cleanup object URL
         }
     }, [selectedImage]);
-    console.log(profileData);
 
     return (
         <div className="min-h-screen flex flex-col">

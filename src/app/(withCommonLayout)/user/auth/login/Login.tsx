@@ -9,7 +9,6 @@ import ImageCarousel from "./ImageCarousel/ImageCarousel";
 import { useLoginUserMutation } from "@/redux/api/userApi";
 import ShowToastify from "@/utils/ShowToastify";
 import { useRouter } from "next/navigation";
-import { ToastContainer } from "react-toastify";
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
@@ -201,7 +200,7 @@ export default function Login() {
                 </div>
             </div>
 
-        <ToastContainer position="top-right" />
+
 
         </div>
     );

@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import ChatWindow from "./ChatWindow";
+import ChatWindow from "@/app/(withCommonLayout)/chat/ChatWindow";
 import Button from "@/components/common/Button";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
 import { FaRegSmile } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
-import AllUsers from "./AllUsers";
+import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import { Conversation, conversations } from "@/lib/fakeData/allMessage";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";

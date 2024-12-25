@@ -14,7 +14,7 @@ import { setclientFilter } from '@/redux/ReduxFunction';
 
 
 interface ProjectListProps {
-    FilteredData: { industry: string[]; timeline: string[]; skillType: string[] };
+    FilteredData: { industry: string[]; timeline: string[]; skillType: string[], projectMin: string, projectMax: string };
 }
 
 
@@ -27,9 +27,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
     // const [lazyprofessional ] = useLazyProfessionalListQuery({filteredData})
 
-    const [professionalLazyData] = useLazyProfessionalListQuery();
-    const [clientLazyData] = useLazyClientFilterListQuery();
-    const { data: consultingData } = useClientListQuery({});
+    const [professionalLazyData] =useLazyClientFilterListQuery();
+    const [clientLazyData] =  useLazyProfessionalListQuery();
+
+    const { data: clientData } = useClientListQuery({});
     const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
     const [filteredData, setFilteredData] = useState(null);
 
@@ -38,7 +39,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         // Determine which lazy query to call based on the route
         const fetchFilteredData = async () => {
             if (route === "/project-list/professional") {
-                const response = await professionalLazyData({ FilteredData });
+                const response = await professionalLazyData(FilteredData);
                 setFilteredData(response?.data);
                 // console.log("response");
             } else {
@@ -49,22 +50,20 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
         fetchFilteredData(); // Trigger the fetch
     }, [route, FilteredData, professionalLazyData, clientLazyData]);
-    console.log('filter aaaadata is:', FilteredData);
 
 
     const servicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
         ? filteredData
-        : consultingData;
+        : clientData;
     const professionalServicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
         ? filteredData
         : professionalData;
 
-    console.log('my services to show', professionalServicesToShow);
+    // console.log('my services to show', professionalServicesToShow);
 
     useEffect(() => {
         if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
-            // Clear filters on initial load or when filters are reset
-            dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
+            dispatch(setclientFilter({ industry: [], timeline: [], skillType: [], projectMin: "", projectMax: ""}));
         }
     }, [FilteredData, dispatch]);
     console.log({ industry: [], timeline: [], skillType: [] });
@@ -75,7 +74,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
     // const data = servicesToShow?.data || [];
     const indexOfLastItem = currentPage * itemsPerPage;
-    const data = (route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data) || []; // Ensure `data` is always an array
+    const data = (route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data) || []; 
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
@@ -92,7 +91,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         <div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
                 {route === '/project-list/professional' ? (
-                    professionalData?.data.map((data: any, index: number) => (
+                    currentItems?.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -134,7 +133,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                             />
                                         </div>
                                         <span className="text-sm font-medium text-gray-900">
-                                            {data.client?.name?.firstName || "Unknown"} {data.client?.name?.lastName || ""}
+                                            {data.userDetails?.name?.firstName || "Unknown"} {data.userDetails?.name?.lastName || ""}
                                         </span>
                                     </div>
 
@@ -158,7 +157,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                         </span>
                                     </div>
 
-                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={'/chat'}>Connect Now</Link>
+                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat/${data._id}`}>Connect Now</Link>
 
                                     {/* <Button>Connect Now</Button> */}
                                 </div>
@@ -231,7 +230,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                             ${data.budgetRange?.max || "N/A"}
                                         </span>
                                     </div>
-                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={'/chat'}>Connect Now</Link>
+                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat/${data._id}`}>Connect Now</Link>
                                 </div>
                             </div>
                         </div>

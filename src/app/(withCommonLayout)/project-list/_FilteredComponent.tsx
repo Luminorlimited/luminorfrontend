@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode,  useState } from "react";
+import { ReactNode, useState } from "react";
 import { MobileSidebar, Sidebar } from "./Sidebar";
 import React from "react";
 
@@ -9,7 +9,9 @@ export type Filters = {
     industry: string[];
     timeline: string[];
     skillType: string[];
-    [key:string]: string[];
+    projectMax: string;
+    projectMin: string;
+    [key: string]: string[] | string
 };
 export default function FilteredComponent({ children }: { children: ReactNode }) {
 
@@ -24,6 +26,8 @@ export default function FilteredComponent({ children }: { children: ReactNode })
         industry: [],
         timeline: [],
         skillType: [],
+        projectMax: "",
+        projectMin: "",
     });
     console.log(filters);
 

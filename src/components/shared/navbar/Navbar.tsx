@@ -24,8 +24,10 @@ import { BiMessage } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
-import demoimg from '@/assets/images/demoimg.png'
+// import demoimg from '@/assets/images/demoimg.png'
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { useGetProfileQuery } from "@/redux/api/userApi";
+
 
 
 const Navbar = () => {
@@ -41,6 +43,11 @@ const Navbar = () => {
 
   const decodedToken = token ? (jwt.decode(token) as DecodedToken) : null;
   console.log(decodedToken);
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const { data: profileData } = decodedToken ? useGetProfileQuery(decodedToken.id) : { data: null };
+  
+ const demoimg= profileData?.data?.profileUrl
+  
 
 
   // const client = useSelector((state: RootState) => state.Auth.client);
