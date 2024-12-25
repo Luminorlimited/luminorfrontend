@@ -1,6 +1,6 @@
 'use client'
 import Image, { StaticImageData } from 'next/image';
-import { Paperclip, Send, Smile } from 'lucide-react';
+import { Paperclip, Send } from 'lucide-react';
 import demoprofile from '@/assets/images/demoimg.png';
 import { IoVideocamOutline } from 'react-icons/io5';
 import offer from '@/assets/images/offer.png'
@@ -69,7 +69,8 @@ const messages: Message[] = [
 
 export default function Chat() {
 
-  const [inputMessage, setInputMessage] = useState('');
+    const [inputMessage, setInputMessage] = useState('');
+    console.log(inputMessage);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 

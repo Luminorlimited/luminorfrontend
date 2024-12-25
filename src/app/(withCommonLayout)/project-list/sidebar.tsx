@@ -6,9 +6,7 @@ import { useCallback, useState } from "react"
 import { HiChevronUp, HiChevronDown } from "react-icons/hi"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/redux/store"
-import { useClientFilterListQuery } from "@/redux/api/projectApi"
+import { useDispatch } from "react-redux"
 import { setclientFilter } from "@/redux/ReduxFunction"
 
 export type Filters = {
@@ -93,32 +91,28 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
 
     const pathName = usePathname()
 
-    const industry = ["tech", "marketing", "finance"]
+    // const industry = ["tech", "marketing", "finance"]
 
     // add query params to the url
-    const { data: filterData } = useClientFilterListQuery({ industry })
 
-    // const dispatch = useDispatch()
-    // dispatch()
-    // console.log(filterData);
+    
+    // const { data: filterData } = useClientFilterListQuery({ industry: [], timeline: [], skillType: [] });
+    // const { data: professionalfilterData } = useProfessionalFilterListQuery({ industry: [], timeline: [], skillType: [] });
+
+    // console.log("filterData", professionalfilterData);
     // setclientFilter(filterData)
 
-    const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+    // const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
-    // const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { value, checked } = event.target;
-    //     setSelectedFilters(prev =>
-    //         checked ? [...prev, value] : prev.filter(filter => filter !== value)
-    //     );
-    // };
+   
 
 
 
 
     const industryOptions = [
-        { label: 'Tech', value: 'Tech' },
-        { label: 'Marketing', value: 'Marketing' },
-        { label: 'Finance', value: 'Finance' },
+        { label: 'Tech', value: 'tech' },
+        { label: 'Marketing', value: 'marketing' },
+        { label: 'Finance', value: 'finance' },
     ];
 
     const timelineOptions = [
@@ -151,23 +145,25 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
     const dispatch = useDispatch();
 
     const handleFilterChange = (section: keyof SelectedItems, value: string) => {
-        setSelectedItems((prevSelected) => {
-            const updatedSelection = { ...prevSelected };
-            const sectionArray = updatedSelection[section];
-            if (sectionArray.includes(value)) {
-                updatedSelection[section] = sectionArray.filter((item) => item !== value);
-            } else {
-                updatedSelection[section] = [...sectionArray, value];
-            }
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                [section]: updatedSelection[section],  
-            }));
+        // Update the local state for selected items
+        const updatedSelection = { ...selectedItems };
+        const sectionArray = updatedSelection[section];
+        if (sectionArray.includes(value)) {
+            updatedSelection[section] = sectionArray.filter((item) => item !== value);
+        } else {
+            updatedSelection[section] = [...sectionArray, value];
+        }
+        // Update local state
+        setSelectedItems(updatedSelection);
+        // Update parent state and dispatch action
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            [section]: updatedSelection[section],
+        }));
 
-            dispatch(setclientFilter(updatedSelection));
-            return updatedSelection;
-        });
+        dispatch(setclientFilter(updatedSelection));
     };
+
 
 
     return (
@@ -346,7 +342,7 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
                                 />
                             </div>
                             <div className="w-full p-4 text-center border rounded-lg border-gray-200">
-                                ${budgetMinValue} - ${budgetMaxValue}
+                                {budgetMinValue} Km - {budgetMaxValue} Km
                             </div>
                         </div>
                     </div>

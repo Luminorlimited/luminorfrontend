@@ -1,18 +1,9 @@
-import ProjectList from "../ProjectList";
-type ProjectListProps = {
-    filteredData: {
-        id: number;
-        industry: string;
-        timeline: string;
-        skillType: string;
-    }[];
-};
+// page.tsx
 
+import ProfessionalService from "./ProfessionalService";
 
-export default function Page({filteredData}: ProjectListProps) {
-    return (
-        <>
-            <ProjectList FilteredData={filteredData} />
-        </>
-    );
+const Page = () => {
+    return <ProfessionalService />;
 }
+
+export default Page;
