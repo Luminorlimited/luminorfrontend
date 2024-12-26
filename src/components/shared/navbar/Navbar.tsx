@@ -27,7 +27,7 @@ import Image from "next/image";
 // import demoimg from '@/assets/images/demoimg.png'
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useGetProfileQuery } from "@/redux/api/userApi";
-// import { cookies } from "next/headers";
+import demoprofile from '@/assets/images/avatar.jpg'
 
 
 
@@ -47,7 +47,7 @@ const Navbar = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { data: profileData } = decodedToken ? useGetProfileQuery(decodedToken.id) : { data: null };
   
- const demoimg= profileData?.data?.profileUrl
+  const demoimg = profileData?.data?.profileUrl || demoprofile;
   
 
 
