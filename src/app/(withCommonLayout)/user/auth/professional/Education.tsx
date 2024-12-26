@@ -68,23 +68,38 @@ export default function Education({ register, handleNext, setValue }: any) {
             <Label htmlFor="edu">
               Educational Background <span className="text-red-500">*</span>
             </Label>
-            <Input
-              id="edu"
-              placeholder="Educational Background"
-              required
-              {...register("edubackground")}
-              className="h-12 rounded-xl border-[#E5E7EB]"
-            />
+            <select
+                id="edu"
+                {...register("edubackground")}
+                required
+                className="h-12 rounded-xl border-[#E5E7EB] w-full px-3"
+            >
+              <option value="" disabled selected>
+                Select your educational background
+              </option>
+              <option value="high_school">High School Diploma or Equivalent</option>
+              <option value="vocational_certificate">Vocational Certificate or Credential</option>
+              <option value="some_college">Some College</option>
+              <option value="associates_degree">Associate&apos;s Degree</option>
+              <option value="bachelors_degree">Bachelor&apos;s Degree</option>
+              <option value="masters_degree">Master&apos;s Degree</option>
+              <option value="phd">PhD</option>
+              <option value="md_od">MD, OD or Related</option>
+              <option value="dds_dmd">DDS, DMD or Related</option>
+              <option value="jd">JD</option>
+              <option value="other_professional_degree">Other Professional Degree</option>
+            </select>
           </div>
+
           <div className="space-y-2 w-full">
             <Label htmlFor="eduquality">
               Relevant professional qualification
             </Label>
             <Input
-              id="eduquality"
-              placeholder="Relevant professional qualification"
-              {...register("eduqualification")}
-              className="h-12 rounded-xl border-[#E5E7EB]"
+                id="eduquality"
+                placeholder="Relevant professional qualification"
+                {...register("eduqualification")}
+                className="h-12 rounded-xl border-[#E5E7EB]"
             />
           </div>
         </div>
@@ -95,27 +110,27 @@ export default function Education({ register, handleNext, setValue }: any) {
           <div className="flex flex-wrap items-center gap-2 p-2 border rounded-xl border-[#E5E7EB]">
             {/* Render Tags */}
             {tags.map((tag, index) => (
-              <div
-                key={index}
-                className="flex items-center bg-blue-800 text-white px-3 py-1 rounded-[12px]"
-              >
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => removeTag(tag)}
-                  className="ml-2 text-red-500 hover:text-red-700"
+                <div
+                    key={index}
+                    className="flex items-center bg-blue-800 text-white px-3 py-1 rounded-[12px]"
                 >
-                  ×
-                </button>
-              </div>
+                  {tag}
+                  <button
+                      type="button"
+                      onClick={() => removeTag(tag)}
+                      className="ml-2 text-red-500 hover:text-red-700"
+                  >
+                    ×
+                  </button>
+                </div>
             ))}
             {/* Input Field */}
             <input
-              id="techskill"
-              placeholder="Enter skills and press Enter"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
+                id="techskill"
+                placeholder="Enter skills and press Enter"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={handleKeyDown}
               className="h-10 border-none outline-none flex-grow"
             />
           </div>

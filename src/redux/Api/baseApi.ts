@@ -5,7 +5,7 @@ import { store } from "@/redux/store";
 export const baseApi = createApi({
     reducerPath: 'baseApi', // The key for this API in the Redux store
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://luminor-backend-topaz.vercel.app/api/v1',
+        baseUrl: "https://luminor-backend-topaz.vercel.app/api/v1",
         prepareHeaders: (headers) => {
             const token = store.getState().Auth.token;
             if (token) {
@@ -15,7 +15,7 @@ export const baseApi = createApi({
         },
     }),
     endpoints: () => ({}),
-    tagTypes: ["User", "projects"]
+    tagTypes: ["User", "projects", "message"]
 });
 
 // Export hooks for usage in functional components

@@ -20,7 +20,7 @@ export const store = configureStore({
     reducer: {
         Auth: persistedAuthReducer,
         // project: projectSlice.reducer, // No persistence for project
-        [baseApi.reducerPath]: baseApi.reducer, // RTK Query API reducer
+        [baseApi.reducerPath]: baseApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

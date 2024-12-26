@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -7,7 +8,7 @@ import { AiOutlinePaperClip } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
 import { FaRegSmile } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
-import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
+// import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import { Conversation, conversations } from "@/lib/fakeData/allMessage";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
@@ -16,19 +17,31 @@ import { MdOutlineKeyboardVoice } from "react-icons/md";
 import EmojiPicker from 'emoji-picker-react';
 
 import { Video, FileText, Images } from 'lucide-react';
+// import showToastify from "@/utils/ShowToastify";
+import io, { Socket } from "socket.io-client";
+import { useGetMessageQuery, useSendMessageMutation } from "@/redux/api/messageApi";
 
+// interface Message {
+//   id: number;
+//   content: string;
+//   sender: "sender" | "receiver";
+//   timestamp: Date;
+// }
+const socket: Socket = io("http://localhost:5001/api/v1/messages")
+
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Page: React.FC = () => {
   const [messages, setMessages] = useState<Conversation | null>(null);
 
   // Set default message template for one user
   const defaultMessages = conversations[0]; // Set initial conversation to the first one
-
-  const showMessage = (e: number) => {
-    console.log(e);
-    const data = conversations.find((data) => data.conversationId === e);
-    if (data) {
-      setMessages(data);
-    }
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const showMessage = (conversationId: string) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { data } = useGetMessageQuery({ user1: "currentUserId", user2: conversationId }); // Adjust users
+    setMessages(data?.messages || []);
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,11 +51,9 @@ const Page: React.FC = () => {
 
   const handleClick = () => {
     setTimeout(() => {
-      // showFileBtn(false)
       showFileBtn((prev) => !prev)
     }, 200)
   }
-  const [inputMessage, setInputMessage] = useState('');
 
   const handleEmojiClick = (emojiObject: any) => {
     setInputMessage((prevInput) => prevInput + emojiObject.emoji);
@@ -82,6 +93,60 @@ const Page: React.FC = () => {
     }, 200); // 300ms delay to prevent multiple clicks
   };
 
+  const [inputMessage, setInputMessage] = useState<string>('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputMessage(e.target.value);
+    socket.emit("typing", { senderId: "currentUserId"})
+  };
+
+  const [sendMessage] = useSendMessageMutation()
+
+  const onSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Prevent default form submission
+    if (!inputMessage.trim()) return;
+
+    socket.emit("message", {
+      sender: "currentUserId",
+      content: inputMessage.trim(),
+      timestamp: new Date(),
+    })
+
+    await sendMessage({
+      sender: "currentUserId", // Replace with actual sender ID
+      content: inputMessage.trim(),
+      timestamp: new Date(),
+    });
+    setInputMessage(' ')
+
+  };
+
+
+
+  useEffect(() => {
+    socket.on("message", (newMessage) => {
+      setMessages((prevMessages) => {
+        if (!prevMessages) return null;
+        return {
+          ...prevMessages,
+          messages: [...prevMessages.messages, newMessage],
+        };
+      });
+    });
+
+    socket.on("typing", (data) => {
+      setIsTyping(data.senderId !== "currentUserId"); // Adjust senderId comparison
+    });
+
+    return () => {
+      socket.off("message");
+      socket.off("typing");
+    };
+  }, []);
+
+
+
+
   return (
     <section>
       <div className="container mx-auto pt-[20px]">
@@ -104,7 +169,7 @@ const Page: React.FC = () => {
               />
             </div>
 
-            <AllUsers conversations={conversations} showMessage={showMessage} />
+            {/* <AllUsers conversations={conversations}  /> */}
           </div>
         </div>
 
@@ -165,47 +230,65 @@ const Page: React.FC = () => {
           </div>
 
           {/* Message Input */}
-          <div className="p-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
-            <AiOutlinePaperClip
-              onClick={handleClick}
-              className="text-xl absolute left-7 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
-            />
-
-            {/* File and Image Buttons */}
+          <form onSubmit={onSendMessage}>
             <div
-              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
-                }`}
-            >
-              <span className="bg-primary rounded-full ">
-                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
-              </span>
-              <span className="bg-primary rounded-full ">
-                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
-              </span>
-            </div>
-            <textarea              
-              placeholder="Write message here..."
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              className="flex-1 bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
-            />
-            <span className="bg-primary rounded-full">
-              <FiSend className="text-lg  text-white cursor-pointer flex items-center justify-center w-8 h-8 p-2" />
-            </span>
+              className="p-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
+              <AiOutlinePaperClip
+                onClick={handleClick}
+                className="text-xl absolute left-7 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
+              />
 
-            <FaRegSmile onClick={toggleEmojiPicker} className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            {showEmojiPicker && (
-              <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
-                <EmojiPicker onEmojiClick={handleEmojiClick} />
+              {/* File and Image Buttons */}
+              <div
+                className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
+                  }`}
+              >
+                <span className="bg-primary rounded-full ">
+                  <FileText
+                    className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
+                </span>
+                <span className="bg-primary rounded-full ">
+                  <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
+                </span>
               </div>
-            )}
-            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            <Video className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-          </div>
+              <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4">
+                <textarea
+                  placeholder="Write message here..."
+                  value={inputMessage}
+                  onChange={handleInputChange}
+                  className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
+                />
+                <button type="submit" className="bg-primary rounded-full">
+                  <FiSend className="text-lg text-white cursor-pointer w-8 h-8 p-2" />
+                </button>
+              </form>
+
+              <FaRegSmile onClick={toggleEmojiPicker}
+                className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+              {showEmojiPicker && (
+                <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
+                  <EmojiPicker onEmojiClick={handleEmojiClick} />
+                </div>
+              )}
+              <MdOutlineKeyboardVoice
+                className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+              <Video
+                className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            </div>
+          </form>
+
         </div>
       </div>
     </section>
   );
 };
 
-export default Page;
+
+function setIsTyping(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+// export default Page;
+// function setIsTyping(arg0: boolean) {
+//   throw new Error("Function not implemented.");
+// }
+
