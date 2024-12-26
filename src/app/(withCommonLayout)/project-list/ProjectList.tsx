@@ -14,7 +14,7 @@ import { setclientFilter } from '@/redux/ReduxFunction';
 
 
 interface ProjectListProps {
-    FilteredData: { industry: string[]; timeline: string[]; skillType: string[], projectMin: string, projectMax: string };
+    FilteredData: { industry: string[]; timeline: string[]; skillType: string[] };
 }
 
 
@@ -27,8 +27,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
     // const [lazyprofessional ] = useLazyProfessionalListQuery({filteredData})
 
-    const [professionalLazyData] =useLazyClientFilterListQuery();
-    const [clientLazyData] =  useLazyProfessionalListQuery();
+    const [professionalLazyData] = useLazyProfessionalListQuery();
+    const [clientLazyData] = useLazyClientFilterListQuery();
 
     const { data: clientData } = useClientListQuery({});
     const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
@@ -39,7 +39,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         // Determine which lazy query to call based on the route
         const fetchFilteredData = async () => {
             if (route === "/project-list/professional") {
-                const response = await professionalLazyData(FilteredData);
+                const response = await professionalLazyData({ FilteredData });
                 setFilteredData(response?.data);
                 // console.log("response");
             } else {
@@ -50,6 +50,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
         fetchFilteredData(); // Trigger the fetch
     }, [route, FilteredData, professionalLazyData, clientLazyData]);
+    console.log('filter aaaadata is:', FilteredData);
 
 
     const servicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
@@ -59,11 +60,12 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         ? filteredData
         : professionalData;
 
-    // console.log('my services to show', professionalServicesToShow);
+    console.log('my services to show', professionalServicesToShow);
 
     useEffect(() => {
         if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
-            dispatch(setclientFilter({ industry: [], timeline: [], skillType: [], projectMin: "", projectMax: ""}));
+            // Clear filters on initial load or when filters are reset
+            dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
         }
     }, [FilteredData, dispatch]);
     console.log({ industry: [], timeline: [], skillType: [] });
@@ -74,7 +76,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
     // const data = servicesToShow?.data || [];
     const indexOfLastItem = currentPage * itemsPerPage;
-    const data = (route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data) || []; 
+    const data = (route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data) || []; // Ensure `data` is always an array
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
@@ -91,7 +93,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         <div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
                 {route === '/project-list/professional' ? (
-                    currentItems?.map((data: any, index: number) => (
+                    professionalData?.data.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -133,7 +135,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                             />
                                         </div>
                                         <span className="text-sm font-medium text-gray-900">
-                                            {data.userDetails?.name?.firstName || "Unknown"} {data.userDetails?.name?.lastName || ""}
+                                            {data.client?.name?.firstName || "Unknown"} {data.client?.name?.lastName || ""}
                                         </span>
                                     </div>
 

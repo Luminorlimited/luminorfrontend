@@ -11,8 +11,8 @@ interface AuthInterFace {
         industry: [],
         timeline: [],
         skillType: [],
-        projectMin: '',
-        projectMax: '',
+        // projectMin: '',
+        // projectMax: '',
     },
 }
 
@@ -29,8 +29,8 @@ const initialState: AuthInterFace = {
         industry: [],
         timeline: [],
         skillType: [],
-        projectMin: "",
-        projectMax: "",
+        // projectMin: "",
+        // projectMax: "",
     },
 };
 

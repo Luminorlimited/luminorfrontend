@@ -13,9 +13,7 @@ export type Filters = {
     industry: string[];
     timeline: string[];
     skillType: string[];
-    projectMax: string;
-    projectMin: string;
-    [key: string]: string[] | string;
+    [key: string]: string[];
 };
 
 export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetStateAction<Filters>> }) {
@@ -23,7 +21,10 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
         industry: true,
         timeline: true,
         skillType: true
+
     })
+
+ 
 
     const toggleSection = (section: keyof typeof openSections) => {
         setOpenSections(prev => ({ ...prev, [section]: !prev[section] }))
@@ -42,7 +43,6 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
         (event: React.ChangeEvent<HTMLInputElement>) => {
             const value = Math.min(Number(event.target.value), budgetMaxValue - minGap);
             setBudgetMinValue(value);
-            console.log(`budget is ${budgetMaxValue}`);
         },
         [budgetMaxValue]
     );
@@ -64,7 +64,21 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
         };
     }, [budgetMinValue, budgetMaxValue]);
 
+    const handleDurationMinChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const value = Math.min(Number(event.target.value), durationMaxValue - minGap);
+            setDurationMinValue(value);
+        },
+        [durationMaxValue]
+    );
 
+    const handleDurationMaxChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            const value = Math.max(Number(event.target.value), durationMinValue + minGap);
+            setDurationMaxValue(value);
+        },
+        [durationMinValue]
+    );
 
     const getDurationProgressStyle = useCallback(() => {
         const left = ((durationMinValue - minPrice) / (maxPrice - minPrice)) * 100;
@@ -75,41 +89,25 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
         };
     }, [durationMinValue, durationMaxValue]);
 
-    const handleProjectDurationChange = useCallback(
-        (minValue: number, maxValue: number) => {
-            setDurationMinValue(minValue);
-            setDurationMaxValue(maxValue);
-            setSelectedItems((prevSelectedItems) => ({
-                ...prevSelectedItems,
-                projectMin: minValue.toString(),
-                projectMax: maxValue.toString(),
-            }));
-            setFilters((prevFilters) => ({
-                ...prevFilters,
-                projectMin: minValue.toString(),
-                projectMax: maxValue.toString(),
-            }));
-        },
-        [setFilters]
-    );
-
-    const handleDurationMinChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const value = Math.min(Number(event.target.value), durationMaxValue - minGap);
-            handleProjectDurationChange(value, durationMaxValue);
-        },
-        [durationMaxValue, handleProjectDurationChange]
-    );
-
-    const handleDurationMaxChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
-            const value = Math.max(Number(event.target.value), durationMinValue + minGap);
-            handleProjectDurationChange(durationMinValue, value);
-        },
-        [durationMinValue, handleProjectDurationChange]
-    );
-
     const pathName = usePathname()
+
+    // const industry = ["tech", "marketing", "finance"]
+
+    // add query params to the url
+
+    
+    // const { data: filterData } = useClientFilterListQuery({ industry: [], timeline: [], skillType: [] });
+    // const { data: professionalfilterData } = useProfessionalFilterListQuery({ industry: [], timeline: [], skillType: [] });
+
+    // console.log("filterData", professionalfilterData);
+    // setclientFilter(filterData)
+
+    // const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+
+   
+
+
+
 
     const industryOptions = [
         { label: 'Tech', value: 'tech' },
@@ -137,6 +135,7 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
         skillType: string[];
     };
 
+
     const [selectedItems, setSelectedItems] = useState<SelectedItems>({
         industry: [],
         timeline: [],
@@ -146,6 +145,7 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
     const dispatch = useDispatch();
 
     const handleFilterChange = (section: keyof SelectedItems, value: string) => {
+        // Update the local state for selected items
         const updatedSelection = { ...selectedItems };
         const sectionArray = updatedSelection[section];
         if (sectionArray.includes(value)) {
@@ -159,16 +159,12 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
         setFilters((prevFilters) => ({
             ...prevFilters,
             [section]: updatedSelection[section],
-            projectMin: durationMinValue.toString(),
-            projectMax: durationMaxValue.toString(),
         }));
 
-        dispatch(setclientFilter({
-            ...updatedSelection,
-            projectMin: durationMinValue.toString(),
-            projectMax: durationMaxValue.toString(),
-        }));
+        dispatch(setclientFilter(updatedSelection));
     };
+
+
 
     return (
         <div className="my-4 w-full max-w-md space-y-4 p-4 font-sans border rounded-[15px] lg:overflow-auto overflow-y-scroll">
@@ -249,6 +245,8 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
                 )}
             </div>
 
+
+
             {pathName === '/project-list/professional' ? (
                 <div className="grid grid-rows-2 gap-6 bg-white p-4 shadow-md rounded-[15px]">
                     <div>
@@ -278,7 +276,7 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
                                 />
                             </div>
                             <div className="w-full p-4 text-center border rounded-lg border-gray-200">
-                                {durationMinValue} days - {durationMaxValue} days
+                                ${durationMinValue} - ${durationMaxValue}
                             </div>
                         </div>
                     </div>
@@ -354,6 +352,7 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
     )
 }
 
+
 export function MobileSidebar({ setFilters }: { setFilters: React.Dispatch<React.SetStateAction<Filters>> }) {
     return (
         <Sheet>
@@ -368,3 +367,4 @@ export function MobileSidebar({ setFilters }: { setFilters: React.Dispatch<React
         </Sheet>
     )
 }
+

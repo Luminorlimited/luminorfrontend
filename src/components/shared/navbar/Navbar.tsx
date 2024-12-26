@@ -27,6 +27,7 @@ import Image from "next/image";
 // import demoimg from '@/assets/images/demoimg.png'
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useGetProfileQuery } from "@/redux/api/userApi";
+// import { cookies } from "next/headers";
 
 
 
@@ -56,7 +57,7 @@ const Navbar = () => {
 
   const handleLogOut = () => {
     dispatch(logOut())
-    // cookies.remove("token")
+    // cookies().delete("token")
     router.push('/')
   }
 

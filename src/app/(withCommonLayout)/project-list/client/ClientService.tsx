@@ -8,9 +8,7 @@ export type Filters = {
     industry: string[];
     timeline: string[];
     skillType: string[];
-    projectMin: string;
-    projectMax: string;
-    [key: string]: string[] | string
+    [key: string]: string[] 
 };
 
 const ClientService = () => {
@@ -18,8 +16,6 @@ const ClientService = () => {
         industry: [],
         timeline: [],
         skillType: [],
-        projectMin: "",
-        projectMax: "",
     });
 
     return (

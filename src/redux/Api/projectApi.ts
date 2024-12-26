@@ -12,7 +12,7 @@ const projectApi = baseApi.injectEndpoints({
         }),
         //filtering api
         clientFilterList: build.query({
-            query: ({ industry, timeline, skillType, projectMin, projectMax }: { industry: string[], timeline: string[], skillType: string[], projectMin: string, projectMax: string }) => {
+            query: ({ industry, timeline, skillType}: { industry: string[], timeline: string[], skillType: string[] }) => {
             const queryParams = [];
 
             // Format arrays manually as strings with double quotes
@@ -25,12 +25,12 @@ const projectApi = baseApi.injectEndpoints({
             if (skillType && skillType.length > 0) {
                 queryParams.push(`skillType=[${skillType.map((item: any) => `"${item}"`).join(',')}]`);
             }
-            if (projectMin) {
-                queryParams.push(`projectMin=${projectMin}`);
-            }
-            if (projectMax) {
-                queryParams.push(`projectMax=${projectMax}`);
-            }
+            // if (projectMin) {
+            //     queryParams.push(`projectMin=${projectMin}`);
+            // }
+            // if (projectMax) {
+            //     queryParams.push(`projectMax=${projectMax}`);
+            // }
 
             const queryString = queryParams.join('&');
 

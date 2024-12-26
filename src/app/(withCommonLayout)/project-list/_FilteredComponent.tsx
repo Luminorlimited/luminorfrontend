@@ -1,5 +1,5 @@
 'use client'
-import { ReactNode, useState } from "react";
+import { ReactNode,  useState } from "react";
 import { MobileSidebar, Sidebar } from "./Sidebar";
 import React from "react";
 
@@ -9,9 +9,7 @@ export type Filters = {
     industry: string[];
     timeline: string[];
     skillType: string[];
-    projectMax: string;
-    projectMin: string;
-    [key: string]: string[] | string
+    [key:string]: string[];
 };
 export default function FilteredComponent({ children }: { children: ReactNode }) {
 
@@ -26,11 +24,8 @@ export default function FilteredComponent({ children }: { children: ReactNode })
         industry: [],
         timeline: [],
         skillType: [],
-        projectMax: "",
-        projectMin: "",
     });
     console.log(filters);
-
     return (
         <div className="bg-slate-50">
             <div className="container mx-auto">

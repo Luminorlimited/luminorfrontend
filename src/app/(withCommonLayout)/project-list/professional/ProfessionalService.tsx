@@ -8,20 +8,15 @@ export type Filters = {
     industry: string[];
     timeline: string[];
     skillType: string[];
-    projectMin: string;
-    projectMax: string;
-    [key: string]: string[] | string
+    [key: string]: string[];
 };
 
-const ProfessionalService = () => {
+const ClientService = () => {
     const [filters, setFilters] = useState<Filters>({
         industry: [],
         timeline: [],
         skillType: [],
-        projectMin: '',
-        projectMax: '',
     });
-    // console.log('filters', filters);
 
     return (
         <div className="bg-slate-50">
@@ -42,4 +37,4 @@ const ProfessionalService = () => {
     );
 };
 
-export default ProfessionalService;
+export default ClientService;
