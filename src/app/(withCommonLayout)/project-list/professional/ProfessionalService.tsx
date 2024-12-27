@@ -8,6 +8,7 @@ export type Filters = {
     industry: string[];
     timeline: string[];
     skillType: string[];
+
     [key: string]: string[];
 };
 

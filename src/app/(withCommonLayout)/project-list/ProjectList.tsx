@@ -12,11 +12,9 @@ import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { setclientFilter } from '@/redux/ReduxFunction';
 
-
 interface ProjectListProps {
     FilteredData: { industry: string[]; timeline: string[]; skillType: string[] };
 }
-
 
 const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
@@ -25,25 +23,24 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
     const dispatch = useDispatch();
 
-    // const [lazyprofessional ] = useLazyProfessionalListQuery({filteredData})
-
-    const [professionalLazyData] = useLazyProfessionalListQuery();
-    const [clientLazyData] = useLazyClientFilterListQuery();
+    const [clientLazyData] = useLazyProfessionalListQuery();
+    const [professionalLazyData] = useLazyClientFilterListQuery();
 
     const { data: clientData } = useClientListQuery({});
     const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
     const [filteredData, setFilteredData] = useState(null);
 
-    console.log(professionalData);
+    console.log(`are fucking man`, professionalData?.data);
     useEffect(() => {
         // Determine which lazy query to call based on the route
         const fetchFilteredData = async () => {
             if (route === "/project-list/professional") {
-                const response = await professionalLazyData({ FilteredData });
+                const response = await clientLazyData({ FilteredData });
+                
                 setFilteredData(response?.data);
                 // console.log("response");
             } else {
-                const response = await clientLazyData(FilteredData);
+                const response = await professionalLazyData(FilteredData);
                 setFilteredData(response?.data);
             }
         };
@@ -52,7 +49,6 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     }, [route, FilteredData, professionalLazyData, clientLazyData]);
     console.log('filter aaaadata is:', FilteredData);
 
-
     const servicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
         ? filteredData
         : clientData;
@@ -60,7 +56,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         ? filteredData
         : professionalData;
 
-    console.log('my services to show', professionalServicesToShow);
+    console.log('my client', clientData);
+    console.log('my professional', professionalData);
 
     useEffect(() => {
         if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
@@ -70,11 +67,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     }, [FilteredData, dispatch]);
     console.log({ industry: [], timeline: [], skillType: [] });
 
-
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
 
-    // const data = servicesToShow?.data || [];
     const indexOfLastItem = currentPage * itemsPerPage;
     const data = (route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data) || []; // Ensure `data` is always an array
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -87,7 +82,6 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     };
 
     console.log('currentItems', currentItems);
-
 
     return (
         <div>
