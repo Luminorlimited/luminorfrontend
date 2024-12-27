@@ -1,4 +1,4 @@
-import baseApi from "./baseApi";
+import baseApi from "@/redux/Api/baseApi";
 import { ClientData, IProfessional } from "@/utils/Interfaces";
 
 

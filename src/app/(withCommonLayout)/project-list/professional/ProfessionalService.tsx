@@ -2,7 +2,7 @@
 'use client';
 import { useState } from "react";
 import ProjectList from "../ProjectList";
-import { MobileSidebar, Sidebar } from "../Sidebar";
+import { MobileSidebar, Sidebar } from "../sidebar";
 
 export type Filters = {
     industry: string[];

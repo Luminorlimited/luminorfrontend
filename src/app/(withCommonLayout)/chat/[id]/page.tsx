@@ -17,12 +17,13 @@ import EmojiPicker from 'emoji-picker-react';
 
 import { Video, FileText, Images } from 'lucide-react';
 import io, { Socket } from "socket.io-client";
-import { useGetMessageQuery } from "@/redux/api/messageApi";
+// import { useGetMessageQuery } from "@/redux/api/messageApi";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useParams } from "next/navigation";
-import { useGetProfileByIdQuery } from "@/redux/api/userApi";
+// import { useGetProfileByIdQuery } from "@/redux/api/userApi";
+import { useGetProfileByIdQuery } from "@/redux/Api/userApi";
 
 const socket: Socket = io("http://localhost:5001")
 
