@@ -8,7 +8,6 @@ import { AiOutlinePaperClip } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
 import { FaRegSmile } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
-// import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import { Conversation, conversations } from "@/lib/fakeData/allMessage";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
@@ -17,32 +16,29 @@ import { MdOutlineKeyboardVoice } from "react-icons/md";
 import EmojiPicker from 'emoji-picker-react';
 
 import { Video, FileText, Images } from 'lucide-react';
-// import showToastify from "@/utils/ShowToastify";
 import io, { Socket } from "socket.io-client";
-import { useGetMessageQuery, useSendMessageMutation } from "@/redux/api/messageApi";
+import { useGetMessageQuery } from "@/redux/api/messageApi";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { useParams } from "next/navigation";
+import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 
-// interface Message {
-//   id: number;
-//   content: string;
-//   sender: "sender" | "receiver";
-//   timestamp: Date;
-// }
-const socket: Socket = io("http://localhost:5001/api/v1/messages")
+const socket: Socket = io("http://localhost:5001")
 
+interface DecodedToken extends JwtPayload {
+  id: string;
+}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Page: React.FC = () => {
   const [messages, setMessages] = useState<Conversation | null>(null);
 
-  // Set default message template for one user
-  const defaultMessages = conversations[0]; // Set initial conversation to the first one
-  
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const showMessage = (conversationId: string) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { data } = useGetMessageQuery({ user1: "currentUserId", user2: conversationId }); // Adjust users
-    setMessages(data?.messages || []);
-  };
+  const defaultMessages = conversations[0];
+
+  // const showMessage = (conversationId: string) => {
+  //   const { data } = useGetMessageQuery({ user1: "currentUserId", user2: conversationId });
+  //   setMessages(data?.messages || []);
+  // };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
@@ -83,48 +79,76 @@ const Page: React.FC = () => {
     setIsModalOpen((e) => !e);
   };
   const handleProjectModal = () => {
-    if (isButtonDisabled) return; // Prevent multiple clicks
-    setIsButtonDisabled(true); // Disable button temporarily
+    if (isButtonDisabled) return;
+    setIsButtonDisabled(true);
 
-    setProjectModal((prevState) => !prevState); // Toggle modal
+    setProjectModal((prevState) => !prevState);
 
     setTimeout(() => {
-      setIsButtonDisabled(false); // Re-enable button after a short delay
-    }, 200); // 300ms delay to prevent multiple clicks
+      setIsButtonDisabled(false);
+    }, 200);
   };
 
   const [inputMessage, setInputMessage] = useState<string>('');
 
+  const token = useSelector((state: RootState) => state.Auth.token);
+  const decodedToken = token ? (jwt.decode(token) as DecodedToken) : null;
+
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputMessage(e.target.value);
-    socket.emit("typing", { senderId: "currentUserId"})
+    socket.emit("typing", { senderId: "currentUserId" })
   };
 
-  const [sendMessage] = useSendMessageMutation()
+  const userId = useParams()
 
-  const onSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent default form submission
+  const userIdValue = userId.id;
+
+  const { data: getprofile } = useGetProfileByIdQuery(userId)
+  console.log(getprofile);
+
+  const onSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    socket.emit("message", {
-      sender: "currentUserId",
-      content: inputMessage.trim(),
-      timestamp: new Date(),
-    })
+    if (decodedToken) {
+      console.log("Sending message:", {
+        sender: decodedToken.email,
+        message: inputMessage.trim(),
+        recipient: getprofile?.data?.client?.email,
+      });
 
-    await sendMessage({
-      sender: "currentUserId", // Replace with actual sender ID
-      content: inputMessage.trim(),
-      timestamp: new Date(),
-    });
-    setInputMessage(' ')
+      socket.emit("message", {
+        sender: decodedToken.email,
+        message: inputMessage.trim(),
+        recipient: getprofile?.data?.client?.email,
+      });
 
+      setInputMessage('');
+    } else {
+      console.error("Decoded token is null. Cannot send message.");
+    }
   };
 
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected.");
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+    };
+  }, []);
 
 
+  
   useEffect(() => {
     socket.on("message", (newMessage) => {
+      console.log("Received new message:", newMessage); // Added log
       setMessages((prevMessages) => {
         if (!prevMessages) return null;
         return {
@@ -135,7 +159,8 @@ const Page: React.FC = () => {
     });
 
     socket.on("typing", (data) => {
-      setIsTyping(data.senderId !== "currentUserId"); // Adjust senderId comparison
+      console.log("Typing event received:", data); // Added log
+      setIsTyping(data.senderId !== "currentUserId");
     });
 
     return () => {
@@ -143,9 +168,6 @@ const Page: React.FC = () => {
       socket.off("typing");
     };
   }, []);
-
-
-
 
   return (
     <section>
@@ -156,9 +178,7 @@ const Page: React.FC = () => {
         </div>
       </div>
       <div className="flex max-w-[1320px] overflow-hidden h-[720px]  my-4 mx-auto shadow-sm border rounded-[15px]">
-        {/* Sidebar */}
         <div className="w-1/3 border-r border-gray-300 bg-white overflow-y-scroll ">
-          {/* Search Bar */}
           <div className="p-4">
             <div className="flex items-center border  rounded-[12px] px-3 py-4">
               <BiSearch className="text-gray-500 text-lg" />
@@ -168,18 +188,14 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-
-            {/* <AllUsers conversations={conversations}  /> */}
           </div>
         </div>
 
-        {/* Chat Window */}
         <div className="w-2/3 flex flex-col relative">
-          {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white">
             <div className="flex items-center">
               <Image
-                src="/images/palak.jpg" // Replace with dynamic image
+                src="/images/palak.jpg"
                 alt="Jane Cooper"
                 width={40}
                 height={40}
@@ -208,7 +224,6 @@ const Page: React.FC = () => {
             </div>
           </div>
 
-          {/* Dynamic Chat Content */}
           <div className="flex-1">
             <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
               <div className="flex flex-col overflow-y-auto  h-full">
@@ -229,66 +244,57 @@ const Page: React.FC = () => {
             </div>
           </div>
 
-          {/* Message Input */}
-          <form onSubmit={onSendMessage}>
+          <div
+            className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
+            <AiOutlinePaperClip
+              onClick={handleClick}
+              className="text-xl absolute left-7 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
+            />
+
             <div
-              className="p-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
-              <AiOutlinePaperClip
-                onClick={handleClick}
-                className="text-xl absolute left-7 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
-              />
-
-              {/* File and Image Buttons */}
-              <div
-                className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
-                  }`}
-              >
-                <span className="bg-primary rounded-full ">
-                  <FileText
-                    className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
-                </span>
-                <span className="bg-primary rounded-full ">
-                  <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
-                </span>
-              </div>
-              <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4">
-                <textarea
-                  placeholder="Write message here..."
-                  value={inputMessage}
-                  onChange={handleInputChange}
-                  className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
-                />
-                <button type="submit" className="bg-primary rounded-full">
-                  <FiSend className="text-lg text-white cursor-pointer w-8 h-8 p-2" />
-                </button>
-              </form>
-
-              <FaRegSmile onClick={toggleEmojiPicker}
-                className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-              {showEmojiPicker && (
-                <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
-                  <EmojiPicker onEmojiClick={handleEmojiClick} />
-                </div>
-              )}
-              <MdOutlineKeyboardVoice
-                className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-              <Video
-                className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            </div>
+              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
+                }`}
+            >
+              <span className="bg-primary rounded-full "></span>
+              <FileText
+                className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
+            {/* </span> */}
+            <span className="bg-primary rounded-full ">
+              <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
+            </span>
+          </div>
+          <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full">
+            <textarea
+              placeholder="Write message here..."
+              value={inputMessage}
+              onChange={handleInputChange}
+              className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
+            />
+            <button type="submit" className="bg-primary rounded-full">
+              <FiSend className="text-lg text-white cursor-pointer w-8 h-8 p-2" />
+            </button>
           </form>
 
+          <FaRegSmile onClick={toggleEmojiPicker}
+            className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+          {showEmojiPicker && (
+            <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
+          <MdOutlineKeyboardVoice
+            className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+          <Video
+            className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
         </div>
       </div>
-    </section>
+    </div>
+    </section >
   );
 };
 
+export default Page;
 
 function setIsTyping(arg0: boolean) {
   throw new Error("Function not implemented.");
 }
-// export default Page;
-// function setIsTyping(arg0: boolean) {
-//   throw new Error("Function not implemented.");
-// }
-

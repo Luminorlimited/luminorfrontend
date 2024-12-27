@@ -71,7 +71,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
               }`}
           >
-            {message.content.substring(message.content.indexOf(":") + 1).trim()}
+           msg:: {message.content.substring(message.content.indexOf(":") + 1).trim()}
           </div>
 
           {/* Timestamp */}

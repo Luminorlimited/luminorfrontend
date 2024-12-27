@@ -79,6 +79,15 @@ const userApi = baseApi.injectEndpoints({
                 }
             }
         }),
+        getProfileById: build.query({
+            query: ({id}) => {
+                return {
+                    url: `/client/${id}`,
+                    method: 'GET',
+
+                }
+            }
+        }),
         
       
 
@@ -88,4 +97,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation, useGetProfileQuery} = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery} = userApi

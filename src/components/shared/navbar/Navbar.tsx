@@ -45,8 +45,11 @@ const Navbar = () => {
   const decodedToken = token ? (jwt.decode(token) as DecodedToken) : null;
   console.log(decodedToken);
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { data: profileData } = decodedToken ? useGetProfileQuery(decodedToken.id) : { data: null };
-  
+  const profileQuery = decodedToken
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    ? useGetProfileQuery(decodedToken.id)
+    : { data: null };
+  const profileData = profileQuery.data || null;  
   const demoimg = profileData?.data?.profileUrl || demoprofile;
   
 
@@ -61,7 +64,7 @@ const Navbar = () => {
     router.push('/')
   }
 
-  const [fileBtn, showFileBtn] = useState(false)
+  const [fileBtn, showFileBtn] = useState(false);
 
   const handleClick = () => {
     setTimeout(() => {
