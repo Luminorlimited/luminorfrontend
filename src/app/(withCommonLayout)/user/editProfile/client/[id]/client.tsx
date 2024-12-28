@@ -256,12 +256,12 @@ export default function Client() {
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" defaultValue={profileData?.data?.client?.name?.firstName || ''} {...register("firstName")} onChange={(e) => setValue("firstName", e.target.value)}
+                                    <input id="fname" value={profileData?.data?.client?.name?.firstName || ''} {...register("firstName")} onChange={(e) => setValue("firstName", e.target.value)}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="first name" />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" defaultValue={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("lastName", e.target.value)} placeholder="last name" />
+                                    <input id="lname" value={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("lastName", e.target.value)} placeholder="last name" />
                                 </div>
                             </div>
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">

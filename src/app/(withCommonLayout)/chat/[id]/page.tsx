@@ -23,7 +23,7 @@ import { RootState } from "@/redux/store";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useParams } from "next/navigation";
 // import { useGetProfileByIdQuery } from "@/redux/api/userApi";
-import { useGetProfileByIdQuery } from "@/redux/Api/userApi";
+import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 
 const socket: Socket = io("http://localhost:5001")
 

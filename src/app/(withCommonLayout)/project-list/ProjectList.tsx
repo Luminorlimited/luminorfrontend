@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
 import Pagination from '@/components/common/pagination/Pagination';
-import { useClientListQuery, useLazyClientFilterListQuery, useLazyProfessionalListQuery, useProfessionalFilterListQuery } from '@/redux/Api/projectApi';
+import { useClientListQuery, useLazyClientFilterListQuery, useLazyProfessionalListQuery, useProfessionalFilterListQuery } from '@/redux/api/projectApi';
 import profileImgFallback from '@/assets/images/profilepix.jpg'; // Fallback profile image
 import projectImgFallback from '@/assets/images/package.png'; // Fallback project image
 import { usePathname } from 'next/navigation';

@@ -32,21 +32,21 @@ export default function Login() {
         e.preventDefault(); // Prevent default form submission
         const data = { email, password }; // Gather email and password
         console.log(email, password); // Debugging: Log email and password
-        
+
 
         try {
             const res: any = await LogInUser(data);
             console.log("Login Response:", res);
             if (res?.data?.success) {
-                localStorage.setItem("email", email); 
-                ShowToastify({ success: "Check your email for verification" }); 
-                router.push("/user/verification"); 
+                localStorage.setItem("email", email);
+                ShowToastify({ success: "Check your email for verification" });
+                router.push("/user/verification");
             } else {
                 ShowToastify({ error: res?.data?.message || "Wrong email or password" });
             }
         } catch (error) {
             if (error instanceof Error) {
-                ShowToastify({ error: error.message || "Login Failed" });
+                ShowToastify({ error: "Login Failed" });
                 console.error("Login Error:", error);
             } else {
                 ShowToastify({ error: "An unknown error occurred" });
