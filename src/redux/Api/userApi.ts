@@ -75,7 +75,6 @@ const userApi = baseApi.injectEndpoints({
                 return {
                     url: `/auth/get-profile`,
                     method: 'GET',
-
                 }
             }
         }),

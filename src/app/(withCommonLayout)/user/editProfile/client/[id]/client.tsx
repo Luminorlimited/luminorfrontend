@@ -248,7 +248,7 @@ export default function Client() {
                                 </button>
                             </div>
 
-                            <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
+                            <h1 className="text-2xl font-semibold mt-4">{profileData?.data?.client?.name?.firstName} {profileData?.data?.client?.name?.lastName}</h1>
                             <p className="text-gray-600">I&apos;m a healthcare and medical specialist</p>
                         </div>
                         <div className="space-y-8">
