@@ -15,33 +15,28 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
 // import { Search } from "lucide-react";
 import { MobileNavbar } from "./MobileNavbar";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 import { BiMessage } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { useGetProfileQuery } from "@/redux/api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
 import Cookies from "js-cookie";
+import useDecodedToken from "@/components/common/DecodeToken";
 
-interface DecodedToken extends JwtPayload {
-  id: string;
-  role?: string;
-}
+
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
   // Retrieve token from Redux store
-  const token = useSelector((state: RootState) => state.Auth.token);
 
   // Decode the token unconditionally
-  const decodedToken = token ? (jwt.decode(token) as DecodedToken) : null;
+  const decodedToken = useDecodedToken();
 
   // Call `useGetProfileQuery` unconditionally
   const { data: profileData } = useGetProfileQuery(decodedToken?.id || "", {

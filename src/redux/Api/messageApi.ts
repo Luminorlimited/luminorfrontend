@@ -14,14 +14,22 @@ const projectApi = baseApi.injectEndpoints({
             invalidatesTags: ['message'],
         }),
         getMessage: build.query({
-            query: ({user1, user2}) => ({
+            query: ({ user1, user2 }) => ({
                 url: `/messages?user1=${user1}&user2=${user2}`,
                 method: 'GET'
             }),
             providesTags: ['message'],
         }),
+        getuser: build.query({
+            query: (userId) => ({
+                url: `/auth/get-single-user/${userId}`,
+                method: 'GET'
+            }),
+            providesTags: ['message'],
+        }),
+
 
     }),
 });
 
-export const { useGetMessageQuery, useSendMessageMutation} = projectApi;
+export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery } = projectApi;

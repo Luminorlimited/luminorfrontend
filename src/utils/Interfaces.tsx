@@ -11,6 +11,15 @@ export interface UserInterface {
     photoUrl?: string;
     token?: string; // add token if needed for user convenience
 }
+export interface messageUser {
+    name: {
+        firstName: string;
+        lastName: string;
+    };
+    _id: string;
+    role: string;
+    profileImg: string;
+}
 
 // export interface clientProfile {
 //     fname: string;

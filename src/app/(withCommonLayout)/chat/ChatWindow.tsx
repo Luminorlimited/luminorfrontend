@@ -14,10 +14,11 @@ interface Message {
   content: string;
   sender: "sender" | "receiver";
   timestamp: Date;
+  message: string
 }
 
 interface CommunicationProps {
-  messages: Conversation;
+  messages: string;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   senderName: string;
   senderType: "sender" | "receiver";
@@ -48,7 +49,7 @@ interface MessageBubbleProps {
 const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorScheme }) => {
   const isSender = message.sender === senderType;
 
-  
+
 
 
   return (
@@ -66,12 +67,12 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
             className={`p-3 ${isSender
-                ? "rounded-l-[10px] rounded-b-[10px]"
-                : "rounded-r-[10px] rounded-b-[10px]"
+              ? "rounded-l-[10px] rounded-b-[10px]"
+              : "rounded-r-[10px] rounded-b-[10px]"
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
               }`}
           >
-           msg:: {message.content.substring(message.content.indexOf(":") + 1).trim()}
+            msg:: {message.content.substring(message.content.indexOf(":") + 1).trim()}
           </div>
 
           {/* Timestamp */}
@@ -110,19 +111,20 @@ const Communication: FC<CommunicationProps> = ({
     scrollToBottom();
   }, [messages]);
 
+  console.log(messages);
   return (
     <div className="flex-1 h-full">
       {/* Chat Area */}
       <div className="h-full">
         <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
-          {messages.messages?.map((message, index) => (
+          {/* {messages.map((message: string, index: number) => (
             <MessageBubble
               key={index}
               message={message}
               senderType={senderType}
               colorScheme={colorScheme}
             />
-          ))}
+          ))} */}
           {/* Invisible div to anchor scroll to the bottom */}
           <div ref={containerRef} />
         </ScrollArea>

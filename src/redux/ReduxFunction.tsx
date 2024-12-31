@@ -1,4 +1,4 @@
-import { IProfessional, UserInterface, ClientData } from '@/utils/Interfaces';
+import {IProfessional, UserInterface, ClientData, messageUser} from '@/utils/Interfaces';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface AuthInterFace {
     user: UserInterface | null;
@@ -7,6 +7,7 @@ interface AuthInterFace {
     loading: boolean;
     error: string;
     token: string | null;
+    messageuser: messageUser | null;
     selectedFilters: {
         industry: [],
         timeline: [],
@@ -24,6 +25,7 @@ const initialState: AuthInterFace = {
     token: null,
     loading: false,
     error: '',
+    messageuser: null,
 
     selectedFilters: {
         industry: [],
@@ -65,6 +67,9 @@ export const adminAuthSlice = createSlice({
         setclientFilter: (state, action) => {
             state.selectedFilters = action.payload; // Save the selected filters
         },
+        setMessageUser: (state, action) => {
+            state.messageuser = action.payload.messageuser
+        }
     },
 });
 
@@ -74,6 +79,7 @@ export const {
     logOut,
     setLoading,
     setError,
+    setMessageUser,
     setclientFilter
 } = adminAuthSlice.actions;
 

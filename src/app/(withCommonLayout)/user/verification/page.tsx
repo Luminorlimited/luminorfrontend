@@ -51,7 +51,7 @@ export default function Page() {
             token: accessToken,
           })
         );
-        Cookies.set('token', res.data, {
+        Cookies.set('token', res.data.accessToken, {
           expires: 7, // Token will expire in 7 days
           secure: true, // Use secure cookies for HTTPS
           sameSite: 'Strict', // Prevent cross-site attacks

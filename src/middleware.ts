@@ -3,35 +3,92 @@ import type { NextRequest } from "next/server";
 import {jwtDecode} from "jwt-decode"; // Ensure proper import for jwtDecode
 
 export function middleware(request: NextRequest) {
-    const loginRoute = `${request.nextUrl.origin}/login`; // Define the login route
+    const loginRoute = `${request.nextUrl.origin}/user/auth/login`; // Define the login route
 
     // Get the token from cookies
     const token = request.cookies.get("token")?.value;
 
-    if (!token) {
-        // If no token is present, redirect to the login page
-        return NextResponse.redirect(new URL(loginRoute, request.url));
-    }
+    const pathname = request.nextUrl.pathname;
 
-    try {
-        // Decode the token
-        const userInfo = jwtDecode<{ role?: string }>(token);
+    // Routes where authenticated users should not have access
+    const restrictedForAuthenticated = [
+        "/user/auth/login",
+        "/usertype",
+        "/user/auth/professional",
+        "/user/auth/client",
+    ];
 
-        // If token is valid, allow the request to proceed
-        if (userInfo) {
-            return NextResponse.next();
+    const clientRoutes = [
+        "/project-list/client",
+        "/user/editProfile/client",
+    ];
+    const professionalRoutes = [
+        "/project-list/professional",
+        "/user/editProfile/retireProfessional",
+    ];
+
+    if (token) {
+        try {
+            // Decode the token to extract user role and information
+            const userInfo = jwtDecode<{ role?: string }>(token);
+
+            if (userInfo?.role) {
+                const role = userInfo.role;
+
+                // Redirect authenticated users away from restricted routes
+                if (restrictedForAuthenticated.includes(pathname)) {
+                    return NextResponse.redirect(new URL("/", request.url)); // Redirect to homepage or another route
+                }
+
+                // Allow only clients to access client routes
+                if (clientRoutes.includes(pathname)) {
+                    if (role === "client") {
+                        return NextResponse.next();
+                    } else {
+                        return NextResponse.redirect(new URL(loginRoute, request.url));
+                    }
+                }
+
+                // Allow only professionals to access professional routes
+                if (professionalRoutes.includes(pathname)) {
+                    if (role === "retireProfessional") {
+                        return NextResponse.next();
+                    } else {
+                        return NextResponse.redirect(new URL(loginRoute, request.url));
+                    }
+                }
+
+                // Redirect to login for other unauthorized accesses
+                return NextResponse.redirect(new URL(loginRoute, request.url));
+            }
+        } catch (e) {
+            console.error("Token decoding failed:", e); // Log the error for debugging
+
+            // If decoding fails, redirect to the login page
+            return NextResponse.redirect(new URL(loginRoute, request.url));
         }
-    } catch (e) {
-        console.error("Token decoding failed:", e); // Log the error for debugging
-
-        // If decoding fails, redirect to the login page
-        return NextResponse.redirect(new URL(loginRoute, request.url));
     }
 
-    // Fallback (not strictly necessary here but added for safety)
+    // If no token and trying to access restricted routes, allow them (login/auth routes)
+    if (!token && restrictedForAuthenticated.includes(pathname)) {
+        return NextResponse.next();
+    }
+
+    // Redirect unauthenticated users to login page for protected routes
     return NextResponse.redirect(new URL(loginRoute, request.url));
 }
 
 export const config = {
-    matcher: ["/profile"], // Apply the middleware to the /profile route
+    matcher: [
+        "/profile",
+        "/project-list/client",
+        "/project-list/professional",
+        "/user/editProfile/client",
+        "/user/editProfile/retireProfessional",
+        "/chat",
+        "/user/auth/login",
+        "/usertype",
+        "/user/auth/professional",
+        "/user/auth/client",
+    ], // Apply middleware to these routes
 };
