@@ -26,6 +26,7 @@ import Image from "next/image";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useGetProfileQuery } from "@/redux/api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
+import Cookies from "js-cookie";
 
 interface DecodedToken extends JwtPayload {
   id: string;
@@ -53,6 +54,7 @@ const Navbar = () => {
   const handleLogOut = () => {
     dispatch(logOut());
     router.push("/");
+    Cookies.remove("token");
   };
 
   // State for dropdown menu visibility

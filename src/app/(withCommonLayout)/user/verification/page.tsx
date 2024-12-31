@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useVerifyUserMutation } from "@/redux/api/userApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
-
+import Cookies from 'js-cookie';
 
 export default function Page() {
   const [otp, setOtp] = useState("")
@@ -51,6 +51,12 @@ export default function Page() {
             token: accessToken,
           })
         );
+        Cookies.set('token', res.data, {
+          expires: 7, // Token will expire in 7 days
+          secure: true, // Use secure cookies for HTTPS
+          sameSite: 'Strict', // Prevent cross-site attacks
+          path: '/', // Cookie is available across the entire site
+        });
 
         router.push("/");
       } else {

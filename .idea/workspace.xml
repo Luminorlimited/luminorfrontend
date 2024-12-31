@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fca5d0a2-82d9-45eb-95bf-e9c1301807f4" name="Changes" comment="">
+    <list default="true" id="fca5d0a2-82d9-45eb-95bf-e9c1301807f4" name="Changes" comment="edit profile firstname change">
+      <change afterPath="$PROJECT_DIR$/src/middleware.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(withCommonLayout)/user/editProfile/client/[id]/client.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(withCommonLayout)/user/editProfile/client/[id]/client.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/Api/userApi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/Api/userApi.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(withCommonLayout)/user/verification/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(withCommonLayout)/user/verification/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/shared/navbar/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/shared/navbar/Navbar.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +21,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "mobinulislam143"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/SMTech24-official/rheapoonevala-frontend.git",
+    "accountId": "7e0e6a93-c315-4613-8ae9-535028f0f260"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 8
@@ -64,11 +77,24 @@
       <workItem from="1735291744572" duration="22000" />
       <workItem from="1735306487485" duration="2371000" />
       <workItem from="1735472033461" duration="13000" />
-      <workItem from="1735621443645" duration="1282000" />
+      <workItem from="1735621443645" duration="2033000" />
     </task>
+    <task id="LOCAL-00001" summary="edit profile firstname change">
+      <option name="closed" value="true" />
+      <created>1735623563773</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1735623563773</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="edit profile firstname change" />
+    <option name="LAST_COMMIT_MESSAGE" value="edit profile firstname change" />
   </component>
 </project>
