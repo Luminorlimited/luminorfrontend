@@ -27,6 +27,7 @@ import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import { useRouter } from "next/router";
 import { useGetuserQuery } from "@/redux/api/messageApi";
+import useDecodedToken from "@/components/common/DecodeToken";
 
 
 interface DecodedToken extends JwtPayload {
@@ -107,30 +108,61 @@ const Page: React.FC = () => {
   const userIdValue = userId.id;
   // console.log(`my user id value is:`, userIdValue);
 
-  const [inbox, setInbox] = useState<any>([""])
-  const [messages, setMessages] = useState("")
-  const [socket, setSocket] = useState<any>(undefined)
+  const [inbox, setInbox] = useState<any[]>([]); // Store past messages
+  const [messages, setMessages] = useState<string>("");
+  const [socket, setSocket] = useState<any>(null);
 
   const { data: getprofile } = useGetProfileByIdQuery(userId)
   // console.log(getprofile);
 
-  const onSendMessage = (e) => {
-    e.preventDefault();
-    if (messages.trim()) {
-      // Your logic to handle sending the message, e.g., sending to an API or socket
-      console.log("Message Sent: ", messages);
-      setMessages(""); // Clear the input after sending the message
-    }
-  };
+  const mysocket = io("http://localhost:5001")
+  // const onSendMessage = (e: any) => {
+  //   e.preventDefault();
+  //   if (messages.trim()) {
+  //     mysocket.emit("privateMessage", {
+  //       toEmail: getUser?.data?.retireProfessional?.email || getUser?.data?.client?.email,
+  //       message: messages,
+  //       timestamp: new Date().toISOString(),
+  //     });
+  //     setInbox((prevInbox) => [
+  //       ...prevInbox,
+  //       { content: messages, sender: "sender", timestamp: new Date() },
+  //     ]); // Add to inbox for sender
+  //     setMessages(""); // Clear input
+  //   }
+  // };
+
+  const handleshowMessage = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    console.log('my name is Mahi');
+  }
+  const token = useDecodedToken()
+  console.log('My token is ', token);
+
   useEffect(() => {
-    const socket = io("http://localhost:5001")
+    const socket = io("ws://localhost:5001");
 
-    socket.on("register", () => {
-      setInbox([...inbox, messages])
+    socket.on("connect", () => {
+      console.log("Connected to socket.io.");
     });
-    setSocket(socket)
 
-  }, []);
+    // const myEmail = token?.email;
+    // if (myEmail) {
+    //   socket.emit("register", { email: myEmail });
+    // }
+
+    // socket.on("privateMessage", (message: any) => {
+    //   setInbox((prevInbox) => [
+    //     ...prevInbox,
+    //     { ...message, sender: "receiver", timestamp: new Date(message.timestamp) },
+    //   ]);
+    // });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [token?.email]);
+
 
 
 
@@ -157,6 +189,11 @@ const Page: React.FC = () => {
   //   };
   // }, []);
   // console.log('my name is', getUser);
+
+  // const []
+  console.log('My message name is', messages);
+
+
   return (
     <section>
       <div className="container mx-auto pt-[20px]">
@@ -176,7 +213,7 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-            <AllUsers getUser={getUser?.data} />
+            <AllUsers getUser={getUser?.data} handleshowMessage={handleshowMessage} />
           </div>
         </div>
 
@@ -191,7 +228,7 @@ const Page: React.FC = () => {
                 className="rounded-full"
               />
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">Mobinul</h3>
+                <h3 className="text-sm font-medium text-gray-900">{getUser?.data?.client?.name?.firstName || getUser?.data?.retireProfessional?.name?.firstName} {getUser?.data?.retireProfessional?.name?.lastName || getUser?.data?.client?.name?.lastName}</h3>
                 <p className="text-xs text-gray-500">
                   Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
                 </p>
@@ -254,7 +291,7 @@ const Page: React.FC = () => {
                 <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
               </span>
             </div>
-            <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full">
+            <form className="flex items-center gap-2 p-4 w-full">
               <input
                 placeholder="Write message here..."
                 value={messages} // Use 'messages' state here

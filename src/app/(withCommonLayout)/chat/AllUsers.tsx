@@ -2,15 +2,14 @@
 import Image from "next/image";
 import demoimg from "@/assets/images/demoimg.png";
 
-import useDecodedToken from "@/components/common/DecodeToken";
+// import useDecodedToken from "@/components/common/DecodeToken";
+import React from "react";
+interface AllUsersProps {
+  handleshowMessage: (e: React.MouseEvent<HTMLElement>) => void;
+  getUser: any; // You may want to replace `any` with a proper type
+}
 
-// interface AllUsersProps {
-//   showMessage: (e: string) => void;
-//   userId: string;
-// }
-// { showMessage }: AllUsersProps
-
-export default function AllUsers({ getUser }: { getUser: any }) {
+export default function AllUsers({ handleshowMessage, getUser }: AllUsersProps) {
   console.log(`my user id is`, getUser);
 
 
@@ -44,8 +43,7 @@ export default function AllUsers({ getUser }: { getUser: any }) {
       { timestamp: new Date(new Date().getTime() - 60000) },
     ],
   };
-  const decodeToken = useDecodedToken()
-  console.log('my token is', decodeToken);
+  // const decodeToken = useDecodedToken()
 
   return (
     <div>
@@ -57,7 +55,7 @@ export default function AllUsers({ getUser }: { getUser: any }) {
         <div>
           <ul className="divide-y">
             <li
-              // onClick={() => showMessage(user.conversationId)}
+              onClick={(e) => handleshowMessage(e)}
               className={`flex border-none items-center p-4 cursor-pointer rounded-[12px] hover:bg-[#F2FAFF] focus:bg-[#F2FAFF] ${user.participants.sender ? "bg-white" : ""
                 }`}
             >

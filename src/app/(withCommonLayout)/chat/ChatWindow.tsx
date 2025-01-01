@@ -3,7 +3,6 @@
 import React, { useRef, useEffect, FC } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Conversation } from "@/lib/fakeData/allMessage";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { CheckCheck } from "lucide-react";
 
@@ -14,7 +13,6 @@ interface Message {
   content: string;
   sender: "sender" | "receiver";
   timestamp: Date;
-  message: string
 }
 
 interface CommunicationProps {
@@ -72,7 +70,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
               }`}
           >
-            msg:: {message.content.substring(message.content.indexOf(":") + 1).trim()}
+            msg:: {message.content}
           </div>
 
           {/* Timestamp */}
@@ -111,13 +109,12 @@ const Communication: FC<CommunicationProps> = ({
     scrollToBottom();
   }, [messages]);
 
-  console.log(messages);
   return (
     <div className="flex-1 h-full">
       {/* Chat Area */}
       <div className="h-full">
         <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
-          {/* {messages.map((message: string, index: number) => (
+          {/* {messages?.map((message, index) => (
             <MessageBubble
               key={index}
               message={message}
