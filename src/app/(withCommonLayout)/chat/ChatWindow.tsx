@@ -6,21 +6,20 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { CheckCheck } from "lucide-react";
 
-
 // Interfaces
 interface Message {
   id: number;
-  content: string;
-  sender: "sender" | "receiver";
+  message: string;
+  sender: "sender" | "recipient";
   timestamp: Date;
 }
 
 interface CommunicationProps {
-  messages: string;
+  messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   senderName: string;
-  senderType: "sender" | "receiver";
-  receiverType: "sender" | "receiver";
+  senderType: "sender" | "recipient";
+  receiverType: "sender" | "recipient";
   colorScheme: {
     senderBg: string;
     receiverBg: string;
@@ -29,33 +28,22 @@ interface CommunicationProps {
   isModalOpen: boolean;
 }
 
-
 interface MessageBubbleProps {
   message: Message;
-  senderType: "sender" | "receiver";
+  senderType: "sender" | "recipient";
   colorScheme: {
     senderBg: string;
     receiverBg: string;
   };
 }
 
-
-
-
-
-// MessageBubble Component: Responsible for rendering individual message bubbles
+// MessageBubble Component: Handles the rendering of individual chat bubbles
 const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorScheme }) => {
   const isSender = message.sender === senderType;
 
-
-
-
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
-      <div
-        className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"
-          }`}
-      >
+      <div className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"}`}>
         {/* Avatar */}
         <Avatar className="w-10 h-10">
           <AvatarFallback>{isSender ? "S" : "R"}</AvatarFallback>
@@ -67,21 +55,20 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
             className={`p-3 ${isSender
               ? "rounded-l-[10px] rounded-b-[10px]"
               : "rounded-r-[10px] rounded-b-[10px]"
-              } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
-              }`}
+              } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg}`}
           >
-            msg:: {message.content}
+
+            {message.message}
           </div>
 
           {/* Timestamp */}
           <div
-            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"
-              }`}
+            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"}`}
           >
-            {message.timestamp.toLocaleTimeString([], {
+            {/* {message.timestamp.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
-            })}
+            })} */}
             {isSender && <CheckCheck />}
           </div>
         </div>
@@ -90,9 +77,10 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
   );
 };
 
-// Communication Component: Main container for rendering the chat and modal
+// Communication Component: The primary chat container
 const Communication: FC<CommunicationProps> = ({
   messages,
+  // setMessages,
   senderType,
   colorScheme,
   handleOpenModal,
@@ -100,7 +88,7 @@ const Communication: FC<CommunicationProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom whenever messages update
+  // Automatically scroll to the bottom of chat when messages are updated
   const scrollToBottom = () => {
     containerRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -108,21 +96,24 @@ const Communication: FC<CommunicationProps> = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+  console.log("Fetched old messages:", messages);
+  // setMessages(messages)
+
 
   return (
     <div className="flex-1 h-full">
       {/* Chat Area */}
       <div className="h-full">
         <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
-          {/* {messages?.map((message, index) => (
+          {messages.map((message, index: number) => (
             <MessageBubble
               key={index}
               message={message}
               senderType={senderType}
               colorScheme={colorScheme}
             />
-          ))} */}
-          {/* Invisible div to anchor scroll to the bottom */}
+          ))}
+          {/* Invisible div to anchor scrolling */}
           <div ref={containerRef} />
         </ScrollArea>
       </div>

@@ -26,14 +26,14 @@ import { useParams } from "next/navigation";
 import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import { useRouter } from "next/router";
-import { useGetuserQuery } from "@/redux/api/messageApi";
+import { useGetMessageQuery, useGetuserQuery } from "@/redux/api/messageApi";
 import useDecodedToken from "@/components/common/DecodeToken";
 
 
 interface DecodedToken extends JwtPayload {
   id: string;
 }
-
+const mysocket = io("ws://localhost:5001");
 const Page: React.FC = () => {
   // const url  = window.location.href;
   // const userId = url.split('/chat/')[1]
@@ -47,11 +47,11 @@ const Page: React.FC = () => {
   // };
 
   const id = useParams()
-  console.log(id);
+
 
   const { data: getUser } = useGetuserQuery(id?.id);
 
-  console.log(`my user is `, getUser);
+  // console.log(`my user is `, getUser);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
@@ -98,100 +98,133 @@ const Page: React.FC = () => {
   };
   const [inputMessage, setInputMessage] = useState<string>('');
 
-  // const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   setInputMessage(e.target.value);
-  //   socket.emit("typing", { senderId: "currentUserId" })
-  // };
-
   const userId = useParams()
 
-  const userIdValue = userId.id;
+  // const userIdValue = userId.id;
   // console.log(`my user id value is:`, userIdValue);
 
+  const token = useDecodedToken()
   const [inbox, setInbox] = useState<any[]>([]); // Store past messages
   const [messages, setMessages] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
-
-  const { data: getprofile } = useGetProfileByIdQuery(userId)
-  // console.log(getprofile);
-
-  const mysocket = io("http://localhost:5001")
-  // const onSendMessage = (e: any) => {
-  //   e.preventDefault();
-  //   if (messages.trim()) {
-  //     mysocket.emit("privateMessage", {
-  //       toEmail: getUser?.data?.retireProfessional?.email || getUser?.data?.client?.email,
-  //       message: messages,
-  //       timestamp: new Date().toISOString(),
-  //     });
-  //     setInbox((prevInbox) => [
-  //       ...prevInbox,
-  //       { content: messages, sender: "sender", timestamp: new Date() },
-  //     ]); // Add to inbox for sender
-  //     setMessages(""); // Clear input
-  //   }
-  // };
-
-  const handleshowMessage = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault()
-    console.log('my name is Mahi');
-  }
-  const token = useDecodedToken()
-  console.log('My token is ', token);
+  const user1 = token?.email
+  const user2 = getUser?.data?.retireProfessional?.email || getUser?.data?.client?.email
+  console.log('My user email is ',);
+  const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
+  console.log(`My image message is :`, oldMessages);
 
   useEffect(() => {
-    const socket = io("ws://localhost:5001");
+    if (error) {
+      console.error("Error fetching old messages:", error);
+    }
 
-    socket.on("connect", () => {
+    if (Array.isArray(oldMessages?.data)) {
+      // console.log("Fetched old messages:", oldMessages);
+      setInbox(
+        oldMessages?.data?.map((msg: any) => ({
+          message: msg.message,
+          sender: msg.sender === user1 ? "sender" : "recipient",
+          timestamp: new Date(msg.timestamp),
+        }))
+      );
+    }
+  }, [oldMessages, error, user1]);
+
+
+
+  const { data: getprofile } = useGetProfileByIdQuery(userId)
+  // console.log('My token is ', token);
+  // console.log(getprofile);
+
+  const handleshowMessage = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    console.log('my name is Mahi');
+
+    if (!socket) return;
+
+    socket.on("privateMessage", (data: any) => {
+      console.log("Message received:", data);
+
+      const { message, fromEmail, timestamp } = data;
+
+      if (!message || !fromEmail) {
+        console.error("Invalid message structure:", data);
+        return;
+      }
+
+      setInbox((prevInbox) => [
+        ...prevInbox,
+        {
+          content: message,
+          sender: "recipient", // Mark as received
+          timestamp: new Date(timestamp || Date.now()), // Ensure valid timestamp
+        },
+      ]);
+    });
+  };
+
+  const onSendMessage = (e: any) => {
+    e.preventDefault();
+    if (messages.trim()) {
+      const message = {
+        toEmail: user2,
+        message: messages,
+        fromEmail: token?.email, // Include sender's email
+        timestamp: new Date().toISOString(),
+      }
+      mysocket.emit("privateMessage", JSON.stringify(message));
+
+      // Update local inbox state
+      setInbox((prevInbox) => [
+        ...prevInbox,
+        { content: messages, sender: "sender", timestamp: new Date() },
+      ]);
+
+      setMessages(""); // Clear input
+    }
+  };
+
+  useEffect(() => {
+    if (!token?.email) {
+      console.log("Token not ready or email missing.");
+      return; // Wait for the token to be available.
+    }
+
+    setSocket(mysocket);
+
+    // Log connection
+    mysocket.on("connect", () => {
       console.log("Connected to socket.io.");
+      mysocket.emit("register", JSON.stringify({ email: token?.email }));
     });
 
-    // const myEmail = token?.email;
-    // if (myEmail) {
-    //   socket.emit("register", { email: myEmail });
-    // }
+    // Listen for private messages
+    mysocket.on("privateMessage", (data: any) => {
+      console.log("Received privateMessage:", data);
 
-    // socket.on("privateMessage", (message: any) => {
-    //   setInbox((prevInbox) => [
-    //     ...prevInbox,
-    //     { ...message, sender: "receiver", timestamp: new Date(message.timestamp) },
-    //   ]);
-    // });
+      // Add received message to inbox
+      const { message, fromEmail, timestamp } = data;
 
+      if (message && fromEmail) {
+        setInbox((prevInbox) => [
+          ...prevInbox,
+          {
+            content: message,
+            sender: "recipient",
+            timestamp: new Date(timestamp || Date.now()),
+          },
+        ]);
+      }
+    });
+
+    // Cleanup on component unmount
     return () => {
-      socket.disconnect();
+      console.log("Disconnecting socket...");
+      mysocket.disconnect();
     };
   }, [token?.email]);
 
 
-
-
-  // useEffect(() => {
-  //   socket.on("message", (newMessage) => {
-  //     console.log("Received new message:", newMessage); // Added log
-  //     setMessages((prevMessages) => {
-  //       if (!prevMessages) return null;
-  //       return {
-  //         ...prevMessages,
-  //         messages: [...prevMessages.messages, newMessage],
-  //       };
-  //     });
-  //   });
-
-  //   socket.on("typing", (data) => {
-  //     console.log("Typing event received:", data); // Added log
-  //     setIsTyping(data.senderId !== "currentUserId");
-  //   });
-
-  //   return () => {
-  //     socket.off("message");
-  //     socket.off("typing");
-  //   };
-  // }, []);
-  // console.log('my name is', getUser);
-
-  // const []
-  console.log('My message name is', messages);
 
 
   return (
@@ -256,16 +289,17 @@ const Page: React.FC = () => {
                 <ChatWindow
                   isModalOpen={isModalOpen}
                   handleOpenModal={handleOpenModal}
-                  messages={messages}
-                  setMessages={() => { }}
+                  messages={inbox} // Pass inbox state
+                  setMessages={setInbox} // Update inbox state
                   senderType="sender"
-                  receiverType="receiver"
+                  receiverType="recipient"
                   colorScheme={{
                     senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
                     receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
                   }}
                   senderName={""}
                 />
+
               </div>
             </div>
           </div>
@@ -291,7 +325,7 @@ const Page: React.FC = () => {
                 <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
               </span>
             </div>
-            <form className="flex items-center gap-2 p-4 w-full">
+            <form onClick={onSendMessage} className="flex items-center gap-2 p-4 w-full">
               <input
                 placeholder="Write message here..."
                 value={messages} // Use 'messages' state here

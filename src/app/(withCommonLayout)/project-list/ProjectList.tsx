@@ -36,7 +36,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         const fetchFilteredData = async () => {
             if (route === "/project-list/professional") {
                 const response = await clientLazyData({ FilteredData });
-                
+
                 setFilteredData(response?.data);
                 // console.log("response");
             } else {
@@ -179,7 +179,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
                                 <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                                     <BiTime className="h-4 w-4" />
-                                    <span className="text-xs">{data.projectDurationRange.max} days | Duration</span>
+                                    <span className="text-xs">{data?.projectDurationRange?.max} days | Duration</span>
                                 </div>
                             </div>
 

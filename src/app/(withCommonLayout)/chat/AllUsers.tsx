@@ -10,7 +10,7 @@ interface AllUsersProps {
 }
 
 export default function AllUsers({ handleshowMessage, getUser }: AllUsersProps) {
-  console.log(`my user id is`, getUser);
+  // console.log(`my user id is`, getUser);
 
 
   const formatTimeDifference = (timestamp: Date): string => {
