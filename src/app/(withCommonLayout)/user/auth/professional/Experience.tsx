@@ -9,29 +9,6 @@ export default function Experience({ register, handleNext }: any) {
 
 
 
-  // const handleFormSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   const data = {
-  //     industry: getValues("industry"),
-  //     prevPos: [
-  //       getValues("prevPos1"),
-  //       getValues("prevPos2"),
-  //       getValues("prevPos3")
-  //     ],
-  //     references: [
-  //       {
-  //         name: getValues("refName1"),
-  //         emailOrPhone: getValues("refcontact1")
-  //       },
-  //       {
-  //         name: getValues("refName2"),
-  //         emailOrPhone: getValues("refcontact2")
-  //       }
-  //     ]
-  //   };
-  //   handleNext(data);
-  // };
-
   return (
     <div >
       <div className="space-y-2 text-center lg:mt-0 mt-6">

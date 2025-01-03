@@ -1,4 +1,5 @@
 import React, { Dispatch } from "react";
+import { UseFormRegister } from "react-hook-form"; // Assuming react-hook-form is used
 
 interface Milestone {
     name: string;
@@ -8,17 +9,19 @@ interface Milestone {
     description: string;
 }
 
-export default function MilestoneModal({  milestones, setMileStones }: { register: any, handleNext: () => void, handleBack: () => void, setMileStones: Dispatch<React.SetStateAction<Milestone[] | undefined>>, milestones: Milestone[] | undefined}) {
-    // const [milestones, setMilestones] = React.useState<Milestone[]>([
-    //     {
-    //         name: "",
-    //         revisions: "3",
-    //         delivery: "2",
-    //         price: "",
-    //         description: "",
-    //     },
-    // ]);
-
+export default function MilestoneModal({
+    register,
+    // handleNext,
+    // handleBack,
+    setMileStones,
+    milestones,
+}: {
+    register: UseFormRegister<any>;
+    handleNext: () => void;
+    handleBack: () => void;
+    setMileStones: Dispatch<React.SetStateAction<Milestone[] | undefined>>;
+    milestones: Milestone[] | undefined;
+}) {
     const addMilestone = () => {
         if (milestones !== undefined) {
             setMileStones([
@@ -45,7 +48,7 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
             }
             return milestone;
         });
-        if(milestones !== undefined) setMileStones(updatedMilestones);
+        if (milestones !== undefined) setMileStones(updatedMilestones);
     };
 
     const totalDays = milestones?.reduce(
@@ -56,7 +59,6 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
         (sum, milestone) => sum + Number(milestone.price || 0),
         0
     );
-    console.log(milestones);
 
     return (
         <div className="space-y-6">
@@ -68,14 +70,18 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
             </div>
 
             {milestones?.map((milestone, index) => (
-                <div key={index} className="space-y-4 ">
+                <div key={index} className="space-y-4">
                     <div className="grid grid-cols-4 gap-4">
                         <div className="col-span-1">
-                            <label htmlFor={`milestone-${index}`} className="block text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor={`milestone-${index}`}
+                                className="block text-sm font-medium text-gray-700"
+                            >
                                 {index === 0 ? "1st Milestone" : `${index + 1}th Milestone`}
                             </label>
                             <input
                                 id={`milestone-${index}`}
+                                {...register(`milestones.${index}.name`)}
                                 value={milestone.name}
                                 onChange={(e) => updateMilestone(index, "name", e.target.value)}
                                 placeholder="Milestone name"
@@ -83,9 +89,15 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
                             />
                         </div>
                         <div>
-                            <label htmlFor={`revisions-${index}`} className="block text-sm font-medium text-gray-700">Revisions</label>
+                            <label
+                                htmlFor={`revisions-${index}`}
+                                className="block text-sm font-medium text-gray-700"
+                            >
+                                Revisions
+                            </label>
                             <select
                                 id={`revisions-${index}`}
+                                {...register(`milestones.${index}.revisions`)}
                                 value={milestone.revisions}
                                 onChange={(e) => updateMilestone(index, "revisions", e.target.value)}
                                 className="mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none cursor-pointer w-full"
@@ -98,9 +110,15 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
                             </select>
                         </div>
                         <div>
-                            <label htmlFor={`delivery-${index}`} className="block text-sm font-medium text-gray-700">Delivery</label>
+                            <label
+                                htmlFor={`delivery-${index}`}
+                                className="block text-sm font-medium text-gray-700"
+                            >
+                                Delivery
+                            </label>
                             <select
                                 id={`delivery-${index}`}
+                                {...register(`milestones.${index}.delivery`)}
                                 value={milestone.delivery}
                                 onChange={(e) => updateMilestone(index, "delivery", e.target.value)}
                                 className="mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none cursor-pointer w-full"
@@ -113,12 +131,20 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
                             </select>
                         </div>
                         <div>
-                            <label htmlFor={`price-${index}`} className="block text-sm font-medium text-gray-700">Price</label>
+                            <label
+                                htmlFor={`price-${index}`}
+                                className="block text-sm font-medium text-gray-700"
+                            >
+                                Price
+                            </label>
                             <div className="relative">
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">£</span>
+                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                    £
+                                </span>
                                 <input
                                     id={`price-${index}`}
                                     type="number"
+                                    {...register(`milestones.${index}.price`)}
                                     value={milestone.price}
                                     onChange={(e) => updateMilestone(index, "price", e.target.value)}
                                     className="pl-7 mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none w-full"
@@ -127,9 +153,15 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <label htmlFor={`description-${index}`} className="block text-sm font-medium text-gray-700">Description</label>
+                        <label
+                            htmlFor={`description-${index}`}
+                            className="block text-sm font-medium text-gray-700"
+                        >
+                            Description
+                        </label>
                         <textarea
                             id={`description-${index}`}
+                            {...register(`milestones.${index}.description`)}
                             value={milestone.description}
                             onChange={(e) => updateMilestone(index, "description", e.target.value)}
                             placeholder="Describe your offer..."
@@ -146,21 +178,16 @@ export default function MilestoneModal({  milestones, setMileStones }: { registe
 
             <button
                 type="button"
-                className="px-4 py-2 flex justify-center bg-[#E9E9EA] rounded-[20px] ml-auto mt-4  hover:bg-gray-100"
+                className="px-4 py-2 flex justify-center bg-[#E9E9EA] rounded-[20px] ml-auto mt-4 hover:bg-gray-100"
                 onClick={addMilestone}
             >
                 Add a milestone<span className="ml-2 h-4 w-4">+</span>
             </button>
 
             <div className="flex items-center justify-between border-t pt-4">
-
                 <div className="text-sm">
-                    <span className="text-gray-500">
-                        Total: {totalDays} days
-                    </span>
-                    <span className="ml-4 font-medium">
-                        £{totalPrice}
-                    </span>
+                    <span className="text-gray-500">Total: {totalDays} days</span>
+                    <span className="ml-4 font-medium">£{totalPrice}</span>
                 </div>
             </div>
         </div>

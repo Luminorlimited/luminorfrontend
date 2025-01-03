@@ -55,13 +55,42 @@ const Page: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [fileBtn, showFileBtn] = useState(false)
+  const [fileBtn, showFileBtn] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
 
   const handleClick = () => {
     setTimeout(() => {
       showFileBtn((prev) => !prev)
     }, 200)
   }
+
+  const handleFileClick = (type: string) => {
+    const input = document.getElementById("fileInput") as HTMLInputElement;
+
+    if (type === "image") {
+      input.accept = "image/*"; // Accept images only
+    } else if (type === "document") {
+      input.accept = "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"; // Accept documents
+    }
+
+    // Trigger the click event for the file input
+    input.click();
+  };
+
+  const handleFileRemove = (fileToRemove: File) => {
+    // Remove the specific file from the selectedFiles array
+    setSelectedFiles(prevFiles => prevFiles.filter(file => file !== fileToRemove));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target;
+    if (target?.files) {
+      const newFiles = Array.from(target.files);
+      setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]); // Add new files to the state
+    }
+  };
+
   const handleEmojiClick = (emojiObject: any) => {
     setInputMessage((prevInput) => prevInput + emojiObject.emoji);
   };
@@ -172,7 +201,7 @@ const Page: React.FC = () => {
       const message = {
         toEmail: user2,
         message: messages,
-        fromEmail: token?.email, 
+        fromEmail: token?.email,
       }
       mysocket.emit("privateMessage", JSON.stringify(message));
 
@@ -226,6 +255,9 @@ const Page: React.FC = () => {
     //   mysocket.disconnect();
     // };
   }, [token?.email]);
+
+
+
 
 
 
@@ -313,22 +345,53 @@ const Page: React.FC = () => {
               onClick={handleClick}
               className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
             />
+            {selectedFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg">
+                    <span className="text-sm truncate">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleFileRemove(file)}
+                      className="text-red-500 font-bold"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <input
+              id="fileInput"
+              type="file"
+              multiple // Allow multiple files selection
+              style={{ display: "none" }} // Hide the input element
+              onChange={handleFileChange}
+            />
 
             <div
-              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
+              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-5 pointer-events-none"
                 }`}
             >
-              <span className="bg-primary rounded-full ">
-
+              <button onClick={() => handleFileClick("document")} className="bg-primary rounded-full">
                 <FileText
-                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
-              </span>
 
-              <span className="bg-primary rounded-full ">
-                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2 " />
-              </span>
+                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
+                />
+              </button>
+              <button onClick={() => handleFileClick("image")} className="bg-primary rounded-full">
+                <Images
+
+                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
+                />
+              </button>
             </div>
-            <form onClick={onSendMessage} className="flex items-center gap-2 p-4 w-full">
+
+            
+            <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full">
               <input
                 placeholder="Write message here..."
                 value={messages} // Use 'messages' state here

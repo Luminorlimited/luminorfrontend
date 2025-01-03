@@ -1,15 +1,8 @@
 
-interface ProjectDescModalProps {
-    register: any;
-    getValues: any;
-    handleNext: () => void;
-}
 
-export default function ProjectDescModal({
-    register,
 
-}: ProjectDescModalProps) {
- 
+export default function ProjectDescModal({ register }: any) {
+
 
     return (
         <div className="space-y-4">
@@ -19,6 +12,7 @@ export default function ProjectDescModal({
                 <input
                     type="text"
                     {...register("projectName")}
+                    
                     placeholder="Enter your project name"
                     className="w-full rounded-[8px] border border-gray-300 p-2 focus:ring-2 focus:ring-primary focus:border-none outline-none"
                 />
@@ -34,7 +28,7 @@ export default function ProjectDescModal({
                 />
             </div>
 
-           
+
         </div>
     );
 }

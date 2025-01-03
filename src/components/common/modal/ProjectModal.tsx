@@ -8,7 +8,7 @@ import MilestoneModal from '@/components/common/modal/MilestoneModal';
 import { MilestoneList } from '@/components/common/modal/MilestoneList';
 import ProjectDescModal from '@/components/common/modal/ProjectDescModal';
 import { FlatFeeModal } from '@/components/common/modal/FlatFeeModal';
-import {  useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 interface projectModalProps {
     onClose: () => void
@@ -26,7 +26,7 @@ interface Milestone {
 
 const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
     const [open, setOpen] = useState(true);
-    console.log(open);
+    // console.log(open);
     const [step, setStep] = useState<number>(1);
     const totalSteps = 6;
     const [finalStep, setFinalStep] = useState<any>(null);
@@ -99,7 +99,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                             <ProjectDescModal
                                 register={register}
                                 handleNext={handleNext}
-                                getValues={getValues}
                             />
                         ) : step === 2 ? (
                             <PaymentModal
@@ -157,18 +156,11 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                     <Button
                                         type='submit'
                                         className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
-                                        onClick={() => setStep(step + 1)}
+                                        onClick={onClose}
                                     >
                                         Submit
                                     </Button>
                                 </div>
-                            ) : step === 7 ? (
-                                <Button
-                                    className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
-                                    onClick={onClose}
-                                >
-                                    Close
-                                </Button>
                             ) : (
                                 <div className="flex gap-4 justify-between w-full">
                                     <button

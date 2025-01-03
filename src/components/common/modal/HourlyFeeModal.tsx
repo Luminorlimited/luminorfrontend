@@ -25,7 +25,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                         Revisions
                     </label>
                     <select
-                        {...register("revision")}
+                        {...register("hourlyFee.revision", { required: true, valueAsNumber: true })}
                         id="revisions"
                         className="block w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                     >
@@ -43,7 +43,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                         Delivery
                     </label>
                     <select
-                        {...register("delivery")}
+                        {...register("hourlyFee.delivery", { required: true, valueAsNumber: true })}
                         id="delivery"
                         className="block w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                     >
@@ -65,7 +65,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                             £
                         </span>
                         <input
-                            {...register("price")}
+                            {...register("hourlyFee.pricePerHour", { required: true, valueAsNumber: true })}
                             id="price"
                             type="number"
                             placeholder="500 max"
