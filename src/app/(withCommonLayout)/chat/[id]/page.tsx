@@ -18,14 +18,14 @@ import EmojiPicker from 'emoji-picker-react';
 import { Video, FileText, Images } from 'lucide-react';
 import io, { Socket } from "socket.io-client";
 // import { useGetMessageQuery } from "@/redux/api/messageApi";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+// import { useSelector } from "react-redux";
+// import { RootState } from "@/redux/store";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useParams } from "next/navigation";
 // import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import { useGetMessageQuery, useGetuserQuery } from "@/redux/api/messageApi";
 import useDecodedToken from "@/components/common/DecodeToken";
 
@@ -33,7 +33,6 @@ import useDecodedToken from "@/components/common/DecodeToken";
 interface DecodedToken extends JwtPayload {
   id: string;
 }
-const mysocket = io("ws://localhost:5001");
 const Page: React.FC = () => {
   // const url  = window.location.href;
   // const userId = url.split('/chat/')[1]
@@ -109,14 +108,15 @@ const Page: React.FC = () => {
   const [socket, setSocket] = useState<any>(null);
   const user1 = token?.email
   const user2 = getUser?.data?.retireProfessional?.email || getUser?.data?.client?.email
-  console.log('My user email is ',);
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
-  console.log(`My image message is :`, oldMessages);
+  // console.log('My user email is ',);
+  // console.log(`My image message is :`, oldMessages);
 
   useEffect(() => {
     if (error) {
       console.error("Error fetching old messages:", error);
     }
+    console.log(`my old message is`, oldMessages?.data);
 
     if (Array.isArray(oldMessages?.data)) {
       // console.log("Fetched old messages:", oldMessages);
@@ -124,13 +124,13 @@ const Page: React.FC = () => {
         oldMessages?.data?.map((msg: any) => ({
           message: msg.message,
           sender: msg.sender === user1 ? "sender" : "recipient",
-          timestamp: new Date(msg.timestamp),
+          createdAt: msg.createdAt
         }))
       );
     }
   }, [oldMessages, error, user1]);
 
-
+  console.log(`My date is`, inbox);
 
   const { data: getprofile } = useGetProfileByIdQuery(userId)
   // console.log('My token is ', token);
@@ -138,14 +138,14 @@ const Page: React.FC = () => {
 
   const handleshowMessage = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    console.log('my name is Mahi');
+    // console.log('my name is Mahi');
 
     if (!socket) return;
 
     socket.on("privateMessage", (data: any) => {
-      console.log("Message received:", data);
+      // console.log("Message received:", data);
 
-      const { message, fromEmail, timestamp } = data;
+      const { message, fromEmail, createdAt } = data;
 
       if (!message || !fromEmail) {
         console.error("Invalid message structure:", data);
@@ -157,11 +157,14 @@ const Page: React.FC = () => {
         {
           content: message,
           sender: "recipient", // Mark as received
-          timestamp: new Date(timestamp || Date.now()), // Ensure valid timestamp
+          createdAt: createdAt
         },
       ]);
     });
   };
+
+  const mysocket = io("ws://localhost:5001");
+
 
   const onSendMessage = (e: any) => {
     e.preventDefault();
@@ -169,15 +172,14 @@ const Page: React.FC = () => {
       const message = {
         toEmail: user2,
         message: messages,
-        fromEmail: token?.email, // Include sender's email
-        timestamp: new Date().toISOString(),
+        fromEmail: token?.email, 
       }
       mysocket.emit("privateMessage", JSON.stringify(message));
 
       // Update local inbox state
       setInbox((prevInbox) => [
         ...prevInbox,
-        { content: messages, sender: "sender", timestamp: new Date() },
+        { content: messages, sender: "sender" },
       ]);
 
       setMessages(""); // Clear input
@@ -203,7 +205,7 @@ const Page: React.FC = () => {
       console.log("Received privateMessage:", data);
 
       // Add received message to inbox
-      const { message, fromEmail, timestamp } = data;
+      const { message, fromEmail } = data;
 
       if (message && fromEmail) {
         setInbox((prevInbox) => [
@@ -211,17 +213,18 @@ const Page: React.FC = () => {
           {
             content: message,
             sender: "recipient",
-            timestamp: new Date(timestamp || Date.now()),
+            createdAt: message.createdAt
+            // timestamp: new Date(timestamp || Date.now()),
           },
         ]);
       }
     });
 
     // Cleanup on component unmount
-    return () => {
-      console.log("Disconnecting socket...");
-      mysocket.disconnect();
-    };
+    // return () => {
+    //   console.log("Disconnecting socket...");
+    //   mysocket.disconnect();
+    // };
   }, [token?.email]);
 
 

@@ -68,7 +68,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                             {...register("price")}
                             id="price"
                             type="number"
-                            placeholder="10,000 max"
+                            placeholder="500 max"
                             className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                         />
                     </div>

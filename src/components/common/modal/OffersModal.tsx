@@ -65,7 +65,7 @@ const OffersModal: React.FC<OffersModalProps> = ({ onClose }) => {
     }
 
     return (
-        <div className="absolute z-[999999] top-[-62px] inset-0  flex justify-center items-center">
+        <div className="absolute z-[999999] top-[-155px] inset-0  flex justify-center items-center">
 
             <div className=" mt-4 relative bg-white shadow-lg rounded-[15px] w-[462px] h-[505px] z-50 border p-4">
                 <button

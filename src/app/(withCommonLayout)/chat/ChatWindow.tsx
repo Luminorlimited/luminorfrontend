@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useRef, useEffect, FC } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { CheckCheck } from "lucide-react";
+import avatar1 from '@/assets/images/msgavatar1.png'
+import avatar2 from '@/assets/images/msgavatar2.png'
+import Image from "next/image";
 
 // Interfaces
 interface Message {
   id: number;
   message: string;
   sender: "sender" | "recipient";
-  timestamp: Date;
+  createdAt: string;
 }
 
 interface CommunicationProps {
@@ -46,9 +49,15 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
       <div className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"}`}>
         {/* Avatar */}
         <Avatar className="w-10 h-10">
-          <AvatarFallback>{isSender ? "S" : "R"}</AvatarFallback>
+          {/* Conditionally render the avatar image */}
+          <Image
+            src={isSender ? avatar1 : avatar2}
+            alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
+            width={50}
+            height={50}
+            className="w-full h-full object-cover rounded-full"
+          />
         </Avatar>
-
         {/* Message Content */}
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
@@ -57,7 +66,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
               : "rounded-r-[10px] rounded-b-[10px]"
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg}`}
           >
-
             {message.message}
           </div>
 
@@ -65,10 +73,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorSchem
           <div
             className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"}`}
           >
-            {/* {message.timestamp.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })} */}
+            {message.createdAt}
             {isSender && <CheckCheck />}
           </div>
         </div>
@@ -96,9 +101,8 @@ const Communication: FC<CommunicationProps> = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-  console.log("Fetched old messages:", messages);
-  // setMessages(messages)
 
+  console.log("Fetched messages:", messages);
 
   return (
     <div className="flex-1 h-full">

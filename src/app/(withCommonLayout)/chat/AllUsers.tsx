@@ -4,6 +4,7 @@ import demoimg from "@/assets/images/demoimg.png";
 
 // import useDecodedToken from "@/components/common/DecodeToken";
 import React from "react";
+import { useGetConversationQuery } from "@/redux/api/messageApi";
 interface AllUsersProps {
   handleshowMessage: (e: React.MouseEvent<HTMLElement>) => void;
   getUser: any; // You may want to replace `any` with a proper type
@@ -43,7 +44,9 @@ export default function AllUsers({ handleshowMessage, getUser }: AllUsersProps) 
       { timestamp: new Date(new Date().getTime() - 60000) },
     ],
   };
-  // const decodeToken = useDecodedToken()
+
+  const {data: getConversation } = useGetConversationQuery(undefined)
+  console.log(`My all Conversation`, getConversation);
 
   return (
     <div>

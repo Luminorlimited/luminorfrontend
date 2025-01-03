@@ -27,9 +27,16 @@ const projectApi = baseApi.injectEndpoints({
             }),
             providesTags: ['message'],
         }),
+        getConversation: build.query({
+            query: () => ({
+                url: `/messages/get-convirsation-list`,
+                method: 'GET'
+            }),
+            providesTags: ['message'],
+        }),
 
 
     }),
 });
 
-export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery } = projectApi;
+export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery } = projectApi;
