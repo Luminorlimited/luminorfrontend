@@ -143,7 +143,7 @@ const Page: React.FC = () => {
   const user2 = getUser?.data?.retireProfessional?.email || getUser?.data?.client?.email
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
 
-
+console.log(`my old messages are`, oldMessages);
   useEffect(() => {
     if (error) {
       console.error("Error fetching old messages:", error);
@@ -157,11 +157,9 @@ const Page: React.FC = () => {
 
   const { data: getprofile } = useGetProfileByIdQuery(userId)
 
-  const handleshowMessage = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    // console.log('my name is Mahi');
-
-    if (!socket) return;
+  const handleshowMessage = (email:string) => {
+    console.log('my name is Mahi', email);
+    // if(email === )
 
   };
 
