@@ -5,35 +5,35 @@ import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { CheckCheck } from "lucide-react";
-import avatar1 from '@/assets/images/msgavatar1.png'
-import avatar2 from '@/assets/images/msgavatar2.png'
+import avatar1 from "@/assets/images/msgavatar1.png";
+import avatar2 from "@/assets/images/msgavatar2.png";
 import Image from "next/image";
 
 // Interfaces
 interface Message {
   id: number;
   message: string;
-  sender: "sender" | "recipient";
-  createdAt: string;
+  sender: "sender" | "recipient"; // Determines if the message is sent or received
+  createdAt: string; // ISO timestamp
 }
 
 interface CommunicationProps {
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  senderName: string;
-  senderType: "sender" | "recipient";
-  receiverType: "sender" | "recipient";
+  messages: Message[]; // All messages for the chat
+  // setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  senderName: string; // Sender's display name
+  senderType: "sender" | "recipient"; // Sender key for current user
+  receiverType: "sender" | "recipient"; // Receiver key for other participants
   colorScheme: {
-    senderBg: string;
-    receiverBg: string;
+    senderBg: string; // Styling for sender's message background
+    receiverBg: string; // Styling for receiver's message background
   };
   handleOpenModal: () => void;
   isModalOpen: boolean;
 }
 
 interface MessageBubbleProps {
-  message: Message;
-  senderType: "sender" | "recipient";
+  messages: Message; // Single message object
+  senderType: "sender" | "recipient"; // Check whether sender is the current user
   colorScheme: {
     senderBg: string;
     receiverBg: string;
@@ -41,90 +41,92 @@ interface MessageBubbleProps {
 }
 
 // MessageBubble Component: Handles the rendering of individual chat bubbles
-const MessageBubble: FC<MessageBubbleProps> = ({ message, senderType, colorScheme }) => {
-  const isSender = message.sender === senderType;
+const MessageBubble: FC<MessageBubbleProps> = ({ messages, senderType, colorScheme }) => {
+  const isSender = messages.sender === senderType; // Determine if the current user sent the message
 
   return (
-    <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
-      <div className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"}`}>
-        {/* Avatar */}
-        <Avatar className="w-10 h-10">
-          {/* Conditionally render the avatar image */}
-          <Image
-            src={isSender ? avatar1 : avatar2}
-            alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
-            width={50}
-            height={50}
-            className="w-full h-full object-cover rounded-full"
-          />
-        </Avatar>
-        {/* Message Content */}
-        <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
-          <div
-            className={`p-3 ${isSender
-              ? "rounded-l-[10px] rounded-b-[10px]"
-              : "rounded-r-[10px] rounded-b-[10px]"
-              } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg}`}
-          >
-            {message.message}
-          </div>
+      <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
+        <div className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"}`}>
+          {/* Avatar */}
+          <Avatar className="w-10 h-10">
+            {/* Render avatar image for sender or recipient */}
+            <Image
+                src={isSender ? avatar1 : avatar2}
+                alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
+                width={50}
+                height={50}
+                className="w-full h-full object-cover rounded-full"
+            />
+          </Avatar>
+          {/* Message Content */}
+          <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
+            <div
+                className={`p-3 ${
+                    isSender ? "rounded-l-[10px] rounded-b-[10px]" : "rounded-r-[10px] rounded-b-[10px]"
+                } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg}`}
+            >
+              {messages.message}
+            </div>
 
-          {/* Timestamp */}
-          <div
-            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"}`}
-          >
-            {message.createdAt}
-            {isSender && <CheckCheck />}
+            {/* Timestamp */}
+            <div
+                className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${
+                    isSender && "flex items-center justify-end gap-2"
+                }`}
+            >
+              {new Date(messages.createdAt).toLocaleTimeString()} {/* Format timestamp */}
+              {isSender && <CheckCheck />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
   );
 };
 
-// Communication Component: The primary chat container
+// Communication Component: The main chat container
 const Communication: FC<CommunicationProps> = ({
-  messages,
-  // setMessages,
-  senderType,
-  colorScheme,
-  handleOpenModal,
-  isModalOpen,
-}) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+                                                 messages,
+                                                 // setMessages,
+                                                 senderType,
+                                                 colorScheme,
+                                                 handleOpenModal,
+                                                 isModalOpen,
+                                               }) => {
+  const containerRef = useRef<HTMLDivElement>(null); // Scroll to bottom reference
 
-  // Automatically scroll to the bottom of chat when messages are updated
+  // Automatically scroll to the bottom of the chat when messages are updated
   const scrollToBottom = () => {
     containerRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages]); // Ensure scrolling happens when messages are updated
 
   console.log("Fetched messages:", messages);
 
   return (
-    <div className="flex-1 h-full">
-      {/* Chat Area */}
-      <div className="h-full">
-        <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
-          {messages.map((message, index: number) => (
-            <MessageBubble
-              key={index}
-              message={message}
-              senderType={senderType}
-              colorScheme={colorScheme}
-            />
-          ))}
-          {/* Invisible div to anchor scrolling */}
-          <div ref={containerRef} />
-        </ScrollArea>
-      </div>
+      <div className="flex-1 h-full">
+        {/* Chat Area */}
+        <div className="h-full">
+          <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
+            {/* Render each message */}
+            {messages.map((message, index: number) => (
+                <MessageBubble
+                    key={message.id || index}
+                    messages={message}
+                    senderType={senderType}
+                    colorScheme={colorScheme}
+                />
+            ))}
+            {/* Invisible div used for scrolling to bottom */}
+            <div ref={containerRef} />
+          </ScrollArea>
+        </div>
 
-      {/* Modal */}
-      {isModalOpen && <OffersModal onClose={handleOpenModal} />}
-    </div>
+        {/* Modal for actions (if open) */}
+        {isModalOpen && <OffersModal onClose={handleOpenModal} />}
+      </div>
   );
 };
 

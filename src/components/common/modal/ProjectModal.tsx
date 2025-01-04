@@ -26,6 +26,7 @@ interface Milestone {
 
 const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
     const [open, setOpen] = useState(true);
+    console.log(open)
     // console.log(open);
     const [step, setStep] = useState<number>(1);
     const totalSteps = 6;

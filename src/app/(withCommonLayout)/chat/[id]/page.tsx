@@ -92,7 +92,7 @@ const Page: React.FC = () => {
   };
 
   const handleEmojiClick = (emojiObject: any) => {
-    setInputMessage((prevInput) => prevInput + emojiObject.emoji);
+    setMessages((prevMessages) => prevMessages + emojiObject.emoji);
   };
   const toggleEmojiPicker = () => {
     setShowEmojiPicker((prev) => !prev);
@@ -132,7 +132,10 @@ const Page: React.FC = () => {
   // console.log(`my user id value is:`, userIdValue);
 
   const token = useDecodedToken()
-  const [inbox, setInbox] = useState<any[]>([]); // Store past messages
+  const [inbox, setInbox] = useState<
+      { id: number; message: string; sender: "sender" | "recipient"; createdAt: string }[]
+  >([]);
+
   const [messages, setMessages] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
   const user1 = token?.email
@@ -171,25 +174,25 @@ const Page: React.FC = () => {
 
     if (!socket) return;
 
-    socket.on("privateMessage", (data: any) => {
-      // console.log("Message received:", data);
-
-      const { message, fromEmail, createdAt } = data;
-
-      if (!message || !fromEmail) {
-        console.error("Invalid message structure:", data);
-        return;
-      }
-
-      setInbox((prevInbox) => [
-        ...prevInbox,
-        {
-          content: message,
-          sender: "recipient", // Mark as received
-          createdAt: createdAt
-        },
-      ]);
-    });
+    // socket.on("privateMessage", (data: any) => {
+    //   // console.log("Message received:", data);
+    //
+    //   const { message, fromEmail, createdAt } = data;
+    //
+    //   if (!message || !fromEmail) {
+    //     console.error("Invalid message structure:", data);
+    //     return;
+    //   }
+    //
+    //   setInbox((prevInbox) => [
+    //     ...prevInbox,
+    //     {
+    //       content: message,
+    //       sender: "recipient", // Mark as received
+    //       createdAt: createdAt
+    //     },
+    //   ]);
+    // });
   };
 
   const mysocket = io("ws://localhost:5001");
@@ -202,18 +205,23 @@ const Page: React.FC = () => {
         toEmail: user2,
         message: messages,
         fromEmail: token?.email,
-      }
+        createdAt: new Date().toISOString(), // Add a timestamp
+      };
+
+      // Emit the message via socket
       mysocket.emit("privateMessage", JSON.stringify(message));
 
-      // Update local inbox state
+      // Update local inbox state immediately
       setInbox((prevInbox) => [
         ...prevInbox,
-        { content: messages, sender: "sender" },
+        {id: Date.now(),message : messages, sender: "sender", createdAt: message.createdAt },
       ]);
 
       setMessages(""); // Clear input
     }
   };
+
+
 
   useEffect(() => {
     if (!token?.email) {
@@ -234,32 +242,29 @@ const Page: React.FC = () => {
       console.log("Received privateMessage:", data);
 
       // Add received message to inbox
-      const { message, fromEmail } = data;
+      const { message, fromEmail, createdAt } = data;
 
       if (message && fromEmail) {
         setInbox((prevInbox) => [
           ...prevInbox,
           {
-            content: message,
-            sender: "recipient",
-            createdAt: message.createdAt
-            // timestamp: new Date(timestamp || Date.now()),
+            id: Date.now(),
+            message: message,
+            sender: "recipient", // Indicate the sender is the recipient
+            createdAt: createdAt || new Date().toISOString(), // Use timestamp if provided, otherwise use current time
           },
         ]);
       }
     });
 
     // Cleanup on component unmount
-    // return () => {
-    //   console.log("Disconnecting socket...");
-    //   mysocket.disconnect();
-    // };
+    return () => {
+      console.log("Cleaning up socket listeners...");
+      mysocket.off("connect");
+      mysocket.off("privateMessage");
+      mysocket.disconnect(); // Optionally disconnect the socket
+    };
   }, [token?.email]);
-
-
-
-
-
 
 
   return (
@@ -325,7 +330,7 @@ const Page: React.FC = () => {
                   isModalOpen={isModalOpen}
                   handleOpenModal={handleOpenModal}
                   messages={inbox} // Pass inbox state
-                  setMessages={setInbox} // Update inbox state
+                  // setMessage={setInbox} // Update inbox state
                   senderType="sender"
                   receiverType="recipient"
                   colorScheme={{
@@ -390,7 +395,7 @@ const Page: React.FC = () => {
               </button>
             </div>
 
-            
+
             <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full">
               <input
                 placeholder="Write message here..."
