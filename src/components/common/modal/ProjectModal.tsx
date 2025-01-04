@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from '@/components/common/Button';
 import { PaymentModal } from '@/components/common/modal/PaymentModal';
 import { HourlyFeeModal } from '@/components/common/modal/HourlyFeeModal';
@@ -9,6 +9,7 @@ import { MilestoneList } from '@/components/common/modal/MilestoneList';
 import ProjectDescModal from '@/components/common/modal/ProjectDescModal';
 import { FlatFeeModal } from '@/components/common/modal/FlatFeeModal';
 import { useForm } from 'react-hook-form';
+import io from 'socket.io-client'; // Import the socket.io-client
 
 interface projectModalProps {
     onClose: () => void
@@ -23,7 +24,7 @@ interface Milestone {
     description: string;
 }
 
-
+const socket = io('ws://localhost:5001');
 const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
     const [open, setOpen] = useState(true);
     console.log(open)
@@ -59,7 +60,25 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
     const onSubmit = (data: any) => {
         setFinalStep(data);
         console.log("Final Form Values:", data);
+
+        const offer = {
+            projectDetails: data,
+            milestones: milestones,
+        };
+        socket.emit('sendOffer', offer)
     };
+
+
+    // Create and get offer via Socket io
+    useEffect(() => {
+        socket.on("connect" , ()=>{
+            console.log("Connected to server");
+            socket.on('offerReceived', (message) =>{
+                console.log('Offer received response:', message);
+            })
+
+        })
+    }, []);
 
     return (
         <div

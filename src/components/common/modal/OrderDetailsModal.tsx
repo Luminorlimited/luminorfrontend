@@ -2,13 +2,19 @@ import React from "react";
 import Image from "next/image";
 import { Offer } from "./OffersModal";
 import Button from "@/components/common/Button";
+import { useRouter } from "next/navigation";
 
 interface OrderDetailsModalProps {
     data: Offer
 
 }
 
+
 const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
+    const router = useRouter()
+    const submitOrder = () => {
+        router.push('/project-details')
+    }
     return (
         <div className="flex  items-center justify-center z-50">
             <div className="">
@@ -25,7 +31,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
                         height={150}
                         className="object-cover w-full h-full"
                     />
-                <h4 className="font-medium text-[16px] mb-3">{data.title}</h4>
+                    <h4 className="font-medium text-[16px] mb-3">{data.title}</h4>
                 </div>
 
 
@@ -57,7 +63,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
                     <button className="rounded-[12px]  w-full text-[16px] bg-slate-200 font-medium text-black  transition-colors duration-200">
                         Decline
                     </button>
-                    <Button className="w-full">Accept Order</Button>
+                    <Button onClick={submitOrder} className="w-full">Accept Order</Button>
 
                 </div>
             </div>

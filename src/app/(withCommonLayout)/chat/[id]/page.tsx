@@ -33,6 +33,7 @@ import useDecodedToken from "@/components/common/DecodeToken";
 interface DecodedToken extends JwtPayload {
   id: string;
 }
+
 const Page: React.FC = () => {
   // const url  = window.location.href;
   // const userId = url.split('/chat/')[1]
@@ -133,7 +134,7 @@ const Page: React.FC = () => {
 
   const token = useDecodedToken()
   const [inbox, setInbox] = useState<
-      { id: number; message: string; sender: "sender" | "recipient"; createdAt: string }[]
+    { id: number; message: string; sender: "sender" | "recipient"; createdAt: string }[]
   >([]);
 
   const [messages, setMessages] = useState<string>("");
@@ -148,21 +149,15 @@ const Page: React.FC = () => {
     if (error) {
       console.error("Error fetching old messages:", error);
     }
-    console.log(`my old message is`, oldMessages?.data);
+    // console.log(`my old message is`, oldMessages?.data);
 
     if (Array.isArray(oldMessages?.data)) {
       // console.log("Fetched old messages:", oldMessages);
-      setInbox(
-        oldMessages?.data?.map((msg: any) => ({
-          message: msg.message,
-          sender: msg.sender === user1 ? "sender" : "recipient",
-          createdAt: msg.createdAt
-        }))
-      );
+      setInbox(oldMessages?.data);
     }
   }, [oldMessages, error, user1]);
 
-  console.log(`My date is`, inbox);
+  // console.log(`My date is`, inbox);
 
   const { data: getprofile } = useGetProfileByIdQuery(userId)
   // console.log('My token is ', token);
@@ -195,9 +190,6 @@ const Page: React.FC = () => {
     // });
   };
 
-  const mysocket = io("ws://localhost:5001");
-
-
   const onSendMessage = (e: any) => {
     e.preventDefault();
     if (messages.trim()) {
@@ -205,17 +197,16 @@ const Page: React.FC = () => {
         toEmail: user2,
         message: messages,
         fromEmail: token?.email,
-        createdAt: new Date().toISOString(), // Add a timestamp
       };
 
       // Emit the message via socket
-      mysocket.emit("privateMessage", JSON.stringify(message));
+      socket.emit("privateMessage", JSON.stringify(message));
 
       // Update local inbox state immediately
-      setInbox((prevInbox) => [
-        ...prevInbox,
-        {id: Date.now(),message : messages, sender: "sender", createdAt: message.createdAt },
-      ]);
+      // setInbox((prevInbox) => [
+      //   ...prevInbox,
+      //   { id: Date.now(), message: messages, sender: "sender", createdAt: message.createdAt },
+      // ]);
 
       setMessages(""); // Clear input
     }
@@ -226,9 +217,10 @@ const Page: React.FC = () => {
   useEffect(() => {
     if (!token?.email) {
       console.log("Token not ready or email missing.");
-      return; // Wait for the token to be available.
+      return;
     }
 
+    const mysocket = io("ws://localhost:5001");
     setSocket(mysocket);
 
     // Log connection
@@ -238,21 +230,13 @@ const Page: React.FC = () => {
     });
 
     // Listen for private messages
-    mysocket.on("privateMessage", (data: any) => {
-      console.log("Received privateMessage:", data);
-
-      // Add received message to inbox
-      const { message, fromEmail, createdAt } = data;
-
-      if (message && fromEmail) {
+    mysocket.on("privateMessage", (data) => {
+      console.log("Received private message:", data.message);
+      const { message } = data;
+      if (message) {
         setInbox((prevInbox) => [
           ...prevInbox,
-          {
-            id: Date.now(),
-            message: message,
-            sender: "recipient", // Indicate the sender is the recipient
-            createdAt: createdAt || new Date().toISOString(), // Use timestamp if provided, otherwise use current time
-          },
+          message
         ]);
       }
     });
@@ -262,10 +246,9 @@ const Page: React.FC = () => {
       console.log("Cleaning up socket listeners...");
       mysocket.off("connect");
       mysocket.off("privateMessage");
-      mysocket.disconnect(); // Optionally disconnect the socket
+      mysocket.disconnect();
     };
   }, [token?.email]);
-
 
   return (
     <section>
@@ -331,8 +314,7 @@ const Page: React.FC = () => {
                   handleOpenModal={handleOpenModal}
                   messages={inbox} // Pass inbox state
                   // setMessage={setInbox} // Update inbox state
-                  senderType="sender"
-                  receiverType="recipient"
+                  currentUser={user1}
                   colorScheme={{
                     senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
                     receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
