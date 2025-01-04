@@ -142,26 +142,20 @@ const Page: React.FC = () => {
   const user1 = token?.email
   const user2 = getUser?.data?.retireProfessional?.email || getUser?.data?.client?.email
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
-  // console.log('My user email is ',);
-  // console.log(`My image message is :`, oldMessages);
+
 
   useEffect(() => {
     if (error) {
       console.error("Error fetching old messages:", error);
     }
-    // console.log(`my old message is`, oldMessages?.data);
 
     if (Array.isArray(oldMessages?.data)) {
-      // console.log("Fetched old messages:", oldMessages);
       setInbox(oldMessages?.data);
     }
   }, [oldMessages, error, user1]);
 
-  // console.log(`My date is`, inbox);
 
   const { data: getprofile } = useGetProfileByIdQuery(userId)
-  // console.log('My token is ', token);
-  // console.log(getprofile);
 
   const handleshowMessage = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -169,25 +163,6 @@ const Page: React.FC = () => {
 
     if (!socket) return;
 
-    // socket.on("privateMessage", (data: any) => {
-    //   // console.log("Message received:", data);
-    //
-    //   const { message, fromEmail, createdAt } = data;
-    //
-    //   if (!message || !fromEmail) {
-    //     console.error("Invalid message structure:", data);
-    //     return;
-    //   }
-    //
-    //   setInbox((prevInbox) => [
-    //     ...prevInbox,
-    //     {
-    //       content: message,
-    //       sender: "recipient", // Mark as received
-    //       createdAt: createdAt
-    //     },
-    //   ]);
-    // });
   };
 
   const onSendMessage = (e: any) => {
@@ -198,17 +173,8 @@ const Page: React.FC = () => {
         message: messages,
         fromEmail: token?.email,
       };
-
-      // Emit the message via socket
       socket.emit("privateMessage", JSON.stringify(message));
-
-      // Update local inbox state immediately
-      // setInbox((prevInbox) => [
-      //   ...prevInbox,
-      //   { id: Date.now(), message: messages, sender: "sender", createdAt: message.createdAt },
-      // ]);
-
-      setMessages(""); // Clear input
+      setMessages(""); 
     }
   };
 
