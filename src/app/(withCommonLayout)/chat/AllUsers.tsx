@@ -26,7 +26,7 @@ interface AllUsersProps {
 
 export default function AllUsers({ handleshowMessage, getUser }: AllUsersProps) {
   const { data: getConversation } = useGetConversationQuery(undefined);
-  console.log(`My all Conversation`, getConversation);
+  console.log(`My all Conversation`, getConversation?.data?.[0].name);
 
   const formatTimeDifference = (timestamp: Date): string => {
     const now = new Date();
@@ -82,15 +82,20 @@ export default function AllUsers({ handleshowMessage, getUser }: AllUsersProps) 
 
               <div className="flex-1">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-semibold">
 
-                    {getUser?.client?.name?.firstName ||
+
+                  {/* {getUser?.client?.name?.firstName ||
                       getUser?.retireProfessional?.name?.firstName ||
                       'Unknown'}{' '}
                     {getUser?.retireProfessional?.name?.lastName ||
                       getUser?.client?.name?.lastName ||
-                      ''}
-                  </h3>
+                      ''} */}
+                  {getConversation?.data.map((user: any, index: number) => {
+                    <h3 className="text-sm font-semibold" key={index}>
+                      {user.name}
+                    </h3>
+                  })}
+
                   <span className="text-xs text-gray-500">
                     {user.messages.length > 0
                       ? formatTimeDifference(
