@@ -9,8 +9,9 @@ import avatar1 from "@/assets/images/msgavatar1.png";
 import avatar2 from "@/assets/images/msgavatar2.png";
 import Image from "next/image";
 
+
 // Interfaces
-interface Message {
+export interface Message {
   id: number;
   message: string;
   sender: "sender" | "recipient"; // Determines if the message is sent or received
@@ -19,7 +20,6 @@ interface Message {
 
 interface CommunicationProps {
   messages: Message[]; // All messages for the chat
-  // setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   senderName: string; // Sender's display name,
   currentUser: string;
   colorScheme: {
@@ -31,24 +31,24 @@ interface CommunicationProps {
 }
 
 interface MessageBubbleProps {
-  messages: Message; // Single message object
-  currentUser: string; // Check whether sender is the current user
+  messages: Message;
+  currentUser: string;
   colorScheme: {
     senderBg: string;
     receiverBg: string;
   };
 }
 
-// MessageBubble Component: Handles the rendering of individual chat bubbles
 const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorScheme }) => {
-  const isSender = messages.sender === currentUser; // Determine if the current user sent the message
+  const isSender = messages.sender === currentUser;
+
+
+
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
       <div className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"}`}>
-        {/* Avatar */}
         <Avatar className="w-10 h-10">
-          {/* Render avatar image for sender or recipient */}
           <Image
             src={isSender ? avatar1 : avatar2}
             alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
@@ -66,12 +66,11 @@ const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorSch
             {messages.message}
           </div>
 
-          {/* Timestamp */}
           <div
             className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"
               }`}
           >
-            {new Date(messages.createdAt).toLocaleTimeString()} {/* Format timestamp */}
+            {new Date(messages.createdAt).toLocaleTimeString()}
             {isSender && <CheckCheck />}
           </div>
         </div>
@@ -89,18 +88,15 @@ const Communication: FC<CommunicationProps> = ({
   handleOpenModal,
   isModalOpen,
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null); // Scroll to bottom reference
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Automatically scroll to the bottom of the chat when messages are updated
   const scrollToBottom = () => {
     containerRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]); // Ensure scrolling happens when messages are updated
-
-  // console.log("Fetched messages:", messages);
+  }, [messages]);
 
   return (
     <div className="flex-1 h-full">

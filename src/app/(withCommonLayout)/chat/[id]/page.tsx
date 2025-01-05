@@ -2,7 +2,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import ChatWindow from "@/app/(withCommonLayout)/chat/ChatWindow";
+import ChatWindow, { Message } from "@/app/(withCommonLayout)/chat/ChatWindow";
 import Button from "@/components/common/Button";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
@@ -17,12 +17,10 @@ import EmojiPicker from 'emoji-picker-react';
 
 import { Video, FileText, Images } from 'lucide-react';
 import io, { Socket } from "socket.io-client";
-// import { useGetMessageQuery } from "@/redux/api/messageApi";
-// import { useSelector } from "react-redux";
-// import { RootState } from "@/redux/store";
+import { useGetConversationQuery } from '@/redux/api/messageApi';
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useParams } from "next/navigation";
-// import { useGetProfileByIdQuery } from "@/redux/api/userApi";
+import demoimg from '@/assets/images/demoimg.png';
 import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 // import { useRouter } from "next/router";
@@ -35,21 +33,12 @@ interface DecodedToken extends JwtPayload {
 }
 
 const Page: React.FC = () => {
-  // const url  = window.location.href;
-  // const userId = url.split('/chat/')[1]
-  // console.log(`My User Id: ${userId}`)
-
-  // const defaultMessages = conversations[0];
-
-  // const showMessage = (conversationId: string) => {
-  //   const { data } = useGetMessageQuery({ user1: "currentUserId", user2: conversationId });
-  //   setMessages(data?.messages || []);
-  // };
-
-  const id = useParams()
 
 
-  const { data: getUser } = useGetuserQuery(id?.id);
+  // const id = useParams()
+
+
+  // const { data: getUser } = useGetuserQuery(id?.id);
 
   // console.log(`my user is `, getUser);
 
@@ -129,19 +118,24 @@ const Page: React.FC = () => {
 
   const userId = useParams()
 
-  // const userIdValue = userId.id;
-  // console.log(`my user id value is:`, userIdValue);
 
   const token = useDecodedToken()
-  const [inbox, setInbox] = useState<
-    { id: number; message: string; sender: "sender" | "recipient"; createdAt: string }[]
-  >([]);
+  const [inbox, setInbox] = useState<Message[]>([]);
 
   const [messages, setMessages] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
   const user1 = token?.email
-  const user2 = getUser?.data?.retireProfessional?.email || getUser?.data?.client?.email
+
+  const [user2, setUser2] = useState("");
+  const [name, setName] = useState("");
+  const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
+
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
+
+  const { data: getConversation } = useGetConversationQuery(undefined);
+  // console.log(`My all Conversation`, getConversation);
+
+  // console.log(`My old message is`, inbox);
 
 
   useEffect(() => {
@@ -149,21 +143,37 @@ const Page: React.FC = () => {
       console.error("Error fetching old messages:", error);
     }
 
-    if (Array.isArray(oldMessages?.data)) {
-      setInbox(oldMessages?.data);
+    if (oldMessages?.data.messages) {
+      setInbox(oldMessages?.data.messages);
     }
   }, [oldMessages, error, user1]);
 
 
   const { data: getprofile } = useGetProfileByIdQuery(userId)
+  // console.log('my old message is ', oldMessages)
 
-  const handleshowMessage = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    // console.log('my name is Mahi');
+  const handleshowMessage = (email: string, name: string, profileUrl: string | null) => {
+    setUser2(email)
+    setName(name)
+    setProfileUrl(profileUrl || demoimg.src);
+    console.log("Selected email:", email);
 
-    if (!socket) return;
+    // Filter messages where the clicked email matches sender or recipient
+    const filteredMessages = oldMessages?.data.messages.filter(
+      (message: any) => message.sender === email || message.recipient === email
+    );
 
+    // Update inbox state to display only relevant messages
+    setInbox(
+      filteredMessages.map((msg: any, index: number) => ({
+        id: index + 1, // Ensure unique ID for each message
+        message: msg.message,
+        sender: msg.sender === user1 ? "sender" : "recipient",
+        createdAt: msg.createdAt,
+      }))
+    );
   };
+
 
   const onSendMessage = (e: any) => {
     e.preventDefault();
@@ -174,7 +184,7 @@ const Page: React.FC = () => {
         fromEmail: token?.email,
       };
       socket.emit("privateMessage", JSON.stringify(message));
-      setMessages(""); 
+      setMessages("");
     }
   };
 
@@ -195,7 +205,6 @@ const Page: React.FC = () => {
       mysocket.emit("register", JSON.stringify({ email: token?.email }));
     });
 
-    // Listen for private messages
     mysocket.on("privateMessage", (data) => {
       console.log("Received private message:", data.message);
       const { message } = data;
@@ -207,6 +216,10 @@ const Page: React.FC = () => {
       }
     });
 
+
+
+
+
     // Cleanup on component unmount
     return () => {
       console.log("Cleaning up socket listeners...");
@@ -215,6 +228,7 @@ const Page: React.FC = () => {
       mysocket.disconnect();
     };
   }, [token?.email]);
+  // console.log(`My new message is `, getConversation);
 
   return (
     <section>
@@ -235,7 +249,7 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-            <AllUsers getUser={getUser?.data} handleshowMessage={handleshowMessage} />
+            <AllUsers handleshowMessage={handleshowMessage} getConversation={getConversation} />
           </div>
         </div>
 
@@ -243,14 +257,16 @@ const Page: React.FC = () => {
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
             <div className="flex items-center">
               <Image
-                src="/images/palak.jpg"
+                src={profileUrl}
                 alt="Jane Cooper"
                 width={40}
                 height={40}
                 className="rounded-full"
               />
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">{getUser?.data?.client?.name?.firstName || getUser?.data?.retireProfessional?.name?.firstName} {getUser?.data?.retireProfessional?.name?.lastName || getUser?.data?.client?.name?.lastName}</h3>
+                <h3 className="text-sm font-medium text-gray-900">
+                  {name}
+                </h3>
                 <p className="text-xs text-gray-500">
                   Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
                 </p>
@@ -278,8 +294,7 @@ const Page: React.FC = () => {
                 <ChatWindow
                   isModalOpen={isModalOpen}
                   handleOpenModal={handleOpenModal}
-                  messages={inbox} // Pass inbox state
-                  // setMessage={setInbox} // Update inbox state
+                  messages={inbox}
                   currentUser={user1}
                   colorScheme={{
                     senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
