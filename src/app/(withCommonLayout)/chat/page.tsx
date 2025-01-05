@@ -149,9 +149,6 @@ const Page: React.FC = () => {
   }, [oldMessages, error, user1]);
 
 
-  const { data: getprofile } = useGetProfileByIdQuery(userId)
-  // console.log('my old message is ', oldMessages)
-
   const handleshowMessage = (email: string, name: string, profileUrl: string | null) => {
     setUser2(email)
     setName(name)
@@ -174,7 +171,6 @@ const Page: React.FC = () => {
     );
   };
 
-
   const onSendMessage = (e: any) => {
     e.preventDefault();
     if (messages.trim()) {
@@ -187,7 +183,6 @@ const Page: React.FC = () => {
       setMessages("");
     }
   };
-
 
 
   useEffect(() => {

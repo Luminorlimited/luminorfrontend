@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@/components/common/Button';
 import { PaymentModal } from '@/components/common/modal/PaymentModal';
 import { HourlyFeeModal } from '@/components/common/modal/HourlyFeeModal';
@@ -55,6 +55,8 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
             description: "",
         },
     ]);
+    const [paymentOption, setPaymentOption] = useState<string | null>(null);
+    console.log(paymentOption);
 
 
     const onSubmit = (data: any) => {
@@ -71,9 +73,9 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
 
     // Create and get offer via Socket io
     useEffect(() => {
-        socket.on("connect" , ()=>{
+        socket.on("connect", () => {
             console.log("Connected to server");
-            socket.on('offerReceived', (message) =>{
+            socket.on('offerReceived', (message) => {
                 console.log('Offer received response:', message);
             })
 
@@ -123,8 +125,12 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                         ) : step === 2 ? (
                             <PaymentModal
                                 register={register}
-                                getValues={getValues}
+                                    getValues={getValues}
+                                    setStep={setStep}
+                                    // step={step}
+                                setPaymentOption={setPaymentOption}
                                 setValue={setValue}
+                                handleNextStep={(nextStep: number) => setStep(nextStep)} // Pass the setter directly
                             />
                         ) : step === 3 ? (
                             <FlatFeeModal
@@ -149,7 +155,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                             <MilestoneList
                                 milestones={milestones}
                                 finalData={finalStep}
-                            // Pass the milestones data to MilestoneList
                             />
                         ) : (
                             <div>Thank You</div>
@@ -169,7 +174,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                 <div className="flex gap-4 justify-between w-full">
                                     <button
                                         className="bg-[#eeeeee] text-black px-6 py-4 font-medium rounded-[12px]"
-                                        onClick={() => setStep(step - 1)}
+                                        onClick={() => setStep(2)}
                                     >
                                         Back
                                     </button>
@@ -181,11 +186,13 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                         Submit
                                     </Button>
                                 </div>
-                            ) : (
+                                ) : step === 2 ? (
+                                        ""
+                            ): (
                                 <div className="flex gap-4 justify-between w-full">
                                     <button
                                         className="bg-[#eeeeee] text-black px-6 py-4 font-medium rounded-[12px]"
-                                        onClick={() => setStep(step - 1)}
+                                        onClick={() => setStep(2)}
                                     >
                                         Back
                                     </button>
@@ -197,7 +204,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                     </Button>
                                 </div>
                             )}
-
                         </div>
 
                         {/* Step Indicator */}
@@ -216,9 +222,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                     </div>
                                     {stepNumber < totalSteps && (
                                         <div
-                                            className={`w-12 h-0.5 ${stepNumber < step
-                                                ? 'bg-[#6938EF]'
-                                                : 'bg-gray-200'
+                                            className={`w-12 h-0.5 ${stepNumber < step ? 'bg-[#6938EF]' : 'bg-gray-200'
                                                 }`}
                                         />
                                     )}
@@ -226,6 +230,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                             ))}
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>

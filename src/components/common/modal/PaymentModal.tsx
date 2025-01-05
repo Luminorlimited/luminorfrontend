@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Clock, DollarSign, Milestone } from 'lucide-react'
-import { cn } from "@/lib/utils"
+import Button from "../Button"
 
 interface PaymentOption {
     id: string
@@ -12,13 +12,25 @@ interface PaymentOption {
 }
 
 interface PaymentModalProps {
-    register: (name: string) => void
-    setValue: (name: string, value: any) => void
-    getValues: (name: string) => any
+    register: (name: string) => void;
+    setValue: (name: string, value: any) => void;
+    getValues: (name: string) => any;
+    setPaymentOption: (optionId: string) => void;
+    handleNextStep: (nextStep: number) => void;
+    setStep: (step: number) => void// Corrected this line
 }
 
-export function PaymentModal({  setValue, getValues }: PaymentModalProps) {
-    const [selectedOption, setSelectedOption] = React.useState<string | null>(getValues("paymentOption") || null)
+
+export function PaymentModal({
+    setValue,
+    getValues,
+    setPaymentOption,
+    handleNextStep,
+    setStep,// Correctly receive handleNextStep prop
+}: PaymentModalProps) {
+    const [selectedOption, setSelectedOption] = React.useState<string | null>(
+        getValues("paymentOption") || null
+    );
 
     const paymentOptions: PaymentOption[] = [
         {
@@ -39,18 +51,29 @@ export function PaymentModal({  setValue, getValues }: PaymentModalProps) {
             description: "Payments released as project stages are completed.",
             icon: Milestone,
         },
-    ]
+    ];
 
     const handleOptionClick = (optionId: string) => {
-        setSelectedOption(optionId)
-        setValue("paymentOption", optionId) // Update value in the form
-        console.log(`Selected payment option in PaymentModal: ${optionId}`)
-    }
+        setSelectedOption(optionId);
+        setValue("paymentOption", optionId);
+        setPaymentOption(optionId);
+        console.log(`Selected payment option in PaymentModal: ${optionId}`);
+    };
+
+    const handleNext = () => {
+        if (selectedOption === "flat") {
+            handleNextStep(3); // Proceed to step 3 for flat fee
+        } else if (selectedOption === "hourly") {
+            handleNextStep(4); // Proceed to step 4 for hourly fee
+        } else if (selectedOption === "milestone") {
+            handleNextStep(5); // Proceed to step 5 for milestone payment
+        }
+    };
 
     return (
         <div className="space-y-6 p-4">
             <p className="text-gray-600">
-                You can choose full payment atdddd project completion or opt for milestone
+                You can choose full payment at project completion or opt for milestone
                 payments throughout. Payment options include a flat fee, hourly rate, or
                 milestone-based setup to fit your preference.
             </p>
@@ -58,12 +81,8 @@ export function PaymentModal({  setValue, getValues }: PaymentModalProps) {
                 {paymentOptions.map((option) => (
                     <div
                         key={option.id}
-                        className={cn(
-                            "cursor-pointer rounded-lg border p-4 transition-colors",
-                            selectedOption === option.id
-                                ? "border-primary bg-primary/5"
-                                : "hover:border-gray-300"
-                        )}
+                        className={`cursor-pointer rounded-lg border p-4 transition-colors ${selectedOption === option.id ? "border-primary bg-primary/5" : "hover:border-gray-300"
+                            }`}
                         onClick={() => handleOptionClick(option.id)}
                     >
                         <div className="flex items-start gap-4">
@@ -78,6 +97,24 @@ export function PaymentModal({  setValue, getValues }: PaymentModalProps) {
                     </div>
                 ))}
             </div>
+
+
+            <div className="flex gap-4 justify-between w-full">
+                <button
+                    className="bg-[#eeeeee] text-black px-6 py-4 font-medium rounded-[12px]"
+                    onClick={() => setStep(1)}
+                >
+                    Back
+                </button>
+                <Button
+                    className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
+                    onClick={handleNext} // Attach the handler here
+                >
+                    Next
+                </Button>
+            </div>
         </div>
-    )
+    );
 }
+
+

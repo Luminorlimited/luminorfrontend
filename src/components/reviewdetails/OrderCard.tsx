@@ -73,7 +73,7 @@ export default function OrderCard() {
                     {/* Action Button */}
                     <div className=''>
                         <Link href={'/deliver-details/addreview'} className="text-center bg-primary block w-full py-4 px-4 rounded-[10px] text-white text-lg ">
-                            Deliver Nows
+                            Deliver Now
                         </Link>
                     </div>
                 </div>
