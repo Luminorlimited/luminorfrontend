@@ -24,7 +24,7 @@ import demoimg from '@/assets/images/demoimg.png';
 import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 // import { useRouter } from "next/router";
-import { useGetMessageQuery, useGetuserQuery } from "@/redux/api/messageApi";
+import { useGetMessageQuery } from "@/redux/api/messageApi";
 import useDecodedToken from "@/components/common/DecodeToken";
 
 
@@ -228,7 +228,7 @@ const Page: React.FC = () => {
       mysocket.disconnect();
     };
   }, [token?.email]);
-  // console.log(`My new message is `, getConversation);
+  console.log(`My new message is `, getConversation);
 
   return (
     <section>
@@ -295,6 +295,7 @@ const Page: React.FC = () => {
                   isModalOpen={isModalOpen}
                   handleOpenModal={handleOpenModal}
                   messages={inbox}
+                  // profileUrl={profileUrl}
                   currentUser={user1}
                   colorScheme={{
                     senderBg: "bg-[#F2FAFF] text-[#4A4C56]",

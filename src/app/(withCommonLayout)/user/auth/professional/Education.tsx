@@ -3,12 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ShowToastify from "@/utils/ShowToastify";
 import { useState } from "react";
 import { AiOutlinePlus, AiOutlineUpload } from "react-icons/ai";
 
 
 
-export default function Education({ register, handleNext, setValue }: any) {
+export default function Education({ register, handleNext, setValue, handleBack }: any) {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -50,6 +51,31 @@ export default function Education({ register, handleNext, setValue }: any) {
     setValue("skills", updatedTags); // Update form value
   };
 
+
+  const validateFields = () => {
+    const requiredFields = [
+      { field: "edubackground", label: "Educational Background" },
+      { field: "skills", label: "Technical and Soft Skills" },
+      { field: "eduqualification", label: "Educational Quality" },
+    ];
+
+    for (const { field, label } of requiredFields) {
+      const value = (document.getElementsByName(field)[0] as HTMLInputElement)?.value;
+      if (!value || (field === "skills" && tags.length === 0)) {
+        ShowToastify({ error: `Please fill in the ${label} field.` })
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleNextStep = () => {
+    if (validateFields()) {
+      handleNext();
+    }
+  };
+
   return (
 
     <div >
@@ -72,7 +98,7 @@ export default function Education({ register, handleNext, setValue }: any) {
                 id="edu"
                 {...register("edubackground")}
                 required
-                className="h-12 rounded-xl border-[#E5E7EB] w-full px-3"
+                className="h-12 rounded-xl border-[#E5E7EB] w-full px-3 border"
             >
               <option value="" disabled selected>
                 Select your educational background
@@ -96,10 +122,10 @@ export default function Education({ register, handleNext, setValue }: any) {
               Relevant professional qualification
             </Label>
             <Input
-                id="eduquality"
-                placeholder="Relevant professional qualification"
-                {...register("eduqualification")}
-                className="h-12 rounded-xl border-[#E5E7EB]"
+              id="eduquality"
+              placeholder="Relevant professional qualification"
+              {...register("eduqualification")}
+              className="h-12 rounded-xl border-[#E5E7EB]"
             />
           </div>
         </div>
@@ -209,34 +235,23 @@ export default function Education({ register, handleNext, setValue }: any) {
         </div>
 
       </div>
-      <div className="py-2">
+      <div className="py-2 flex justify-between">
         <Button
-          onClick={handleNext}
-          className="h-12 w-full rounded-xl bg-[#7C3AED] text-white hover:bg-[#6D28D9]"
+          onClick={handleBack}
+          className="h-12 rounded-xl bg-gray-200 text-black hover:bg-gray-300 border  px-[50px]"
+          type="button"
+        >
+          Back
+        </Button>
+        <Button
+          onClick={handleNextStep}
+          className="h-12 rounded-xl bg-primary text-white hover:bg-[#6D28D9] px-[50px]"
           type="button"
         >
           Next
         </Button>
-
       </div>
-      {/* </form> */}
-      {/* <div className="flex items-center justify-center gap-2 pt-8">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
-            <FaCheck />
-          </div>
-          <div className="h-[2px] w-12 bg-[#1877F2]" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
-            <FaCheck />
-          </div>
-          <div className="h-[2px] w-12 bg-[#1877F2]" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2] text-[#1877F2]">
-            3
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            4
-          </div>
-        </div> */}
+    
     </div>
 
   );

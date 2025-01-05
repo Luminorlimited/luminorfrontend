@@ -153,7 +153,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                         </span>
                                     </div>
 
-                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat/${data._id}`}>Connect Now</Link>
+                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat`}>Connect Now</Link>
 
                                     {/* <Button>Connect Now</Button> */}
                                 </div>

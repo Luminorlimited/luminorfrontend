@@ -3,10 +3,41 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ShowToastify from "@/utils/ShowToastify";
 
 
-export default function Signup({ register, handleNext }: any) {
+export default function Signup({ register, handleNext, getValues }: any) {
 
+  const validateFields = () => {
+    const values = getValues();
+
+    const { firstName, lastName, dob, email, phone } = values;
+
+    // Regular expression for validating email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Check if any required field is empty
+    if (!firstName || !lastName || !dob || !email || !phone) {
+      ShowToastify({ error: "Please fill in all required fields." })
+      return false;
+    }
+
+    // Validate email format
+    if (!emailRegex.test(email)) {
+      ShowToastify({ error: "Please enter a valid email address." })
+      return false;
+    }
+
+    return true; // Return true if all fields are filled and email is valid
+  };
+  // Handle Next button click
+  const handleButtonClick = () => {
+    if (validateFields()) {
+      handleNext(); // Only proceed to next step if validation passes
+    }
+  };
+
+  
   return (
       <div >
         
@@ -79,7 +110,7 @@ export default function Signup({ register, handleNext }: any) {
             </Label>
             <Input
               id="phoneNumber"
-              type="tel"
+              type="number"
               {...register('phone')}
               placeholder="Phone number"
               required
@@ -89,7 +120,7 @@ export default function Signup({ register, handleNext }: any) {
           <div className="py-6">
             <Button
               type="button"
-              onClick={handleNext}
+            onClick={handleButtonClick}
               className="w-full rounded-[12px] bg-[#6938EF] px-8 py-6 text-lg font-medium text-white hover:bg-[#5F32D6]"
             >
               Next

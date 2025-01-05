@@ -1,17 +1,17 @@
 import Logo from "@/utils/Logo";
 import Link from "next/link";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
+  // DropdownMenuGroup,
+  // DropdownMenuItem,
+  // DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import LanguageSwitcher from "./LanguageSwitcher";
+// import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
 // import { Search } from "lucide-react";
 import { MobileNavbar } from "./MobileNavbar";
@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 import { BiMessage } from "react-icons/bi";
-import { FaRegHeart } from "react-icons/fa";
+// import { FaRegHeart } from "react-icons/fa";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/api/userApi";
@@ -62,130 +62,129 @@ const Navbar = () => {
   };
 
   return (
-      <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
-        {/* Logo */}
-        <span className="lg:w-auto">
+    <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
+      {/* Logo */}
+      <span className="lg:w-auto">
         <Logo />
       </span>
 
-        {/* Search Box */}
-        <div className="hidden lg:block max-[820px]:hidden">
-          <SearchBox />
-        </div>
+      {/* Search Box */}
+      <div className="hidden lg:block max-[820px]:hidden">
+        <SearchBox />
+      </div>
 
-        {/* Navbar Links */}
-        <div className="lg:flex md:flex hidden items-center gap-6">
-          <ul className="flex items-center gap-6">
-            {navbarLinks.map((item) =>
-                item?.subMenus ? (
-                    <li key={item.id}>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button className="flex items-center gap-2 font-medium hover:text-primary">
-                            {item.title}
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          {item.subMenus.map((subItem) => (
-                              <Fragment key={subItem.id}>
-                                <DropdownMenuGroup>
-                                  <DropdownMenuItem>
-                                    <Link href={subItem.link} className="text-base">
-                                      {subItem.title}
-                                    </Link>
-                                  </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                              </Fragment>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </li>
-                ) : (
-                    <li key={item.id}>
-                      <Link
-                          className="font-medium hover:text-primary"
-                          href={item.link}
-                      >
-                        {item.title}
-                      </Link>
-                    </li>
-                )
-            )}
-          </ul>
-          <LanguageSwitcher />
-
-          {/* User Section */}
-          {decodedToken ? (
-              <div className="flex gap-3 items-center relative">
-                <Link href="/user/editProfile/client">
-                  <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
-                </Link>
-                <Link href={`/project-list/${decodedToken.role}`}>
-                  <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
-                </Link>
-                <Link href="/chat">
-                  <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
-                </Link>
-                <Image
-                    src={demoimg}
-                    width={40}
-                    height={40}
-                    alt="profile"
-                    className="rounded-full cursor-pointer hover:opacity-90 transition-all"
-                    onClick={handleClick}
-                />
-                <ul
-                    className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${
-                        fileBtn
-                            ? "opacity-100 translate-y-0 z-[50]"
-                            : "opacity-0 translate-y-5 pointer-events-none z-[10]"
-                    }`}
-                >
-                  <Link href="/project-details">
-                    <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
-                      Project Details
-                    </li>
-                  </Link>
-                  <Link
-                      href={`/user/editProfile/${decodedToken.role}/${decodedToken.id}`}
-                  >
-                    <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
-                      Edit Profile
-                    </li>
-                  </Link>
-                  <li
-                      onClick={handleLogOut}
-                      className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer"
-                  >
-                    Logout
-                  </li>
-                </ul>
-              </div>
-          ) : (
-              <div className="flex gap-3">
+      {/* Navbar Links */}
+      <div className="lg:flex md:flex hidden items-center gap-6">
+        <ul className="flex items-center gap-6">
+          {navbarLinks.map((item) =>
+            item?.subMenus ? (
+              <li key={item.id}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-2 font-medium hover:text-primary">
+                      {item.title}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {/* {item.subMenus.map((subItem) => (
+                      <Fragment key={subItem.id}>
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem>
+                            <Link href={subItem.link} className="text-base">
+                              {subItem.title}
+                            </Link>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                      </Fragment>
+                    ))} */}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </li>
+            ) : (
+              <li key={item.id}>
                 <Link
-                    className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-                    href="/usertype"
+                  className="font-medium hover:text-primary"
+                  href={item.link}
                 >
-                  <SignUpIcon />
-                  Sign Up
+                  {item.title}
                 </Link>
-                <Link
-                    className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-                    href="/user/auth/login"
-                >
-                  <AvatarIcon /> Log in
-                </Link>
-              </div>
+              </li>
+            )
           )}
-        </div>
+        </ul>
+        {/* <LanguageSwitcher /> */}
 
-        {/* Mobile Navbar */}
-        <div className="lg:hidden block">
-          <MobileNavbar decodedToken={decodedToken} />
-        </div>
-      </nav>
+        {/* User Section */}
+        {decodedToken ? (
+          <div className="flex gap-3 items-center relative">
+            <Link href="/user/editProfile/client">
+              <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
+            {/* <Link href={`/project-list/${decodedToken.role}`}>
+              <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link> */}
+            <Link href="/chat">
+              <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
+            </Link>
+            <Image
+              src={demoimg}
+              width={40}
+              height={40}
+              alt="profile"
+              className="rounded-full cursor-pointer hover:opacity-90 transition-all"
+              onClick={handleClick}
+            />
+            <ul
+              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${fileBtn
+                ? "opacity-100 translate-y-0 z-[50]"
+                : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+                }`}
+            >
+              <Link href="/project-details">
+                <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
+                  Project Details
+                </li>
+              </Link>
+              <Link
+                href={`/user/editProfile/${decodedToken.role}/${decodedToken.id}`}
+              >
+                <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
+                  Edit Profile
+                </li>
+              </Link>
+              <li
+                onClick={handleLogOut}
+                className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer"
+              >
+                Logout
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <Link
+              className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
+              href="/usertype"
+            >
+              <SignUpIcon />
+              Sign Up
+            </Link>
+            <Link
+              className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+              href="/user/auth/login"
+            >
+              <AvatarIcon /> Log in
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile Navbar */}
+      <div className="lg:hidden block">
+        <MobileNavbar decodedToken={decodedToken} />
+      </div>
+    </nav>
   );
 };
 

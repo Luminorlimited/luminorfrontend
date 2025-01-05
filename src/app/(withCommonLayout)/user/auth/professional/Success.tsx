@@ -16,9 +16,8 @@ export default function SuccessPage() {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed py-8">
-            You&apos;ve successfully signed in! Explore Luminor&apos;s network
-            of Retired Professionals and start connecting to fuel your business
-            growth
+           
+             Your details have been registered. Once the onboarding process is done &apos;you will receive a link in your inbox to activate your account. Please wait&apos; 3-5 days
           </p>
 
           <Link href="/user/auth/login" className="text-center font-semibold">

@@ -97,13 +97,15 @@ export default function ProfessionalForm() {
         setStep(5);
       } else {
         console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
-        ShowToastify({ error: "Failed to create Account" });
+        ShowToastify({ error: res?.error?.data?.message });
+        ;
       }
     } catch (error) {
       console.error("An error occurred:", error);
       ShowToastify({ error: "An error occurred while submitting the form." });
     }
   };
+
 
 
 
@@ -144,7 +146,7 @@ export default function ProfessionalForm() {
               {step === 1 && (
                 <Signup
                   register={register}
-                  handleNext={() => setStep(2)} // Go to the next step
+                  handleNext={() => setStep(2)}
                   getValues={getValues}
                   setValue={setValue}
                 />
@@ -153,6 +155,8 @@ export default function ProfessionalForm() {
                 <Experience
                   register={register}
                   handleNext={() => setStep(3)}
+                  handleBack={() => setStep(1)}
+
                   getValues={getValues}
                   setValue={setValue}
                 />
@@ -161,6 +165,8 @@ export default function ProfessionalForm() {
                 <Education
                   register={register}
                   handleNext={() => setStep(4)}
+                  handleBack={() => setStep(2)}
+
                   getValues={getValues}
                   setValue={setValue}
                 />
@@ -168,6 +174,8 @@ export default function ProfessionalForm() {
               {step === 4 && (
                 <Password
                   register={register}
+                  handleBack={() => setStep(3)}
+
                   handleNext={() => setStep(5)}
                 />
               )}

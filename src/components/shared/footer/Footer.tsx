@@ -1,6 +1,5 @@
 'use client'
 import Link from "next/link";
-import { BsGlobe2 } from "react-icons/bs";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
@@ -86,9 +85,9 @@ function FooterColumn({ title, links }: FooterColumn) {
 
 export default function Footer() {
   const pathname = usePathname()
- if(pathname.startsWith('/chat')){
-  return 
- }
+  if (pathname.startsWith('/chat')) {
+    return
+  }
   return (
     <footer
       style={{
@@ -119,20 +118,6 @@ export default function Footer() {
             </Link>
           </div>
           <div className="flex items-center gap-5 mr-20">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <p className="flex items-center gap-2 text-white text-xl font-bold">
-                  <BsGlobe2 />
-                  <IoIosArrowDown />
-                  {/* <span className="sr-only">Select language</span> */}
-                </p>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-32">
-                <DropdownMenuItem>English</DropdownMenuItem>
-                <DropdownMenuItem>Spanish</DropdownMenuItem>
-                <DropdownMenuItem>French</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

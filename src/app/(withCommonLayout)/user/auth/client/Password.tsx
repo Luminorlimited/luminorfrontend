@@ -5,10 +5,41 @@ import { useState } from "react";
 import {  FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 
-export default function Password({ register }: any) {
+export default function Password({ register, handleBack }: any) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+
+
+  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
+
+  const validatePassword = () => {
+    const newErrors: { password?: string; confirmPassword?: string } = {};
+
+    if (!password) {
+      newErrors.password = "Password is required.";
+    } else if (!/(?=.*[A-Z])(?=.*\d).{8,}/.test(password)) {
+      newErrors.password =
+        "Password must include at least 8 characters, one uppercase letter, and one number.";
+    }
+
+    if (!confirmPassword) {
+      newErrors.confirmPassword = "Confirm Password is required.";
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    setErrors(newErrors);
+
+    // Return true if no errors
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (validatePassword()) {
+      console.log("Form submitted successfully", { password, confirmPassword });
+    }
+  };
   
   
 
@@ -53,7 +84,10 @@ export default function Password({ register }: any) {
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-            </div>
+          </div>
+          {errors.password && (
+            <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+          )}
           </div>
 
           <div>
@@ -81,7 +115,10 @@ export default function Password({ register }: any) {
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
-            </div>
+          </div>
+          {errors.confirmPassword && (
+            <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
+          )}
           </div>
        </div>
 
@@ -117,15 +154,23 @@ export default function Password({ register }: any) {
             </div>
           </div>
 
-        <div className="py-2">
-          <Button
-            type="submit"
-            className="w-28 bg-primary rounded-[10px] hover:bg-[#5B32C2] text-white"
-          >
-            Done
-          </Button>
-           
-          </div>
+   
+      <div className="py-2 flex justify-between">
+        <Button
+          onClick={handleBack}
+          className="h-12 rounded-xl bg-gray-200 text-black hover:bg-gray-300 border  px-[50px]"
+          type="button"
+        >
+          Back
+        </Button>
+        <Button
+          onClick={handleSubmit}
+          className="h-12 rounded-xl bg-primary text-white hover:bg-[#6D28D9] px-[50px]"
+          type="submit"
+        >
+          Done
+        </Button>
+      </div>
 
          
       </div>

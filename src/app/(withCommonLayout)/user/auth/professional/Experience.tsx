@@ -3,11 +3,38 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import ShowToastify from "@/utils/ShowToastify";
 
 
-export default function Experience({ register, handleNext }: any) {
+export default function Experience({ register, handleNext, handleBack, getValues }: any) {
 
+  const validateFields = () => {
+    const values = getValues(); // Get all field values
+    const { industry, prevPos1, prevPos2, prevPos3, refName1, refcontact1, refName2, refcontact2 } = values;
 
+    // Check if any required field is empty
+    if (
+      !industry ||
+      !prevPos1 ||
+      !prevPos2 ||
+      !prevPos3 ||
+      !refName1 ||
+      !refcontact1 ||
+      !refName2 ||
+      !refcontact2
+    ) {
+      ShowToastify({ error: "Please fill in all required fields." })
+      return false; // Return false if validation fails
+    }
+    return true; // Return true if all fields are valid
+  };
+
+  // Handle "Next" button click
+  const handleNextClick = () => {
+    if (validateFields()) {
+      handleNext(); // Proceed to the next step if validation passes
+    }
+  };
 
   return (
     <div >
@@ -26,14 +53,14 @@ export default function Experience({ register, handleNext }: any) {
           <select
             id="industry"
             {...register("industry")}
-            className="h-12 rounded-xl border cursor-pointer w-full px-3"
+            className="h-12 rounded-xl border cursor-pointer w-full px-3 pr-3"
           >
             <option value="" disabled selected>
               Select Previous Position
             </option>
-            <option value="tech">tech</option>
-            <option value="marketing">marketing</option>
-            <option value="finance">finance</option>
+            <option value="tech">Tech</option>
+            <option value="marketing">Marketing</option>
+            <option value="finance">Finance</option>
             <option value="education">Education and E-learning</option>
             <option value="ecommerce">E-commerce and Retail</option>
             <option value="realestate">Real Estate</option>
@@ -79,6 +106,7 @@ export default function Experience({ register, handleNext }: any) {
               <Label htmlFor="reference-name">Reference name 1</Label>
               <Input
                 id="reference-name"
+
                 placeholder="Reference name 1"
                 required
                 {...register("refName1")}
@@ -91,6 +119,7 @@ export default function Experience({ register, handleNext }: any) {
               </Label>
               <Input
                 id="refcontact1"
+                type="number"
                 placeholder="Reference Email/Phone Number"
                 {...register("refcontact1")}
                 className="h-12 rounded-xl border-[#E5E7EB]"
@@ -116,6 +145,7 @@ export default function Experience({ register, handleNext }: any) {
               </Label>
               <Input
                 id="refcontact2"
+                type="number"
                 placeholder="Reference Email/Phone Number"
                 {...register("refcontact2")}
                 className="h-12 rounded-xl border-[#E5E7EB]"
@@ -125,33 +155,23 @@ export default function Experience({ register, handleNext }: any) {
         </div>
       </div>
 
-      <div className="py-2">
+      <div className="py-2 flex justify-between">
         <Button
-          onClick={handleNext}
+          onClick={handleBack}
+          className="h-12 rounded-xl bg-gray-200 text-black hover:bg-gray-300 border  px-[50px]"
+          type="button"
+        >
+          Back
+        </Button>
+        <Button
+          onClick={handleNextClick}
           className="h-12 rounded-xl bg-primary text-white hover:bg-[#6D28D9] px-[50px]"
           type="button"
         >
           Next
         </Button>
       </div>
-      {/* </form> */}
-      {/* <div className="flex items-center justify-center gap-2 pt-8">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 text-white bg-[#34DC48] border-[#34DC48]">
-            <FaCheck />
-          </div>
-          <div className="h-[2px] w-12 bg-[#1877F2]" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#1877F2] text-[#1877F2]">
-            2
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            3
-          </div>
-          <div className="h-[2px] w-12 bg-gray-200" />
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-200 text-gray-400">
-            4
-          </div>
-        </div> */}
+
     </div>
   );
 }

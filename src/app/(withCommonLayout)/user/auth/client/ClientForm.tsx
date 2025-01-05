@@ -22,6 +22,7 @@ export default function ClientForm() {
   const [createClient, { isLoading }] = useClientUserMutation();
 
   const handleNext = () => setStep((prev) => prev + 1);
+  const handleBack = () => setStep((prev) => prev - 1);
   const dispatch = useDispatch();
 
   const handleSubmitForm = async (data: any) => {
@@ -61,11 +62,13 @@ export default function ClientForm() {
 
         setStep(4)
       } else {
-        throw new Error('Please Try Again. ');
+
+        ShowToastify({ error: res?.error?.data?.message });
+        // console.log('my error is', res?.error?.data?.message);
       }
     } catch (err) {
-      ShowToastify({ error: 'Failed to create client user' });
-      console.error('Failed to create client:', err);
+      console.error("An error occurred:", err);
+      // ShowToastify({ error: "An error occurred while submitting the form." });
     }
   };
 
@@ -111,6 +114,7 @@ export default function ClientForm() {
               <Business
                 register={register}
                 handleNext={handleNext}
+                handleBack={handleBack}
                 getValues={getValues}
                 setValue={setValue}
               />
@@ -118,6 +122,8 @@ export default function ClientForm() {
             {step === 3 && (
               <Password
                 register={register}
+                handleBack={handleBack}
+
                 handleNext={handleNext}
               />
             )}
