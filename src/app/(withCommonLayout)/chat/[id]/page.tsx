@@ -77,7 +77,18 @@ const Page: React.FC = () => {
     const target = e.target;
     if (target?.files) {
       const newFiles = Array.from(target.files);
-      setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]); // Add new files to the state
+      setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
+
+      // convert base64
+      const firstImageFile = newFiles[0];
+      if (firstImageFile) {
+        const reader = new FileReader()
+        reader.readAsDataURL(firstImageFile)
+        reader.onload = () => {
+          const base64String = reader.result
+          console.log(`My image base64 is: `, base64String);
+        }
+      }
     }
   };
 
@@ -180,11 +191,11 @@ const Page: React.FC = () => {
         toEmail: user2,
         message: messages,
         fromEmail: token?.email,
-        media: media || null
+        media: selectedFiles
       };
+      console.log('my media is', media);
       socket.emit("privateMessage", JSON.stringify(message));
       setMessages("");
-      setMedia(null)
       setSelectedFiles([])
     }
   };
@@ -205,6 +216,7 @@ const Page: React.FC = () => {
       mysocket.emit("register", JSON.stringify({ email: token?.email }));
     });
 
+
     mysocket.on("privateMessage", (data) => {
       console.log("Received private message:", data.message);
       const { message } = data;
@@ -216,10 +228,9 @@ const Page: React.FC = () => {
       }
     });
 
+    mysocket.on("sendOffer", async (data: any) => {
 
-
-
-
+    })
     // Cleanup on component unmount
     return () => {
       console.log("Cleaning up socket listeners...");
@@ -228,6 +239,34 @@ const Page: React.FC = () => {
       mysocket.disconnect();
     };
   }, [token?.email]);
+
+
+
+  const handleFileUpload = (file: File) => {
+    const reader = new FileReader();
+
+    // Read the file as a Base64 encoded string
+    reader.readAsDataURL(file);
+
+    // When the file is fully read
+    reader.onload = () => {
+      const base64String = reader.result; // Contains the Base64 encoded string
+
+      // Check if the socket exists and the file data is valid
+      if (socket && base64String) {
+        socket.emit('fileUpload', {
+          file: base64String,
+          filename: file.name
+        });
+      }
+    };
+
+    // Handle file reading errors, if any
+    reader.onerror = () => {
+      console.error("File reading failed:", reader.error);
+    };
+  };
+
   // console.log(`My new message is `, getConversation);
 
   return (
@@ -308,54 +347,63 @@ const Page: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
-            <AiOutlinePaperClip
-              onClick={handleClick}
-              className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
-            />
-
-            {selectedFiles.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {selectedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg">
-                    <span className="text-sm truncate">{file.name}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleFileRemove(file)}
-                      className="text-red-500 font-bold"
-                    >
-                      X
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <input
-              id="fileInput"
-              type="file"
-              multiple
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
+          <div
+            className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
 
             <div
-              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
+              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-5 pointer-events-none"
                 }`}
             >
               <button onClick={() => handleFileClick("document")} className="bg-primary rounded-full">
-                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+                <FileText
+
+                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
+                />
               </button>
               <button onClick={() => handleFileClick("image")} className="bg-primary rounded-full">
-                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+                <Images
+
+                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
+                />
               </button>
             </div>
 
-            <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full">
+
+            <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full" encType="multipart/form-data">
+              <AiOutlinePaperClip
+                onClick={handleClick}
+                className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
+              />
+              {selectedFiles.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {selectedFiles.map((file, index) => (
+                    <div key={index} className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg">
+                      <span className="text-sm truncate">{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleFileRemove(file)}
+                        className="text-red-500 font-bold"
+                      >
+                        X
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <input
+                id="fileInput"
+                type="file"
+                multiple // Allow multiple files selection
+                style={{ display: "none" }} // Hide the input element
+                onChange={handleFileChange}
+              />
               <input
                 placeholder="Write message here..."
-                value={messages}
-                onChange={(e) => setMessages(e.target.value)}
+                value={messages} // Use 'messages' state here
+                onChange={(e) => setMessages(e.target.value)} // Update state correctly on change
                 className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
               />
               <button type="submit" className="bg-primary rounded-full">
@@ -363,22 +411,18 @@ const Page: React.FC = () => {
               </button>
             </form>
 
-            <FaRegSmile
-              onClick={toggleEmojiPicker}
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
-            />
-
+            <FaRegSmile onClick={toggleEmojiPicker}
+              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
             {showEmojiPicker && (
               <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}
-
-            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-
-            <Video className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <MdOutlineKeyboardVoice
+              className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <Video
+              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
           </div>
-
         </div>
       </div>
     </section >

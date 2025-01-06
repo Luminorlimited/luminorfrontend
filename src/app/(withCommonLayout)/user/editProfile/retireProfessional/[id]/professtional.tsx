@@ -108,7 +108,7 @@ export default function Professional() {
 
         formData.append('name[firstName]', data.firstName);
         formData.append('name[lastName]', data.lastName);
-        
+
         if (data.profileUrl instanceof File) {
             formData.append("profileUrl", data.profileUrl);
             console.log("Profile Image:", data.profileUrl);
@@ -134,7 +134,7 @@ export default function Professional() {
         }
     };
 
-  
+
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -193,18 +193,27 @@ export default function Professional() {
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
                                     <input
                                         id="fname"
-                                        {...register("fname")}
+                                        {...register("firstName")}
                                         placeholder="John"
-                                        defaultValue={profileData?.data?.retireProfessional?.name?.firstName || ''}
+                                        defaultValue={profileData?.data.retireProfessional.name?.firstName}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                                        onChange={(e) => setValue("fname", e.target.value)}
+                                        // onChange={(e) => setValue("firstName", e.target.value)}
                                         required
                                     />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" placeholder="Watson" {...register("lastName")} defaultValue={profileData?.data.retireProfessional.name.lastName} onChange={(e) => setValue("lname", e.target.value)}
-                                        required className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" />
+                                    <input
+                                        id="fname"
+                                        {...register("lastName")}
+                                        placeholder="Watson"
+                                        defaultValue={profileData?.data.retireProfessional.name?.lastName}
+                                        className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                                        // onChange={(e) => setValue("lastName", e.target.value)}
+                                        required
+                                    />
+                                    {/* <input id="lname" placeholder="Watson" {...register("lastName")} defaultValue={profileData?.data.retireProfessional.name.lastName} onChange={(e) => setValue("lname", e.target.value)}
+                                        required className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" /> */}
                                 </div>
                             </div>
 
@@ -221,7 +230,7 @@ export default function Professional() {
 
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="loc">Location *</label>
-                                <input id="loc" {...register("loc")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("loc", e.target.value)} placeholder="USA" />
+                                <input id="loc" {...register("location")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("location", e.target.value)} placeholder="USA" />
                             </div>
 
                             <div>
@@ -247,8 +256,8 @@ export default function Professional() {
                                     {servicesData.map((service, index) => {
                                         // Determine if the service is selected
                                         const isSelected =
-                                            watch("expertise") === service.title || 
-                                            profileData?.data?.expertise === service.title; 
+                                            watch("expertise") === service.title ||
+                                            profileData?.data?.expertise === service.title;
 
                                         const selectedClass = isSelected
                                             ? "bg-primary text-white"

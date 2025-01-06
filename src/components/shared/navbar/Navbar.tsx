@@ -1,6 +1,6 @@
 import Logo from "@/utils/Logo";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
 import {
@@ -26,6 +26,13 @@ import { useGetProfileQuery } from "@/redux/api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
 import Cookies from "js-cookie";
 import useDecodedToken from "@/components/common/DecodeToken";
+
+
+interface Notification {
+  id: number
+  message: string
+  time: string
+}
 
 
 
@@ -54,12 +61,50 @@ const Navbar = () => {
 
   // State for dropdown menu visibility
   const [fileBtn, showFileBtn] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const notificationRef = useRef<HTMLDivElement>(null)
 
   const handleClick = () => {
     setTimeout(() => {
       showFileBtn((prev) => !prev);
     }, 200);
   };
+
+
+
+
+  const handleOpenNotificationBar = () => {
+    setIsOpen(!isOpen)
+  }
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        showFileBtn(false);
+      }
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Sample notifications
+  const notifications: Notification[] = [
+    { id: 1, message: "New message received", time: "5 min ago" },
+    { id: 2, message: "Your post was liked", time: "1 hour ago" },
+    { id: 3, message: "You have a new follower", time: "2 hours ago" },
+  ]
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
@@ -86,18 +131,7 @@ const Navbar = () => {
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    {/* {item.subMenus.map((subItem) => (
-                      <Fragment key={subItem.id}>
-                        <DropdownMenuGroup>
-                          <DropdownMenuItem>
-                            <Link href={subItem.link} className="text-base">
-                              {subItem.title}
-                            </Link>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                      </Fragment>
-                    ))} */}
+
                   </DropdownMenuContent>
                 </DropdownMenu>
               </li>
@@ -117,17 +151,43 @@ const Navbar = () => {
 
         {/* User Section */}
         {decodedToken ? (
-          <div className="flex gap-3 items-center relative">
-            <Link href="/user/editProfile/client">
-              <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
-            </Link>
+          <div className="flex gap-3 items-center relative" ref={dropdownRef}>
+            <div className="relative">
+              <button onClick={handleOpenNotificationBar} className="focus:outline-none">
+                <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
+              </button>
+
+              {isOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                  <div className="py-2">
+                    <h3 className="text-lg font-semibold px-4 py-2 border-b">Notifications</h3>
+                    {notifications.map((notification) => (
+                      <div key={notification.id} className="px-4 py-2 hover:bg-gray-100">
+                        <p className="text-sm text-gray-800">{notification.message}</p>
+                        <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                      </div>
+                    ))}
+                    {notifications.length === 0 && (
+                      <p className="text-sm text-gray-500 px-4 py-2">No new notifications</p>
+                    )}
+                  </div>
+                  <div className="border-t px-4 py-2">
+                    <button className="text-sm text-primary hover:underline">View all notifications</button>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Notification */}
+
             {/* <Link href={`/project-list/${decodedToken.role}`}>
               <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
             </Link> */}
             <Link href="/chat">
               <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
             </Link>
-            <Image
+            <div ref={notificationRef}
+>
+              <Image
               src={demoimg}
               width={40}
               height={40}
@@ -160,6 +220,8 @@ const Navbar = () => {
                 Logout
               </li>
             </ul>
+            </div>
+            
           </div>
         ) : (
           <div className="flex gap-3">
