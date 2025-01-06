@@ -75,7 +75,7 @@ export default function ProfessionalForm() {
     formData.append("businessType", data.businessType);
 
     try {
-      const res = await createProfessional(formData);
+      const res: any = await createProfessional(formData);
       if (res?.data) {
 
         dispatch(
@@ -97,8 +97,9 @@ export default function ProfessionalForm() {
         setStep(5);
       } else {
         console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
+        // ShowToastify({ error: res?.error?.data?.message });
         ShowToastify({ error: res?.error?.data?.message });
-        ;
+
       }
     } catch (error) {
       console.error("An error occurred:", error);

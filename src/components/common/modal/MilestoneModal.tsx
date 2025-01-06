@@ -1,5 +1,6 @@
 import React, { Dispatch } from "react";
 import { UseFormRegister } from "react-hook-form"; // Assuming react-hook-form is used
+import { Plus } from 'lucide-react'
 
 interface Milestone {
     name: string;
@@ -22,7 +23,8 @@ export default function MilestoneModal({
     setMileStones: Dispatch<React.SetStateAction<Milestone[] | undefined>>;
     milestones: Milestone[] | undefined;
 }) {
-    const addMilestone = () => {
+    const addMilestone = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         if (milestones !== undefined) {
             setMileStones([
                 ...milestones,
@@ -77,7 +79,7 @@ export default function MilestoneModal({
                                 htmlFor={`milestone-${index}`}
                                 className="block text-sm font-medium text-gray-700"
                             >
-                                {index === 0 ? "1st Milestone" : `${index + 1}th Milestone`}
+                                {index === 0 ? "1st Milestone" : index === 1 ? `${index + 1}nd Milestone` : index === 2 ? `${index + 1}rd Milestone` : `${index + 1}th Milestone`}
                             </label>
                             <input
                                 id={`milestone-${index}`}
@@ -176,13 +178,14 @@ export default function MilestoneModal({
                 </div>
             ))}
 
-            <button
-                type="button"
-                className="px-4 py-2 flex justify-center bg-[#E9E9EA] rounded-[20px] ml-auto mt-4 hover:bg-gray-100"
-                onClick={addMilestone}
-            >
-                Add a milestone<span className="ml-2 h-4 w-4">+</span>
+            <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-900 transition-colors" onClick={() => addMilestone}>
+                <span>Add a milestone</span>
+                <div className="bg-white p-1 rounded-full">
+                    <Plus className="h-4 w-4" />
+                </div>
             </button>
+
+
 
             <div className="flex items-center justify-between border-t pt-4">
                 <div className="text-sm">

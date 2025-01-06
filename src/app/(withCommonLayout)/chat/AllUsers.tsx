@@ -10,7 +10,7 @@ interface AllUsersProps {
 }
 
 export default function AllUsers({ handleshowMessage, getConversation }: AllUsersProps) {
-  console.log(`My all Conversation`, getConversation);
+  // console.log(`My all Conversation`, getConversation);
 
 
 
@@ -80,12 +80,12 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                         : 'No messages'} */}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  {/* <div className="flex justify-between items-center">
                     <h3 className="text-sm">mahi</h3>
                     <span className="text-xs text-white font-semibold bg-[#E03137] px-[10px] py-[2px] rounded-xl">
                       2
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </li>
 

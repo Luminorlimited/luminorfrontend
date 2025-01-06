@@ -17,7 +17,7 @@ import EmojiPicker from 'emoji-picker-react';
 
 import { Video, FileText, Images } from 'lucide-react';
 import io, { Socket } from "socket.io-client";
-import { useGetConversationQuery } from '@/redux/api/messageApi';
+import { useGetConversationQuery, useGetuserQuery } from '@/redux/api/messageApi';
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useParams } from "next/navigation";
 import demoimg from '@/assets/images/demoimg.png';
@@ -35,12 +35,12 @@ interface DecodedToken extends JwtPayload {
 const Page: React.FC = () => {
 
 
-  // const id = useParams()
+  const id = useParams()
 
 
-  // const { data: getUser } = useGetuserQuery(id?.id);
+  const { data: getUser } = useGetuserQuery(id?.id);
 
-  // console.log(`my user is `, getUser);
+  // console.log(`my user is`, getUser);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
@@ -133,6 +133,8 @@ const Page: React.FC = () => {
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
 
   const { data: getConversation } = useGetConversationQuery(undefined);
+  const [media, setMedia] = useState(null);
+
   // console.log(`My all Conversation`, getConversation);
 
   // console.log(`My old message is`, inbox);
@@ -178,9 +180,12 @@ const Page: React.FC = () => {
         toEmail: user2,
         message: messages,
         fromEmail: token?.email,
+        media: media || null
       };
       socket.emit("privateMessage", JSON.stringify(message));
       setMessages("");
+      setMedia(null)
+      setSelectedFiles([])
     }
   };
 
@@ -223,7 +228,7 @@ const Page: React.FC = () => {
       mysocket.disconnect();
     };
   }, [token?.email]);
-  console.log(`My new message is `, getConversation);
+  // console.log(`My new message is `, getConversation);
 
   return (
     <section>
@@ -303,12 +308,12 @@ const Page: React.FC = () => {
             </div>
           </div>
 
-          <div
-            className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
+          <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
             <AiOutlinePaperClip
               onClick={handleClick}
               className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
             />
+
             {selectedFiles.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {selectedFiles.map((file, index) => (
@@ -329,37 +334,28 @@ const Page: React.FC = () => {
             <input
               id="fileInput"
               type="file"
-              multiple // Allow multiple files selection
-              style={{ display: "none" }} // Hide the input element
+              multiple
+              style={{ display: "none" }}
               onChange={handleFileChange}
             />
 
             <div
-              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-5 pointer-events-none"
+              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"
                 }`}
             >
               <button onClick={() => handleFileClick("document")} className="bg-primary rounded-full">
-                <FileText
-
-                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
-                />
+                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
               </button>
               <button onClick={() => handleFileClick("image")} className="bg-primary rounded-full">
-                <Images
-
-                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
-                />
+                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
               </button>
             </div>
-
 
             <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full">
               <input
                 placeholder="Write message here..."
-                value={messages} // Use 'messages' state here
-                onChange={(e) => setMessages(e.target.value)} // Update state correctly on change
+                value={messages}
+                onChange={(e) => setMessages(e.target.value)}
                 className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
               />
               <button type="submit" className="bg-primary rounded-full">
@@ -367,18 +363,22 @@ const Page: React.FC = () => {
               </button>
             </form>
 
-            <FaRegSmile onClick={toggleEmojiPicker}
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <FaRegSmile
+              onClick={toggleEmojiPicker}
+              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
+            />
+
             {showEmojiPicker && (
               <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}
-            <MdOutlineKeyboardVoice
-              className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            <Video
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+
+            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+
+            <Video className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
           </div>
+
         </div>
       </div>
     </section >

@@ -1,4 +1,5 @@
 import React from "react";
+import {Plus} from "lucide-react";
 
 interface Milestone {
     name: string;
@@ -10,15 +11,17 @@ interface Milestone {
 
 interface MilestoneListProps {
     milestones: Milestone[] | undefined;  // Receiving the data
-    finalData: any
+    finalData: any;
+    setStep: (step: number) => void// Corrected this line
+
 }
 
 
-export function MilestoneList({ milestones }: MilestoneListProps) {
+export function MilestoneList({ milestones, setStep }: MilestoneListProps) {
     const totalDays = milestones?.reduce((sum, m) => sum + parseInt(m.revisions), 0);
     const totalPrice = milestones?.reduce((sum, m) => sum + parseInt(m.price), 0);
 
-    console.log(milestones);
+    // console.log(milestones);
     return (
         <div className="space-y-6">
             <div className="space-y-1">
@@ -48,13 +51,16 @@ export function MilestoneList({ milestones }: MilestoneListProps) {
 
                 <div className="flex items-center justify-between pt-2">
                     <div>
-                        <button
-                            type="button"
-                            className="px-4 py-2 flex justify-center items-center gap-2 bg-[#E9E9EA] rounded-[20px] mt-4 hover:bg-gray-100"
-                        >
-                            Add a milestone
-                        </button>
+                    <button
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-900 transition-colors" onClick={() => setStep(5)}>
+                        <span>Add a milestone</span>
+                        <div className="bg-white p-1 rounded-full">
+                            <Plus className="h-4 w-4"/>
+                        </div>
+                    </button>
+
                     </div>
+
 
                     <div className="flex items-center gap-8">
                         <span className="text-sm">Total: {totalDays} days</span>

@@ -42,20 +42,20 @@ export default function ClientForm() {
     };
 
     try {
-      const res = await createClient(clientData);
+      const res: any = await createClient(clientData);
       if (res?.data) {
         ShowToastify({ success: 'Successfully Created your Account' });
 
         dispatch(
           setUser({
             user: {
-              id: data.id || "", // Ensure id has a fallback
-              name: data.name || "", // Fallback for optional name
-              email: data.email || "", // Fallback for email
-              role: data.role || "", // Default role as 'user'
-              photoUrl: data.photoUrl || "", // Optional fallback for photoUrl
+              id: data.id || "",
+              name: data.name || "",
+              email: data.email || "",
+              role: data.role || "",
+              photoUrl: data.photoUrl || "",
             },
-            token: data.accessToken || null, // Fallback for token
+            token: data.accessToken || null,
           })
         );
 
@@ -64,7 +64,7 @@ export default function ClientForm() {
       } else {
 
         ShowToastify({ error: res?.error?.data?.message });
-        // console.log('my error is', res?.error?.data?.message);
+        // ShowToastify({ error: "Uer already exist"});
       }
     } catch (err) {
       console.error("An error occurred:", err);

@@ -26,8 +26,9 @@ interface Milestone {
 
 const socket = io('ws://localhost:5001');
 const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [open, setOpen] = useState(true);
-    console.log(open)
+    // console.log(open)
     // console.log(open);
     const [step, setStep] = useState<number>(1);
     const totalSteps = 6;
@@ -38,7 +39,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
     const { register, handleSubmit, getValues, setValue } = useForm();
 
     const handleNext = () => {
-        console.log("Current Form Values:", getValues());
+        // console.log("Current Form Values:", getValues());
         if (step < totalSteps) setStep(step + 1);
     };
 
@@ -49,14 +50,15 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
     const [milestones, setMilestones] = React.useState<Milestone[] | undefined>([
         {
             name: "",
-            revisions: "3",
-            delivery: "2",
+            revisions: "",
+            delivery: "",
             price: "",
             description: "",
         },
     ]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [paymentOption, setPaymentOption] = useState<string | null>(null);
-    console.log(paymentOption);
+    // console.log(paymentOption);
 
 
     const onSubmit = (data: any) => {
@@ -65,17 +67,20 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
 
         const offer = {
             projectDetails: data,
-            milestones: milestones,
+            // milestones: milestones,
         };
+        console.log(`My offer is `, offer);
         socket.emit('sendOffer', offer)
+
+        onClose()
     };
 
 
     // Create and get offer via Socket io
     useEffect(() => {
         socket.on("connect", () => {
-            console.log("Connected to server");
-            socket.on('offerReceived', (message) => {
+            console.log("Connected to server for create offer");
+            socket.on('receiveOffer', (message) => {
                 console.log('Offer received response:', message);
             })
 
@@ -125,9 +130,9 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                         ) : step === 2 ? (
                             <PaymentModal
                                 register={register}
-                                    getValues={getValues}
-                                    setStep={setStep}
-                                    // step={step}
+                                getValues={getValues}
+                                setStep={setStep}
+                                // step={step}
                                 setPaymentOption={setPaymentOption}
                                 setValue={setValue}
                                 handleNextStep={(nextStep: number) => setStep(nextStep)} // Pass the setter directly
@@ -153,6 +158,8 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                             />
                         ) : step === 6 ? (
                             <MilestoneList
+                                setStep={setStep}
+
                                 milestones={milestones}
                                 finalData={finalStep}
                             />
@@ -181,14 +188,14 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                     <Button
                                         type='submit'
                                         className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
-                                        onClick={onClose}
+                                        onClick={onSubmit}
                                     >
                                         Submit
                                     </Button>
                                 </div>
-                                ) : step === 2 ? (
-                                        ""
-                            ): (
+                            ) : step === 2 ? (
+                                ""
+                            ) : (
                                 <div className="flex gap-4 justify-between w-full">
                                     <button
                                         className="bg-[#eeeeee] text-black px-6 py-4 font-medium rounded-[12px]"
@@ -196,12 +203,12 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                     >
                                         Back
                                     </button>
-                                    <Button
+                                    <button
                                         className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
-                                        onClick={() => setStep(step + 1)}
+                                        onClick={() => setStep(6)}
                                     >
                                         Next
-                                    </Button>
+                                    </button>
                                 </div>
                             )}
                         </div>
