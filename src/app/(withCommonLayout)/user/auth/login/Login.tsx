@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
+// import { signIn } from "next-auth/react"
 
 
 export default function Login() {
@@ -54,6 +55,23 @@ export default function Login() {
             }
         }
     };
+
+
+
+    // const handlegooglelogin = async () => {
+    //     try {
+    //         const res = await signIn("google", {
+    //            callbackUrl: "/"
+    //         })
+    //         if (res) {
+    //             console.log('login succssfully');
+                
+    //         }
+    //     } catch (e) {
+    //         console.log('error login', e);
+            
+    //     }
+    // }
 
     return (
         <div className="  relative">
@@ -150,7 +168,7 @@ export default function Login() {
                                     Log In with Facebook
                                 </Button>
 
-                                <Button variant="outline" className="w-full py-[23px] rounded-[10px] text-lg">
+                                <Button  variant="outline" className="w-full py-[23px] rounded-[10px] text-lg">
                                     <svg
                                         className="mr-2 h-5 w-5"
                                         xmlns="http://www.w3.org/2000/svg"

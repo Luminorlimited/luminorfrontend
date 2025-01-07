@@ -85,6 +85,7 @@ export const config = {
         "/project-list/professional",
         "/user/editProfile/client",
         "/user/editProfile/retireProfessional",
+        // "/project-list/default",
         // "/chat",
         "/user/auth/login",
         "/usertype",
