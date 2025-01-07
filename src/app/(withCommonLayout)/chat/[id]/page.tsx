@@ -140,15 +140,9 @@ const Page: React.FC = () => {
   const [user2, setUser2] = useState("");
   const [name, setName] = useState("");
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
-
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
-
   const { data: getConversation } = useGetConversationQuery(undefined);
   const [media, setMedia] = useState(null);
-
-  // console.log(`My all Conversation`, getConversation);
-
-  // console.log(`My old message is`, inbox);
 
 
   useEffect(() => {
@@ -226,6 +220,7 @@ const Page: React.FC = () => {
           message
         ]);
       }
+      getConversation({})
     });
 
     mysocket.on("sendOffer", async (data: any) => {
@@ -322,7 +317,7 @@ const Page: React.FC = () => {
               <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
                 Create an Offer
               </Button>
-              {isProjectModal && <ProjectModal onClose={handleProjectModal} />}
+              {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
               <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
             </div>
           </div>

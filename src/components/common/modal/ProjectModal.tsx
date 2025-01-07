@@ -12,7 +12,9 @@ import { useForm } from 'react-hook-form';
 import io from 'socket.io-client'; // Import the socket.io-client
 
 interface projectModalProps {
-    onClose: () => void
+    onClose: () => void;
+    user1: string;
+    user2: string;
 }
 
 
@@ -23,9 +25,9 @@ interface Milestone {
     price: string;
     description: string;
 }
-
 const socket = io('ws://localhost:5001');
-const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
+
+const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [open, setOpen] = useState(true);
     // console.log(open)
@@ -57,32 +59,51 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
         },
     ]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [paymentOption, setPaymentOption] = useState<string | null>(null);
+    const [agreementType, setagreementType] = useState<string | null>(null);
     // console.log(paymentOption);
 
+
+    useEffect(() => {
+
+        const mysocket = io("ws://localhost:5001");
+
+        mysocket.on("connect", () => {
+            console.log("Connected to socket.io.");
+            mysocket.emit("register", JSON.stringify({ email: user1 }));
+        });
+
+    }, [user1])
 
     const onSubmit = (data: any) => {
         setFinalStep(data);
         console.log("Final Form Values:", data);
 
-        const offer = {
-            projectDetails: data,
-            // milestones: milestones,
-        };
-        console.log(`My offer is `, offer);
-        socket.emit('sendOffer', offer)
+        if (data) {
+            // const { projectName, description, agreementType, hourlyFee } = data;
+            console.log('my offer data is', data);
+            const myOffer = {
+                toEmail: user2,
+                offer: data,
+                fromEmail: user1,
+            };
 
-        onClose()
+            console.log("My offer is", JSON.stringify(myOffer));
+            socket.emit('sendOffer', JSON.stringify(myOffer));
+        }
+        onClose();
     };
+
+
 
 
     // Create and get offer via Socket io
     useEffect(() => {
-        socket.on("connect", () => {
-            console.log("Connected to server for create offer");
-            socket.on('receiveOffer', (message) => {
-                console.log('Offer received response:', message);
-            })
+        const mysocket = io('ws://localhost:5001');
+
+        mysocket.on("connect", () => {
+            console.log("My offer server is connected");
+            // console.log("Connected to server for create offer");
+
 
         })
     }, []);
@@ -133,7 +154,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose }) => {
                                 getValues={getValues}
                                 setStep={setStep}
                                 // step={step}
-                                setPaymentOption={setPaymentOption}
+                                setagreementType={setagreementType}
                                 setValue={setValue}
                                 handleNextStep={(nextStep: number) => setStep(nextStep)} // Pass the setter directly
                             />

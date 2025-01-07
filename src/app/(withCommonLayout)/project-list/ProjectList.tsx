@@ -30,7 +30,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
     const [filteredData, setFilteredData] = useState(null);
 
-    console.log(`are fucking man`, professionalData?.data);
+    // console.log(`are fucking man`, professionalData?.data);
     useEffect(() => {
         // Determine which lazy query to call based on the route
         const fetchFilteredData = async () => {
@@ -56,8 +56,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         ? filteredData
         : professionalData;
 
-    console.log('my client', clientData);
-    console.log('my professional', professionalData);
+    // console.log('my client', clientData);
+    // console.log('my professional', professionalData);
 
     useEffect(() => {
         if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {

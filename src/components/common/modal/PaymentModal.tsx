@@ -4,7 +4,7 @@ import * as React from "react"
 import { Clock, DollarSign, Milestone } from 'lucide-react'
 import Button from "../Button"
 
-interface PaymentOption {
+interface AgreementType {
     id: string
     title: string
     description: string
@@ -15,7 +15,7 @@ interface PaymentModalProps {
     register: (name: string) => void;
     setValue: (name: string, value: any) => void;
     getValues: (name: string) => any;
-    setPaymentOption: (optionId: string) => void;
+    setagreementType: (optionId: string) => void;
     handleNextStep: (nextStep: number) => void;
     setStep: (step: number) => void// Corrected this line
 }
@@ -24,7 +24,7 @@ interface PaymentModalProps {
 export function PaymentModal({
     setValue,
     getValues,
-    setPaymentOption,
+    setagreementType,
     handleNextStep,
     setStep,// Correctly receive handleNextStep prop
 }: PaymentModalProps) {
@@ -32,7 +32,7 @@ export function PaymentModal({
         getValues("paymentOption") || null
     );
 
-    const paymentOptions: PaymentOption[] = [
+    const agreementTypes: AgreementType[] = [
         {
             id: "flat",
             title: "Flat Fee",
@@ -55,14 +55,14 @@ export function PaymentModal({
 
     const handleOptionClick = (optionId: string) => {
         setSelectedOption(optionId);
-        setValue("paymentOption", optionId);
-        setPaymentOption(optionId);
+        setValue("agreementType", optionId);
+        setagreementType(optionId);
         console.log(`Selected payment option in PaymentModal: ${optionId}`);
     };
 
     const handleNext = () => {
         if (selectedOption === "flat") {
-            handleNextStep(3); // Proceed to step 3 for flat fee
+            handleNextStep(3); 
         } else if (selectedOption === "hourly") {
             handleNextStep(4); // Proceed to step 4 for hourly fee
         } else if (selectedOption === "milestone") {
@@ -78,7 +78,7 @@ export function PaymentModal({
                 milestone-based setup to fit your preference.
             </p>
             <div className="space-y-4">
-                {paymentOptions.map((option) => (
+                {agreementTypes.map((option) => (
                     <div
                         key={option.id}
                         className={`cursor-pointer rounded-lg border p-4 transition-colors ${selectedOption === option.id ? "border-primary bg-primary/5" : "hover:border-gray-300"

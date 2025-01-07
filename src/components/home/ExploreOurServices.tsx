@@ -62,7 +62,7 @@ export default function ExploreServices() {
 
   const [isAnyHovered, setIsAnyHovered] = useState<number | null>(null);
   return (
-    <section className="py-[40px] md:py-[72px] lg:py-[96px]">
+    <section className="py-[40px] md:py-[72px] lg:py-[96px]" id='about'>
       <div className="container h-full flex flex-col justify-center">
         <div className="space-y-5 mb-20">
           <h1 className="text-center text-xl md:text-xl lg:text-5xl text-textColor-primary font-bold leading-[100%]">
