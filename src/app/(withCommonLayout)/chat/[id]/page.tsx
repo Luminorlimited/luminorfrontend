@@ -142,6 +142,7 @@ const Page: React.FC = () => {
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
   const { data: getConversation } = useGetConversationQuery(undefined);
+  const [professionalId, setProfessionalId] = useState<string>("")
   const [media, setMedia] = useState(null);
 
 
@@ -159,6 +160,7 @@ const Page: React.FC = () => {
   const handleshowMessage = (email: string, name: string, profileUrl: string | null) => {
     setUser2(email)
     setName(name)
+    // setProfessionalId(id)
     setProfileUrl(profileUrl || demoimg.src);
     console.log("Selected email:", email);
 
@@ -223,9 +225,9 @@ const Page: React.FC = () => {
       getConversation({})
     });
 
-    mysocket.on("sendOffer", async (data: any) => {
+    // mysocket.on("sendOffer", async (data: any) => {
 
-    })
+    // })
     // Cleanup on component unmount
     return () => {
       console.log("Cleaning up socket listeners...");
@@ -233,6 +235,7 @@ const Page: React.FC = () => {
       mysocket.off("privateMessage");
       mysocket.disconnect();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token?.email]);
 
 
@@ -317,7 +320,7 @@ const Page: React.FC = () => {
               <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
                 Create an Offer
               </Button>
-              {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
+              {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2}  />}
               <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
             </div>
           </div>
@@ -329,7 +332,6 @@ const Page: React.FC = () => {
                   isModalOpen={isModalOpen}
                   handleOpenModal={handleOpenModal}
                   messages={inbox}
-                  // profileUrl={profileUrl}
                   currentUser={user1}
                   colorScheme={{
                     senderBg: "bg-[#F2FAFF] text-[#4A4C56]",

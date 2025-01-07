@@ -15,6 +15,7 @@ interface projectModalProps {
     onClose: () => void;
     user1: string;
     user2: string;
+    // professionalId: string;
 }
 
 
@@ -25,6 +26,7 @@ interface Milestone {
     price: string;
     description: string;
 }
+
 const socket = io('ws://localhost:5001');
 
 const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) => {
@@ -74,20 +76,43 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
     }, [user1])
 
+    // const serializeData = (data: any) => {
+    //     return JSON.parse(
+    //         JSON.stringify(data, (key, value) => {
+    //             // Exclude global objects like 'window' or 'document'
+    //             if (value instanceof HTMLElement || value instanceof React.Component || value === window || value === document) {
+    //                 return undefined;
+    //             }
+    //             return value;
+    //         })
+    //     );
+    // };
+
     const onSubmit = (data: any) => {
         setFinalStep(data);
         console.log("Final Form Values:", data);
 
-        if (data) {
-            // const { projectName, description, agreementType, hourlyFee } = data;
-            console.log('my offer data is', data);
+        // Serialize the data to ensure there are no circular references
+        // const cleanData = serializeData(data)
+        const cleanData = { ...data }; // Create a shallow copy
+        delete cleanData.__reactFiber$i78e3g4cea; // Remove circular references manually
+        delete cleanData.stateNode;
+
+        // const myOffer = {
+        //     toEmail: user2,
+        //     offer: cleanData,
+        //     fromEmail: user1,
+        // };
+        ;
+
+        if (cleanData) {
             const myOffer = {
-                toEmail: user2,
-                offer: data,
                 fromEmail: user1,
+                toEmail: user2,
+                offer: cleanData,
             };
 
-            console.log("My offer is", JSON.stringify(myOffer));
+            console.log("My offer is", myOffer);
             socket.emit('sendOffer', JSON.stringify(myOffer));
         }
         onClose();
@@ -97,16 +122,15 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
 
     // Create and get offer via Socket io
-    useEffect(() => {
-        const mysocket = io('ws://localhost:5001');
+    // useEffect(() => {
+    //     const mysocket = io('ws://localhost:5001');
 
-        mysocket.on("connect", () => {
-            console.log("My offer server is connected");
-            // console.log("Connected to server for create offer");
+    //     mysocket.on("connect", () => {
+    //         console.log("My offer server is connected");
 
 
-        })
-    }, []);
+    //     })
+    // }, []);
 
     return (
         <div
@@ -162,7 +186,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                             <FlatFeeModal
                                 register={register}
                                 getValues={getValues}
-                                setValue={setValue}
+                            // setValue={setValue}
                             />
                         ) : step === 4 ? (
                             <HourlyFeeModal
@@ -266,5 +290,8 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 };
 
 export default ProjectModal;
+
+
+
 
 

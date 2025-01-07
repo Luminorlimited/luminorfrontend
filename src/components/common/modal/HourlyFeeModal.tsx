@@ -9,8 +9,6 @@ interface HourlyFeeModalProps {
 }
 
 export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
-
-
     return (
         <div className="space-y-4 p-4">
             <h3 className="text-lg font-semibold">Set your offer</h3>
@@ -25,7 +23,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                         Revisions
                     </label>
                     <select
-                        {...register("hourlyFee.revision", { required: true, valueAsNumber: true })}
+                        {...register("hourlyFee.revision", { required: true })}
                         id="revisions"
                         className="block w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                     >
@@ -43,7 +41,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                         Delivery
                     </label>
                     <select
-                        {...register("hourlyFee.delivery", { required: true, valueAsNumber: true })}
+                        {...register("hourlyFee.delivery", { required: true })}
                         id="delivery"
                         className="block w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                     >
@@ -65,9 +63,9 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                             £
                         </span>
                         <input
-                            {...register("hourlyFee.pricePerHour", { required: true, valueAsNumber: true })}
+                            {...register("hourlyFee.pricePerHour", { required: true })}
                             id="price"
-                            type="number"
+                            type="text" // Change to text to ensure value is a string
                             placeholder="500 max"
                             className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                         />

@@ -62,7 +62,7 @@ export function PaymentModal({
 
     const handleNext = () => {
         if (selectedOption === "flat") {
-            handleNextStep(3); 
+            handleNextStep(3);
         } else if (selectedOption === "hourly") {
             handleNextStep(4); // Proceed to step 4 for hourly fee
         } else if (selectedOption === "milestone") {

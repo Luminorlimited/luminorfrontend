@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import offer from "@/assets/images/offer.png";
 import OrderDetailsModal from "./OrderDetailsModal";
@@ -22,6 +22,8 @@ export interface Offer {
 }
 
 const OffersModal: React.FC<OffersModalProps> = ({ onClose }) => {
+
+    // const {data: oldOffer, error} = 
 
     const offers: Offer[] = [
         {
@@ -55,6 +57,13 @@ const OffersModal: React.FC<OffersModalProps> = ({ onClose }) => {
             agreement: false,
         },
     ];
+
+    // const [myoffer, setmyOffer] = useState<Offer[]>([]);
+
+    useEffect(() => {
+
+    })
+    
 
     const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null)
 

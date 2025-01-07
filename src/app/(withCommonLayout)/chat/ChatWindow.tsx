@@ -87,6 +87,7 @@ const Communication: FC<CommunicationProps> = ({
   colorScheme,
   handleOpenModal,
   isModalOpen,
+  
 
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
