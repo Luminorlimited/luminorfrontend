@@ -76,7 +76,7 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
 
                     {/* {getUser?.client?.name?.firstName ||
                       getUser?.retireProfessional?.name?.firstName ||
-                      'Unknown'}{' '}
+                      'Unknown'}{''}
                     {getUser?.retireProfessional?.name?.lastName ||
                       getUser?.client?.name?.lastName ||
                       ''} */}
