@@ -2,15 +2,18 @@
 import React from 'react';
 import Image from 'next/image';
 import demoimg from '@/assets/images/demoimg.png';
+// import avatar1 from "@/assets/images/msgavatar1.png";
+
+// import { useParams } from 'next/navigation';
 
 interface AllUsersProps {
-  handleshowMessage: (email: string, name: string, profileUrl: string) => void;
+  handleshowMessage: (user: any) => void;
   // getUser: User | null; // Replace `any` with proper type
   getConversation: any;
 }
 
 export default function AllUsers({ handleshowMessage, getConversation }: AllUsersProps) {
-  console.log(`My all Conversation`, getConversation);
+  console.log(`My all old Conversation`, getConversation);
 
 
 
@@ -32,6 +35,10 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
 
 
 
+
+
+
+
   return (
     <div>
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">
@@ -43,7 +50,12 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
           <ul className="divide-y">
             {getConversation?.data.map((user: any, index: number) => (
               <li
-                onClick={() => handleshowMessage(user?.email, user?.name, user?.profileUrl)}
+                onClick={() => handleshowMessage({
+                  email: user?.email,
+                  firstName: user?.firstName,
+                  lastName: user?.lastName,
+                  profileUrl: user?.profileUrl || null,
+                })}
                 className={`flex border-none items-center p-4 cursor-pointer rounded-[12px] hover:bg-[#F2FAFF] focus:bg-[#F2FAFF] $`}
                 key={index}
               >
@@ -69,8 +81,11 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                       getUser?.client?.name?.lastName ||
                       ''} */}
                     <h3 className="text-sm font-semibold" key={index}>
-                      {user.name}
+                      {user?.firstName && user?.lastName
+                        ? `${user?.firstName} ${user?.lastName}`
+                        : user?.name || "Unknown User"}
                     </h3>
+
 
                     <span className="text-xs text-gray-500">
                       {/* {user.messages.length > 0

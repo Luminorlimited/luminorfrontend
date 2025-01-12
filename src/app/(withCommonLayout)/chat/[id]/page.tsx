@@ -24,7 +24,10 @@ import demoimg from '@/assets/images/demoimg.png';
 import { useGetProfileByIdQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 // import { useRouter } from "next/router";
+import avatar1 from "@/assets/images/msgavatar1.png";
+
 import { useGetMessageQuery } from "@/redux/api/messageApi";
+
 import useDecodedToken from "@/components/common/DecodeToken";
 
 
@@ -35,18 +38,31 @@ interface DecodedToken extends JwtPayload {
 const Page: React.FC = () => {
 
 
-  const id = useParams()
+  const userId = useParams()
 
 
-  const { data: getUser } = useGetuserQuery(id?.id);
+  const { data: getSingleUser } = useGetuserQuery(userId?.id);
 
-  // console.log(`my user is`, getUser);
+  console.log(`my user is`, getSingleUser);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [fileBtn, showFileBtn] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const token = useDecodedToken()
+  const [inbox, setInbox] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<string>("");
+  const [socket, setSocket] = useState<any>(null);
+  const user1 = token?.email
+  const [user2, setUser2] = useState("");
+  const [name, setName] = useState("");
+  const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
+  const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
+  const { data: getConversation } = useGetConversationQuery(undefined);
+  const [media, setMedia] = useState(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
 
   const handleClick = () => {
@@ -98,20 +114,6 @@ const Page: React.FC = () => {
   const toggleEmojiPicker = () => {
     setShowEmojiPicker((prev) => !prev);
   };
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const emojiPickerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
-        setShowEmojiPicker(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
   const handleOpenModal = () => {
     setIsModalOpen((e) => !e);
   };
@@ -125,42 +127,11 @@ const Page: React.FC = () => {
       setIsButtonDisabled(false);
     }, 200);
   };
-  const [inputMessage, setInputMessage] = useState<string>('');
 
-  const userId = useParams()
-
-
-  const token = useDecodedToken()
-  const [inbox, setInbox] = useState<Message[]>([]);
-
-  const [messages, setMessages] = useState<string>("");
-  const [socket, setSocket] = useState<any>(null);
-  const user1 = token?.email
-
-  const [user2, setUser2] = useState("");
-  const [name, setName] = useState("");
-  const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
-  const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
-  const { data: getConversation } = useGetConversationQuery(undefined);
-  const [professionalId, setProfessionalId] = useState<string>("")
-  const [media, setMedia] = useState(null);
-
-
-  useEffect(() => {
-    if (error) {
-      console.error("Error fetching old messages:", error);
-    }
-
-    if (oldMessages?.data.messages) {
-      setInbox(oldMessages?.data.messages);
-    }
-  }, [oldMessages, error, user1]);
-
-
-  const handleshowMessage = (email: string, name: string, profileUrl: string | null) => {
+  const handleshowMessage = (user: { email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
+    const { email, firstName, lastName, profileUrl } = user;
     setUser2(email)
-    setName(name)
-    // setProfessionalId(id)
+    setName(`${firstName} ${lastName}`);
     setProfileUrl(profileUrl || demoimg.src);
     console.log("Selected email:", email);
 
@@ -197,49 +168,6 @@ const Page: React.FC = () => {
   };
 
 
-  useEffect(() => {
-    if (!token?.email) {
-      console.log("Token not ready or email missing.");
-      return;
-    }
-
-    const mysocket = io("ws://localhost:5001");
-    setSocket(mysocket);
-
-    // Log connection
-    mysocket.on("connect", () => {
-      console.log("Connected to socket.io.");
-      mysocket.emit("register", JSON.stringify({ email: token?.email }));
-    });
-
-
-    mysocket.on("privateMessage", (data) => {
-      console.log("Received private message:", data.message);
-      const { message } = data;
-      if (message) {
-        setInbox((prevInbox) => [
-          ...prevInbox,
-          message
-        ]);
-      }
-      getConversation({})
-    });
-
-    // mysocket.on("sendOffer", async (data: any) => {
-
-    // })
-    // Cleanup on component unmount
-    return () => {
-      console.log("Cleaning up socket listeners...");
-      mysocket.off("connect");
-      mysocket.off("privateMessage");
-      mysocket.disconnect();
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token?.email]);
-
-
-
   const handleFileUpload = (file: File) => {
     const reader = new FileReader();
 
@@ -265,7 +193,118 @@ const Page: React.FC = () => {
     };
   };
 
-  // console.log(`My new message is `, getConversation);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      console.error("Error fetching old messages:", error);
+    }
+
+    if (oldMessages?.data.messages) {
+      setInbox(oldMessages?.data.messages);
+    }
+  }, [oldMessages, error, user1]);
+
+  useEffect(() => {
+    if (!token?.email) {
+      console.log("Token not ready or email missing.");
+      return;
+    }
+
+    const mysocket = io("ws://localhost:5001");
+    setSocket(mysocket);
+
+    // Log connection
+    mysocket.on("connect", () => {
+      console.log("Connected to socket.io.");
+      mysocket.emit("register", JSON.stringify({ email: token?.email }));
+    });
+
+
+    mysocket.on("privateMessage", (data) => {
+      console.log("Received private message:", data.message);
+      const { message } = data;
+      if (message) {
+        setInbox((prevInbox) => [
+          ...prevInbox,
+          message
+        ]);
+      }
+      // getConversation({})
+    });
+
+    // mysocket.on("sendOffer", async (data: any) => {
+
+    // })
+    // Cleanup on component unmount
+    return () => {
+      console.log("Cleaning up socket listeners...");
+      mysocket.off("connect");
+      mysocket.off("privateMessage");
+      mysocket.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token?.email]);
+
+  const userid = Array.isArray(userId) ? userId[0] : userId;
+  const [users, setUsers] = useState<any[]>(getConversation?.data || []);
+
+  console.log('my u7ser', getSingleUser);
+
+
+
+  const handleAddUser = () => {
+    // Check if the user already exists in the users array
+    const isUserExists = users.some((user) => user.id === userid);
+    if (!isUserExists && getSingleUser) {
+      try {
+        // Extract data safely
+        const newUser = {
+          id: userid,
+          firstName: getSingleUser?.data?.client?.name?.firstName || getSingleUser?.data?.retireProfessional?.name?.firstName || "New User",
+          lastName: getSingleUser?.data?.client?.name?.lastName || getSingleUser?.data?.retireProfessional?.name?.lastName || "New User",
+          email: getSingleUser?.data?.client?.email || getSingleUser?.data?.retireProfessional?.email || `newuser_${userId}@example.com`,
+          profileUrl: getSingleUser?.data?.profileUrl || avatar1,
+        };
+
+        // Add the new user to the state
+        setUsers((prevUsers) => [...prevUsers, newUser]);
+        console.log(`my new user`, newUser);
+      } catch (err) {
+        console.error("Failed to fetch user data:", err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Merge getConversation data with existing users and set state
+    setUsers((prevUsers) => {
+      // Ensure users is always synced with getConversation
+      if (getConversation?.data) {
+        return [...getConversation?.data, ...prevUsers.filter((user) => !getConversation?.data.some((convUser: any) => convUser.id === user.id))];
+      }
+      return prevUsers;
+    });
+
+    if (userId) {
+      handleAddUser(); // Attempt to add the user if they don't already exist
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, getSingleUser, getConversation?.data]);
+
+
 
   return (
     <section>
@@ -286,7 +325,7 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-            <AllUsers handleshowMessage={handleshowMessage} getConversation={getConversation} />
+            <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} />
           </div>
         </div>
 
@@ -320,7 +359,7 @@ const Page: React.FC = () => {
               <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
                 Create an Offer
               </Button>
-              {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2}  />}
+              {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
               <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
             </div>
           </div>

@@ -17,8 +17,6 @@ interface projectModalProps {
     user2: string;
     // professionalId: string;
 }
-
-
 interface Milestone {
     name: string;
     revisions: string;
@@ -30,27 +28,16 @@ interface Milestone {
 const socket = io('ws://localhost:5001');
 
 const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) => {
+
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [open, setOpen] = useState(true);
-    // console.log(open)
-    // console.log(open);
     const [step, setStep] = useState<number>(1);
     const totalSteps = 6;
     const [finalStep, setFinalStep] = useState<any>(null);
-
     const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
-
-    const { register, handleSubmit, getValues, setValue } = useForm();
-
-    const handleNext = () => {
-        // console.log("Current Form Values:", getValues());
-        if (step < totalSteps) setStep(step + 1);
-    };
-
-    const handleBack = () => {
-        if (step > 1) setStep(step - 1);
-    };
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [agreementType, setagreementType] = useState<string | null>(null);
     const [milestones, setMilestones] = React.useState<Milestone[] | undefined>([
         {
             name: "",
@@ -60,15 +47,18 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
             description: "",
         },
     ]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [agreementType, setagreementType] = useState<string | null>(null);
-    // console.log(paymentOption);
 
+
+    const { register, handleSubmit, getValues, setValue } = useForm();
+    const handleNext = () => {
+        if (step < totalSteps) setStep(step + 1);
+    };
+    const handleBack = () => {
+        if (step > 1) setStep(step - 1);
+    };
 
     useEffect(() => {
-
         const mysocket = io("ws://localhost:5001");
-
         mysocket.on("connect", () => {
             console.log("Connected to socket.io.");
             mysocket.emit("register", JSON.stringify({ email: user1 }));
@@ -76,61 +66,44 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
     }, [user1])
 
-    // const serializeData = (data: any) => {
-    //     return JSON.parse(
-    //         JSON.stringify(data, (key, value) => {
-    //             // Exclude global objects like 'window' or 'document'
-    //             if (value instanceof HTMLElement || value instanceof React.Component || value === window || value === document) {
-    //                 return undefined;
-    //             }
-    //             return value;
-    //         })
-    //     );
-    // };
+
+
+    function removeCircularReferences() {
+        const seen = new WeakSet();
+        return function (key: any, value: any) {
+            if (typeof value === "object" && value !== null) {
+                if (seen.has(value)) {
+                    return undefined; // Remove circular reference
+                }
+                seen.add(value);
+            }
+            return value;
+        };
+    }
+
 
     const onSubmit = (data: any) => {
         setFinalStep(data);
         console.log("Final Form Values:", data);
 
-        // Serialize the data to ensure there are no circular references
-        // const cleanData = serializeData(data)
-        const cleanData = { ...data }; // Create a shallow copy
-        delete cleanData.__reactFiber$i78e3g4cea; // Remove circular references manually
-        delete cleanData.stateNode;
-
-        // const myOffer = {
-        //     toEmail: user2,
-        //     offer: cleanData,
-        //     fromEmail: user1,
-        // };
-        ;
-
-        if (cleanData) {
+        // Safely stringify data
+        try {
+            // const cleanData = JSON.parse(JSON.stringify(data)); // Remove circular references
             const myOffer = {
                 fromEmail: user1,
                 toEmail: user2,
-                offer: cleanData,
+                offer: JSON.stringify(data, removeCircularReferences()),
             };
 
             console.log("My offer is", myOffer);
             socket.emit('sendOffer', JSON.stringify(myOffer));
+        } catch (error) {
+            console.error("Error stringifying data:", error);
         }
+
         onClose();
     };
 
-
-
-
-    // Create and get offer via Socket io
-    // useEffect(() => {
-    //     const mysocket = io('ws://localhost:5001');
-
-    //     mysocket.on("connect", () => {
-    //         console.log("My offer server is connected");
-
-
-    //     })
-    // }, []);
 
     return (
         <div
@@ -139,7 +112,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
         >
             <div
                 className="relative shadow-lg w-full max-w-[670px] rounded-[20px] overflow-hidden bg-white"
-                onClick={(e) => e.stopPropagation()} // Prevent closing on modal click
+                onClick={(e) => e.stopPropagation()} 
             >
                 <div className="flex items-center bg-[#f1f1f1] justify-between border-b p-4">
                     <h2 className="text-xl font-semibold">

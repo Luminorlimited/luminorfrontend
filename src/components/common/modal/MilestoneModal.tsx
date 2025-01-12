@@ -178,7 +178,7 @@ export default function MilestoneModal({
                 </div>
             ))}
 
-            <button className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-900 transition-colors" onClick={addMilestone}>
+            <button type="button" className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-900 transition-colors" onClick={addMilestone}>
                 <span>Add a milestone</span>
                 <div className="bg-white p-1 rounded-full">
                     <Plus className="h-4 w-4" />

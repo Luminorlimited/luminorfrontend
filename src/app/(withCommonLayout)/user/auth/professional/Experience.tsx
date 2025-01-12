@@ -58,9 +58,9 @@ export default function Experience({ register, handleNext, handleBack, getValues
             <option value="" disabled selected>
               Select Previous Position
             </option>
-            <option value="tech">Tech</option>
-            <option value="marketing">Marketing</option>
-            <option value="finance">Finance</option>
+            {/* <option value="tech">Tech</option> */}
+            {/* <option value="marketing">Marketing</option> */}
+            {/* <option value="finance">Finance</option> */}
             <option value="education">Education and E-learning</option>
             <option value="ecommerce">E-commerce and Retail</option>
             <option value="realestate">Real Estate</option>

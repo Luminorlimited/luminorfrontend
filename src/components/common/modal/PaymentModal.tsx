@@ -61,6 +61,12 @@ export function PaymentModal({
     };
 
     const handleNext = () => {
+
+        if (!selectedOption) {
+            alert("Please select a payment option before proceeding.");
+            return;
+        }
+
         if (selectedOption === "flat") {
             handleNextStep(3);
         } else if (selectedOption === "hourly") {
@@ -107,6 +113,7 @@ export function PaymentModal({
                     Back
                 </button>
                 <Button
+                    type="button"
                     className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
                     onClick={handleNext} // Attach the handler here
                 >

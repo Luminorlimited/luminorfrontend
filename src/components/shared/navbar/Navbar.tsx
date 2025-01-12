@@ -87,8 +87,8 @@ const Navbar = () => {
     const mysocket = io('ws://localhost:5001');
 
     mysocket.on("connect", () => {
-      console.log("My offer server is connected in navbar.");
-      console.log("Connected to server for create offer");
+      // console.log("My offer server is connected in navbar.");
+      // console.log("Connected to server for create offer");
       mysocket.on('receiveOffer', (message) => {
         console.log('Offer received response:', message);
       })
