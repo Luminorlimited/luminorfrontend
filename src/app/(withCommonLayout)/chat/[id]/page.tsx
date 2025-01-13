@@ -303,6 +303,7 @@ const Page: React.FC = () => {
       const { start_url, join_url } = data;
 
       if (start_url) {
+        // Open the Zoom meeting (host link) in a new tab
         window.open(start_url, "_blank");
       } else {
         toast.error("Zoom meeting creation failed.");
@@ -314,9 +315,6 @@ const Page: React.FC = () => {
       console.error("Zoom meeting error:", errorMessage);
       toast.error("Failed to create Zoom meeting. Please try again.");
     });
-
-
-
     return () => {
       console.log("Cleaning up socket listeners...");
       mysocket.off("connect");
