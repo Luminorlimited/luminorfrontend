@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ShowToastify from "@/utils/ShowToastify";
 import { useState } from "react";
 import { AiOutlinePlus, AiOutlineUpload } from "react-icons/ai";
+import { toast } from "sonner";
 
 
 
@@ -62,7 +62,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
     for (const { field, label } of requiredFields) {
       const value = (document.getElementsByName(field)[0] as HTMLInputElement)?.value;
       if (!value || (field === "skills" && tags.length === 0)) {
-        ShowToastify({ error: `Please fill in the ${label} field.` })
+        toast.error(`Please fill in the ${label} field.`)
         return false;
       }
     }

@@ -17,7 +17,7 @@ export default function SuccessPage() {
 
           <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed py-8">
            
-             Your details have been registered. Once the onboarding process is done &apos;you will receive a link in your inbox to activate your account. Please wait&apos; 3-5 days
+             Your details have been registered. Once the onboarding process is done you will receive a link in your inbox to activate your account. Please wait 3-5 days
           </p>
 
           <Link href="/user/auth/login" className="text-center font-semibold">

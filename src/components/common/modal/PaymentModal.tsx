@@ -34,19 +34,19 @@ export function PaymentModal({
 
     const agreementTypes: AgreementType[] = [
         {
-            id: "flat",
+            id: "Flat Fee",
             title: "Flat Fee",
             description: "One set price for the entire project.",
             icon: DollarSign,
         },
         {
-            id: "hourly",
+            id: "Hourly Fee",
             title: "Hourly Fee",
             description: "Payment based on hours worked.",
             icon: Clock,
         },
         {
-            id: "milestone",
+            id: "Milestone",
             title: "Milestone",
             description: "Payments released as project stages are completed.",
             icon: Milestone,
@@ -67,11 +67,11 @@ export function PaymentModal({
             return;
         }
 
-        if (selectedOption === "flat") {
+        if (selectedOption === "Flat Fee") {
             handleNextStep(3);
-        } else if (selectedOption === "hourly") {
+        } else if (selectedOption === "Hourly Fee") {
             handleNextStep(4); // Proceed to step 4 for hourly fee
-        } else if (selectedOption === "milestone") {
+        } else if (selectedOption === "Milestone") {
             handleNextStep(5); // Proceed to step 5 for milestone payment
         }
     };

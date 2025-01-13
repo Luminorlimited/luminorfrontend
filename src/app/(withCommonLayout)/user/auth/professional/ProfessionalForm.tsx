@@ -10,11 +10,11 @@ import circleshape from "@/assets/shapes/circleshape.png";
 import Password from "./Password";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import ShowToastify from "@/utils/ShowToastify";
 import { useProfessionalUserMutation } from "@/redux/api/userApi";
 import SuccessPage from "./Success";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
+import { toast } from "sonner";
 
 
 export default function ProfessionalForm() {
@@ -93,17 +93,18 @@ export default function ProfessionalForm() {
 
 
         console.log("Form submitted successfully:", res.data);
-        ShowToastify({ success: "Form submitted successfully!" });
+        toast.success("Form submitted successfully!")
         setStep(5);
       } else {
         console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
-        // ShowToastify({ error: res?.error?.data?.message });
-        ShowToastify({ error: res?.error?.data?.message });
+        toast.error(res?.error?.data?.message)
+
 
       }
     } catch (error) {
       console.error("An error occurred:", error);
-      ShowToastify({ error: "An error occurred while submitting the form." });
+      toast.error("An error occurred while submitting the form.")
+
     }
   };
 

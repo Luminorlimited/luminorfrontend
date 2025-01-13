@@ -13,7 +13,7 @@ interface AllUsersProps {
 }
 
 export default function AllUsers({ handleshowMessage, getConversation }: AllUsersProps) {
-  console.log(`My all old Conversation`, getConversation);
+  // console.log('selected id is', getConversation);
 
 
 
@@ -48,63 +48,79 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
         </div>
         <div>
           <ul className="divide-y">
-            {getConversation?.data.map((user: any, index: number) => (
-              <li
-                onClick={() => handleshowMessage({
-                  email: user?.email,
-                  firstName: user?.firstName,
-                  lastName: user?.lastName,
-                  profileUrl: user?.profileUrl || null,
-                })}
-                className={`flex border-none items-center p-4 cursor-pointer rounded-[12px] hover:bg-[#F2FAFF] focus:bg-[#F2FAFF] $`}
-                key={index}
-              >
-                <div className="relative">
-                  <Image
-                    src={user?.profileUrl || demoimg}
-                    alt="Avatar"
-                    width={48}
-                    height={48}
-                    className="w-12 h-12 rounded-full mr-4"
-                  />
-                  <span className="flex absolute right-3 bottom-1 border-white border-4 w-4 h-4 bg-[#111827] rounded-full"></span>
-                </div>
+            {getConversation?.data.map((user: any, index: number) => {
+              let firstName = user?.firstName;
+              let lastName = user?.lastName;
 
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-
-
-                    {/* {getUser?.client?.name?.firstName ||
-                      getUser?.retireProfessional?.name?.firstName ||
-                      'Unknown'}{''}
-                    {getUser?.retireProfessional?.name?.lastName ||
-                      getUser?.client?.name?.lastName ||
-                      ''} */}
-                    <h3 className="text-sm font-semibold" key={index}>
-                      {user?.firstName && user?.lastName
-                        ? `${user?.firstName} ${user?.lastName}`
-                        : user?.name || "Unknown User"}
-                    </h3>
-
-
-                    <span className="text-xs text-gray-500">
-                      {/* {user.messages.length > 0
-                        ? formatTimeDifference(
-                          user.messages[user.messages.length - 1].timestamp
-                        )
-                        : 'No messages'} */}
-                    </span>
+              // If firstName and lastName are not directly available, extract them from the name
+              if (!firstName && !lastName && user?.name) {
+                const nameParts = user.name.split(" ");
+                firstName = nameParts[0];
+                lastName = nameParts.slice(1).join(" ");
+              }
+              const userId = user?.userId || user?.id?.id
+              return (
+                <li
+                  onClick={() => handleshowMessage({
+                    id: userId,
+                    email: user?.email,
+                    firstName: firstName || "Unknown",
+                    lastName: lastName || "",
+                    name: user?.name,
+                    profileUrl: user?.profileUrl || null,
+                  })}
+                  className={`flex border-none items-center p-4 cursor-pointer rounded-[12px] hover:bg-[#F2FAFF] focus:bg-[#F2FAFF] $`}
+                  key={index}
+                >
+                  <div className="relative">
+                    <Image
+                      src={user?.profileUrl || demoimg}
+                      alt="Avatar"
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-full mr-4"
+                    />
+                    <span className="flex absolute right-3 bottom-1 border-white border-4 w-4 h-4 bg-[#111827] rounded-full"></span>
                   </div>
-                  {/* <div className="flex justify-between items-center">
-                    <h3 className="text-sm">mahi</h3>
-                    <span className="text-xs text-white font-semibold bg-[#E03137] px-[10px] py-[2px] rounded-xl">
-                      2
-                    </span>
-                  </div> */}
-                </div>
-              </li>
 
-            ))}
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+
+
+                      {/* {getUser?.client?.name?.firstName ||
+                        getUser?.retireProfessional?.name?.firstName ||
+                        'Unknown'}{''}
+                      {getUser?.retireProfessional?.name?.lastName ||
+                        getUser?.client?.name?.lastName ||
+                        ''} */}
+                      <h3 className="text-sm font-semibold" key={index}>
+                        {user?.firstName && user?.lastName
+                          ? `${user?.firstName} ${user?.lastName}`
+                          : user?.name || "Unknown User"}
+                      </h3>
+
+
+                      <span className="text-xs text-gray-500">
+                        {/* {user.messages.length > 0
+                          ? formatTimeDifference(
+                            user.messages[user.messages.length - 1].timestamp
+                          )
+                          : 'No messages'} */}
+                      </span>
+                    </div>
+                    {/* <div className="flex justify-between items-center">
+                      <h3 className="text-sm">mahi</h3>
+                      <span className="text-xs text-white font-semibold bg-[#E03137] px-[10px] py-[2px] rounded-xl">
+                        2
+                      </span>
+                    </div> */}
+                  </div>
+                </li>
+
+              )
+            }
+
+            )}
           </ul>
         </div>
       </div>

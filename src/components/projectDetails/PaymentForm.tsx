@@ -3,8 +3,8 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import visa from "@/assets/payment/visa.jpg"
-import venmo from "@/assets/payment/venmo.png"
-import paypal from "@/assets/payment/paypal.png"
+// import venmo from "@/assets/payment/venmo.png"
+// import paypal from "@/assets/payment/paypal.png"
 import offer from "@/assets/images/offer.png"
 import { FaArrowRightLong } from "react-icons/fa6";
 
@@ -15,7 +15,7 @@ export default function PaymentForm() {
     const [saveCard, setSaveCard] = useState(false)
 
     return (
-        <div className="min-h-screen lg:p-6">
+        <div className="lg:p-6">
             <div className="mx-auto max-w-[1300px] rounded-xl bg-white lg:p-6 md:p-6 p-1 shadow-sm">
                 <div className="grid gap-8 lg:grid-cols-[1fr,400px]">
                     {/* Left Column - Payment Form */}
@@ -128,8 +128,7 @@ export default function PaymentForm() {
                             </div>
 
 
-                            <div className="space-y-4">
-                                {/* PayPal */}
+                            {/* <div className="space-y-4">
                                 <div className="flex items-center gap-3 border py-4 px-3">
                                     <input
                                         type="radio"
@@ -146,7 +145,6 @@ export default function PaymentForm() {
                                     </label>
                                 </div>
 
-                                {/* Venmo */}
                                 <div className="flex items-center gap-3 border py-4 px-3">
                                     <input
                                         type="radio"
@@ -162,7 +160,7 @@ export default function PaymentForm() {
                                         <Image src={venmo} alt="Venmo" width={80} height={20} />
                                     </label>
                                 </div>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>

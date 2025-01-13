@@ -9,11 +9,11 @@ import Password from "./Password";
 import Signup from "./Signup";
 import { useForm } from "react-hook-form";
 import { useClientUserMutation } from "@/redux/api/userApi";
-import ShowToastify from "@/utils/ShowToastify";
 import Stepper from "./Stepper";
 import SuccessPage from "./Success";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
+import { toast } from "sonner";
 
 
 export default function ClientForm() {
@@ -44,7 +44,7 @@ export default function ClientForm() {
     try {
       const res: any = await createClient(clientData);
       if (res?.data) {
-        ShowToastify({ success: 'Successfully Created your Account' });
+        toast.success("Successfully Created your Account")
 
         dispatch(
           setUser({
@@ -63,12 +63,10 @@ export default function ClientForm() {
         setStep(4)
       } else {
 
-        ShowToastify({ error: res?.error?.data?.message });
-        // ShowToastify({ error: "Uer already exist"});
+        toast.error(res?.error?.data?.message)
       }
     } catch (err) {
       console.error("An error occurred:", err);
-      // ShowToastify({ error: "An error occurred while submitting the form." });
     }
   };
 

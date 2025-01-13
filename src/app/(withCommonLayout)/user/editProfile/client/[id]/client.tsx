@@ -15,8 +15,8 @@ import { RootState } from "@/redux/store";
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "next/navigation";
 import { useEditclientprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
-import ShowToastify from "@/utils/ShowToastify";
 import avatar from '@/assets/images/avatar.jpg';
+import { toast } from "sonner";
 
 const servicesData = [
     {
@@ -156,13 +156,13 @@ export default function Client() {
             const res = await editclientProfile({ id: userIdValue, data: formData });
             console.log(res);
             if (res) {
-                ShowToastify({ success: "Profile updated successfully" })
+                toast.success("Profile updated successfully")
 
             } else {
-                ShowToastify({ error: "Profile can't updated successfully" })
+                toast.error("Profile can't updated successfully")
             }
         } catch (error) {
-            ShowToastify({ error: "can't  successfully" })
+            toast.error("can't  successfully")
             console.log(error);
         }
         // reset();

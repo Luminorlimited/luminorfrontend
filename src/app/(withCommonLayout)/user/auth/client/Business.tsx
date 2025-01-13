@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ShowToastify from "@/utils/ShowToastify";
+import { toast } from "sonner";
 
 export default function Business({ register, handleNext, handleBack, getValues }: any) {
 
@@ -13,7 +13,7 @@ export default function Business({ register, handleNext, handleBack, getValues }
 
     // Check if any required field is empty
     if (!businessType || !jobTitle) {
-      ShowToastify({ error: "Please fill in all required fields." });
+      toast.error("Please fill in all required fields.")
       return false; // Return false if validation fails
     }
 

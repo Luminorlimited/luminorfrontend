@@ -7,11 +7,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import ImageCarousel from "./ImageCarousel/ImageCarousel";
 import { useLoginUserMutation } from "@/redux/api/userApi";
-import ShowToastify from "@/utils/ShowToastify";
 import { useRouter } from "next/navigation";
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
+import { toast } from "sonner";
 // import { signIn } from "next-auth/react"
 
 
@@ -40,17 +40,17 @@ export default function Login() {
             console.log("Login Response:", res);
             if (res?.data?.success) {
                 localStorage.setItem("email", email);
-                ShowToastify({ success: "Check your email for verification" });
+                toast.success("Check your email for verification")
                 router.push("/user/verification");
             } else {
-                ShowToastify({ error: res?.data?.message || "Wrong email or password" });
+                toast.error(res?.data?.message || "Wrong email or password")
             }
         } catch (error) {
             if (error instanceof Error) {
-                ShowToastify({ error: "Login Failed" });
+                toast.error("Login Failed")
                 console.error("Login Error:", error);
             } else {
-                ShowToastify({ error: "An unknown error occurred" });
+                toast.error("An unknown error occurred" )
                 console.error("Unexpected Error:", error);
             }
         }

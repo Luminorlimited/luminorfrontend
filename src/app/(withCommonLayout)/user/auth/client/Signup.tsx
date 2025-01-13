@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ShowToastify from "@/utils/ShowToastify";
+import { toast } from "sonner";
 
 
 export default function Signup({ register, handleNext, getValues }: any) {
@@ -18,13 +18,13 @@ export default function Signup({ register, handleNext, getValues }: any) {
 
     // Check if any required field is empty
     if (!firstName || !lastName || !dob || !email || !phone) {
-      ShowToastify({ error: "Please fill in all required fields." })
+      toast.error("Please fill in all required fields.")
       return false;
     }
 
     // Validate email format
     if (!emailRegex.test(email)) {
-      ShowToastify({ error: "Please enter a valid email address." })
+      toast.error("Please enter a valid email address.")
       return false;
     }
 

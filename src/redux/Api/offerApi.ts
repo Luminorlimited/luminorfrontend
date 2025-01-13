@@ -3,16 +3,36 @@ import baseApi from "@/redux/api/baseApi";
 
 const offerApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        loginUser: build.mutation({
-            query: ({id, data}) => {
-                console.log(data)
+        // loginUser: build.mutation({
+        //     query: ({id, data}) => {
+        //         console.log(data)
+        //         return {
+        //             url: `/offer/professional/${id}`,
+        //             method: 'POST',
+        //             body: data
+        //         }
+        //     },
+        //     invalidatesTags: ['Offer']
+        // }),
+        getOffer: build.query({
+            query: (userId) => {
+                console.log(userId)
                 return {
-                    url: `/offer/professional/${id}`,
-                    method: 'POST',
-                    body: data
+                    url: `/offer/professional/${userId}`,
+                    method: 'GET',
                 }
             },
-            invalidatesTags: ['Offer']
+            providesTags: ['Offer']
+        }),
+        getSingleOffer: build.query({
+            query: (offerId) => {
+                console.log(offerId)
+                return {
+                    url: `/offer/${offerId}`,
+                    method: 'GET',
+                }
+            },
+            providesTags: ['Offer']
         }),
 
     })
@@ -20,4 +40,4 @@ const offerApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation } = offerApi
+export const { useGetOfferQuery, useGetSingleOfferQuery } = offerApi

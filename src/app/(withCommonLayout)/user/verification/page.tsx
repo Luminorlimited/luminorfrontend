@@ -5,7 +5,6 @@ import usertypeshape from "@/assets/shapes/usertypeshape.png";
 import circleshape from "@/assets/shapes/circleshape.png";
 import CheckBox from "@/components/common/checkbox/CheckBox";
 import ImageCarousel from "../auth/login/ImageCarousel/ImageCarousel";
-import ShowToastify from "@/utils/ShowToastify";
 import { useState } from "react";
 // import { setVerify } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
@@ -13,6 +12,7 @@ import { useVerifyUserMutation } from "@/redux/api/userApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import Cookies from 'js-cookie';
+import { toast } from "sonner";
 
 export default function Page() {
   const [otp, setOtp] = useState("")
@@ -37,7 +37,7 @@ export default function Page() {
       console.log(res);
 
       if (res) {
-        ShowToastify({ success: "Verification Complete" });
+        toast.success("Verification Complete")
         const { role } = res.data.user; // Destructure role from the response
         const accessToken = res.data.accessToken;
 
@@ -60,13 +60,11 @@ export default function Page() {
 
         router.push("/");
       } else {
-        ShowToastify({ error: res.message || "Verification failed" });
+        toast.error(res.message || "Verification failed")
       }
     } catch (error: any) {
       // Handle API errors or rejected promises
-      ShowToastify({
-        error: "Error Validation. Check your mail.",
-      });
+      toast.error("Error Validation. Check your mail.")
       console.error(error);
     }
   };

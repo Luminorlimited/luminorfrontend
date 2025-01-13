@@ -5,6 +5,9 @@ import { Download } from "lucide-react";
 import Button from "@/components/common/Button";
 import RequirementsStep from "./RequirementStep";
 import PaymentInfoStep from "./PaymentInfoStep";
+import { useGetSingleOfferQuery } from "@/redux/api/offerApi";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 interface Step {
     id: number;
@@ -12,6 +15,20 @@ interface Step {
 }
 
 export default function ProjectDetails() {
+    const offerId = useParams()
+    console.log('my offer', offerId);
+    const { data: getSingleOffer } = useGetSingleOfferQuery(offerId.id)
+    console.log(getSingleOffer?.data?.orderAgreementPDF);
+
+    const handleDownloadPdf = () => {
+        const pdfUrl = getSingleOffer?.data?.orderAgreementPDF; // Fetch the PDF URL
+        if (pdfUrl) {
+            // Open the PDF in a new tab
+            window.open(pdfUrl, '_blank');
+        } else {
+            toast.error("PDF file not available");
+        }
+    };
     const [steps] = useState<Step[]>([
         { id: 1, title: "Review Requirements" },
         { id: 2, title: "Add further Requirements" },
@@ -41,7 +58,7 @@ export default function ProjectDetails() {
             <div className="lg:flex items-center  mb-12">
                 {steps.map((step, index) => (
                     <React.Fragment key={step.id}>
-                        <div className="flex flex-col items-center flex-1 lg:gap-y-0 gap-y-24 lg:gap-0">
+                        <div className="flex flex-col items-center flex-1 lg:gap-y-0 gap-y-24 lg:gap-x-0 justify-start">
                             <div className="flex items-center">
                                 <div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
@@ -74,9 +91,9 @@ export default function ProjectDetails() {
                                     )}
                                 </div>
                                 {index < steps.length - 1 && (
-                                    <div className="lg:w-full w-[2px] h-[2px] bg-gray-200 relative">
+                                    <div className="lg:w-[385px] w-[2px] h-[2px] bg-gray-200 relative">
                                         <div
-                                            className={`transition-all lg:w-[250px] w-[3px] lg:h-full h-[90px] lg:static absolute top-4 left-[-16px]  ${step.id < currentStepId
+                                            className={`transition-all lg:w-[385px] w-[3px] lg:h-full h-[90px] lg:static absolute top-4 left-[-16px]  ${step.id < currentStepId
                                                 ? "bg-[#7C3AED]"
                                                 : step.id === currentStepId
                                                     ? "bg-gray-300 w-1/2"
@@ -107,11 +124,11 @@ export default function ProjectDetails() {
                         </p>
                         <button
                             className="inline-flex items-center px-6 py-4 bg-primary text-white rounded-[8px] hover:bg-[#6D28D9] transition-colors"
-                            onClick={() => console.log("Download PDF")}
+                            onClick={handleDownloadPdf}
                         >
                             <Download className="w-4 h-4 mr-2" />
                             Download PDF
-                        </button>
+                        </button>;
                     </div>
                 )}
                 {currentStepId === 2 && (

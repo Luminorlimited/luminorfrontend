@@ -1,8 +1,9 @@
 import React from "react";
-import Image from "next/image";
 import { Offer } from "./OffersModal";
 import Button from "@/components/common/Button";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import offer from "@/assets/images/offer.png";
 
 interface OrderDetailsModalProps {
     data: Offer
@@ -13,10 +14,11 @@ interface OrderDetailsModalProps {
 const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
     const router = useRouter()
     const submitOrder = () => {
-        router.push('/project-details')
+        router.push(`/project-details/${data._id}`)
     }
+    console.log('my offer is', data);
     return (
-        <div className="flex  items-center justify-center z-50">
+        <div className="w-full  items-center justify-center z-50">
             <div className="">
                 {/* Close Button */}
 
@@ -25,19 +27,19 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
 
                 <div className="w-full h-[150px] bg-[#F8FAFB] mb-4 rounded-md overflow-hidden ">
                     <Image
-                        src={data.image}
+                        src={offer}
                         alt="Offer Image"
                         width={400}
                         height={150}
                         className="object-cover w-full h-full"
                     />
-                    <h4 className="font-medium text-[16px] mb-3">{data.title}</h4>
+                    <h4 className="font-medium text-[16px] mb-3">dfsdfds</h4>
                 </div>
 
 
-                <div className="text-sm  bg-[#F8FAFB]">
+                <div className="text-sm  bg-[#F8FAFB] p-2">
                     <p className="mb-2 flex justify-between">
-                        <span className="font-medium text-[#4A4C56]">Order from: </span>
+                        <span className="font-medium text-[#4A4C56]">Order from: Usa </span>
                         <span className="text-black">{data.date}</span>
                     </p>
                     <p className="mb-2 flex justify-between">
@@ -46,7 +48,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
                     </p>
                     <p className="mb-2 flex justify-between">
                         <span className="font-medium text-[#4A4C56]">Total price: </span>
-                        <span className="text-black">{data.price}</span>
+                        <span className="text-black">{data.totalPrice}</span>
                     </p>
                     <p className="mb-2 flex justify-between">
                         <span className="font-medium text-[#4A4C56]">Order no: </span>
@@ -54,7 +56,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
                     </p>
                     <p className="mb-2 flex justify-between">
                         <span className="font-medium text-[#4A4C56]">Order agreement: </span>
-                        <span className="text-black">{data.agreement}</span>
+                        <span className="text-black">PDF</span>
                     </p>
                 </div>
 

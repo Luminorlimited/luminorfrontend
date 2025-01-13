@@ -12,9 +12,9 @@ import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
-import ShowToastify from "@/utils/ShowToastify";
 import { useEditprofessionalprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Professional() {
 
@@ -93,7 +93,7 @@ export default function Professional() {
     const handleSubmitForm = async (data: any) => {
         if (!data || typeof data !== "object") {
             console.error("Invalid form data");
-            ShowToastify({ error: "Invalid form data" });
+            toast.error("Invalid form data")
             return;
         }
 
@@ -124,13 +124,14 @@ export default function Professional() {
             if (!res || typeof res !== "object") {
                 throw new Error("Invalid response from the server");
             }
-            ShowToastify({ success: "Profile Updated Successfully" });
+            toast.success("Profile Updated Successfully")
 
             console.log("API Response:", res);
             // reset();
         } catch (error: any) {
             console.error("Error occurred:", error);
-            ShowToastify({ error: error.message || "Profile Update Failed" });
+            toast.success(error.message || "Profile Update Failed")
+
         }
     };
 

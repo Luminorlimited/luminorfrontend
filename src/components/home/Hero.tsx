@@ -1,10 +1,13 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import professionalhero from '@/assets/images/professionalhero.png'
 import clientherobg from '@/assets/images/clientherobg.png'
+import useDecodedToken from "../common/DecodeToken";
 
 const Hero = () => {
+  const decodedToken = useDecodedToken();
   return (
     <section
       style={{
@@ -26,37 +29,42 @@ const Hero = () => {
             platform, limitless potential.
           </p>
         </div>
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#5633D1] relative overflow-hidden">
-            <div className="z-20">
-              <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
-                I&apos;m  a Retired Professional
-              </h2>
-              <p className="leading-[160%] pb-10 text-base text-white">
-                Start your journey as a professional and share your expertise with aspiring startups or businesses today
-              </p>
-              <Link href={'/user/auth/professional'} className="bg-white font-medium text-base hover:shadow-lg  px-7 py-4 cursor-pointer hover:bg-slate-100 rounded-full mt-8 shadow">
-                Get Started
-              </Link>
+        {!decodedToken ? (
+
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#5633D1] relative overflow-hidden">
+              <div className="z-20">
+                <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
+                  I&apos;m  a Retired Professional
+                </h2>
+                <p className="leading-[160%] pb-10 text-base text-white">
+                  Start your journey as a professional and share your expertise with aspiring startups or businesses today
+                </p>
+                <Link href={'/user/auth/professional'} className="bg-white font-medium text-base hover:shadow-lg  px-7 py-4 cursor-pointer hover:bg-slate-100 rounded-full mt-8 shadow">
+                  Get Started
+                </Link>
+              </div>
+              <Image src={professionalhero} width={208} height={338} className="absolute bottom-0 left-0" alt="profimg" />
             </div>
-            <Image src={professionalhero} width={208} height={338} className="absolute bottom-0 left-0" alt="profimg" />
-          </div>
-          <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#E6AD60] relative overflow-hidden">
-            <div className="z-30">
-              <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
-                I&apos;m a Client
-              </h2>
-              <p className="leading-[160%] text-base pb-10 text-white">
-                Start your journey as a client to gain valuable insights and turn
-                them into powerful action
-              </p>
-              <Link href={'/user/auth/client'} className="bg-white font-medium text-base hover:shadow-lg  px-7 py-4 cursor-pointer hover:bg-slate-100 rounded-full mt-8 shadow">
-                Get Started
-              </Link>
+            <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#E6AD60] relative overflow-hidden">
+              <div className="z-30">
+                <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
+                  I&apos;m a Client
+                </h2>
+                <p className="leading-[160%] text-base pb-10 text-white">
+                  Start your journey as a client to gain valuable insights and turn
+                  them into powerful action
+                </p>
+                <Link href={'/user/auth/client'} className="bg-white font-medium text-base hover:shadow-lg  px-7 py-4 cursor-pointer hover:bg-slate-100 rounded-full mt-8 shadow">
+                  Get Started
+                </Link>
+              </div>
+              <Image src={clientherobg} width={208} height={338} className="absolute top-0 left-0" alt="profimg" />
             </div>
-            <Image src={clientherobg} width={208} height={338} className="absolute top-0 left-0" alt="profimg" />
           </div>
-        </div>
+        ) : (
+          ""
+        )}
       </div>
     </section>
   );

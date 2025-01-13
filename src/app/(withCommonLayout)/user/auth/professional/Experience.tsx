@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import ShowToastify from "@/utils/ShowToastify";
+import { toast } from "sonner";
 
 
 export default function Experience({ register, handleNext, handleBack, getValues }: any) {
@@ -23,7 +23,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
       !refName2 ||
       !refcontact2
     ) {
-      ShowToastify({ error: "Please fill in all required fields." })
+      toast.error("Please fill in all required fields.")
       return false; // Return false if validation fails
     }
     return true; // Return true if all fields are valid
@@ -119,7 +119,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
               </Label>
               <Input
                 id="refcontact1"
-                type="number"
+                type="text"
                 placeholder="Reference Email/Phone Number"
                 {...register("refcontact1")}
                 className="h-12 rounded-xl border-[#E5E7EB]"
@@ -145,7 +145,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
               </Label>
               <Input
                 id="refcontact2"
-                type="number"
+                type="text"
                 placeholder="Reference Email/Phone Number"
                 {...register("refcontact2")}
                 className="h-12 rounded-xl border-[#E5E7EB]"

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ReduxProvider from "@/redux/ReduxProvider";
-import { ToastContainer } from "react-toastify";
-
+import {Toaster} from "sonner"
 const OpenSans = localFont({
   src: "./fonts/OpenSans-VariableFont_wdth,wght.ttf",
   variable: "--font-open-sans",
@@ -28,7 +27,7 @@ export default function RootLayout({
         <ReduxProvider>
           {children}
         </ReduxProvider>
-        <ToastContainer position="top-right" />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

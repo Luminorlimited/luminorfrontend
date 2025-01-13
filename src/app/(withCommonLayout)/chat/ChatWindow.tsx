@@ -3,7 +3,6 @@
 import React, { useRef, useEffect, FC } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import OffersModal from "@/components/common/modal/OffersModal";
 import { CheckCheck } from "lucide-react";
 import avatar1 from "@/assets/images/msgavatar1.png";
 import avatar2 from "@/assets/images/msgavatar2.png";
@@ -27,7 +26,6 @@ interface CommunicationProps {
     receiverBg: string; // Styling for receiver's message background
   };
   handleOpenModal: () => void;
-  isModalOpen: boolean;
 }
 
 interface MessageBubbleProps {
@@ -85,9 +83,7 @@ const Communication: FC<CommunicationProps> = ({
   // setMessages,
   currentUser,
   colorScheme,
-  handleOpenModal,
-  isModalOpen,
-  
+
 
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,7 +116,7 @@ const Communication: FC<CommunicationProps> = ({
       </div>
 
       {/* Modal for actions (if open) */}
-      {isModalOpen && <OffersModal onClose={handleOpenModal} />}
+     
     </div>
   );
 };

@@ -29,6 +29,7 @@ import avatar1 from "@/assets/images/msgavatar1.png";
 import { useGetMessageQuery } from "@/redux/api/messageApi";
 
 import useDecodedToken from "@/components/common/DecodeToken";
+import OffersModal from "@/components/common/modal/OffersModal";
 
 
 interface DecodedToken extends JwtPayload {
@@ -43,7 +44,7 @@ const Page: React.FC = () => {
 
   const { data: getSingleUser } = useGetuserQuery(userId?.id);
 
-  console.log(`my user is`, getSingleUser);
+  // console.log(`my user is`, getSingleUser);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
@@ -57,6 +58,7 @@ const Page: React.FC = () => {
   const user1 = token?.email
   const [user2, setUser2] = useState("");
   const [name, setName] = useState("");
+  const [user2Id, setUser2Id] = useState("")
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
   const { data: getConversation } = useGetConversationQuery(undefined);
@@ -128,13 +130,16 @@ const Page: React.FC = () => {
     }, 200);
   };
 
-  const handleshowMessage = (user: { email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
-    const { email, firstName, lastName, profileUrl } = user;
+  const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
+    const { id, email, firstName, lastName, profileUrl } = user;
+    
     setUser2(email)
     setName(`${firstName} ${lastName}`);
     setProfileUrl(profileUrl || demoimg.src);
-    console.log("Selected email:", email);
+    setUser2Id(id)
 
+    console.log("Selected User ID:", id); 
+    console.log("Selected email:", user2); 
     // Filter messages where the clicked email matches sender or recipient
     const filteredMessages = oldMessages?.data.messages.filter(
       (message: any) => message.sender === email || message.recipient === email
@@ -260,7 +265,7 @@ const Page: React.FC = () => {
   const userid = Array.isArray(userId) ? userId[0] : userId;
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
 
-  console.log('my u7ser', getSingleUser);
+  // console.log('my u7ser', getSingleUser);
 
 
 
@@ -273,6 +278,7 @@ const Page: React.FC = () => {
         const newUser = {
           id: userid,
           firstName: getSingleUser?.data?.client?.name?.firstName || getSingleUser?.data?.retireProfessional?.name?.firstName || "New User",
+
           lastName: getSingleUser?.data?.client?.name?.lastName || getSingleUser?.data?.retireProfessional?.name?.lastName || "New User",
           email: getSingleUser?.data?.client?.email || getSingleUser?.data?.retireProfessional?.email || `newuser_${userId}@example.com`,
           profileUrl: getSingleUser?.data?.profileUrl || avatar1,
@@ -355,6 +361,7 @@ const Page: React.FC = () => {
               >
                 Current Offers
               </button>
+              {isModalOpen && <OffersModal onClose={handleOpenModal} user2={user2} />}
 
               <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
                 Create an Offer
@@ -368,7 +375,6 @@ const Page: React.FC = () => {
             <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
               <div className="flex flex-col overflow-y-auto  h-full">
                 <ChatWindow
-                  isModalOpen={isModalOpen}
                   handleOpenModal={handleOpenModal}
                   messages={inbox}
                   currentUser={user1}
