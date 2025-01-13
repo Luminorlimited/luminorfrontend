@@ -30,6 +30,7 @@ import { useGetMessageQuery } from "@/redux/api/messageApi";
 
 import useDecodedToken from "@/components/common/DecodeToken";
 import OffersModal from "@/components/common/modal/OffersModal";
+import { toast } from "sonner";
 
 
 interface DecodedToken extends JwtPayload {
@@ -65,6 +66,8 @@ const Page: React.FC = () => {
   const [media, setMedia] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const userid = Array.isArray(userId) ? userId[0] : userId;
+  const [users, setUsers] = useState<any[]>(getConversation?.data || []);
 
 
   const handleClick = () => {
@@ -132,14 +135,14 @@ const Page: React.FC = () => {
 
   const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
     const { id, email, firstName, lastName, profileUrl } = user;
-    
+
     setUser2(email)
     setName(`${firstName} ${lastName}`);
     setProfileUrl(profileUrl || demoimg.src);
     setUser2Id(id)
 
-    console.log("Selected User ID:", id); 
-    console.log("Selected email:", user2); 
+    console.log("Selected User ID:", id);
+    console.log("Selected email:", user2);
     // Filter messages where the clicked email matches sender or recipient
     const filteredMessages = oldMessages?.data.messages.filter(
       (message: any) => message.sender === email || message.recipient === email
@@ -198,6 +201,48 @@ const Page: React.FC = () => {
     };
   };
 
+  const handleAddUser = () => {
+    // Check if the user already exists in the users array
+    const isUserExists = users.some((user) => user.id === userid);
+    if (!isUserExists && getSingleUser) {
+      try {
+        // Extract data safely
+        const newUser = {
+          id: userid,
+          firstName: getSingleUser?.data?.client?.name?.firstName || getSingleUser?.data?.retireProfessional?.name?.firstName || "New User",
+
+          lastName: getSingleUser?.data?.client?.name?.lastName || getSingleUser?.data?.retireProfessional?.name?.lastName || "New User",
+          email: getSingleUser?.data?.client?.email || getSingleUser?.data?.retireProfessional?.email || `newuser_${userId}@example.com`,
+          profileUrl: getSingleUser?.data?.profileUrl || avatar1,
+        };
+
+        // Add the new user to the state
+        setUsers((prevUsers) => [...prevUsers, newUser]);
+        console.log(`my new user`, newUser);
+      } catch (err) {
+        console.error("Failed to fetch user data:", err);
+      }
+    }
+  };
+
+  const handleCreateZoomMeeting = () => {
+    if (socket) {
+      const callInfo = {
+        fromEmail: token?.email, // Ensure token contains email
+        toEmail: user2, // Replace with recipient's email
+      };
+
+      // Emit event to create Zoom meeting
+      socket.emit("createZoomMeeting", JSON.stringify(callInfo));
+    } else {
+      toast.error("Socket connection not established.");
+    }
+  };
+
+
+
+
+  // emoji picker
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
@@ -211,6 +256,7 @@ const Page: React.FC = () => {
     };
   }, []);
 
+  // old message
   useEffect(() => {
     if (error) {
       console.error("Error fetching old messages:", error);
@@ -221,6 +267,9 @@ const Page: React.FC = () => {
     }
   }, [oldMessages, error, user1]);
 
+
+
+  //socket connection
   useEffect(() => {
     if (!token?.email) {
       console.log("Token not ready or email missing.");
@@ -249,10 +298,25 @@ const Page: React.FC = () => {
       // getConversation({})
     });
 
-    // mysocket.on("sendOffer", async (data: any) => {
+    mysocket.on("createZoomMeeting", (data) => {
+      console.log("Zoom meeting created:", data);
+      const { start_url, join_url } = data;
 
-    // })
-    // Cleanup on component unmount
+      if (start_url) {
+        window.open(start_url, "_blank");
+      } else {
+        toast.error("Zoom meeting creation failed.");
+      }
+    });
+
+    // Handle Zoom meeting errors
+    mysocket.on("zoomMeetingError", (errorMessage) => {
+      console.error("Zoom meeting error:", errorMessage);
+      toast.error("Failed to create Zoom meeting. Please try again.");
+    });
+
+
+
     return () => {
       console.log("Cleaning up socket listeners...");
       mysocket.off("connect");
@@ -262,37 +326,10 @@ const Page: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token?.email]);
 
-  const userid = Array.isArray(userId) ? userId[0] : userId;
-  const [users, setUsers] = useState<any[]>(getConversation?.data || []);
-
-  // console.log('my u7ser', getSingleUser);
 
 
 
-  const handleAddUser = () => {
-    // Check if the user already exists in the users array
-    const isUserExists = users.some((user) => user.id === userid);
-    if (!isUserExists && getSingleUser) {
-      try {
-        // Extract data safely
-        const newUser = {
-          id: userid,
-          firstName: getSingleUser?.data?.client?.name?.firstName || getSingleUser?.data?.retireProfessional?.name?.firstName || "New User",
-
-          lastName: getSingleUser?.data?.client?.name?.lastName || getSingleUser?.data?.retireProfessional?.name?.lastName || "New User",
-          email: getSingleUser?.data?.client?.email || getSingleUser?.data?.retireProfessional?.email || `newuser_${userId}@example.com`,
-          profileUrl: getSingleUser?.data?.profileUrl || avatar1,
-        };
-
-        // Add the new user to the state
-        setUsers((prevUsers) => [...prevUsers, newUser]);
-        console.log(`my new user`, newUser);
-      } catch (err) {
-        console.error("Failed to fetch user data:", err);
-      }
-    }
-  };
-
+  // add user in conversation sidebar
   useEffect(() => {
     // Merge getConversation data with existing users and set state
     setUsers((prevUsers) => {
@@ -309,6 +346,9 @@ const Page: React.FC = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, getSingleUser, getConversation?.data]);
+
+
+
 
 
 
@@ -378,6 +418,7 @@ const Page: React.FC = () => {
                   handleOpenModal={handleOpenModal}
                   messages={inbox}
                   currentUser={user1}
+                  profileUrl={profileUrl}
                   colorScheme={{
                     senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
                     receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
@@ -462,8 +503,12 @@ const Page: React.FC = () => {
             )}
             <MdOutlineKeyboardVoice
               className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            <Video
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <button
+              onClick={handleCreateZoomMeeting}
+              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
+            >
+              <Video />
+            </button>
           </div>
         </div>
       </div>

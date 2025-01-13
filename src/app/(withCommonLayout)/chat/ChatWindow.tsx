@@ -7,6 +7,11 @@ import { CheckCheck } from "lucide-react";
 import avatar1 from "@/assets/images/msgavatar1.png";
 import avatar2 from "@/assets/images/msgavatar2.png";
 import Image from "next/image";
+import { useGetProfileQuery } from "@/redux/api/userApi";
+import useDecodedToken from "@/components/common/DecodeToken";
+// import demoimg from '@/assets/images/demoimg.png';
+
+
 
 
 // Interfaces
@@ -21,6 +26,7 @@ interface CommunicationProps {
   messages: Message[]; // All messages for the chat
   senderName: string; // Sender's display name,
   currentUser: string;
+  profileUrl: string;
   colorScheme: {
     senderBg: string; // Styling for sender's message background
     receiverBg: string; // Styling for receiver's message background
@@ -31,15 +37,19 @@ interface CommunicationProps {
 interface MessageBubbleProps {
   messages: Message;
   currentUser: string;
+  profileUrl: string;
   colorScheme: {
     senderBg: string;
     receiverBg: string;
   };
 }
 
-const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorScheme }) => {
+const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorScheme, profileUrl }) => {
   const isSender = messages.sender === currentUser;
 
+
+  const token = useDecodedToken()
+  const { data: profileData } = useGetProfileQuery(token?.id);
 
 
 
@@ -48,7 +58,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorSch
       <div className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"}`}>
         <Avatar className="w-10 h-10">
           <Image
-            src={isSender ? avatar1 : avatar2}
+            src={isSender ? profileData?.data?.profileUrl || avatar1 : profileUrl || avatar2}
             alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
             width={50}
             height={50}
@@ -80,7 +90,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorSch
 // Communication Component: The main chat container
 const Communication: FC<CommunicationProps> = ({
   messages,
-  // setMessages,
+  profileUrl,
   currentUser,
   colorScheme,
 
@@ -96,6 +106,9 @@ const Communication: FC<CommunicationProps> = ({
     scrollToBottom();
   }, [messages]);
 
+
+
+
   return (
     <div className="flex-1 h-full">
       {/* Chat Area */}
@@ -106,6 +119,7 @@ const Communication: FC<CommunicationProps> = ({
             <MessageBubble
               key={message.id || index}
               messages={message}
+              profileUrl={profileUrl}
               currentUser={currentUser}
               colorScheme={colorScheme}
             />
@@ -116,7 +130,7 @@ const Communication: FC<CommunicationProps> = ({
       </div>
 
       {/* Modal for actions (if open) */}
-     
+
     </div>
   );
 };

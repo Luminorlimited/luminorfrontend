@@ -128,7 +128,7 @@ export default function ProjectDetails() {
                         >
                             <Download className="w-4 h-4 mr-2" />
                             Download PDF
-                        </button>;
+                        </button>
                     </div>
                 )}
                 {currentStepId === 2 && (

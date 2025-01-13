@@ -68,18 +68,18 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
 
 
-    function removeCircularReferences() {
-        const seen = new WeakSet();
-        return function (key: any, value: any) {
-            if (typeof value === "object" && value !== null) {
-                if (seen.has(value)) {
-                    return undefined; // Remove circular reference
-                }
-                seen.add(value);
-            }
-            return value;
-        };
-    }
+    // function removeCircularReferences() {
+    //     const seen = new WeakSet();
+    //     return function (key: any, value: any) {
+    //         if (typeof value === "object" && value !== null) {
+    //             if (seen.has(value)) {
+    //                 return undefined; // Remove circular reference
+    //             }
+    //             seen.add(value);
+    //         }
+    //         return value;
+    //     };
+    // }
 
 
     const onSubmit = (data: any) => {
@@ -92,7 +92,9 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
             const myOffer = {
                 fromEmail: user1,
                 toEmail: user2,
-                offer: JSON.stringify(data, removeCircularReferences()),
+                offer: JSON.stringify(data),
+                professionalEmail: user1,
+                clientEmail: user2
             };
 
             console.log("My offer is", myOffer);
@@ -112,7 +114,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
         >
             <div
                 className="relative shadow-lg w-full max-w-[670px] rounded-[20px] overflow-hidden bg-white"
-                onClick={(e) => e.stopPropagation()} 
+                onClick={(e) => e.stopPropagation()}
             >
                 <div className="flex items-center bg-[#f1f1f1] justify-between border-b p-4">
                     <h2 className="text-xl font-semibold">
@@ -213,7 +215,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                 </div>
                             ) : step === 2 ? (
                                 ""
-                            ) : (
+                            ) : step === 5 ? (
                                 <div className="flex gap-4 justify-between w-full">
                                     <button
                                         className="bg-[#eeeeee] text-black px-6 py-4 font-medium rounded-[12px]"
@@ -227,6 +229,22 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                     >
                                         Next
                                     </button>
+                                </div>
+                            ) : (
+                                <div className="flex gap-4 justify-between w-full">
+                                    <button
+                                        className="bg-[#eeeeee] text-black px-6 py-4 font-medium rounded-[12px]"
+                                        onClick={() => setStep(2)}
+                                    >
+                                        Back
+                                    </button>
+                                    <Button
+                                        type='submit'
+                                        className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
+                                        onClick={onSubmit}
+                                    >
+                                        Submit
+                                    </Button>
                                 </div>
                             )}
                         </div>

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FaCog } from 'react-icons/fa';
 import { AiOutlinePlus, AiOutlineUpload } from 'react-icons/ai'
 import CheckBox from "@/components/common/checkbox/CheckBox";
@@ -15,6 +15,40 @@ import Financial from "@/components/svg/Financial";
 import { useEditprofessionalprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
+import avatar from '@/assets/images/avatar.jpg';
+
+const servicesData = [
+    {
+        icon: <BusinesSvg />,
+        title: "Business consultancy and management",
+        description: "Business consultancy and management"
+    },
+    {
+        icon: <SettingSvg />,
+        title: "Engineering services",
+        description: "Engineering services"
+    },
+    {
+        icon: <TechnicalSvg />,
+        title: "Technical services",
+        description: "Technical services"
+    },
+    {
+        icon: <HealthSvg />,
+        title: "Healthcare and medical consultancy",
+        description: "Healthcare and medical consultancy"
+    },
+    {
+        icon: <Education />,
+        title: "Education and training",
+        description: "Education and training"
+    },
+    {
+        icon: <Financial />,
+        title: "Legal and financial services",
+        description: "Legal and financial services"
+    }
+];
 
 export default function Professional() {
 
@@ -35,48 +69,7 @@ export default function Professional() {
         setIsDragging(false)
         // Handle file drop here
     }
-    const servicesData = [
-        {
-            icon: <BusinesSvg />,
-            title: "Business consultancy and management",
-            description: "Business consultancy and management"
-        },
-        {
-            icon: <SettingSvg />,
-            title: "Engineering services",
-            description: "Engineering services"
-        },
-        {
-            icon: <TechnicalSvg />,
-            title: "Technical services",
-            description: "Technical services"
-        },
-        {
-            icon: <HealthSvg />,
-            title: "Healthcare and medical consultancy",
-            description: "Healthcare and medical consultancy"
-        },
-        {
-            icon: <Education />,
-            title: "Education and training",
-            description: "Education and training"
-        },
-        {
-            icon: <Financial />,
-            title: "Legal and financial services",
-            description: "Legal and financial services"
-        }
-    ];
 
-    const [selectedImage, setSelectedImage] = useState('https://avatar.iran.liara.run/public');
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (file) {
-            const imageURL = URL.createObjectURL(file)
-            setSelectedImage(imageURL)
-        }
-    }
 
     const { register, handleSubmit, setValue, watch } = useForm();
 
@@ -86,9 +79,10 @@ export default function Professional() {
     const userIdValue = userId.id;
 
     //   const watchSelectedService = watch("selectedService");
-
     const { data: profileData } = useGetProfileQuery(userIdValue);
-    console.log(profileData?.data);
+
+
+    console.log('my profile data is', profileData?.data);
 
     const handleSubmitForm = async (data: any) => {
         if (!data || typeof data !== "object") {
@@ -109,13 +103,8 @@ export default function Professional() {
         formData.append('name[firstName]', data.firstName);
         formData.append('name[lastName]', data.lastName);
 
-        if (data.profileUrl instanceof File) {
-            formData.append("profileUrl", data.profileUrl);
-            console.log("Profile Image:", data.profileUrl);
-            // formData.append("cvorcoverLetter", data.cvorcoverLetter);
-            // console.log("Profile Image:", data.cvorcoverLetter);
-        } else {
-            console.error("No valid file selected for profile image");
+        if (selectedImage instanceof File) {
+            formData.append('profileUrl', selectedImage);
         }
 
         try {
@@ -136,6 +125,39 @@ export default function Professional() {
     };
 
 
+    const [selectedImage, setSelectedImage] = useState<string | File>(
+        profileData?.data?.profileUrl
+    );
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            // Ensure only image files are processed
+            if (!file.type.startsWith("image/")) {
+                alert("Please select a valid image file.");
+                return;
+            }
+            setSelectedImage(file); // Set the file directly
+        }
+    };
+
+    const imageSrc = useMemo(() => {
+        if (selectedImage instanceof File) {
+            return URL.createObjectURL(selectedImage); // If it's a file, create an object URL
+        }
+        if (typeof selectedImage === "string" && selectedImage.length) {
+            return selectedImage; // If it's a valid string URL, use it
+        }
+        return avatar.src; // Fallback to default avatar
+    }, [selectedImage]);
+
+    useMemo(() => {
+        if (selectedImage instanceof File) {
+            const url = URL.createObjectURL(selectedImage);
+            return () => URL.revokeObjectURL(url); // Cleanup object URL
+        }
+    }, [selectedImage]);
+
+
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -152,7 +174,7 @@ export default function Professional() {
                         <div className="relative text-center mb-12">
                             <div className="relative inline-block">
                                 <Image
-                                    src={selectedImage}
+                                    src={imageSrc}
                                     alt="profile-img"
                                     {...register('profileUrl')}
                                     onChange={(e) => setValue("profileUrl", (e.target as HTMLInputElement).value)}
