@@ -315,7 +315,7 @@ export default function Professional() {
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="prefProject">Preferred Projects*</label>
-                                <input  {...register('project')} id="prefProject" defaultValue={profileData?.data.preferedProjects} required onChange={(e) => setValue("preferedProjects", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
+                                <input  {...register('preferedProjects')} id="prefProject" defaultValue={profileData?.data.preferedProjects} required onChange={(e) => setValue("preferedProjects", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="hourlyRate">Hourly Rate (USD) *</label>

@@ -5,7 +5,7 @@ import { store } from "@/redux/store";
 export const baseApi = createApi({
     reducerPath: 'baseApi', // The key for this API in the Redux store
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:5001/api/v1",
+        baseUrl: "https://luminor-backend.vercel.app/api/v1",
         prepareHeaders: (headers) => {
             const token = store.getState().Auth.token;
             if (token) {
