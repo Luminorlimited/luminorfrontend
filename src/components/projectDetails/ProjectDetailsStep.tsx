@@ -16,9 +16,9 @@ interface Step {
 
 export default function ProjectDetails() {
     const offerId = useParams()
-    console.log('my offer', offerId);
+    // console.log('my offer', offerId);
     const { data: getSingleOffer } = useGetSingleOfferQuery(offerId.id)
-    console.log(getSingleOffer?.data?.orderAgreementPDF);
+    // console.log(getSingleOffer?.data?.orderAgreementPDF);
 
     const handleDownloadPdf = () => {
         const pdfUrl = getSingleOffer?.data?.orderAgreementPDF; // Fetch the PDF URL
@@ -138,7 +138,7 @@ export default function ProjectDetails() {
                 )}
                 {currentStepId === 3 && (
                     <div className="space-y-4">
-                        <PaymentInfoStep />
+                        <PaymentInfoStep getSingleOffer={getSingleOffer} />
                     </div>
                 )}
                 {/* Navigation */}

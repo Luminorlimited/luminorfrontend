@@ -8,37 +8,44 @@ import ImageCarousel from "../auth/login/ImageCarousel/ImageCarousel";
 import { useState } from "react";
 // import { setVerify } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
-import { useVerifyUserMutation } from "@/redux/api/userApi";
+import { useGetProfileQuery, useVerifyUserMutation } from "@/redux/api/userApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import Cookies from 'js-cookie';
 import { toast } from "sonner";
+import useDecodedToken from "@/components/common/DecodeToken";
 
 export default function Page() {
   const [otp, setOtp] = useState("")
 
-  const [setVerify,  { isLoading }] = useVerifyUserMutation()
+  const [setVerify, { isLoading }] = useVerifyUserMutation()
   const dispatch = useDispatch();
 
-  
- 
+
+
 
   const router = useRouter()
-  
+
 
   // Inside verify.ts after OTP verification
+  const token = useDecodedToken()
+  const { data: profileData } = useGetProfileQuery(token?.id);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const email = localStorage.getItem("email");
       const data = { email, otp };
 
-      const res = await setVerify(data).unwrap(); // Verify OTP API call
-      console.log(res);
+      const res = await setVerify(data).unwrap();
 
+      console.log(res);
       if (res) {
+
         toast.success("Verification Complete")
-        const { role } = res.data.user; // Destructure role from the response
+
+
+        // console.log('my stripe', getProfile)
+        const { role } = res.data.user;
         const accessToken = res.data.accessToken;
 
         // Dispatch the correctly structured object
@@ -47,18 +54,25 @@ export default function Page() {
             user: {
               email: email || "", role,
               id: ""
-            }, // Provide a fallback for email
+            }, 
             token: accessToken,
           })
         );
         Cookies.set('token', res.data.accessToken, {
-          expires: 7, // Token will expire in 7 days
-          secure: true, // Use secure cookies for HTTPS
-          sameSite: 'Strict', // Prevent cross-site attacks
-          path: '/', // Cookie is available across the entire site
+          expires: 7, 
+          secure: true, 
+          sameSite: 'Strict', 
+          path: '/', 
         });
 
-        router.push("/");
+        console.log("My profile is ", profileData);
+
+        if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === false) {
+          router.push(profileData?.data?.retireProfessional?.stripe.onboardingUrl)
+        } else {
+          router.push('/')
+        }
+
       } else {
         toast.error(res.message || "Verification failed")
       }
@@ -145,9 +159,9 @@ export default function Page() {
             </form>
           </div>
           <div className="relative  lg:block  hidden w-[650px]  ">
-                                 <ImageCarousel/>
-                                 {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
-                             </div>
+            <ImageCarousel />
+            {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
+          </div>
         </div>
       </div>
     </div>

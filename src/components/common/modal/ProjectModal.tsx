@@ -10,6 +10,7 @@ import ProjectDescModal from '@/components/common/modal/ProjectDescModal';
 import { FlatFeeModal } from '@/components/common/modal/FlatFeeModal';
 import { useForm } from 'react-hook-form';
 import io from 'socket.io-client'; // Import the socket.io-client
+import { toast } from 'sonner';
 
 interface projectModalProps {
     onClose: () => void;
@@ -25,16 +26,15 @@ interface Milestone {
     description: string;
 }
 
-const socket = io('ws://localhost:5001');
-
 const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) => {
 
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [open, setOpen] = useState(true);
     const [step, setStep] = useState<number>(1);
+    const [socket, setSocket] = useState<any>(null);
     const totalSteps = 6;
-    const [finalStep, setFinalStep] = useState<any>(null);
+    // const [finalStep, setFinalStep] = useState<any>(null);
     const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [agreementType, setagreementType] = useState<string | null>(null);
@@ -59,48 +59,35 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
     useEffect(() => {
         const mysocket = io("ws://localhost:5001");
+        console.log(mysocket);
+
         mysocket.on("connect", () => {
-            console.log("Connected to socket.io.");
+            console.log("Connected to special socket.io.");
+            setSocket(mysocket)
             mysocket.emit("register", JSON.stringify({ email: user1 }));
         });
-
     }, [user1])
 
 
-
-    // function removeCircularReferences() {
-    //     const seen = new WeakSet();
-    //     return function (key: any, value: any) {
-    //         if (typeof value === "object" && value !== null) {
-    //             if (seen.has(value)) {
-    //                 return undefined; // Remove circular reference
-    //             }
-    //             seen.add(value);
-    //         }
-    //         return value;
-    //     };
-    // }
-
-
     const onSubmit = (data: any) => {
-        setFinalStep(data);
         console.log("Final Form Values:", data);
 
         // Safely stringify data
         try {
-            // const cleanData = JSON.parse(JSON.stringify(data)); // Remove circular references
             const myOffer = {
                 fromEmail: user1,
                 toEmail: user2,
-                offer: JSON.stringify(data),
+                offer: data,
                 professionalEmail: user1,
                 clientEmail: user2
             };
 
-            console.log("My offer is", myOffer);
+            console.log("My offer is", JSON.stringify(myOffer));
             socket.emit('sendOffer', JSON.stringify(myOffer));
+            toast.success("Offer Sent successfully....")
         } catch (error) {
             console.error("Error stringifying data:", error);
+            toast.error("Something went wrong")
         }
 
         onClose();
@@ -181,7 +168,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                 setStep={setStep}
 
                                 milestones={milestones}
-                                finalData={finalStep}
                             />
                         ) : (
                             <div>Thank You</div>
@@ -193,7 +179,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                 <Button
                                     type='button'
                                     className="w-[100px] bg-[#6938EF] text-white py-2 rounded-[10px] hover:bg-[#6938EF]/90"
-                                    onClick={() => setStep(step + 1)}
+                                    onClick={() => setStep(step => step + 1)}
                                 >
                                     Next
                                 </Button>
@@ -208,7 +194,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                     <Button
                                         type='submit'
                                         className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
-                                        onClick={onSubmit}
                                     >
                                         Submit
                                     </Button>
@@ -241,7 +226,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                     <Button
                                         type='submit'
                                         className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
-                                        onClick={onSubmit}
                                     >
                                         Submit
                                     </Button>

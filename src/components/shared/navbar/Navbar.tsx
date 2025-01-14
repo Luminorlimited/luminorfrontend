@@ -61,6 +61,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const notificationRef = useRef<HTMLDivElement>(null)
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
 
   const handleClick = () => {
     setTimeout(() => {
@@ -76,25 +78,40 @@ const Navbar = () => {
   }
 
   // Sample notifications
-  const notifications: Notification[] = [
-    { id: 1, message: "New message received", time: "5 min ago" },
-    { id: 2, message: "Your post was liked", time: "1 hour ago" },
-    { id: 3, message: "You have a new follower", time: "2 hours ago" },
-  ]
-
+  // const notifications: Notification[] = [
+   
+  // ]
 
   useEffect(() => {
-    const mysocket = io('ws://localhost:5001');
+    // Establish socket connection
+    const mysocket = io("ws://localhost:5001");
 
+    // Listen for notification events from the server
     mysocket.on("connect", () => {
-      // console.log("My offer server is connected in navbar.");
-      // console.log("Connected to server for create offer");
-      mysocket.on('receiveOffer', (message) => {
-        console.log('Offer received response:', message);
-      })
+      console.log("Connected to the server.");
 
-    })
+      mysocket.on("notification", (notification) => {
+        console.log("Notification received:", notification);
+
+        // Update state with the new notification
+        setNotifications((prevNotifications) => [
+          ...prevNotifications,
+          {
+            id: Date.now(), // Use a unique ID for each notification
+            message: notification.message,
+            time: new Date().toLocaleTimeString(), // Add timestamp
+          },
+        ]);
+      });
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      mysocket.disconnect();
+    };
   }, []);
+
+
 
   const notificationClick = () => {
     console.log('my notification is come successfully.');
@@ -165,9 +182,9 @@ const Navbar = () => {
                       <p className="text-sm text-gray-500 px-4 py-2">No new notifications</p>
                     )}
                   </div>
-                  <div className="border-t px-4 py-2">
+                  {/* <div className="border-t px-4 py-2">
                     <button className="text-sm text-primary hover:underline">View all notifications</button>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>

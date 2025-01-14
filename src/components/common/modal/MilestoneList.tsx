@@ -11,7 +11,6 @@ interface Milestone {
 
 interface MilestoneListProps {
     milestones: Milestone[] | undefined;  // Receiving the data
-    finalData: any;
     setStep: (step: number) => void// Corrected this line
 
 }

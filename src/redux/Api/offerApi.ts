@@ -34,10 +34,20 @@ const offerApi = baseApi.injectEndpoints({
             },
             providesTags: ['Offer']
         }),
+        deleteOffer: build.mutation({
+            query: (offerId) => {
+                console.log(offerId)
+                return {
+                    url: `/offer/delete/${offerId}`,
+                    method: 'DELETE',
+                }
+            },
+            invalidatesTags: ['Offer']
+        }),
 
     })
 })
 
 
 
-export const { useGetOfferQuery, useGetSingleOfferQuery } = offerApi
+export const { useGetOfferQuery, useGetSingleOfferQuery, useDeleteOfferMutation } = offerApi

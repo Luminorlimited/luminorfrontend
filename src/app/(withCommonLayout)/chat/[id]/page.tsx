@@ -139,7 +139,7 @@ const Page: React.FC = () => {
     setUser2(email)
     setName(`${firstName} ${lastName}`);
     setProfileUrl(profileUrl || demoimg.src);
-    setUser2Id(id)
+    // setUser2Id(id)
 
     console.log("Selected User ID:", id);
     console.log("Selected email:", user2);
@@ -299,16 +299,22 @@ const Page: React.FC = () => {
     });
 
     mysocket.on("createZoomMeeting", (data) => {
-      console.log("Zoom meeting created:", data);
+      console.log("Zoom meeting data received from socket:", data);
       const { start_url, join_url } = data;
 
-      if (start_url) {
-        // Open the Zoom meeting (host link) in a new tab
+      if (start_url && join_url) {
+        // Open the meeting URL for the host
         window.open(start_url, "_blank");
+
+        // Update inbox or state
+        setInbox((prevInbox) => [...prevInbox, join_url]);
       } else {
-        toast.error("Zoom meeting creation failed.");
+        toast.error("Invalid Zoom meeting data received.");
+        console.log("invalid data", data)
+        console.log("Join url", join_url)
       }
     });
+
 
     // Handle Zoom meeting errors
     mysocket.on("zoomMeetingError", (errorMessage) => {

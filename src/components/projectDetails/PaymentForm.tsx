@@ -7,19 +7,55 @@ import visa from "@/assets/payment/visa.jpg"
 // import paypal from "@/assets/payment/paypal.png"
 import offer from "@/assets/images/offer.png"
 import { FaArrowRightLong } from "react-icons/fa6";
+// import Link from 'next/link'
+import { PaymentInfoStepProps } from './PaymentInfoStep'
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
+// import { useGetProfileByIdQuery } from '@/redux/api/userApi'
+// import useDecodedToken from '../common/DecodeToken'
 
-import Link from 'next/link'
 
-export default function PaymentForm() {
+const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer }) => {
     const [paymentMethod, setPaymentMethod] = useState('card')
-    const [saveCard, setSaveCard] = useState(false)
+    const [saveCard, setSaveCard] = useState(false);
 
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        if (!stripe || !elements) {
+            return;
+        }
+
+        const cardElement = elements.getElement(CardNumberElement);
+        if (!cardElement) {
+            return;
+        }
+
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        });
+
+        if (error) {
+            console.error('Payment method error:', error);
+        } else {
+            console.log('Payment method success:', paymentMethod);
+            // Add additional logic to handle successful payment method creation
+        }
+    };
+    console.log('My offer is', getSingleOffer);
+
+    // const token = useDecodedToken()
+    // const { getProfile } = useGetProfileByIdQuery(token?.id) 
+    // get
+    
     return (
         <div className="lg:p-6">
-            <div className="mx-auto max-w-[1300px] rounded-xl bg-white lg:p-6 md:p-6 p-1 shadow-sm">
+            <div className="mx-auto max-w-[1300px] rounded-xl bg-white md:p-6 p-1 shadow-sm">
                 <div className="grid gap-8 lg:grid-cols-[1fr,400px]">
                     {/* Left Column - Payment Form */}
-                    <div className="space-y-6 lg:border md:border border-none lg:p-6 md:p-6 p-0 rounded-xl">
+                    <div className="space-y-6 lg:border md:border border-none rounded-xl">
                         <div className="rounded-[8px] border-none bg-primary">
                             <div className="bg-[#F2FAFF] ml-1 border-none rounded-[8px] p-4">
                                 Your card details are secure and payments will be held until the project is marked as completed
@@ -27,7 +63,7 @@ export default function PaymentForm() {
 
                         </div>
 
-                        <div className="space-y-4">
+                        <form id="paymentForm" onSubmit={handleSubmit} className="space-y-4">
                             <h2 className="text-base font-medium text-gray-900">Payment Options</h2>
 
                             <div className="relative rounded-lg border p-4">
@@ -40,8 +76,8 @@ export default function PaymentForm() {
                                         onChange={() => setPaymentMethod('card')}
                                         className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
                                     />
-                                    <label htmlFor="card" className="flex items-center gap-2 text-sm text-gray-700">Credit & Debit Cards
-
+                                    <label htmlFor="card" className="flex items-center gap-2 text-sm text-gray-700">
+                                        Credit & Debit Cards
                                         <Image src={visa} alt="Visa" width={32} height={20} className="ml-auto" />
                                     </label>
                                 </div>
@@ -50,9 +86,21 @@ export default function PaymentForm() {
                                     <div className="mt-4 space-y-4">
                                         <div className="space-y-2">
                                             <label className="block text-sm text-gray-700">Card Number</label>
-                                            <input
-                                                type="text"
-                                                placeholder="1234 5678 9101 1121"
+                                            <CardNumberElement
+                                                options={{
+                                                    style: {
+                                                        base: {
+                                                            fontSize: '16px',
+                                                            color: '#424770',
+                                                            '::placeholder': {
+                                                                color: '#aab7c4',
+                                                            },
+                                                        },
+                                                        invalid: {
+                                                            color: '#9e2146',
+                                                        },
+                                                    },
+                                                }}
                                                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                             />
                                         </div>
@@ -60,17 +108,41 @@ export default function PaymentForm() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="space-y-2">
                                                 <label className="block text-sm text-gray-700">Expiration Date</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="MM/YY"
+                                                <CardExpiryElement
+                                                    options={{
+                                                        style: {
+                                                            base: {
+                                                                fontSize: '16px',
+                                                                color: '#424770',
+                                                                '::placeholder': {
+                                                                    color: '#aab7c4',
+                                                                },
+                                                            },
+                                                            invalid: {
+                                                                color: '#9e2146',
+                                                            },
+                                                        },
+                                                    }}
                                                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                                 />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="block text-sm text-gray-700">CVV</label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="123"
+                                                <CardCvcElement
+                                                    options={{
+                                                        style: {
+                                                            base: {
+                                                                fontSize: '16px',
+                                                                color: '#424770',
+                                                                '::placeholder': {
+                                                                    color: '#aab7c4',
+                                                                },
+                                                            },
+                                                            invalid: {
+                                                                color: '#9e2146',
+                                                            },
+                                                        },
+                                                    }}
                                                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                                 />
                                             </div>
@@ -113,7 +185,6 @@ export default function PaymentForm() {
 
                             <div className="rounded-[8px] border-none bg-orange-400">
                                 <div className="bg-orange-50 ml-1 border-none rounded-[8px] p-4">
-
                                     <div className="flex items-center gap-2">
                                         <div className="h-2 w-2 rounded-full bg-orange-400"></div>
                                         <h3 className="text-sm font-medium text-gray-900">Payment Policy</h3>
@@ -122,47 +193,11 @@ export default function PaymentForm() {
                                         If the project is not marked as completed one month after the specified end date,
                                         payment will be processed automatically
                                     </p>
-
                                 </div>
-
                             </div>
 
 
-                            {/* <div className="space-y-4">
-                                <div className="flex items-center gap-3 border py-4 px-3">
-                                    <input
-                                        type="radio"
-                                        id="paypal"
-                                        name="payment"
-                                        value="paypal"
-                                        checked={paymentMethod === 'paypal'}
-                                        onChange={() => setPaymentMethod('paypal')}
-                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <label htmlFor="paypal" className="flex items-center gap-2 text-sm text-gray-700">
-                                        PayPal
-                                        <Image src={paypal} alt="PayPal" width={80} height={20} />
-                                    </label>
-                                </div>
-
-                                <div className="flex items-center gap-3 border py-4 px-3">
-                                    <input
-                                        type="radio"
-                                        id="venmo"
-                                        name="payment"
-                                        value="venmo"
-                                        checked={paymentMethod === 'venmo'}
-                                        onChange={() => setPaymentMethod('venmo')}
-                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                                    />
-                                    <label htmlFor="venmo" className="flex items-center gap-2 text-sm text-gray-700">
-                                        Venmo
-                                        <Image src={venmo} alt="Venmo" width={80} height={20} />
-                                    </label>
-                                </div>
-                            </div> */}
-
-                        </div>
+                        </form>
                     </div>
 
                     {/* Right Column - Order Summary */}
@@ -179,9 +214,9 @@ export default function PaymentForm() {
                             </div>
                             <div>
                                 <h3 className="font-medium text-gray-900">
-                                    I will setup and manage your startup business...
+                                    {getSingleOffer?.data?.projectName}
                                 </h3>
-                                <p className="text-sm text-gray-600">Business startup consultant</p>
+                                <p className="text-sm text-gray-600">{getSingleOffer?.data?.description}</p>
                             </div>
                         </div>
 
@@ -220,7 +255,7 @@ export default function PaymentForm() {
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Order No</span>
-                                    <span className="text-gray-900">#09876545</span>
+                                    <span className="text-gray-900">{getSingleOffer?.data?._id}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Service fee</span>
@@ -234,14 +269,14 @@ export default function PaymentForm() {
 
                                 <div className="flex justify-between ">
                                     <span className="font-medium text-gray-900">Total Amount</span>
-                                    <span className="font-medium text-gray-900">£ 240.00</span>
+                                    <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.totalPrice}</span>
                                 </div>
                             </div>
 
 
-                            <Link href={'/payment-details'} className="w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium text-white rounded-[8px] hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 items-center gap-2">
-                                Confirm & Pay <FaArrowRightLong/>
-                            </Link>
+                            <button onClick={() => document.getElementById('paymentForm')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))} className="w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium text-white rounded-[8px] hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 items-center gap-2">
+                                Confirm & Pay <FaArrowRightLong />
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -249,4 +284,6 @@ export default function PaymentForm() {
         </div>
     )
 }
+
+export default PaymentForm
 
