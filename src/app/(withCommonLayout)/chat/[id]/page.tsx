@@ -21,7 +21,7 @@ import { useGetConversationQuery, useGetuserQuery } from '@/redux/api/messageApi
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { useParams } from "next/navigation";
 import demoimg from '@/assets/images/demoimg.png';
-import { useGetProfileByIdQuery } from "@/redux/api/userApi";
+import { useGetProfileByIdQuery, useGetProfileQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 // import { useRouter } from "next/router";
 import avatar1 from "@/assets/images/msgavatar1.png";
@@ -31,6 +31,7 @@ import { useGetMessageQuery } from "@/redux/api/messageApi";
 import useDecodedToken from "@/components/common/DecodeToken";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 interface DecodedToken extends JwtPayload {
@@ -46,6 +47,7 @@ const Page: React.FC = () => {
   const { data: getSingleUser } = useGetuserQuery(userId?.id);
 
   // console.log(`my user is`, getSingleUser);
+  const router = useRouter()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
@@ -122,15 +124,28 @@ const Page: React.FC = () => {
   const handleOpenModal = () => {
     setIsModalOpen((e) => !e);
   };
+
+  const { data: profileData } = useGetProfileQuery(token?.id);
+
+  // console.log(profileData?.data?.retireProfessional?.stripe.onboardingUrl);
+
   const handleProjectModal = () => {
-    if (isButtonDisabled) return;
-    setIsButtonDisabled(true);
 
-    setProjectModal((prevState) => !prevState);
+    if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === false) {
+      toast.error("As a retired professional you must have to verify your bank account.")
+      router.push(profileData?.data?.retireProfessional?.stripe.onboardingUrl)
+    } else {
+      if (isButtonDisabled) return;
+      setIsButtonDisabled(true);
 
-    setTimeout(() => {
-      setIsButtonDisabled(false);
-    }, 200);
+      setProjectModal((prevState) => !prevState);
+
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 200);
+    }
+
+
   };
 
   const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
