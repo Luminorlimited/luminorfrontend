@@ -17,7 +17,7 @@ const Hero = () => {
       }}
       className="min-h-[500px] py-[40px] md:py-[72px] lg:py-[96px]">
       <div className="container h-full flex flex-col justify-center">
-        <div className="space-y-5 mb-20">
+        <div className={`space-y-5 mb-20 ${decodedToken?"pt-14": ""}`}>
           <h1 className="text-center text-primary text-3xl md:text-5xl lg:text-7xl italic font-semibold leading-[100%]">
             Wisdom at Work
           </h1>

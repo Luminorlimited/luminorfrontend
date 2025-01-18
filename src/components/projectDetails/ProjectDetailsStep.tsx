@@ -35,7 +35,10 @@ export default function ProjectDetails() {
         { id: 3, title: "Payment Information" },
     ]);
 
-    const [currentStepId, setCurrentStepId] = useState(1); // Track the current step by ID
+    const [currentStepId, setCurrentStepId] = useState(1);
+
+
+
 
     // Handler for navigation
     const goToNextStep = () => {
@@ -133,7 +136,7 @@ export default function ProjectDetails() {
                 )}
                 {currentStepId === 2 && (
                     <div className="space-y-4 ">
-                        <RequirementsStep />
+                        <RequirementsStep goToPreviousStep={goToPreviousStep} goToNextStep={goToNextStep} />
                     </div>
                 )}
                 {currentStepId === 3 && (
@@ -141,17 +144,19 @@ export default function ProjectDetails() {
                         <PaymentInfoStep getSingleOffer={getSingleOffer} />
                     </div>
                 )}
-                {/* Navigation */}
+
+
+
                 {
-                    currentStepId !== 3 && (
+                    currentStepId === 1 ? (
                         <div className="flex justify-end gap-4 mt-8">
-                            <button
+                            {/* <button
                                 className="px-4 py-2 bg-[#E9E9EA] text-black rounded-[10px] hover:bg-[#eeeeee] transition-colors"
                                 onClick={goToPreviousStep}
                                 disabled={currentStepId === 1}
                             >
                                 Back
-                            </button>
+                            </button> */}
                             <Button
                                 className="px-4 py-2 bg-primary text-white rounded-[10px] hover:bg-[#6D28D9] transition-colors"
                                 onClick={goToNextStep}
@@ -160,7 +165,7 @@ export default function ProjectDetails() {
                                 Next
                             </Button>
                         </div>
-                    )
+                    ) : currentStepId === 2 ? ("") : ("")
                 }
 
             </div>

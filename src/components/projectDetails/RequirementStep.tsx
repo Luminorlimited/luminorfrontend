@@ -1,48 +1,67 @@
 "use client"
 
 import { AiOutlinePaperClip } from "react-icons/ai";
-import React from 'react'
+import React, { FC } from 'react'
 import { Plus } from 'lucide-react'
+import Button from "../common/Button";
+import { useFieldArray, useForm } from "react-hook-form";
+import Image from "next/image";
 
 interface FileUpload {
     id: number
     caption: string
     file?: File
+    preview?: string
 }
 
-export default function RequirementsStep() {
-    const [fileUploads, setFileUploads] = React.useState<FileUpload[]>([
-        { id: 1, caption: '' }
-    ])
-    const [message, setMessage] = React.useState('')
+interface FormData {
+    fileUploads: FileUpload[]
+    message: string
+}
+
+interface stepsProps {
+    goToPreviousStep: () => void,
+    goToNextStep: () => void,
+}
+
+const RequirementsStep: FC<stepsProps> = ({ goToPreviousStep, goToNextStep }) => {
+    const { register, control, handleSubmit, watch, setValue } = useForm<FormData>({
+        defaultValues: {
+            fileUploads: [{ id: 1, caption: '' }],
+            message: ''
+        }
+    });
+
+    const { fields, append } = useFieldArray({
+        control,
+        name: "fileUploads"
+    });
+
+    const watchFileUploads = watch("fileUploads");
 
     const addMoreFiles = () => {
-        setFileUploads([
-            ...fileUploads,
-            { id: fileUploads.length + 1, caption: '' }
-        ])
+        append({ id: fields.length + 1, caption: '' });
     }
 
-    const handleCaptionChange = (id: number, caption: string) => {
-        setFileUploads(fileUploads.map(upload =>
-            upload.id === id ? { ...upload, caption } : upload
-        ))
+    const onSubmit = (data: FormData) => {
+        console.log('Submitted:', data);
+        goToNextStep()
+        // Here you can handle the form submission
     }
 
-    const handleFileChange = (id: number, file: File) => {
-        setFileUploads(fileUploads.map(upload =>
-            upload.id === id ? { ...upload, file } : upload
-        ))
-    }
+    const handleFileChange = (index: number, file: File) => {
+        setValue(`fileUploads.${index}.file`, file);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        console.log('Submitted:', { fileUploads, message })
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setValue(`fileUploads.${index}.preview`, reader.result as string);
+        }
+        reader.readAsDataURL(file);
     }
 
     return (
-        <div className=" mx-auto lg:p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="mx-auto lg:p-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Add further Requirements</h2>
                     <p className="text-sm text-gray-600 mb-4">
@@ -50,15 +69,21 @@ export default function RequirementsStep() {
                     </p>
 
                     <div className="space-y-4">
-                        {fileUploads.map((upload) => (
-                            <div key={upload.id} className="space-y-2">
+                        {fields.map((field, index) => (
+                            <div key={field.id} className="space-y-2">
                                 <input
                                     type="text"
                                     placeholder="Write caption"
-                                    value={upload.caption}
-                                    onChange={(e) => handleCaptionChange(upload.id, e.target.value)}
-                                    className="w-full px-4 py-2  border border-gray-300 focus:border-primary rounded-[8px] outline-none"
+                                    {...register(`fileUploads.${index}.caption`)}
+                                    className="w-full px-4 py-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                                 />
+                                {watchFileUploads[index].preview && (
+                                    <Image
+                                        src={watchFileUploads[index].preview || "/placeholder.svg"}
+                                        alt={`Preview ${index + 1}`}
+                                        className="mt-2 max-w-full h-auto max-h-40 object-contain"
+                                    />
+                                )}
                             </div>
                         ))}
                     </div>
@@ -75,7 +100,7 @@ export default function RequirementsStep() {
                                 onChange={(e) => {
                                     const file = e.target.files?.[0]
                                     if (file) {
-                                        handleFileChange(fileUploads[fileUploads.length - 1].id, file)
+                                        handleFileChange(fields.length - 1, file)
                                     }
                                 }}
                             />
@@ -83,10 +108,9 @@ export default function RequirementsStep() {
                         <button
                             type="button"
                             onClick={addMoreFiles}
-                            className="inline-flex gap-2 rounded-[20px] items-center px-3 py-1.5 bg-[#E9E9EA] text-[#030304]  hover:bg-gray-200 transition-colors text-sm"
+                            className="inline-flex gap-2 rounded-[20px] items-center px-3 py-1.5 bg-[#E9E9EA] text-[#030304] hover:bg-gray-200 transition-colors text-sm"
                         >
                             Add more
-                            {/* <Plus className="w-7 h-w-7 ml-1 bg-white rounded-full p-2" /> */}
                             <Plus
                                 className="text-[15px] bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-7 h-7 p-1"
                             />
@@ -99,16 +123,31 @@ export default function RequirementsStep() {
                         Additional Message...
                     </label>
                     <textarea
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        {...register("message")}
                         placeholder="Write your Message"
-                        className="w-full px-4 py-2   text-sm  border border-gray-300 focus:border-primary rounded-[8px] outline-none"
+                        className="w-full px-4 py-2 text-sm border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                     />
                 </div>
 
-
+                <div className="flex justify-end gap-4 mt-8">
+                    <button
+                        type="button"
+                        className="px-4 py-2 bg-[#E9E9EA] text-black rounded-[10px] hover:bg-[#eeeeee] transition-colors"
+                        onClick={goToPreviousStep}
+                    >
+                        Back
+                    </button>
+                    <Button
+                        type="submit"
+                        className="px-4 py-2 bg-primary text-white rounded-[10px] hover:bg-[#6D28D9] transition-colors"
+                    >
+                        Next
+                    </Button>
+                </div>
             </form>
         </div>
     )
 }
+
+export default RequirementsStep
 

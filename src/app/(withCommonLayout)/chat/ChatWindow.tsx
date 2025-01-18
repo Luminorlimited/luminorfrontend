@@ -9,6 +9,7 @@ import avatar2 from "@/assets/images/msgavatar2.png";
 import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/api/userApi";
 import useDecodedToken from "@/components/common/DecodeToken";
+import Link from "next/link";
 // import demoimg from '@/assets/images/demoimg.png';
 
 
@@ -18,6 +19,7 @@ import useDecodedToken from "@/components/common/DecodeToken";
 export interface Message {
   id: number;
   message: string;
+  meetingLink: string;
   sender: "sender" | "recipient"; // Determines if the message is sent or received
   createdAt: string; // ISO timestamp
 }
@@ -35,7 +37,7 @@ interface CommunicationProps {
 }
 
 interface MessageBubbleProps {
-  messages: Message;
+  message: Message;
   currentUser: string;
   profileUrl: string;
   colorScheme: {
@@ -44,9 +46,8 @@ interface MessageBubbleProps {
   };
 }
 
-const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorScheme, profileUrl }) => {
-  const isSender = messages.sender === currentUser;
-
+const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorScheme, profileUrl }) => {
+  const isSender = message?.sender === currentUser;
 
   const token = useDecodedToken()
   const { data: profileData } = useGetProfileQuery(token?.id);
@@ -71,16 +72,21 @@ const MessageBubble: FC<MessageBubbleProps> = ({ messages, currentUser, colorSch
             className={`p-3 ${isSender ? "rounded-l-[10px] rounded-b-[10px]" : "rounded-r-[10px] rounded-b-[10px]"
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg}`}
           >
-            {messages.message}
+            {/* {message?.message} */}
+            {message?.meetingLink
+              ? <Link href={message.meetingLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 cursor-pointer hover:underline">
+                {message.meetingLink}
+              </Link>
+              : message?.message}
           </div>
 
-          <div
-            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"
-              }`}
-          >
-            {new Date(messages.createdAt).toLocaleTimeString()}
+
+
+          <div className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"}`}>
+            {message?.createdAt ? new Date(message.createdAt).toLocaleTimeString() : "N/A"} {/* Add fallback */}
             {isSender && <CheckCheck />}
           </div>
+
         </div>
       </div>
     </div>
@@ -117,8 +123,8 @@ const Communication: FC<CommunicationProps> = ({
           {/* Render each message */}
           {messages.map((message, index: number) => (
             <MessageBubble
-              key={message.id || index}
-              messages={message}
+              key={index}
+              message={message}
               profileUrl={profileUrl}
               currentUser={currentUser}
               colorScheme={colorScheme}

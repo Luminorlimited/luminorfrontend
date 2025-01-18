@@ -7,7 +7,6 @@ import React, { ReactNode } from "react";
 
 const CommonLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
-  console.log(pathname);
   // if(pathname.startsWith('/usertype')){
   //   return
   // }

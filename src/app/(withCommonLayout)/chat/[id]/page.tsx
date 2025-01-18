@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -8,7 +7,6 @@ import { AiOutlinePaperClip } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
 import { FaRegSmile } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
-// import { Conversation, conversations } from "@/lib/fakeData/allMessage";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
@@ -16,14 +14,13 @@ import { MdOutlineKeyboardVoice } from "react-icons/md";
 import EmojiPicker from 'emoji-picker-react';
 
 import { Video, FileText, Images } from 'lucide-react';
-import io, { Socket } from "socket.io-client";
+import io from "socket.io-client";
 import { useGetConversationQuery, useGetuserQuery } from '@/redux/api/messageApi';
-import jwt, { JwtPayload } from "jsonwebtoken";
+// import  { JwtPayload } from "jsonwebtoken";
 import { useParams } from "next/navigation";
 import demoimg from '@/assets/images/demoimg.png';
-import { useGetProfileByIdQuery, useGetProfileQuery } from "@/redux/api/userApi";
+import { useGetProfileQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
-// import { useRouter } from "next/router";
 import avatar1 from "@/assets/images/msgavatar1.png";
 
 import { useGetMessageQuery } from "@/redux/api/messageApi";
@@ -34,19 +31,15 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 
-interface DecodedToken extends JwtPayload {
-  id: string;
-}
 
 const Page: React.FC = () => {
 
 
-  const userId = useParams()
+  // const userId = useParams()
 
 
-  const { data: getSingleUser } = useGetuserQuery(userId?.id);
+  // const { data: getSingleUser } = useGetuserQuery(userId?.id);
 
-  // console.log(`my user is`, getSingleUser);
   const router = useRouter()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,14 +54,12 @@ const Page: React.FC = () => {
   const user1 = token?.email
   const [user2, setUser2] = useState("");
   const [name, setName] = useState("");
-  const [user2Id, setUser2Id] = useState("")
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
   const { data: getConversation } = useGetConversationQuery(undefined);
   const [media, setMedia] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
-  const userid = Array.isArray(userId) ? userId[0] : userId;
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
 
 
@@ -185,60 +176,45 @@ const Page: React.FC = () => {
       };
       console.log('my media is', media);
       socket.emit("privateMessage", JSON.stringify(message));
+
       setMessages("");
       setSelectedFiles([])
+
+      const filteredUsers = users.filter(user => {
+        return user.email !== message.toEmail
+      })
+      const filteredUser = users.filter(user => user.email === message.toEmail)
+      setUsers([filteredUser[0], ...filteredUsers])
+
+
     }
   };
 
 
-  const handleFileUpload = (file: File) => {
-    const reader = new FileReader();
+  // const handleFileUpload = (file: File) => {
+  //   const reader = new FileReader();
 
-    // Read the file as a Base64 encoded string
-    reader.readAsDataURL(file);
+  //   // Read the file as a Base64 encoded string
+  //   reader.readAsDataURL(file);
 
-    // When the file is fully read
-    reader.onload = () => {
-      const base64String = reader.result; // Contains the Base64 encoded string
+  //   // When the file is fully read
+  //   reader.onload = () => {
+  //     const base64String = reader.result; // Contains the Base64 encoded string
 
-      // Check if the socket exists and the file data is valid
-      if (socket && base64String) {
-        socket.emit('fileUpload', {
-          file: base64String,
-          filename: file.name
-        });
-      }
-    };
+  //     // Check if the socket exists and the file data is valid
+  //     if (socket && base64String) {
+  //       socket.emit('fileUpload', {
+  //         file: base64String,
+  //         filename: file.name
+  //       });
+  //     }
+  //   };
 
-    // Handle file reading errors, if any
-    reader.onerror = () => {
-      console.error("File reading failed:", reader.error);
-    };
-  };
-
-  const handleAddUser = () => {
-    // Check if the user already exists in the users array
-    const isUserExists = users.some((user) => user.id === userid);
-    if (!isUserExists && getSingleUser) {
-      try {
-        // Extract data safely
-        const newUser = {
-          id: userid,
-          firstName: getSingleUser?.data?.client?.name?.firstName || getSingleUser?.data?.retireProfessional?.name?.firstName || "New User",
-
-          lastName: getSingleUser?.data?.client?.name?.lastName || getSingleUser?.data?.retireProfessional?.name?.lastName || "New User",
-          email: getSingleUser?.data?.client?.email || getSingleUser?.data?.retireProfessional?.email || `newuser_${userId}@example.com`,
-          profileUrl: getSingleUser?.data?.profileUrl || avatar1,
-        };
-
-        // Add the new user to the state
-        setUsers((prevUsers) => [...prevUsers, newUser]);
-        console.log(`my new user`, newUser);
-      } catch (err) {
-        console.error("Failed to fetch user data:", err);
-      }
-    }
-  };
+  //   // Handle file reading errors, if any
+  //   reader.onerror = () => {
+  //     console.error("File reading failed:", reader.error);
+  //   };
+  // };
 
   const handleCreateZoomMeeting = () => {
     if (socket) {
@@ -309,31 +285,43 @@ const Page: React.FC = () => {
           ...prevInbox,
           message
         ]);
+        const filteredUsers = users.filter(user => {
+          return user.email !== message.sender
+        })
+        const filteredUser = users.filter(user => user.email === message.sender)
+        setUsers([filteredUser[0], ...filteredUsers])
       }
       // getConversation({})
     });
 
+    // console.log("//////////////////////////////////my conversation", users);
+
+
     mysocket.on("createZoomMeeting", (data) => {
       console.log("Zoom meeting data received from socket:", data);
-      const { start_url, join_url } = data;
+      const { savedMessage } = data;
+      // console.log(JSON.parse(data));
 
-      if (start_url && join_url) {
-        // Open the meeting URL for the host
-        window.open(start_url, "_blank");
+      console.log('my meeting link is', data)
+      console.log("My start url is", savedMessage);
+      // console.log('my data is', data.start_url);
+      const { meetingLink } = savedMessage
 
-        // Update inbox or state
-        setInbox((prevInbox) => [...prevInbox, join_url]);
+      if (savedMessage && savedMessage.meetingLink) {
+        window.open(meetingLink, "_blank");
+        console.log(savedMessage);
+
+        setInbox((prevInbox) => [...prevInbox, savedMessage]);
       } else {
         toast.error("Invalid Zoom meeting data received.");
-        console.log("invalid data", data)
-        console.log("Join url", join_url)
+        // console.log("invalid data", data.start_url)
       }
     });
 
 
     // Handle Zoom meeting errors
-    mysocket.on("zoomMeetingError", (errorMessage) => {
-      console.error("Zoom meeting error:", errorMessage);
+    mysocket.on("zoomMeetingError", (err) => {
+      console.error("Zoom meeting error:", err);
       toast.error("Failed to create Zoom meeting. Please try again.");
     });
     return () => {
@@ -342,8 +330,7 @@ const Page: React.FC = () => {
       mysocket.off("privateMessage");
       mysocket.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token?.email]);
+  }, [token?.email, users]);
 
 
 
@@ -354,17 +341,11 @@ const Page: React.FC = () => {
     setUsers((prevUsers) => {
       // Ensure users is always synced with getConversation
       if (getConversation?.data) {
-        return [...getConversation?.data, ...prevUsers.filter((user) => !getConversation?.data.some((convUser: any) => convUser.id === user.id))];
+        return [...getConversation?.data];
       }
       return prevUsers;
     });
-
-    if (userId) {
-      handleAddUser(); // Attempt to add the user if they don't already exist
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, getSingleUser, getConversation?.data]);
+  }, [getConversation?.data]);
 
 
 
@@ -379,7 +360,7 @@ const Page: React.FC = () => {
           <Link href={'/chat'} className='font-semibold'>Chat</Link>
         </div>
       </div>
-      <div className="flex max-w-[1320px] overflow-hidden h-[820px]  my-4 mx-auto shadow-sm border rounded-[15px]">
+      <div className="flex max-w-[1320px] overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
         <div className="w-1/3 border-r border-gray-300 bg-white overflow-y-scroll ">
           <div className="p-4">
             <div className="flex items-center border  rounded-[12px] px-3 py-4">
