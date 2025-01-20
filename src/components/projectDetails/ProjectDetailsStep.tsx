@@ -37,6 +37,8 @@ export default function ProjectDetails() {
 
     const [currentStepId, setCurrentStepId] = useState(1);
 
+    // const 
+
 
 
 
@@ -54,6 +56,10 @@ export default function ProjectDetails() {
             setCurrentStepId(currentStepId - 1);
         }
     };
+
+
+
+    const [requirementdata, setRequirementdata] = useState()
 
     return (
         <div className="max-w-[1300px] mx-auto py-6">
@@ -119,6 +125,7 @@ export default function ProjectDetails() {
             {/* Content */}
             <div className="border lg:p-[32px] p-[10px] rounded-[20px]">
 
+                {/* <form> */}
                 {currentStepId === 1 && (
                     <div className="space-y-4 ">
                         <h2 className="text-xl font-semibold">Review Requirements</h2>
@@ -136,14 +143,15 @@ export default function ProjectDetails() {
                 )}
                 {currentStepId === 2 && (
                     <div className="space-y-4 ">
-                        <RequirementsStep goToPreviousStep={goToPreviousStep} goToNextStep={goToNextStep} />
+                        <RequirementsStep goToPreviousStep={goToPreviousStep} goToNextStep={goToNextStep} setRequirementdata={setRequirementdata} />
                     </div>
                 )}
                 {currentStepId === 3 && (
                     <div className="space-y-4">
-                        <PaymentInfoStep getSingleOffer={getSingleOffer} />
+                        <PaymentInfoStep getSingleOffer={getSingleOffer} requirementdata={requirementdata} />
                     </div>
                 )}
+                {/* </form> */}
 
 
 

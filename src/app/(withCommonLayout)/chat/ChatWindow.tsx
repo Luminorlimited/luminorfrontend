@@ -75,7 +75,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorSche
             {/* {message?.message} */}
             {message?.meetingLink
               ? <Link href={message.meetingLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 cursor-pointer hover:underline">
-                {message.meetingLink}
+                {message.meetingLink.substring(0, 25)}...
               </Link>
               : message?.message}
           </div>

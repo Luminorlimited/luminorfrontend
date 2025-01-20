@@ -405,7 +405,7 @@ export default function Client() {
                             <div>
                                 <div className="flex justify-between items-center mb-4">
                                     <label htmlFor="projectListing')}" className="block text-sm">Project Listing (Optional)</label>
-                                    <button className="text-[#6C38FF] border-[#6C38FF]">
+                                    <button className="text-black bg-[#FFC06B] hover:bg-[#df9739] hover:shadow-md rounded-[30px] px-[24px] py-[12px]">
                                         Add Project
                                     </button>
                                 </div>

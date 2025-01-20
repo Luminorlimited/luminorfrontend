@@ -10,13 +10,22 @@ import { FaArrowRightLong } from "react-icons/fa6";
 // import Link from 'next/link'
 import { PaymentInfoStepProps } from './PaymentInfoStep'
 import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { useParams } from 'next/navigation'
+import useDecodedToken from '../common/DecodeToken'
+import { useGetProfileQuery } from '@/redux/api/userApi'
 // import { useGetProfileByIdQuery } from '@/redux/api/userApi'
 // import useDecodedToken from '../common/DecodeToken'
 
 
-const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer }) => {
+const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requirementdata }) => {
     const [paymentMethod, setPaymentMethod] = useState('card')
     const [saveCard, setSaveCard] = useState(false);
+    const offerId = useParams()
+    // const token = useDecodedToken()
+    const { data: getprofile } = useGetProfileQuery(null)
+    console.log('my profile data is', getprofile);
+    console.log('my requirement is', requirementdata);
+
 
     const stripe = useStripe();
     const elements = useElements();
@@ -49,7 +58,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer }) => {
     // const token = useDecodedToken()
     // const { getProfile } = useGetProfileByIdQuery(token?.id) 
     // get
-    
+
     return (
         <div className="lg:p-6">
             <div className="mx-auto max-w-[1300px] rounded-xl bg-white md:p-6 p-1 shadow-sm">

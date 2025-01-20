@@ -80,6 +80,7 @@ export default function Professional() {
 
     //   const watchSelectedService = watch("selectedService");
     const { data: profileData } = useGetProfileQuery(userIdValue);
+    console.log('my profile is', profileData);
 
 
     console.log('my profile data is', profileData?.data);
@@ -218,7 +219,7 @@ export default function Professional() {
                                         id="fname"
                                         {...register("firstName")}
                                         placeholder="John"
-                                        defaultValue={profileData?.data.retireProfessional.name?.firstName}
+                                        defaultValue={profileData?.data?.retireProfessional?.name?.firstName}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                                         // onChange={(e) => setValue("firstName", e.target.value)}
                                         required
@@ -230,7 +231,7 @@ export default function Professional() {
                                         id="fname"
                                         {...register("lastName")}
                                         placeholder="Watson"
-                                        defaultValue={profileData?.data.retireProfessional.name?.lastName}
+                                        defaultValue={profileData?.data?.retireProfessional?.name?.lastName}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                                         // onChange={(e) => setValue("lastName", e.target.value)}
                                         required
@@ -243,11 +244,11 @@ export default function Professional() {
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="phn" className="block text-sm mb-2">Phone Number *</label>
-                                    <input required defaultValue={profileData?.data.phoneNumber} {...register("phone")} id="phn" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("phone", e.target.value)} placeholder="0987654 456" />
+                                    <input required defaultValue={profileData?.data?.phoneNumber} {...register("phone")} id="phn" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("phone", e.target.value)} placeholder="0987654 456" />
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block text-sm mb-2">Email *</label>
-                                    <input value={profileData?.data.retireProfessional.email} id="email" {...register('email')} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("email", e.target.value)} disabled />
+                                    <input value={profileData?.data?.retireProfessional?.email} id="email" {...register('email')} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("email", e.target.value)} disabled />
                                 </div>
                             </div>
 
@@ -258,7 +259,7 @@ export default function Professional() {
 
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="problemArea">Bio (Under 30 word)</label>
-                                <input id="problemArea" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" {...register("bio")} defaultValue={profileData?.data.bio} onChange={(e) => setValue("bio", e.target.value)} placeholder="I'm a healthcare and medical specialist" />
+                                <input id="problemArea" className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" {...register("bio")} defaultValue={profileData?.data?.bio} onChange={(e) => setValue("bio", e.target.value)} placeholder="I'm a healthcare and medical specialist" />
                             </div>
 
                             <div>
@@ -308,18 +309,18 @@ export default function Professional() {
                             </div>
 
                             <div>
-                                <select {...register('abailability')} id="countries" onChange={(e) => setValue("abailability", e.target.value)} className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2" value={profileData?.data.availability}>
+                                <select {...register('abailability')} id="countries" onChange={(e) => setValue("abailability", e.target.value)} className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2" value={profileData?.data?.availability || ""}>
                                     <option>Availability</option>
                                     <option value="US">United States</option>
                                 </select>
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="prefProject">Preferred Projects*</label>
-                                <input  {...register('preferedProjects')} id="prefProject" defaultValue={profileData?.data.preferedProjects} required onChange={(e) => setValue("preferedProjects", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
+                                <input  {...register('preferedProjects')} id="prefProject" defaultValue={profileData?.data?.preferedProjects} required onChange={(e) => setValue("preferedProjects", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="Write your Preferred Project" />
                             </div>
                             <div>
                                 <label className="block text-sm mb-2" htmlFor="hourlyRate">Hourly Rate (USD) *</label>
-                                <input {...register('hourlyRate')} id="hourlyRate" type="number" defaultValue={profileData?.data.hourlyRate} onChange={(e) => setValue("hourlyRate", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="$100" />
+                                <input {...register('hourlyRate')} id="hourlyRate" type="number" defaultValue={profileData?.data?.hourlyRate} onChange={(e) => setValue("hourlyRate", e.target.value)} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="$100" />
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -357,7 +358,7 @@ export default function Professional() {
                                     type="file"
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                     accept=".pdf,.docx,.doc,.rtf,.txt"
-                                    defaultValue={profileData?.data?.workSample || ''}
+                                    value={profileData?.data?.workSample || ''}
                                     {...register("workSample")} // Add validation rules
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];

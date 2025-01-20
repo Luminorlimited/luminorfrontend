@@ -17,18 +17,16 @@ import { Video, FileText, Images } from 'lucide-react';
 import io from "socket.io-client";
 import { useGetConversationQuery, useGetuserQuery } from '@/redux/api/messageApi';
 // import  { JwtPayload } from "jsonwebtoken";
-import { useParams } from "next/navigation";
 import demoimg from '@/assets/images/demoimg.png';
 import { useGetProfileQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
-import avatar1 from "@/assets/images/msgavatar1.png";
 
 import { useGetMessageQuery } from "@/redux/api/messageApi";
 
 import useDecodedToken from "@/components/common/DecodeToken";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 
 
@@ -57,10 +55,14 @@ const Page: React.FC = () => {
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
   const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
   const { data: getConversation } = useGetConversationQuery(undefined);
-  const [media, setMedia] = useState(null);
+  // const [media, setMedia] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
+  const id = useParams()
+  // console.log(id, "check id")
+  const { data: getToUser } = useGetuserQuery(id.id)
+  console.log(getToUser, "user2 info to message")
 
 
   const handleClick = () => {
@@ -121,16 +123,13 @@ const Page: React.FC = () => {
   // console.log(profileData?.data?.retireProfessional?.stripe.onboardingUrl);
 
   const handleProjectModal = () => {
-
-    if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === false) {
+    if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === true) {
       toast.error("As a retired professional you must have to verify your bank account.")
       router.push(profileData?.data?.retireProfessional?.stripe.onboardingUrl)
     } else {
       if (isButtonDisabled) return;
       setIsButtonDisabled(true);
-
       setProjectModal((prevState) => !prevState);
-
       setTimeout(() => {
         setIsButtonDisabled(false);
       }, 200);
@@ -140,14 +139,14 @@ const Page: React.FC = () => {
   };
 
   const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
-    const { id, email, firstName, lastName, profileUrl } = user;
+    const { email, firstName, lastName, profileUrl } = user;
 
     setUser2(email)
     setName(`${firstName} ${lastName}`);
     setProfileUrl(profileUrl || demoimg.src);
     // setUser2Id(id)
 
-    console.log("Selected User ID:", id);
+    // console.log("Selected User ID:", id);
     console.log("Selected email:", user2);
     // Filter messages where the clicked email matches sender or recipient
     const filteredMessages = oldMessages?.data.messages.filter(
@@ -166,6 +165,8 @@ const Page: React.FC = () => {
   };
 
   const onSendMessage = (e: any) => {
+
+
     e.preventDefault();
     if (messages.trim()) {
       const message = {
@@ -174,22 +175,23 @@ const Page: React.FC = () => {
         fromEmail: token?.email,
         media: selectedFiles
       };
-      console.log('my media is', media);
+      // console.log('my media is', media);
       socket.emit("privateMessage", JSON.stringify(message));
 
       setMessages("");
       setSelectedFiles([])
+      // console.log(message, "check message")
 
+      // console.log(message.toEmail, "from emit")
+      // console.log(users, "check users")
       const filteredUsers = users.filter(user => {
+        console.log('my email is', message.toEmail);
         return user.email !== message.toEmail
       })
       const filteredUser = users.filter(user => user.email === message.toEmail)
       setUsers([filteredUser[0], ...filteredUsers])
-
-
     }
   };
-
 
   // const handleFileUpload = (file: File) => {
   //   const reader = new FileReader();
@@ -309,7 +311,6 @@ const Page: React.FC = () => {
 
       if (savedMessage && savedMessage.meetingLink) {
         window.open(meetingLink, "_blank");
-        console.log(savedMessage);
 
         setInbox((prevInbox) => [...prevInbox, savedMessage]);
       } else {
@@ -347,7 +348,15 @@ const Page: React.FC = () => {
     });
   }, [getConversation?.data]);
 
+  useEffect(() => {
+    console.log(getToUser?.data?.retireProfessional?.email, "chcekc emailo")
+    setUser2(getToUser?.data?.retireProfessional?.email)
 
+  }, [getToUser])
+
+
+
+  console.log("my all conversation", users)
 
 
 
@@ -517,7 +526,3 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-
-function setIsTyping(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

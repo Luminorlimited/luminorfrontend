@@ -57,8 +57,8 @@ const Navbar = () => {
   };
 
   // State for dropdown menu visibility
-  const [fileBtn, showFileBtn] = useState(false);
-  const [isOpen, setIsOpen] = useState(false)
+  const [fileBtn, showFileBtn] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const notificationRef = useRef<HTMLDivElement>(null)
   const [notifications, setNotifications] = useState<Notification[]>([]);

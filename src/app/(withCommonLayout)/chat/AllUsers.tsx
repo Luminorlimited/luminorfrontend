@@ -83,7 +83,10 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                       height={48}
                       className="w-12 h-12 rounded-full mr-4"
                     />
-                    <span className="flex absolute right-3 bottom-1 border-white border-4 w-4 h-4 bg-[#111827] rounded-full"></span>
+                    {
+                      user?.isOnline === true ? <span className="flex absolute right-3 bottom-1 border-white border-4 w-4 h-4 bg-[#111827] rounded-full"></span>:""
+                    }
+                    
                   </div>
 
                   <div className="flex-1">

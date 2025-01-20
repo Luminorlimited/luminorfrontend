@@ -55,7 +55,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
             {...register("industry")}
             className="h-12 rounded-xl border cursor-pointer w-full px-3 pr-3"
           >
-            <option value="" disabled selected>
+            <option disabled selected>
               Select Previous Position
             </option>
             {/* <option value="tech">Tech</option> */}
