@@ -26,6 +26,16 @@ const paymentApi = baseApi.injectEndpoints({
             },
             providesTags: ['Payment']
         }),
+        OrderList: build.query({
+            query: () => {
+                // console.log(userId)
+                return {
+                    url: `/order/client-order`,
+                    method: 'GET',
+                }
+            },
+            providesTags: ['Payment']
+        }),
 
 
     })
