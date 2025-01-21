@@ -2,87 +2,54 @@
 
 import { useState } from 'react'
 import { ArrowUpDown, Download, Search } from 'lucide-react'
+import { useTransactionListQuery } from '@/redux/api/paymentApi'
+import { toast } from 'sonner'
+// import Link from 'next/link'
 
-interface Transaction {
-    id: string
-    date: string
-    transactionNumber: string
-    serviceName: string
-    orderNumber: string
-    totalAmount: number
-}
 
-const transactions: Transaction[] = [
-    {
-        id: '1',
-        date: '23/30/2024',
-        transactionNumber: 'FR12445667',
-        serviceName: 'Startup Consultant',
-        orderNumber: 'FO78638376389373',
-        totalAmount: 240,
-    },
-    {
-        id: '2',
-        date: '23/30/2024',
-        transactionNumber: 'FR12445667',
-        serviceName: 'Startup Consultant',
-        orderNumber: 'FO78638376389373',
-        totalAmount: 240,
-    },
-    {
-        id: '3',
-        date: '23/30/2024',
-        transactionNumber: 'FR12445667',
-        serviceName: 'Startup Consultant',
-        orderNumber: 'FO78638376389373',
-        totalAmount: 240,
-    },
-    {
-        id: '4',
-        date: '23/30/2024',
-        transactionNumber: 'FR12445667',
-        serviceName: 'Startup Consultant',
-        orderNumber: 'FO78638376389373',
-        totalAmount: 240,
-    },
-]
 
 export default function TransactionTable() {
-    const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
-    const [searchQuery, setSearchQuery] = useState('')
+    // const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
+    // const [searchQuery, setSearchQuery] = useState('')
     const [sortBy, setSort] = useState<string | null>(null)
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
-    const toggleSelectAll = () => {
-        if (selectedRows.size === transactions.length) {
-            setSelectedRows(new Set())
-        } else {
-            setSelectedRows(new Set(transactions.map(t => t.id)))
-        }
-    }
+    // const toggleSelectAll = () => {
+    //     if (selectedRows.size === transactions.length) {
+    //         setSelectedRows(new Set())
+    //     } else {
+    //         setSelectedRows(new Set(transactions.map(t => t.id)))
+    //     }
+    // }
 
-    const toggleRowSelection = (id: string) => {
-        const newSelected = new Set(selectedRows)
-        if (newSelected.has(id)) {
-            newSelected.delete(id)
-        } else {
-            newSelected.add(id)
-        }
-        setSelectedRows(newSelected)
-    }
+    // const toggleRowSelection = (id: string) => {
+    //     const newSelected = new Set(selectedRows)
+    //     if (newSelected.has(id)) {
+    //         newSelected.delete(id)
+    //     } else {
+    //         newSelected.add(id)
+    //     }
+    //     setSelectedRows(newSelected)
+    // }
 
-    const filteredTransactions = transactions
-        .filter(transaction =>
-            transaction.orderNumber.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        .sort((a, b) => {
-            if (!sortBy) return 0
-            const aValue = a[sortBy as keyof Transaction]
-            const bValue = b[sortBy as keyof Transaction]
-            return sortDirection === 'asc'
-                ? String(aValue).localeCompare(String(bValue))
-                : String(bValue).localeCompare(String(aValue))
-        })
+    // const filteredTransactions = transactions.filter(transaction =>
+    //         transaction.orderNumber.toLowerCase().includes(searchQuery.toLowerCase())
+    //     )
+    //     .sort((a, b) => {
+    //         if (!sortBy) return 0
+    //         const aValue = a[sortBy as keyof Transaction]
+    //         const bValue = b[sortBy as keyof Transaction]
+    //         return sortDirection === 'asc'
+    //             ? String(aValue).localeCompare(String(bValue))
+    //             : String(bValue).localeCompare(String(aValue))
+    //     })
+    const { data: transactionList } = useTransactionListQuery(undefined)
+
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredTransactions = transactionList?.data.filter((transaction: any) =>
+        transaction.transaction.orderId.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const handleSort = (column: string) => {
         if (sortBy === column) {
@@ -92,6 +59,30 @@ export default function TransactionTable() {
             setSortDirection('asc')
         }
     }
+
+    // const offerId = useParams().id
+
+
+    console.log('My transaction list', transactionList);
+
+
+    console.log('my order', transactionList?.data[3]?.project?.orderAgreementPDF);
+    const handleDownloadPdf = () => {
+        const pdfUrl = transactionList?.data?.project?.orderAgreementPDF; // Fetch the PDF URL
+        if (pdfUrl) {
+            const encodedUrl = encodeURI(pdfUrl); // Encode URL to handle special characters
+            console.log(encodedUrl); // Log the URL to check if it's correct
+            window.open(encodedUrl, '_blank');
+        } else {
+            toast.error("PDF file not available");
+        }
+    };
+
+
+
+    // const downloadPdf = () => {
+    //     // transactionList?.data?.project?.orderAgreementPDF
+    // }
 
     return (
         <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -118,14 +109,7 @@ export default function TransactionTable() {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-[#F2FAFF]">
                         <tr>
-                            <th scope="col" className="px-6 py-3 text-left">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedRows.size === transactions.length}
-                                    onChange={toggleSelectAll}
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                />
-                            </th>
+
                             {['Date', 'Transaction Number', 'Service Name', 'Order Number', 'Total Amount', 'PDF'].map((header) => (
                                 <th
                                     key={header}
@@ -142,38 +126,51 @@ export default function TransactionTable() {
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredTransactions.map((transaction) => (
-                            <tr key={transaction.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedRows.has(transaction.id)}
-                                        onChange={() => toggleRowSelection(transaction.id)}
-                                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                    />
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                    {transaction.date}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                    {transaction.transactionNumber}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                    {transaction.serviceName}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                    {transaction.orderNumber}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                    ${transaction.totalAmount}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                    <button className="hover:bg-gray-100 p-1 rounded-full">
-                                        <Download className="h-4 w-4" />
-                                    </button>
+                        {filteredTransactions?.length > 0 ? (
+                            filteredTransactions?.map((transaction: any, index: number) => (
+                                <tr key={index} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {transaction?.project?.createdAt
+                                            ? new Date(transaction?.project?.createdAt).toLocaleDateString()
+                                            : "No Date"}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {transaction.transaction._id}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {transaction?.project?.projectName || "No Service Name"}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        {transaction.transaction.orderId}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        ${transaction.transaction.amount}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        <button
+                                            onClick={handleDownloadPdf}
+                                            className="hover:bg-gray-100 p-1 rounded-full"
+                                        >
+                                            {transaction?.project?.orderAgreementPDF ? (
+                                                <a href={transaction?.project?.orderAgreementPDF} download>
+                                                    <Download className="h-4 w-4" />
+                                                </a>
+                                            ) : (
+                                                <span className="text-gray-400">
+                                                    <Download className="h-4 w-4" />
+                                                </span>
+                                            )}
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={6} className="px-6 py-4 text-center text-sm text-gray-500">
+                                    No transactions found
                                 </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

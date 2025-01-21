@@ -62,7 +62,7 @@ const Page: React.FC = () => {
   const id = useParams()
   // console.log(id, "check id")
   const { data: getToUser } = useGetuserQuery(id.id)
-  console.log(getToUser, "user2 info to message")
+  // console.log(getToUser, "user2 info to message")
 
 
   const handleClick = () => {
@@ -123,9 +123,9 @@ const Page: React.FC = () => {
   // console.log(profileData?.data?.retireProfessional?.stripe.onboardingUrl);
 
   const handleProjectModal = () => {
-    if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === true) {
+    if (profileData?.data?.client?.stripe.isOnboardingSucess === true) {
       toast.error("As a retired professional you must have to verify your bank account.")
-      router.push(profileData?.data?.retireProfessional?.stripe.onboardingUrl)
+      router.push(profileData?.data?.client?.stripe.onboardingUrl)
     } else {
       if (isButtonDisabled) return;
       setIsButtonDisabled(true);
@@ -144,6 +144,8 @@ const Page: React.FC = () => {
     setUser2(email)
     setName(`${firstName} ${lastName}`);
     setProfileUrl(profileUrl || demoimg.src);
+    console.log("Selected User ID:", id);
+    localStorage.setItem('retireProfessional', JSON.stringify(id))
     // setUser2Id(id)
 
     // console.log("Selected User ID:", id);
@@ -183,7 +185,7 @@ const Page: React.FC = () => {
       // console.log(message, "check message")
 
       // console.log(message.toEmail, "from emit")
-      // console.log(users, "check users")
+      console.log(users, "check users")
       const filteredUsers = users.filter(user => {
         console.log('my email is', message.toEmail);
         return user.email !== message.toEmail
@@ -261,7 +263,6 @@ const Page: React.FC = () => {
   }, [oldMessages, error, user1]);
 
 
-
   //socket connection
   useEffect(() => {
     if (!token?.email) {
@@ -293,7 +294,6 @@ const Page: React.FC = () => {
         const filteredUser = users.filter(user => user.email === message.sender)
         setUsers([filteredUser[0], ...filteredUsers])
       }
-      // getConversation({})
     });
 
     // console.log("//////////////////////////////////my conversation", users);
@@ -349,7 +349,7 @@ const Page: React.FC = () => {
   }, [getConversation?.data]);
 
   useEffect(() => {
-    console.log(getToUser?.data?.retireProfessional?.email, "chcekc emailo")
+    // console.log(getToUser?.data?.retireProfessional?.email, "chcekc emailo")
     setUser2(getToUser?.data?.retireProfessional?.email)
 
   }, [getToUser])

@@ -18,8 +18,8 @@ const decodedToken: DecodedToken | null = token
 export const navbarLinks: navbarDataTypes[] = [
   {
     id: 1,
-    title: "Home",
-    link: "/",
+    title: "Orders",
+    link: "/orders",
   },
   {
     id: 2,

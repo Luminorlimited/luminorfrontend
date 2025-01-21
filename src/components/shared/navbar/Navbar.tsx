@@ -212,11 +212,7 @@ const Navbar = () => {
                   : "opacity-0 translate-y-5 pointer-events-none z-[10]"
                   }`}
               >
-                <Link href="/project-details">
-                  <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
-                    Project Details
-                  </li>
-                </Link>
+
                 <Link
                   href={`/user/editProfile/${decodedToken.role}/${decodedToken.id}`}
                 >

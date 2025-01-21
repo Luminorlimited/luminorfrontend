@@ -11,8 +11,9 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { PaymentInfoStepProps } from './PaymentInfoStep'
 import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useParams } from 'next/navigation'
-import useDecodedToken from '../common/DecodeToken'
+// import useDecodedToken from '../common/DecodeToken'
 import { useGetProfileQuery } from '@/redux/api/userApi'
+import { useOfferpaymentMutation } from '@/redux/api/paymentApi'
 // import { useGetProfileByIdQuery } from '@/redux/api/userApi'
 // import useDecodedToken from '../common/DecodeToken'
 
@@ -20,44 +21,114 @@ import { useGetProfileQuery } from '@/redux/api/userApi'
 const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requirementdata }) => {
     const [paymentMethod, setPaymentMethod] = useState('card')
     const [saveCard, setSaveCard] = useState(false);
-    const offerId = useParams()
-    // const token = useDecodedToken()
     const { data: getprofile } = useGetProfileQuery(null)
-    console.log('my profile data is', getprofile);
-    console.log('my requirement is', requirementdata);
+
+
+    const offerId = useParams()
+    const customerId = getprofile?.data?.client?.stripe?.customerId
+    const amount = getSingleOffer?.data?.totalPrice
+    // const token = useDecodedToken()
+
+
+    console.log("My requirement data is", requirementdata);
+
+    // const paymentData = {
+    //     data: {
+    //         amount: amount,
+    //         customerId: customerId,
+    //         paymentMethodId: paymentMethod?.id,
+    //         retireProfessionalId: token?.id,
+    //         offerId: offerId.id,
+    //         caption: requirementdata.captions,
+    //         additionalMessage: requirementdata.additionalMessage
+    //     }
+
+    // }
+
+    // Assuming `useOfferpaymentMutation` exists
+    const [offerPayment] = useOfferpaymentMutation({});
+
+
 
 
     const stripe = useStripe();
     const elements = useElements();
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+
         if (!stripe || !elements) {
+            console.error('Stripe or Elements not loaded');
             return;
         }
 
         const cardElement = elements.getElement(CardNumberElement);
         if (!cardElement) {
+            console.error('Card element not found');
             return;
         }
 
-        const { error, paymentMethod } = await stripe.createPaymentMethod({
+        const { error, paymentMethod: stripePaymentMethod } = await stripe.createPaymentMethod({
             type: 'card',
             card: cardElement,
         });
 
         if (error) {
-            console.error('Payment method error:', error);
+            console.error('Error creating payment method:', error.message);
+            return;
+        }
+        const formData = new FormData();
+
+
+
+        const data = {
+
+            customerId: customerId,
+            paymentMethodId: stripePaymentMethod?.id,
+
+            offerId: offerId.id,
+            caption: requirementdata?.captions,
+
+            additionalMessage: requirementdata?.additionalMessage,
+
+
+        }
+        console.log(amount, "check amount")
+        console.log(requirementdata.clientRequirement, "check client requirement")
+        formData.append("data", JSON.stringify(data));
+        if (requirementdata?.clientRequirement && requirementdata.clientRequirement.length > 0) {
+            requirementdata.clientRequirement.forEach((upload: { file: File }, index: number) => {
+                if (upload.file instanceof File) {
+                    formData.append("clientRequirement", upload.file); // Append each file under the same key
+                } else {
+                    console.warn(`Invalid file at index ${index}:`, upload.file);
+                }
+            });
         } else {
-            console.log('Payment method success:', paymentMethod);
-            // Add additional logic to handle successful payment method creation
+            console.warn("No valid files in clientRequirement");
+        }
+
+
+        try {
+            const response = await offerPayment((formData));
+
+            if (response.data) {
+                console.log('Payment successful:', response.data);
+                alert('Payment Successful!');
+                // Redirect or update the UI as needed
+            } else {
+                console.error('Payment failed:', response.error);
+                alert('Payment Failed. Please try again.');
+            }
+        } catch (err) {
+            console.error('Error during payment process:', err);
+            alert('An error occurred. Please try again.');
         }
     };
-    console.log('My offer is', getSingleOffer);
+    console.log('My offer is', getSingleOffer?.data?.hourlyFee.delivery);
 
-    // const token = useDecodedToken()
-    // const { getProfile } = useGetProfileByIdQuery(token?.id) 
-    // get
+
+
 
     return (
         <div className="lg:p-6">
@@ -232,7 +303,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                         <div className="mt-6 space-y-4">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-600">Displays project name, payment amount, estimated date, and status.</span>
-                                <span className="font-medium text-gray-900">£ 200</span>
+                                <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.totalReceive}</span>
                             </div>
 
                             <div className="flex items-center justify-between text-sm">
@@ -242,7 +313,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                     </svg>
                                     <span className="text-gray-600">Service fee</span>
                                 </div>
-                                <span className="text-gray-600">(20%) £ 40.00</span>
+                                <span className="text-gray-600">(20%)</span>
                             </div>
 
                             <div className="flex items-center justify-between text-sm">
@@ -252,7 +323,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                     </svg>
                                     <span className="text-gray-600">Delivery Time</span>
                                 </div>
-                                <span className="text-gray-600">14 days</span>
+                                <span className="text-gray-600">  {getSingleOffer?.data?.milestones.reduce((total: number, milestone: any) => total + milestone.delivery, 0) | getSingleOffer?.data?.hourlyFee.delivery | getSingleOffer?.data?.flatFeedelivery}</span>
                             </div>
 
                             <hr className="border-gray-200" />
@@ -268,11 +339,18 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Service fee</span>
-                                    <span className="text-gray-900">£ 40.00</span>
+                                    <span className="text-gray-900">
+                                        £ {getSingleOffer?.data?.serviceFee}
+                                    </span>
+
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Delivery time</span>
-                                    <span className="text-gray-900">14 days</span>
+                                    <span className="text-gray-900">
+                                        {getSingleOffer?.data?.milestones.reduce((total: number, milestone: any) => total + milestone.delivery, 0) | getSingleOffer?.data?.hourlyFee.delivery | getSingleOffer?.data?.flatFeedelivery}
+                                              
+                                    </span>
+
                                 </div>
                                 <hr className="border-gray-200" />
 

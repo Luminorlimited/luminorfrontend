@@ -1,7 +1,7 @@
 'use client'
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FaCog } from 'react-icons/fa';
 import BusinesSvg from "@/components/svg/BusinesSvg";
@@ -118,6 +118,8 @@ export default function Client() {
         },
         []
     );
+    const [selectProject, setSelectProject] = useState<File | null>(null)
+
 
     const budgetProgressStyle = useMemo(() => getProgressStyle(budgetMinValue, budgetMaxValue), [budgetMinValue, budgetMaxValue, getProgressStyle]);
     const durationProgressStyle = useMemo(() => getProgressStyle(durationMinValue, durationMaxValue), [durationMinValue, durationMaxValue, getProgressStyle]);
@@ -148,13 +150,16 @@ export default function Client() {
         formData.append('projectDurationRange[min]', data.minDuration);
         formData.append('budgetRange[min]', data.minBudget);
         formData.append('budgetRange[max]', data.maxBudget);
+        if (selectProject) {
+            formData.append('projectUrl', selectProject);
+        }
 
         if (selectedImage instanceof File) {
             formData.append('profileUrl', selectedImage);
         }
         try {
             const res = await editclientProfile({ id: userIdValue, data: formData });
-            console.log(res);
+            // console.log(res);
             if (res) {
                 toast.success("Profile updated successfully")
 
@@ -171,7 +176,7 @@ export default function Client() {
 
     // const watchSelectedService = watch("selectedService");
 
-    console.log(profileData?.data?.profileUrl);
+    // console.log(profileData?.data?.profileUrl);
 
     const [selectedImage, setSelectedImage] = useState<string | File>(
         profileData?.data?.profileUrl || avatar.src
@@ -190,6 +195,7 @@ export default function Client() {
     };
 
     // Determine the image source to display
+    // console.log('my selected image', selectedImage);
     const imageSrc = useMemo(() => {
         if (selectedImage instanceof File) {
             return URL.createObjectURL(selectedImage); // If it's a file, create an object URL
@@ -207,6 +213,35 @@ export default function Client() {
             return () => URL.revokeObjectURL(url); // Cleanup object URL
         }
     }, [selectedImage]);
+
+
+
+
+    // Handle file input change
+    const handleProjectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0] || null // Get the selected file
+        if (file) {
+            setSelectProject(file) 
+            
+            console.log("File selected:", file.name)
+        } else {
+            console.log("No file selected")
+        }
+    }
+
+    // Handle button click to trigger file input
+    const handleButtonClick = () => {
+        // Trigger the hidden file input's click event
+        const fileInput = document.getElementById("fileInput") as HTMLInputElement
+        if (fileInput) {
+            fileInput.click()
+        }
+    }
+
+    // Use useEffect to log state changes
+    useEffect(() => {
+        console.log("selectProject state updated:", selectProject)
+    }, [selectProject])
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -403,12 +438,32 @@ export default function Client() {
                                 </div>
                             </div>
                             <div>
-                                <div className="flex justify-between items-center mb-4">
-                                    <label htmlFor="projectListing')}" className="block text-sm">Project Listing (Optional)</label>
-                                    <button className="text-black bg-[#FFC06B] hover:bg-[#df9739] hover:shadow-md rounded-[30px] px-[24px] py-[12px]">
-                                        Add Project
-                                    </button>
+                                <div className="flex flex-col">
+                                    {/* Header Section */}
+                                    <div className="flex justify-between items-center mb-4">
+                                        <label htmlFor="projectListing" className="block text-sm">
+                                            Project Listing (Optional)
+                                        </label>
+                                        <button
+                                            type="button"
+                                            className="text-black bg-[#FFC06B] hover:bg-[#df9739] hover:shadow-md rounded-[30px] px-[24px] py-[12px]"
+                                            onClick={handleButtonClick}
+                                        >
+                                            Add Project
+                                        </button>
+                                    </div>
+
+                                    {/* Hidden File Input */}
+                                    <input type="file" id="fileInput" className="hidden" onChange={handleProjectChange} />
+
+                                    {/* Display Selected File */}
+                                    {selectProject && (
+                                        <div className="mt-2 text-sm text-gray-600">
+                                            <strong>Selected File:</strong> {selectProject.name}
+                                        </div>
+                                    )}
                                 </div>
+
                                 <textarea
                                     defaultValue={profileData?.data?.projectListing || ''}
                                     id="projectListing')}"

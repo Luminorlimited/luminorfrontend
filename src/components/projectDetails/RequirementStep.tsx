@@ -1,21 +1,21 @@
 "use client"
 
 import { AiOutlinePaperClip } from "react-icons/ai";
-import React from 'react'
+import React, { useState } from 'react'
 import { Plus } from 'lucide-react'
 import Button from "../common/Button";
 import { useFieldArray, useForm } from "react-hook-form";
 import Image from "next/image";
 
 interface FileUpload {
-    id: number;
+    id?: number;
     file?: File;
     preview?: string;
 }
 
 interface FormData {
     clientRequirement: FileUpload[];
-    captions: { value: string }[]; // Captions as an array of objects
+    captions: string[]; // Captions as a string array
     additionalMessage: string;
 }
 
@@ -26,53 +26,73 @@ interface StepsProps {
 }
 
 const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep, setRequirementdata }) => {
-    const { register, control, handleSubmit, watch } = useForm<FormData>({
+    const { register, control, handleSubmit, watch, setValue } = useForm<FormData>({
         defaultValues: {
             clientRequirement: [],
-            captions: [],
+            captions: [""], // Start with one empty caption
             additionalMessage: "",
         },
     });
 
-    const { fields: fileFields, append: appendFile } = useFieldArray({
+    // Field array setup for client requirements (file uploads)
+    const {  append: appendFile } = useFieldArray({
         control,
         name: "clientRequirement",
     });
 
-    const { fields: captionFields, append: appendCaption } = useFieldArray({
-        control,
-        name: "captions",
-    });
-
+    // Watchers to track form data changes
     const watchFileUploads = watch("clientRequirement");
-    // const watchCaptions = watch("captions");
+    const watchCaptions = watch("captions");
 
-    const handleFileChange = (files: FileList | null) => {
-        if (files) {
-            Array.from(files).forEach((file) => {
-                const newId = fileFields.length + 1;
-                const reader = new FileReader();
+    // Local state to track selected images
+    const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
-                reader.onloadend = () => {
-                    appendFile({
-                        id: newId,
-                        file,
-                        preview: reader.result as string,
-                    });
-                };
+    // Handler for image file input change
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        const validImages = files.filter((file) => file.type.startsWith("image/"));
 
-                reader.readAsDataURL(file);
-            });
+        // Check for invalid files
+        if (validImages.length !== files.length) {
+            alert("Please select only valid image files.");
+            return;
         }
+        console.log(validImages);
+        // Set selected images in state and append them to the form
+        setSelectedImages(validImages);
+        validImages.forEach((file) =>
+            appendFile({
+
+                file,
+
+            })
+        );
     };
 
+    // Function to add a new empty caption
     const addCaption = () => {
-        appendCaption({value: ""});
+        const currentCaptions = watchCaptions || [];
+        setValue("captions", [...currentCaptions, ""]); // Add a new empty caption
     };
 
+    // Function to handle changes to captions
+    const handleCaptionChange = (index: number, value: string) => {
+        const updatedCaptions = [...(watchCaptions || [])];
+        updatedCaptions[index] = value; // Update caption at the specified index
+        setValue("captions", updatedCaptions);
+    };
+
+    // Form submission handler
     const onSubmit = (data: FormData) => {
         console.log("Submitted Data:", data);
-        setRequirementdata(data)
+        console.log(selectedImages, "check sselected image from onsubmit formdata")
+        const formData = new FormData();
+
+        formData.append("captions", (JSON.stringify(data.captions)));
+        formData.append("additionalMessage", data.additionalMessage);
+
+        // Set requirement data and move to the next step
+        setRequirementdata(data);
         goToNextStep();
     };
 
@@ -93,7 +113,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
                             type="file"
                             className="hidden"
                             multiple
-                            onChange={(e) => handleFileChange(e.target.files)}
+                            onChange={handleImageChange}
                         />
                     </label>
 
@@ -116,12 +136,13 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
                 {/* Captions Section */}
                 <div className="space-y-4 mt-6">
                     <h3 className="text-lg font-medium">Add Captions</h3>
-                    {captionFields.map((field, index) => (
+                    {watchCaptions?.map((caption, index) => (
                         <div key={index} className="space-y-2">
                             <input
                                 type="text"
+                                value={caption} // Use controlled input for captions
+                                onChange={(e) => handleCaptionChange(index, e.target.value)}
                                 placeholder="Write caption"
-                                {...register(`captions.${index}.value`)}
                                 className="w-full px-4 py-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                             />
                         </div>
@@ -157,7 +178,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
                     </button>
                     <Button
                         type="submit"
-                        className="px-4 py-2 bg-primary text-white rounded-[10px] hover:bg-[#6D28D9] transition-colors"
+                        className="px-4 py-2  rounded-[10px] hover:bg-[#6D28D9] transition-colors"
                     >
                         Next
                     </Button>

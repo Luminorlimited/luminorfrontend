@@ -4,24 +4,35 @@ import baseApi from "@/redux/api/baseApi";
 const paymentApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
 
-        offerpayment: build.query({
-            query: ({userId, data}) => {
-                console.log(userId)
+        offerpayment: build.mutation({
+            query: (data) => {
+                // console.log(userId)
                 return {
-                    url: `/stripe/create-payment`,
+                    url: `/stripe/create-payment-intent`,
                     method: 'POST',
-                    body: data
+                    body: data,
+
+                }
+            },
+            invalidatesTags: ['Payment']
+        }),
+        transactionList: build.query({
+            query: () => {
+                // console.log(userId)
+                return {
+                    url: `/order/client-order`,
+                    method: 'GET',
                 }
             },
             providesTags: ['Payment']
         }),
-      
+
 
     })
 })
 
 
 
-export const { useOfferpaymentQuery } = paymentApi
+export const { useOfferpaymentMutation, useTransactionListQuery } = paymentApi
 
 
