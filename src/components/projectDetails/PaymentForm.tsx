@@ -3,19 +3,16 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import visa from "@/assets/payment/visa.jpg"
-// import venmo from "@/assets/payment/venmo.png"
-// import paypal from "@/assets/payment/paypal.png"
-import offer from "@/assets/images/offer.png"
 import { FaArrowRightLong } from "react-icons/fa6";
-// import Link from 'next/link'
 import { PaymentInfoStepProps } from './PaymentInfoStep'
 import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useParams } from 'next/navigation'
-// import useDecodedToken from '../common/DecodeToken'
 import { useGetProfileQuery } from '@/redux/api/userApi'
 import { useOfferpaymentMutation } from '@/redux/api/paymentApi'
-// import { useGetProfileByIdQuery } from '@/redux/api/userApi'
-// import useDecodedToken from '../common/DecodeToken'
+import { toast } from 'sonner'
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 
 
 const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requirementdata }) => {
@@ -26,7 +23,6 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
     const offerId = useParams()
     const customerId = getprofile?.data?.client?.stripe?.customerId
-    const amount = getSingleOffer?.data?.totalPrice
     // const token = useDecodedToken()
 
 
@@ -46,14 +42,15 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
     // }
 
     // Assuming `useOfferpaymentMutation` exists
-    const [offerPayment] = useOfferpaymentMutation({});
+    const [offerPayment, { isLoading }] = useOfferpaymentMutation({});
 
 
 
 
     const stripe = useStripe();
     const elements = useElements();
-
+    const router = useRouter()
+    const totalPrice = getSingleOffer?.data?.offer?.totalPrice
     const handleSubmit = async (e: any) => {
         e.preventDefault();
 
@@ -85,6 +82,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
             customerId: customerId,
             paymentMethodId: stripePaymentMethod?.id,
+            amount: JSON.stringify(totalPrice),
 
             offerId: offerId.id,
             caption: requirementdata?.captions,
@@ -93,7 +91,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
 
         }
-        console.log(amount, "check amount")
+        // console.log(amount, "check amount")
         console.log(requirementdata.clientRequirement, "check client requirement")
         formData.append("data", JSON.stringify(data));
         if (requirementdata?.clientRequirement && requirementdata.clientRequirement.length > 0) {
@@ -113,9 +111,10 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
             const response = await offerPayment((formData));
 
             if (response.data) {
-                console.log('Payment successful:', response.data);
                 alert('Payment Successful!');
-                // Redirect or update the UI as needed
+                toast.success('Payment Successful!');
+                router.push('/')
+
             } else {
                 console.error('Payment failed:', response.error);
                 alert('Payment Failed. Please try again.');
@@ -125,8 +124,6 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
             alert('An error occurred. Please try again.');
         }
     };
-    console.log('My offer is', getSingleOffer?.data?.hourlyFee.delivery);
-
 
 
 
@@ -143,7 +140,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
                         </div>
 
-                        <form id="paymentForm" onSubmit={handleSubmit} className="space-y-4">
+                        <form id="paymentForm" onSubmit={handleSubmit} className="space-y-4" content='application/json'>
                             <h2 className="text-base font-medium text-gray-900">Payment Options</h2>
 
                             <div className="relative rounded-lg border p-4">
@@ -282,28 +279,44 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
                     {/* Right Column - Order Summary */}
                     <div className="rounded-xl border p-6">
-                        <div className="flex gap-4">
+                        <div className="gap-4">
                             <div className=" overflow-hidden rounded-lg">
-                                <Image
-                                    src={offer}
-                                    alt="Consultant"
-                                    width={122}
-                                    height={96}
-                                    className="h-full w-full object-cover"
-                                />
+                                <div className="relative w-[322px] h-[96px]">
+                                    {/* Iframe displaying the PDF */}
+                                    <iframe
+                                        src={getSingleOffer.data?.offer.orderAgreementPDF}
+                                        width="322"
+                                        height="96"
+                                        style={{
+                                            border: 'none',
+                                            objectFit: 'cover',
+                                            overflow: 'hidden',
+                                        }}
+                                        title="PDF Preview"
+                                    />
+                                    {/* Transparent link overlay */}
+                                    <Link
+                                        href={getSingleOffer.data?.offer?.orderAgreementPDF}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="absolute top-0 left-0 w-full h-full"
+                                        style={{ cursor: 'pointer' }}
+                                    />
+                                </div>
+
                             </div>
                             <div>
                                 <h3 className="font-medium text-gray-900">
-                                    {getSingleOffer?.data?.projectName}
+                                    {getSingleOffer?.data?.offer?.projectName}
                                 </h3>
-                                <p className="text-sm text-gray-600">{getSingleOffer?.data?.description}</p>
+                                <p className="text-sm text-gray-600">{getSingleOffer?.data?.offer?.description}</p>
                             </div>
                         </div>
 
                         <div className="mt-6 space-y-4">
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-600">Displays project name, payment amount, estimated date, and status.</span>
-                                <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.totalReceive}</span>
+                                <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.offer?.totalReceive}</span>
                             </div>
 
                             <div className="flex items-center justify-between text-sm">
@@ -321,9 +334,9 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                     <svg className="h-4 w-4 text-[#25314C]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span className="text-gray-600">Delivery Time</span>
+                                    <span className="text-gray-600">Delivery Timesss</span>
                                 </div>
-                                <span className="text-gray-600">  {getSingleOffer?.data?.milestones.reduce((total: number, milestone: any) => total + milestone.delivery, 0) | getSingleOffer?.data?.hourlyFee.delivery | getSingleOffer?.data?.flatFeedelivery}</span>
+                                <span className="text-gray-600">  {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFeedelivery}</span>
                             </div>
 
                             <hr className="border-gray-200" />
@@ -331,24 +344,24 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                             <div className="space-y-2 border rounded-[10px] p-5 bg-[#FAFAFA]">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Order From</span>
-                                    <span className="text-gray-900">Jane Cooper</span>
+                                    <span className="text-gray-900">{getSingleOffer?.data?.retireProfessional?.firstName || "Unknown"}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Order No</span>
-                                    <span className="text-gray-900">{getSingleOffer?.data?._id}</span>
+                                    <span className="text-gray-900">{getSingleOffer?.data?.offer?._id}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Service fee</span>
                                     <span className="text-gray-900">
-                                        £ {getSingleOffer?.data?.serviceFee}
+                                        £ {getSingleOffer?.data?.offer?.serviceFee}
                                     </span>
 
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Delivery time</span>
                                     <span className="text-gray-900">
-                                        {getSingleOffer?.data?.milestones.reduce((total: number, milestone: any) => total + milestone.delivery, 0) | getSingleOffer?.data?.hourlyFee.delivery | getSingleOffer?.data?.flatFeedelivery}
-                                              
+                                        {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFeedelivery}
+
                                     </span>
 
                                 </div>
@@ -356,14 +369,15 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
                                 <div className="flex justify-between ">
                                     <span className="font-medium text-gray-900">Total Amount</span>
-                                    <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.totalPrice}</span>
+                                    <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.offer?.totalPrice}</span>
                                 </div>
                             </div>
 
 
-                            <button onClick={() => document.getElementById('paymentForm')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))} className="w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium text-white rounded-[8px] hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 items-center gap-2">
-                                Confirm & Pay <FaArrowRightLong />
+                            <button onClick={() => document.getElementById('paymentForm')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))} className={`w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium  rounded-[8px]  items-center gap-2 ${isLoading ? "bg-slate-500 text-black" : "bg-primary text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"}`} disabled={isLoading}>
+                                {isLoading ? 'Processing...' : 'Confirm & Pay'} <FaArrowRightLong />
                             </button>
+
                         </div>
                     </div>
                 </div>

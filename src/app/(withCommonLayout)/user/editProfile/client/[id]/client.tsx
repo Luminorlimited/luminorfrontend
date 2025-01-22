@@ -17,6 +17,7 @@ import { useParams } from "next/navigation";
 import { useEditclientprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import avatar from '@/assets/images/avatar.jpg';
 import { toast } from "sonner";
+// import { get } from "lodash";
 
 const servicesData = [
     {
@@ -138,6 +139,8 @@ export default function Client() {
         Object.entries(data).forEach(([Key, value]) => {
             if (value !== undefined && value !== "") {
                 formData.append(Key, value as string);
+                // formData.append(`projectPreference[${Key}]`, value as string);
+
             }
         });
 
@@ -150,6 +153,15 @@ export default function Client() {
         formData.append('projectDurationRange[min]', data.minDuration);
         formData.append('budgetRange[min]', data.minBudget);
         formData.append('budgetRange[max]', data.maxBudget);
+        formData.append('projectPreference', data.projectPreference)
+
+        if (Array.isArray(data.projectPreference)) {
+            data.projectPreference.forEach((preference: string) => {
+                if (preference !== undefined && preference !== "") {
+                    formData.append('projectPreference[]', preference);
+                }
+            });
+        }
         if (selectProject) {
             formData.append('projectUrl', selectProject);
         }
@@ -194,6 +206,7 @@ export default function Client() {
         }
     };
 
+
     // Determine the image source to display
     // console.log('my selected image', selectedImage);
     const imageSrc = useMemo(() => {
@@ -221,8 +234,8 @@ export default function Client() {
     const handleProjectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] || null // Get the selected file
         if (file) {
-            setSelectProject(file) 
-            
+            setSelectProject(file)
+
             console.log("File selected:", file.name)
         } else {
             console.log("No file selected")
@@ -230,18 +243,22 @@ export default function Client() {
     }
 
     // Handle button click to trigger file input
-    const handleButtonClick = () => {
-        // Trigger the hidden file input's click event
-        const fileInput = document.getElementById("fileInput") as HTMLInputElement
-        if (fileInput) {
-            fileInput.click()
-        }
-    }
+    const [inputs, setInputs] = useState<string[]>([profileData?.data?.projectPreference]);
+
+    const handleAddInput = () => {
+        setInputs((prevInputs) => [...prevInputs, ""]);
+    };
+    const handleDeleteInput = (index: number) => {
+        const updatedInputs = inputs.filter((_, i) => i !== index);
+        setInputs(updatedInputs);
+    };
+
 
     // Use useEffect to log state changes
     useEffect(() => {
         console.log("selectProject state updated:", selectProject)
     }, [selectProject])
+    console.log('my profile is', profileData?.data);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -440,6 +457,30 @@ export default function Client() {
                             <div>
                                 <div className="flex flex-col">
                                     {/* Header Section */}
+                                    <div>
+                                        {inputs.map((inputValue, index) => (
+                                            <div key={index} className="flex items-center gap-2 my-2">
+                                                <input
+                                                    type="text"
+                                                    value={inputValue}
+                                                    onChange={(e) => {
+                                                        const updatedInputs = [...inputs];
+                                                        updatedInputs[index] = e.target.value;
+                                                        setInputs(updatedInputs);
+                                                    }}
+                                                    placeholder="Write your project"
+                                                    className="w-full border rounded-[8px] h-12 px-2"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDeleteInput(index)}
+                                                    className="text-white bg-red-500 hover:bg-red-700 rounded-[8px] px-4 py-2"
+                                                >
+                                                    X
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
                                     <div className="flex justify-between items-center mb-4">
                                         <label htmlFor="projectListing" className="block text-sm">
                                             Project Listing (Optional)
@@ -447,7 +488,7 @@ export default function Client() {
                                         <button
                                             type="button"
                                             className="text-black bg-[#FFC06B] hover:bg-[#df9739] hover:shadow-md rounded-[30px] px-[24px] py-[12px]"
-                                            onClick={handleButtonClick}
+                                            onClick={handleAddInput}
                                         >
                                             Add Project
                                         </button>

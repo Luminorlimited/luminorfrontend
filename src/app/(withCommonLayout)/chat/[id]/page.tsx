@@ -359,7 +359,7 @@ const Page: React.FC = () => {
   console.log("my all conversation", users)
 
 
-
+  console.log('My local storage', localStorage.getItem('payment'))
 
   return (
     <section>
@@ -404,19 +404,33 @@ const Page: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center gap-6">
-              <button
-                onClick={handleOpenModal}
-                className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
-              >
-                Current Offers
-              </button>
-              {isModalOpen && <OffersModal onClose={handleOpenModal} user2={user2} />}
+              {token?.role === "retireProfessional" ? (
+                <>
 
-              <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
-                Create an Offer
-              </Button>
-              {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
-              <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+
+                  <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
+                    Create an Offer
+                  </Button>
+                  {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
+                  <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+                </>
+              ):(
+                  <>
+                    <button
+                      onClick={handleOpenModal}
+                      className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
+                    >
+                      Current Offers
+                    </button>
+                    {isModalOpen && <OffersModal onClose={handleOpenModal} user2={user2} />}
+
+                  </>
+              // <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
+              //   Create an Offer
+              // </Button>
+              // {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
+              // <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+              )}
             </div>
           </div>
 

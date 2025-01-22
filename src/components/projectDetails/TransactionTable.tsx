@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ArrowUpDown, Download, Search } from 'lucide-react'
 import { useTransactionListQuery } from '@/redux/api/paymentApi'
 import { toast } from 'sonner'
+import Link from 'next/link'
 // import Link from 'next/link'
 
 
@@ -44,6 +45,7 @@ export default function TransactionTable() {
     //             : String(bValue).localeCompare(String(aValue))
     //     })
     const { data: transactionList } = useTransactionListQuery(undefined)
+    console.log('my transaction list ', transactionList);
 
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -63,10 +65,10 @@ export default function TransactionTable() {
     // const offerId = useParams().id
 
 
-    console.log('My transaction list', transactionList);
+    // console.log('My transaction list', transactionList);
 
 
-    console.log('my order', transactionList?.data[3]?.project?.orderAgreementPDF);
+    // console.log('my order', transactionList?.data[3]?.project?.orderAgreementPDF);
     const handleDownloadPdf = () => {
         const pdfUrl = transactionList?.data?.project?.orderAgreementPDF; // Fetch the PDF URL
         if (pdfUrl) {
@@ -152,9 +154,9 @@ export default function TransactionTable() {
                                             className="hover:bg-gray-100 p-1 rounded-full"
                                         >
                                             {transaction?.project?.orderAgreementPDF ? (
-                                                <a href={transaction?.project?.orderAgreementPDF} download>
+                                                <Link href={transaction?.project?.orderAgreementPDF} download>
                                                     <Download className="h-4 w-4" />
-                                                </a>
+                                                </Link>
                                             ) : (
                                                 <span className="text-gray-400">
                                                     <Download className="h-4 w-4" />

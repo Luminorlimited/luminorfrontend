@@ -1,6 +1,6 @@
 'use client'
 
-import OrderCard from '@/components/reviewdetails/OrderCard'
+// import OrderCard from '@/components/reviewdetails/OrderCard'
 import { Star } from 'lucide-react'
 import Button from '@/components/common/Button'
 
@@ -71,9 +71,9 @@ export default function FeedbackForm() {
                 </div>
             </div>
             
-            <div className='max-w-[500px]'>
-              <OrderCard/>
-            </div>
+            {/* <div className='max-w-[500px]'>
+                <OrderCard getSingleOrder={getSingleOrder} />
+            </div> */}
         </div>
     )
 }

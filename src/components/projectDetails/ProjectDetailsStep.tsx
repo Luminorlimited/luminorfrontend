@@ -20,8 +20,9 @@ export default function ProjectDetails() {
     const { data: getSingleOffer } = useGetSingleOfferQuery(offerId.id)
     // console.log(getSingleOffer?.data?.orderAgreementPDF);
 
+    console.log(getSingleOffer)
     const handleDownloadPdf = () => {
-        const pdfUrl = getSingleOffer?.data?.orderAgreementPDF; // Fetch the PDF URL
+        const pdfUrl = getSingleOffer?.data?.offer?.orderAgreementPDF; // Fetch the PDF URL
         if (pdfUrl) {
             // Open the PDF in a new tab
             window.open(pdfUrl, '_blank');

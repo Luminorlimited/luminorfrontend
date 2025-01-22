@@ -1,9 +1,74 @@
+'use client'
 import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import img12 from '@/assets/images/offer.png'
-import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useDeliverOrderMutation } from "@/redux/api/paymentApi";
+import { toast } from "sonner";
+// import { useRouter } from "next/navigation";
 
-export default function OrderCard() {
+export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
+
+    const initdata = getSingleOrder?.data?.result?.project
+
+    const deliveryday = initdata?.flatFee
+        ? initdata.flatFee.delivery
+        : initdata?.hourlyFee
+            ? initdata.hourlyFee.delivery
+            : initdata?.milestones
+                ? initdata.milestones.reduce((total: any, milestone: any) => total + (milestone.delivery || 0), 0)
+                : 0;
+
+    const createdAt = new Date(getSingleOrder?.data?.result?.project?.createdAt);
+
+    // Add delivery days to createdAt
+    const deliveryDate = new Date(createdAt);
+    deliveryDate.setDate(deliveryDate.getDate() + deliveryday);
+
+    // Format the delivery date
+    const formattedDate = `${createdAt.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    })} (Delivery in ${deliveryday} days: ${deliveryDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+    })})`;
+
+
+
+
+    const orderId = useParams()
+
+    console.log('my order id', orderId.id);
+    // const { data: deliverOrder } = useDeliverOrderMutation(orderId.id)
+    const [deliverOrder, { isLoading }] = useDeliverOrderMutation({})
+    // const router = useRouter()
+
+    const handleDeliver = async () => {
+        if (!orderId.id) {
+            toast.error("Order ID is missing!");
+            return;
+        }
+
+        try {
+            const res = await deliverOrder(orderId.id);
+            if (res) {
+                toast.success("Order delivered successfully");
+                console.log("Order delivered:", res);
+            } else {
+                toast.error("Failed to deliver order");
+            }
+        } catch (error) {
+            console.error("Error while delivering order:", error);
+            toast.error("Failed to deliver order");
+        }
+    };
+
+
+
+
     return (
         <div>
             <div className="bg-white px-2 py-3 shadow-sm border rounded-[10px]">
@@ -29,12 +94,12 @@ export default function OrderCard() {
                         height={400}
                         className="w-full h-[300px] object-cover"
                     />
-                {/* Description */}
-                <div className="p-6">
-                    <h2 className="text-lg text-black font-medium">
-                        I will setup and manage your startup business...
-                    </h2>
-                </div>
+                    {/* Description */}
+                    <div className="p-6">
+                        <h2 className="text-lg text-black font-medium">
+                            {getSingleOrder?.data?.result?.project?.projectName}
+                        </h2>
+                    </div>
                 </div>
 
 
@@ -45,39 +110,41 @@ export default function OrderCard() {
                             <h3 className="text-lg text-gray-600">Order form</h3>
                         </div>
                         <div className="text-lg text-gray-900 font-medium text-right">
-                            Jane Cooper
+                            {getSingleOrder?.data?.retireProfessional[0]?.name?.firstName} {getSingleOrder?.data?.retireProfessional[0]?.name?.lastName}
                         </div>
 
                         <div>
                             <h3 className="text-lg text-gray-600">Delivery date</h3>
                         </div>
                         <div className="text-lg text-gray-900 font-medium text-right">
-                            26 Oct 2024, 11:59
+                            {formattedDate}
                         </div>
 
                         <div>
-                            <h3 className="text-lg text-gray-600">Total price (Milestone)</h3>
+                            <h3 className="text-lg text-gray-600">Total price {getSingleOrder?.data?.result?.project?.flatFee ? "(Flat Fee)" : getSingleOrder?.data?.result?.project?.hourleFee ? "(Hourle Fee)" : "(Milestone)"}</h3>
                         </div>
                         <div className="text-lg text-gray-900 font-medium text-right">
-                            £ 200
+                            £ {getSingleOrder?.data?.result?.project.totalPrice}
                         </div>
 
                         <div>
                             <h3 className="text-lg text-gray-600">Order no</h3>
                         </div>
                         <div className="text-lg text-gray-900 font-medium text-right">
-                            #12345678
+                            #{getSingleOrder?.data?.result?._id}
                         </div>
                     </div>
 
                     {/* Action Button */}
                     <div className=''>
-                        <Link href={'/deliver-details/addreview'} className="text-center bg-primary block w-full py-4 px-4 rounded-[10px] text-white text-lg ">
-                            Deliver Now
-                        </Link>
+                        <button onClick={handleDeliver} className={`text-center  block w-full py-4 px-4 rounded-[10px] text-lg ${isLoading ? "bg-slate-500 text-black" : "bg-primary text-white "}`} disabled={isLoading}>
+                            {isLoading ? 'Delivering...' : 'Deliver Order'}
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+
+// href = { '/deliver-details/addreview'}
