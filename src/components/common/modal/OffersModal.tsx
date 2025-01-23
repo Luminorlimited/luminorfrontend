@@ -78,7 +78,7 @@ const OffersModal: React.FC<OffersModalProps> = ({ onClose, user1 }) => {
 
 
     return (
-        <div className="absolute z-[999999] top-[-135px] inset-0  flex justify-center items-center">
+        <div className="absolute z-[999999] top-[-95px] inset-0  flex justify-center items-center">
 
             <div className=" mt-4 relative bg-white shadow-lg rounded-[20px] w-[462px] h-[505px] z-50  p-4 overflow-hidden overflow-y-scroll">
                 <button

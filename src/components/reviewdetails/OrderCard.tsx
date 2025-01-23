@@ -129,7 +129,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                         </div>
 
                         <div>
-                            <h3 className="text-lg text-gray-600">Total price {getSingleOrder?.data?.result?.project?.flatFee ? "(Flat Fee)" : getSingleOrder?.data?.result?.project?.hourleFee ? "(Hourle Fee)" : "(Milestone)"}</h3>
+                            <h3 className="text-lg text-gray-600">Total price {getSingleOrder?.data?.result?.project?.flatFee ? "(Flat Fee)" : getSingleOrder?.data?.result?.project?.hourlyFee ? "(Hourle Fee)" : "(Milestone)"}</h3>
                         </div>
                         <div className="text-lg text-gray-900 font-medium text-right">
                             £ {getSingleOrder?.data?.result?.project?.totalPrice}

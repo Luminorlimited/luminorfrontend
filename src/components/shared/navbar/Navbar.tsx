@@ -247,7 +247,7 @@ const Navbar = () => {
 
       {/* Mobile Navbar */}
       <div className="lg:hidden block">
-        <MobileNavbar decodedToken={decodedToken} />
+        <MobileNavbar decodedToken={decodedToken}  />
       </div>
     </nav>
   );

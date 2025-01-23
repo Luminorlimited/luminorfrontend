@@ -247,7 +247,7 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
 
 
 
-            {pathName === '/project-list/professional' ? (
+            {pathName === '/project-list/retireProfessional' ? (
                 <div className="grid grid-rows-2 gap-6 bg-white p-4 shadow-md rounded-[15px]">
                     <div>
                         <label className="block text-lg mb-4 font-medium">Project Duration Range</label>

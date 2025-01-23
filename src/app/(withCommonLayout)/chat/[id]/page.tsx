@@ -114,12 +114,12 @@ const Page: React.FC = () => {
 
   const { data: profileData } = useGetProfileQuery(token?.id);
 
-  // console.log(profileData?.data?.retireProfessional?.stripe.onboardingUrl);
+  console.log(profileData?.data?.retireProfessional?.stripe.isOnboardingSucess);
 
   const handleProjectModal = () => {
-    if (profileData?.data?.client?.stripe.isOnboardingSucess === true) {
+    if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === false) {
       toast.error("As a retired professional you must have to verify your bank account.")
-      router.push(profileData?.data?.client?.stripe.onboardingUrl)
+      router.push(profileData?.data?.retireProfessional?.stripe.onboardingUrl)
     } else {
       if (isButtonDisabled) return;
       setIsButtonDisabled(true);
@@ -357,9 +357,7 @@ const Page: React.FC = () => {
 
   // add user in conversation sidebar
   useEffect(() => {
-    // Merge getConversation data with existing users and set state
     setUsers((prevUsers) => {
-      // Ensure users is always synced with getConversation
       if (getConversation?.data) {
         return [...getConversation?.data];
       }

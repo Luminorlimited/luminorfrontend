@@ -193,7 +193,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                     <div className="flex items-center gap-2">
                                         <div className="h-15 w-10 overflow-hidden rounded-full">
                                             <Image
-                                                src={data.client?.name?.profileImg || profileImgFallback}
+                                                src={data?.profileUrl || profileImgFallback}
                                                 alt={data.client?.name?.firstName || "Client"}
                                                 width={40}
                                                 height={40}
