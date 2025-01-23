@@ -2,7 +2,7 @@
 import { MoreVertical } from "lucide-react";
 import Image from "next/image";
 import img12 from '@/assets/images/offer.png'
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 import { useDeliverOrderMutation } from "@/redux/api/paymentApi";
 import { toast } from "sonner";
 // import { useRouter } from "next/navigation";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
 
     const initdata = getSingleOrder?.data?.result?.project
+    // console.log(initdata);
 
     const deliveryday = initdata?.flatFee
         ? initdata.flatFee.delivery
@@ -39,24 +40,31 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
 
 
 
-    const orderId = useParams()
+    // const orderId = useParams()
+    const id = getSingleOrder?.data?.result?._id
+    console.log('my order id', id);
 
-    console.log('my order id', orderId.id);
-    // const { data: deliverOrder } = useDeliverOrderMutation(orderId.id)
+    // console.log('my order id', id);
+    // const { data: deliverOrder } = useDeliverOrderMutation(id)
     const [deliverOrder, { isLoading }] = useDeliverOrderMutation({})
-    // const router = useRouter()
 
     const handleDeliver = async () => {
-        if (!orderId.id) {
-            toast.error("Order ID is missing!");
-            return;
-        }
+        // if (!id) {
+        //     toast.error("Order ID is missing!");
+        //     return;
+        // }
 
         try {
-            const res = await deliverOrder(orderId.id);
-            if (res) {
-                toast.success("Order delivered successfully");
-                console.log("Order delivered:", res);
+
+            if (id) {
+                console.log('this is console', id);
+                const res = await deliverOrder(id);
+                if (res) {
+
+
+                    toast.success("Order delivered successfully");
+                    console.log("Order delivered:", res);
+                }
             } else {
                 toast.error("Failed to deliver order");
             }
@@ -124,7 +132,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                             <h3 className="text-lg text-gray-600">Total price {getSingleOrder?.data?.result?.project?.flatFee ? "(Flat Fee)" : getSingleOrder?.data?.result?.project?.hourleFee ? "(Hourle Fee)" : "(Milestone)"}</h3>
                         </div>
                         <div className="text-lg text-gray-900 font-medium text-right">
-                            £ {getSingleOrder?.data?.result?.project.totalPrice}
+                            £ {getSingleOrder?.data?.result?.project?.totalPrice}
                         </div>
 
                         <div>

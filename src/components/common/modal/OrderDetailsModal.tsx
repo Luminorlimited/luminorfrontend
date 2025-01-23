@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Offer } from "./OffersModal";
 import Button from "@/components/common/Button";
 import { useRouter } from "next/navigation";
@@ -8,14 +8,17 @@ import { useDeleteOfferMutation } from "@/redux/api/offerApi";
 import { toast } from "sonner";
 
 interface OrderDetailsModalProps {
-    data: Offer
+    data: Offer,
+    onClose: () => void
 
 }
 
 
-const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
+const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data, onClose }) => {
     const router = useRouter()
+    const [isLoading, setLoading] = useState(false)
     const submitOrder = () => {
+        setLoading(true)
         router.push(`/project-details/${data._id}`)
     }
     const offerId = data._id
@@ -28,6 +31,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
         try {
             await deleteOffers(offerId).unwrap();
             toast.success("Offer Canceled");
+            onClose();
         } catch (error) {
             console.log(error);
             toast.error("Failed to cancel offer");
@@ -88,8 +92,13 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data }) => {
                     <button onClick={deleteOffer} className="rounded-[12px]  w-full text-[16px]  font-medium text-black bg-slate-200 hover:bg-slate-300 hover:shadow-sm transition-colors duration-200">
                         Decline
                     </button>
-                    <Button onClick={submitOrder} className="w-full hover:shadow-md">Accept Order</Button>
-
+                    <Button
+                        onClick={submitOrder}
+                        className={`w-full hover:shadow-md ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+                        disabled={isLoading} // Disable button while loading
+                    >
+                        {isLoading ? "Loading..." : "Accept Order"}
+                    </Button>
                 </div>
             </div>
         </div>

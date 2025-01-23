@@ -30,7 +30,6 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
     const [filteredData, setFilteredData] = useState(null);
 
-    // console.log(`are fucking man`, professionalData?.data);
     useEffect(() => {
         // Determine which lazy query to call based on the route
         const fetchFilteredData = async () => {
@@ -47,7 +46,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
         fetchFilteredData(); // Trigger the fetch
     }, [route, FilteredData, professionalLazyData, clientLazyData]);
-    console.log('filter aaaadata is:', FilteredData);
+    // console.log('filter aaaadata is:', FilteredData);
 
     const servicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
         ? filteredData
@@ -57,11 +56,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         : professionalData;
 
     // console.log('my client', clientData);
-    // console.log('my professional', professionalData);
+    console.log('my professional', professionalData);
 
     useEffect(() => {
         if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
-            // Clear filters on initial load or when filters are reset
             dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
         }
     }, [FilteredData, dispatch]);
@@ -86,7 +84,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
-                {route === '/project-list/professional' ? (
+                {route === '/project-list/retireProfessional' ? (
                     professionalData?.data.map((data: any, index: number) => (
                         <div
                             key={index}
@@ -103,17 +101,17 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                     />
                                 </div>
 
-                                <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
+                                {/* <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                                     <BiTime className="h-4 w-4" />
                                     <span className="text-xs">{data.availability} days | Duration</span>
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="p-5">
                                 <div className="mb-3 flex items-center gap-3">
                                     <h2>Preference: </h2>
                                     <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
-                                        {data.preferedProjects || "Not Specified"}
+                                        {data?.preferedProjects || "Not Specified"}
                                     </span>
                                 </div>
 
@@ -121,21 +119,21 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                     <div className="flex items-center gap-2">
                                         <div className="h-15 w-10 overflow-hidden rounded-full">
                                             <Image
-                                                src={data.client?.name?.profileImg || profileImgFallback}
-                                                alt={data.client?.name?.firstName || "Client"}
+                                                src={data?.profileUrl || profileImgFallback}
+                                                alt={data?.userDetails?.name?.firstName || "Client"}
                                                 width={40}
                                                 height={40}
                                                 className="object-cover"
                                             />
                                         </div>
                                         <span className="text-sm font-medium text-gray-900">
-                                            {data.client?.name?.firstName || "Unknown"} {data.client?.name?.lastName || ""}
+                                            {data.userDetails?.name?.firstName || "Unknown"} {data.userDetails?.name?.lastName || ""}
                                         </span>
                                     </div>
 
                                     <div className="flex items-center gap-1">
                                         <span className="text-[16px] font-medium text-gray-900">
-                                            ★ 4.7
+                                            ★ {data?.averageRating || ""}
                                         </span>
                                         <span className="text-[16px] text-gray-500">(123)</span>
                                     </div>
@@ -153,7 +151,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                         </span>
                                     </div>
 
-                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat`}>Connect Now</Link>
+                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat/${data?.userDetails?._id}`}>Connect Now</Link>
 
                                     {/* <Button>Connect Now</Button> */}
                                 </div>

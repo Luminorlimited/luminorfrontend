@@ -32,12 +32,6 @@ import { useParams, useRouter } from "next/navigation";
 
 const Page: React.FC = () => {
 
-
-  // const userId = useParams()
-
-
-  // const { data: getSingleUser } = useGetuserQuery(userId?.id);
-
   const router = useRouter()
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,19 +44,19 @@ const Page: React.FC = () => {
   const [messages, setMessages] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
   const user1 = token?.email
-  const [user2, setUser2] = useState("");
-  const [name, setName] = useState("");
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
-  const { data: oldMessages, error } = useGetMessageQuery({ user1, user2 })
+  const id = useParams()
+  const { data: getToUser } = useGetuserQuery(id.id)
+  const receivermail = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
+  const { data: oldMessages } = useGetMessageQuery({ user1, receivermail })
   const { data: getConversation } = useGetConversationQuery(undefined);
   // const [media, setMedia] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
-  const id = useParams()
-  // console.log(id, "check id")
-  const { data: getToUser } = useGetuserQuery(id.id)
-  // console.log(getToUser, "user2 info to message")
+
+
+  console.log('My user id', getToUser)
 
 
   const handleClick = () => {
@@ -137,30 +131,38 @@ const Page: React.FC = () => {
 
 
   };
+  // 678f173ecd61d3d7199126de
+  const user2 = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
 
+  console.log("My user2 email", user2);
+  // 678f173ecd61d3d7199126de
   const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
-    const { email, firstName, lastName, profileUrl } = user;
+    const { id, email, profileUrl } = user;
 
-    setUser2(email)
-    setName(`${firstName} ${lastName}`);
+    console.log("select user", id)
+    router.push(`/chat/${id}`)
+
+
+
     setProfileUrl(profileUrl || demoimg.src);
     console.log("Selected User ID:", id);
-    localStorage.setItem('retireProfessional', JSON.stringify(id))
-    // setUser2Id(id)
 
-    // console.log("Selected User ID:", id);
-    console.log("Selected email:", user2);
-    // Filter messages where the clicked email matches sender or recipient
     const filteredMessages = oldMessages?.data.messages.filter(
       (message: any) => message.sender === email || message.recipient === email
     );
 
-    // Update inbox state to display only relevant messages
+    const messageList = filteredMessages.map((msg: any, index: number) => ({
+      id: index + 1,
+      message: msg.message,
+      sender: msg.sender === user1 ? user1 : user2,
+      createdAt: msg.createdAt,
+    }))
+    console.log(messageList, "chekc message list")
     setInbox(
       filteredMessages.map((msg: any, index: number) => ({
-        id: index + 1, // Ensure unique ID for each message
+        id: index + 1,
         message: msg.message,
-        sender: msg.sender === user1 ? "sender" : "recipient",
+        sender: msg.sender === user1 ? user1 : user2,
         createdAt: msg.createdAt,
       }))
     );
@@ -178,20 +180,36 @@ const Page: React.FC = () => {
         media: selectedFiles
       };
       // console.log('my media is', media);
+      console.log(message, "check message from emit")
       socket.emit("privateMessage", JSON.stringify(message));
+      // if (message) {
+
+      //   setInbox((prevInbox) => [
+      //     ...prevInbox,
+      //     {
+      //       id: prevInbox.length + 1,
+      //       message: message.message,
+      //       sender: message.fromEmail,
+      //       createdAt: new Date().toISOString(),
+      //       meetingLink: "", // Add appropriate value if needed
+      //     }
+      //   ])
+
+      // }
+
 
       setMessages("");
       setSelectedFiles([])
       // console.log(message, "check message")
 
       // console.log(message.toEmail, "from emit")
-      console.log(users, "check users")
-      const filteredUsers = users.filter(user => {
-        console.log('my email is', message.toEmail);
-        return user.email !== message.toEmail
-      })
-      const filteredUser = users.filter(user => user.email === message.toEmail)
-      setUsers([filteredUser[0], ...filteredUsers])
+      // console.log(users, "check users")
+      // const filteredUsers = users.filter(user => {
+      //   // console.log('my email is', message.toEmail);
+      //   return user.email !== message.toEmail
+      // })
+      // const filteredUser = users.filter(user => user.email === message.toEmail)
+      // setUsers([filteredUser[0], ...filteredUsers])
     }
   };
 
@@ -252,21 +270,21 @@ const Page: React.FC = () => {
   }, []);
 
   // old message
-  useEffect(() => {
-    if (error) {
-      console.error("Error fetching old messages:", error);
-    }
+  // useEffect(() => {
+  //   if (error) {
+  //     console.error("Error fetching old messages:", error);
+  //   }
 
-    if (oldMessages?.data.messages) {
-      setInbox(oldMessages?.data.messages);
-    }
-  }, [oldMessages, error, user1]);
+  //   if (oldMessages?.data.messages) {
+  //     setInbox(oldMessages?.data.messages);
+  //   }
+  // }, [oldMessages, error, user1]);
 
 
   //socket connection
   useEffect(() => {
     if (!token?.email) {
-      console.log("Token not ready or email missing.");
+      // console.log("Token not ready or email missing.");
       return;
     }
 
@@ -281,6 +299,8 @@ const Page: React.FC = () => {
 
 
     mysocket.on("privateMessage", (data) => {
+      // console.log(data, "check listen data")
+
       console.log("Received private message:", data.message);
       const { message } = data;
       if (message) {
@@ -289,14 +309,13 @@ const Page: React.FC = () => {
           message
         ]);
         const filteredUsers = users.filter(user => {
-          return user.email !== message.sender
+          return user?.email !== message.sender
         })
-        const filteredUser = users.filter(user => user.email === message.sender)
+        const filteredUser = users.filter(user => user?.email === message.sender)
         setUsers([filteredUser[0], ...filteredUsers])
       }
     });
 
-    // console.log("//////////////////////////////////my conversation", users);
 
 
     mysocket.on("createZoomMeeting", (data) => {
@@ -348,18 +367,16 @@ const Page: React.FC = () => {
     });
   }, [getConversation?.data]);
 
-  useEffect(() => {
-    // console.log(getToUser?.data?.retireProfessional?.email, "chcekc emailo")
-    setUser2(getToUser?.data?.retireProfessional?.email)
+  // useEffect(() => {
+  //   // console.log(getToUser?.data?.retireProfessional?.email, "chcekc emailo")
+  //   setUser2(getToUser?.data?.retireProfessional?.email)
 
-  }, [getToUser])
-
-
-
-  console.log("my all conversation", users)
+  // }, [getToUser])
 
 
-  console.log('My local storage', localStorage.getItem('payment'))
+
+
+
 
   return (
     <section>
@@ -388,7 +405,7 @@ const Page: React.FC = () => {
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
             <div className="flex items-center">
               <Image
-                src={profileUrl}
+                src={getToUser?.data?.profileUrl || demoimg}
                 alt="Jane Cooper"
                 width={40}
                 height={40}
@@ -396,42 +413,52 @@ const Page: React.FC = () => {
               />
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-gray-900">
-                  {name}
+                  {getToUser?.data?.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data?.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
                 </h3>
                 <p className="text-xs text-gray-500">
                   Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              {token?.role === "retireProfessional" ? (
-                <>
+            {token?.role === "retireProfessional" ? (
+
+              <div className="flex items-center gap-6">
+
+                <button
+                  onClick={handleOpenModal}
+                  className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
+                  disabled
+                >
+                  Current Offers
+                </button>
+                {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
 
 
-                  <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
-                    Create an Offer
-                  </Button>
-                  {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
-                  <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
-                </>
-              ):(
-                  <>
-                    <button
-                      onClick={handleOpenModal}
-                      className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
-                    >
-                      Current Offers
-                    </button>
-                    {isModalOpen && <OffersModal onClose={handleOpenModal} user2={user2} />}
+                <Button onClick={handleProjectModal} disabled={isButtonDisabled} >
+                  Create an Offer
+                </Button>
+                {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
+                <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+              </div>
+            ) : (
+              <div className="flex items-center gap-6">
 
-                  </>
-              // <Button onClick={handleProjectModal} disabled={isButtonDisabled}>
-              //   Create an Offer
-              // </Button>
-              // {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
-              // <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
-              )}
-            </div>
+
+                <button
+                  onClick={handleOpenModal}
+                  className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
+                >
+                  Current Offers
+                </button>
+                {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
+
+                  <button onClick={handleProjectModal} disabled className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200">
+                  Create an Offer
+                </button>
+                {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
+                <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+              </div>
+            )}
           </div>
 
           <div className="flex-1">

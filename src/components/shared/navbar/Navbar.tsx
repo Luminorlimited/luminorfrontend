@@ -6,9 +6,6 @@ import { navbarLinks } from "@/utils/navbarData";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  // DropdownMenuGroup,
-  // DropdownMenuItem,
-  // DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // import LanguageSwitcher from "./LanguageSwitcher";
@@ -19,7 +16,6 @@ import { useDispatch } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 import { BiMessage } from "react-icons/bi";
-// import { FaRegHeart } from "react-icons/fa";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/api/userApi";

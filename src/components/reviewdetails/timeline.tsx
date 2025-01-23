@@ -96,7 +96,7 @@ export default function Timeline({ getSingleOrder }: { getSingleOrder: any }) {
                     <div className="flex-1">
                         <div className="flex items-center justify-between">
                             <span className="text-gray-700">Order has been started</span>
-                            <span className="text-gray-500 text-sm">{getSingleOrder?.data?.result?.project.createdAt}</span>
+                            <span className="text-gray-500 text-sm">{getSingleOrder?.data?.result?.project?.createdAt}</span>
                         </div>
 
                     </div>

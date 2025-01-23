@@ -54,7 +54,6 @@ export default function OrderDetails({ getSingleOrder }: { getSingleOrder: any }
                     </div>
 
 
-                    {/* Client Requirements Section */}
                     <div className="space-y-4">
 
                         <button className="inline-flex items-center gap-3 px-8 py-4 bg-primary hover:bg-[#5558E1] text-white rounded-xl transition-colors" onClick={handleDownloadPdf}>

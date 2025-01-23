@@ -46,7 +46,7 @@ export default function Milestones({ getSingleOrder }: { getSingleOrder: any }) 
     const getOffer = getSingleOrder?.data?.result?.project
     return (
         <div className="p-6 rounded-[10px] my-6 bg-[#FAFAFA]">
-            <h2 className="text-xl font-semibold mb-4">Milestones</h2>
+            <h2 className="text-xl font-semibold mb-4">{getOffer?.flatFee ? "Flat Fee" : getOffer?.hourleFee ? "Hourly Fee" : "Milestone"}</h2>
             <div className="overflow-x-auto">
                 <table className="min-w-full table-auto border-collapse">
                     <tbody>
@@ -65,9 +65,9 @@ export default function Milestones({ getSingleOrder }: { getSingleOrder: any }) 
                         ) : getOffer?.hourlyFee ? (
                             <tr className="border-b">
                                 <td className="py-2 px-4">1</td>
-                                <td className="py-2 px-4 text-[#4A4C56] font-medium">{getOffer.projectName}</td>
-                                <td className="py-2 px-4 text-[#4A4C56]">{getOffer.hourleFee.revision} Hour</td>
-                                <td className="py-2 px-4 text-[#4A4C56]">${getOffer.hourleFee.price}</td>
+                                <td className="py-2 px-4 text-[#4A4C56] font-medium">{getOffer?.projectName}</td>
+                                <td className="py-2 px-4 text-[#4A4C56]">{getOffer?.hourleFee?.revision} Hour</td>
+                                <td className="py-2 px-4 text-[#4A4C56]">${getOffer?.hourleFee?.price}</td>
                                 <td className="py-2 px-4">
                                     {/* <div className={`px-4 py-1 font-semibold rounded-[5px] text-sm ${statusStyles[milestone.status]}`}>
                                         {statusText[milestone.status]}

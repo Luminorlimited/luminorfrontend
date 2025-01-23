@@ -20,7 +20,7 @@ const paymentApi = baseApi.injectEndpoints({
             query: () => {
                 // console.log(userId)
                 return {
-                    url: `/order/client-order`,
+                    url: `/order/professional-order`,
                     method: 'GET',
                 }
             },
@@ -29,7 +29,7 @@ const paymentApi = baseApi.injectEndpoints({
         ProfessionalOrder: build.query({
             query: () => {
                 return {
-                    url: `/order/professional-order`,
+                    url: `/order/client-order`,
                     method: 'GET',
                 }
             },
@@ -46,11 +46,11 @@ const paymentApi = baseApi.injectEndpoints({
         }),
 
         deliverOrder: build.mutation({
-            query: ({id, data}) => {
+            query: (id) => {
                 return {
                     url: `/stripe/deliver-project/${id}`,
                     method: 'PATCH',
-                    body: data,
+
                 }
             },
             invalidatesTags: ['Payment']
@@ -65,6 +65,6 @@ const paymentApi = baseApi.injectEndpoints({
 
 
 
-export const { useOfferpaymentMutation, useTransactionListQuery, useProfessionalOrderQuery, useGetSingleOrderQuery, useDeliverOrderMutation} = paymentApi
+export const { useOfferpaymentMutation, useTransactionListQuery, useProfessionalOrderQuery, useGetSingleOrderQuery, useDeliverOrderMutation } = paymentApi
 
 

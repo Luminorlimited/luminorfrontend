@@ -8,7 +8,7 @@ import { useGetOfferQuery } from "@/redux/api/offerApi";
 interface OffersModalProps {
 
     onClose: () => void;
-    user2: string;
+    user1: string;
 }
 
 export interface Offer {
@@ -44,14 +44,16 @@ export interface Offer {
 
 
 
-const OffersModal: React.FC<OffersModalProps> = ({ onClose, user2 }) => {
+const OffersModal: React.FC<OffersModalProps> = ({ onClose, user1 }) => {
 
     // const [oldOffer, setOldOffer] = useState
-    const { data: getoffer, isLoading } = useGetOfferQuery(user2)
-    console.log("My email", user2);
+    const { data: getoffer, isLoading } = useGetOfferQuery(user1)
+    console.log("My email", user1);
     console.log("My offer", getoffer);
     const [offers, setOffers] = useState<Offer[]>([]);
-    console.log(offers);
+    console.log("user 2", offers);
+    console.log("user 2", user1);
+
 
     // const [socket, setSocket] = useState<any>(null);
     // const token = useDecodedToken()
@@ -87,7 +89,7 @@ const OffersModal: React.FC<OffersModalProps> = ({ onClose, user2 }) => {
                 </button>
                 {selectedOffer !== null ?
                     <div>
-                        <OrderDetailsModal data={selectedOffer} />
+                        <OrderDetailsModal data={selectedOffer} onClose={onClose} />
                     </div>
                     : <div>
                         <div className="flex justify-between items-center mb-4">

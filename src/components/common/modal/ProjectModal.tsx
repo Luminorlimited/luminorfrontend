@@ -73,6 +73,9 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
         console.log("Final Form Values:", data);
 
         // Safely stringify data
+        console.log(data, "check data")
+        console.log(user1, "user 1")
+        console.log(user2, "user 2")
         try {
             const myOffer = {
                 fromEmail: user1,
