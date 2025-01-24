@@ -14,34 +14,6 @@ interface AllUsersProps {
 
 export default function AllUsers({ handleshowMessage, getConversation }: AllUsersProps) {
   // console.log('selected id is', getConversation);
-
-
-
-  // const formatTimeDifference = (timestamp: Date): string => {
-  //   const now = new Date();
-  //   const differenceInMs = now.getTime() - timestamp.getTime();
-  //   const differenceInMinutes = Math.floor(differenceInMs / (1000 * 60));
-
-  //   if (differenceInMinutes < 60) {
-  //     return `${differenceInMinutes} min ago`;
-  //   } else if (differenceInMinutes < 1440) {
-  //     const hours = Math.floor(differenceInMinutes / 60);
-  //     return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-  //   } else {
-  //     const days = Math.floor(differenceInMinutes / 1440);
-  //     return `${days} day${days > 1 ? 's' : ''} ago`;
-  //   }
-  // };
-
-  // const [onlineUsers, setOnlineUsers] = useState<{ [email: string]: boolean }>({});
-
-
-
-
-
-
-  // console.log('my sidebar conversation', getConversation);
-
   return (
     <div>
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">

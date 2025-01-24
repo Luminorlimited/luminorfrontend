@@ -38,7 +38,6 @@ const Page: React.FC = () => {
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [fileBtn, showFileBtn] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const token = useDecodedToken()
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
@@ -56,7 +55,7 @@ const Page: React.FC = () => {
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
 
 
-  console.log('My user id', getToUser)
+  // console.log('My user id', getToUser)
 
 
   const handleClick = () => {
@@ -78,29 +77,26 @@ const Page: React.FC = () => {
     input.click();
   };
 
-  const handleFileRemove = (fileToRemove: File) => {
-    // Remove the specific file from the selectedFiles array
-    setSelectedFiles(prevFiles => prevFiles.filter(file => file !== fileToRemove));
-  };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target;
-    if (target?.files) {
-      const newFiles = Array.from(target.files);
-      setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
 
-      // convert base64
-      const firstImageFile = newFiles[0];
-      if (firstImageFile) {
-        const reader = new FileReader()
-        reader.readAsDataURL(firstImageFile)
-        reader.onload = () => {
-          const base64String = reader.result
-          console.log(`My image base64 is: `, base64String);
-        }
-      }
-    }
-  };
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const target = e.target;
+  //   if (target?.files) {
+  //     const newFiles = Array.from(target.files);
+  //     setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
+
+  //     // convert base64
+  //     const firstImageFile = newFiles[0];
+  //     if (firstImageFile) {
+  //       const reader = new FileReader()
+  //       reader.readAsDataURL(firstImageFile)
+  //       reader.onload = () => {
+  //         const base64String = reader.result
+  //         console.log(`My image base64 is: `, base64String);
+  //       }
+  //     }
+  //   }
+  // };
 
   const handleEmojiClick = (emojiObject: any) => {
     setMessages((prevMessages) => prevMessages + emojiObject.emoji);
@@ -135,7 +131,6 @@ const Page: React.FC = () => {
   const user2 = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
 
   console.log("My user2 email", user2);
-  // 678f173ecd61d3d7199126de
   const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
     const { id, email, profileUrl } = user;
 
@@ -145,13 +140,13 @@ const Page: React.FC = () => {
 
 
     setProfileUrl(profileUrl || demoimg.src);
-    console.log("Selected User ID:", id);
 
     const filteredMessages = oldMessages?.data.messages.filter(
       (message: any) => message.sender === email || message.recipient === email
     );
+    console.log("Selected User ID:", filteredMessages);
 
-    const messageList = filteredMessages.map((msg: any, index: number) => ({
+    const messageList = filteredMessages?.map((msg: any, index: number) => ({
       id: index + 1,
       message: msg.message,
       sender: msg.sender === user1 ? user1 : user2,
@@ -159,7 +154,7 @@ const Page: React.FC = () => {
     }))
     console.log(messageList, "chekc message list")
     setInbox(
-      filteredMessages.map((msg: any, index: number) => ({
+      filteredMessages?.map((msg: any, index: number) => ({
         id: index + 1,
         message: msg.message,
         sender: msg.sender === user1 ? user1 : user2,
@@ -168,84 +163,102 @@ const Page: React.FC = () => {
     );
   };
 
+
+
+  // convert image to  base64 
+
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>([]);
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validImages = files.filter((file) => file.type.startsWith("image/"));
+
+    // Alert for invalid files
+    if (validImages.length !== files.length) {
+      alert("Please select only valid image files.");
+      return;
+    }
+
+    // Convert files to base64 and store them
+    const base64Images = await Promise.all(
+      validImages.map((file) => convertFileToBase64(file))
+    );
+
+    setSelectedImages((prevImages) => [...prevImages, ...validImages]);
+    setSelectedBase64Images((prevImages) => [...prevImages, ...base64Images]);
+  };
+
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileRemove = (base64: string) => {
+    const indexToRemove = selectedBase64Images.indexOf(base64);
+    if (indexToRemove > -1) {
+      setSelectedBase64Images((prevImages) =>
+        prevImages.filter((_, index) => index !== indexToRemove)
+      );
+      setSelectedImages((prevFiles) =>
+        prevFiles.filter((_, index) => index !== indexToRemove)
+      );
+    }
+  };
+
+
+
+
+
+
   const onSendMessage = (e: any) => {
 
 
     e.preventDefault();
+    if (!messages.trim() && selectedBase64Images.length === 0) {
+      alert("Please enter a message or select an image.");
+      return;
+    }
+
+    console.log("My selected files", selectedBase64Images)
+    const base64Images = selectedImages.map(async (file) => await convertFileToBase64(file));
+    console.log('my base64 images', base64Images);
     if (messages.trim()) {
+
+      console.log("i am messages trip", messages)
       const message = {
         toEmail: user2,
-        message: messages,
+        message: messages.trim() || null,
         fromEmail: token?.email,
-        media: selectedFiles
+        media: selectedBase64Images
       };
       // console.log('my media is', media);
-      console.log(message, "check message from emit")
+      console.log(message, "check message")
+      console.log(selectedImages, "check message from emit")
+
       socket.emit("privateMessage", JSON.stringify(message));
-      // if (message) {
-
-      //   setInbox((prevInbox) => [
-      //     ...prevInbox,
-      //     {
-      //       id: prevInbox.length + 1,
-      //       message: message.message,
-      //       sender: message.fromEmail,
-      //       createdAt: new Date().toISOString(),
-      //       meetingLink: "", // Add appropriate value if needed
-      //     }
-      //   ])
-
-      // }
 
 
       setMessages("");
-      setSelectedFiles([])
-      // console.log(message, "check message")
+      setSelectedImages([])
+      setSelectedBase64Images([])
 
-      // console.log(message.toEmail, "from emit")
-      // console.log(users, "check users")
-      // const filteredUsers = users.filter(user => {
-      //   // console.log('my email is', message.toEmail);
-      //   return user.email !== message.toEmail
-      // })
-      // const filteredUser = users.filter(user => user.email === message.toEmail)
-      // setUsers([filteredUser[0], ...filteredUsers])
     }
   };
 
-  // const handleFileUpload = (file: File) => {
-  //   const reader = new FileReader();
 
-  //   // Read the file as a Base64 encoded string
-  //   reader.readAsDataURL(file);
-
-  //   // When the file is fully read
-  //   reader.onload = () => {
-  //     const base64String = reader.result; // Contains the Base64 encoded string
-
-  //     // Check if the socket exists and the file data is valid
-  //     if (socket && base64String) {
-  //       socket.emit('fileUpload', {
-  //         file: base64String,
-  //         filename: file.name
-  //       });
-  //     }
-  //   };
-
-  //   // Handle file reading errors, if any
-  //   reader.onerror = () => {
-  //     console.error("File reading failed:", reader.error);
-  //   };
-  // };
 
   const handleCreateZoomMeeting = () => {
     if (socket) {
       const callInfo = {
-        fromEmail: token?.email, // Ensure token contains email
-        toEmail: user2, // Replace with recipient's email
+        fromEmail: token?.email,
+        toEmail: user2,
       };
 
-      // Emit event to create Zoom meeting
       socket.emit("createZoomMeeting", JSON.stringify(callInfo));
     } else {
       toast.error("Socket connection not established.");
@@ -269,29 +282,17 @@ const Page: React.FC = () => {
     };
   }, []);
 
-  // old message
-  // useEffect(() => {
-  //   if (error) {
-  //     console.error("Error fetching old messages:", error);
-  //   }
-
-  //   if (oldMessages?.data.messages) {
-  //     setInbox(oldMessages?.data.messages);
-  //   }
-  // }, [oldMessages, error, user1]);
 
 
   //socket connection
   useEffect(() => {
     if (!token?.email) {
-      // console.log("Token not ready or email missing.");
       return;
     }
 
     const mysocket = io("ws://localhost:5001");
     setSocket(mysocket);
 
-    // Log connection
     mysocket.on("connect", () => {
       console.log("Connected to socket.io.");
       mysocket.emit("register", JSON.stringify({ email: token?.email }));
@@ -299,8 +300,6 @@ const Page: React.FC = () => {
 
 
     mysocket.on("privateMessage", (data) => {
-      // console.log(data, "check listen data")
-
       console.log("Received private message:", data.message);
       const { message } = data;
       if (message) {
@@ -353,8 +352,6 @@ const Page: React.FC = () => {
   }, [token?.email, users]);
 
 
-
-
   // add user in conversation sidebar
   useEffect(() => {
     setUsers((prevUsers) => {
@@ -364,14 +361,6 @@ const Page: React.FC = () => {
       return prevUsers;
     });
   }, [getConversation?.data]);
-
-  // useEffect(() => {
-  //   // console.log(getToUser?.data?.retireProfessional?.email, "chcekc emailo")
-  //   setUser2(getToUser?.data?.retireProfessional?.email)
-
-  // }, [getToUser])
-
-
 
 
 
@@ -450,7 +439,7 @@ const Page: React.FC = () => {
                 </button>
                 {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
 
-                  <button onClick={handleProjectModal} disabled className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200">
+                <button onClick={handleProjectModal} disabled className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200">
                   Create an Offer
                 </button>
                 {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
@@ -480,9 +469,8 @@ const Page: React.FC = () => {
 
           <div
             className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
-
             <div
-              className={`absolute -top-[95px] left-[25px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
+              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-5 pointer-events-none"
                 }`}
@@ -507,14 +495,23 @@ const Page: React.FC = () => {
                 onClick={handleClick}
                 className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
               />
-              {selectedFiles.length > 0 && (
+              {selectedBase64Images.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {selectedFiles.map((file, index) => (
-                    <div key={index} className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg">
-                      <span className="text-sm truncate">{file.name}</span>
+                  {selectedBase64Images.map((base64, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg"
+                    >
+                      <Image
+                        width={90}
+                        height={40}
+                        src={base64}
+                        alt="Selected"
+                        className="w-[90px] h-10 object-cover rounded"
+                      />
                       <button
                         type="button"
-                        onClick={() => handleFileRemove(file)}
+                        onClick={() => handleFileRemove(base64)}
                         className="text-red-500 font-bold"
                       >
                         X
@@ -529,7 +526,7 @@ const Page: React.FC = () => {
                 type="file"
                 multiple // Allow multiple files selection
                 style={{ display: "none" }} // Hide the input element
-                onChange={handleFileChange}
+                onChange={handleImageChange}
               />
               <input
                 placeholder="Write message here..."

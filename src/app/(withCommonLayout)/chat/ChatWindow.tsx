@@ -52,7 +52,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorSche
   const token = useDecodedToken()
   const { data: profileData } = useGetProfileQuery(token?.id);
 
-  // console.log("My message", message)
+  // console.log("My message", messages)
 
 
 
@@ -74,11 +74,19 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorSche
             className={`p-3 ${isSender ? "rounded-l-[10px] rounded-b-[10px]" : "rounded-r-[10px] rounded-b-[10px]"
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg}`}
           >
-            {message?.meetingLink
-              ? <Link href={message.meetingLink} target="_blank" rel="noopener noreferrer" className="text-blue-600 cursor-pointer hover:underline">
-                {message.meetingLink.substring(0, 25)}...
+            {message?.message?.startsWith("https://") ? (
+              <Link
+                href={message?.message}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 cursor-pointer hover:underline"
+              >
+                {message?.message.length > 25 ? `${message?.message.substring(0, 25)}...` : message?.message}
               </Link>
-              : message?.message}
+            ) : (
+              <span>{message?.message}</span>
+            )}
+
           </div>
 
 

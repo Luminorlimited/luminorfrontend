@@ -62,9 +62,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
         setSelectedImages(validImages);
         validImages.forEach((file) =>
             appendFile({
-
                 file,
-
             })
         );
     };
