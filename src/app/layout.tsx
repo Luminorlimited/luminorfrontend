@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ReduxProvider from "@/redux/ReduxProvider";
-import {Toaster} from "sonner"
+import { Toaster } from "sonner"
+
+
 const OpenSans = localFont({
   src: "./fonts/OpenSans-VariableFont_wdth,wght.ttf",
   variable: "--font-open-sans",
