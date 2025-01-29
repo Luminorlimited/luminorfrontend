@@ -10,10 +10,11 @@ interface AllUsersProps {
   handleshowMessage: (user: any) => void;
   // getUser: User | null; // Replace `any` with proper type
   getConversation: any;
+  messageNotifications: any;
 }
 
-export default function AllUsers({ handleshowMessage, getConversation }: AllUsersProps) {
-  // console.log('selected id is', getConversation);
+export default function AllUsers({ handleshowMessage, getConversation, messageNotifications }: AllUsersProps) {
+  console.log('selected id is', getConversation);
   return (
     <div>
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">
@@ -79,12 +80,15 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
 
 
                       <span className="text-xs text-gray-500">
-                        {/* {user.messages.length > 0
-                          ? formatTimeDifference(
-                            user.messages[user.messages.length - 1].timestamp
-                          )
-                          : 'No messages'} */}
+
+
+                        {messageNotifications > 0 && (
+                          <span className=" bg-red-500 p-[3px] text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
+                            {messageNotifications}
+                          </span>
+                        )}
                       </span>
+                 
                     </div>
                     {/* <div className="flex justify-between items-center">
                       <h3 className="text-sm">mahi</h3>

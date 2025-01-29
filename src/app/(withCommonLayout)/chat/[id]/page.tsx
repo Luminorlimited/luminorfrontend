@@ -20,9 +20,7 @@ import { useGetConversationQuery, useGetuserQuery } from '@/redux/api/messageApi
 import demoimg from '@/assets/images/demoimg.png';
 import { useGetProfileQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
-
 import { useGetMessageQuery } from "@/redux/api/messageApi";
-
 import useDecodedToken from "@/components/common/DecodeToken";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
@@ -49,7 +47,6 @@ const Page: React.FC = () => {
   const receivermail = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
   const { data: oldMessages } = useGetMessageQuery({ user1, receivermail })
   const { data: getConversation } = useGetConversationQuery(undefined);
-  // const [media, setMedia] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
@@ -113,17 +110,13 @@ const Page: React.FC = () => {
   console.log(profileData?.data?.retireProfessional?.stripe.isOnboardingSucess);
 
   const handleProjectModal = () => {
-    if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === false) {
-      toast.error("As a retired professional you must have to verify your bank account.")
-      router.push(profileData?.data?.retireProfessional?.stripe.onboardingUrl)
-    } else {
-      if (isButtonDisabled) return;
-      setIsButtonDisabled(true);
-      setProjectModal((prevState) => !prevState);
-      setTimeout(() => {
-        setIsButtonDisabled(false);
-      }, 200);
-    }
+    if (isButtonDisabled) return;
+    setIsButtonDisabled(true);
+    setProjectModal((prevState) => !prevState);
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    });
+
 
 
   };
@@ -283,7 +276,9 @@ const Page: React.FC = () => {
   }, []);
 
 
+  const [messageNotifications, setmessageNotifications] = useState(0); // Badge count for offers
 
+  console.log("my offer notification", messageNotifications);
   //socket connection
   useEffect(() => {
     if (!token?.email) {
@@ -296,6 +291,12 @@ const Page: React.FC = () => {
     mysocket.on("connect", () => {
       console.log("Connected to socket.io.");
       mysocket.emit("register", JSON.stringify({ email: token?.email }));
+    });
+
+    mysocket.on("message-notification", (data) => {
+      console.log("New offer notification:", data);
+      setmessageNotifications((prevCount) => prevCount + 1);
+      toast.success(`${data.sender} sent you a new offer!`);
     });
 
 
@@ -384,7 +385,7 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-            <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} />
+            <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} messageNotifications={messageNotifications} />
           </div>
         </div>
 
@@ -417,6 +418,8 @@ const Page: React.FC = () => {
                   disabled
                 >
                   Current Offers
+
+
                 </button>
                 {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
 
@@ -433,9 +436,15 @@ const Page: React.FC = () => {
 
                 <button
                   onClick={handleOpenModal}
-                  className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
+                  className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
                 >
-                  Current Offers
+                  Current Offersss
+                  {/* {messageNotifications > 0 && (
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
+                      {messageNotifications}
+                    </span>
+                  )} */}
+                  {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center"> {offerNotifications}</span> */}
                 </button>
                 {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
 

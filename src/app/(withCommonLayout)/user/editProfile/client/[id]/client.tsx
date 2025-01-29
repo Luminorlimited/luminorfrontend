@@ -130,38 +130,38 @@ export default function Client() {
 
     // console.log(profileData?.data?.budgetRange?.min);
     const handleSubmitForm = async (data: any) => {
+        // Update the data object with min/max budget and duration values
         data.minBudget = budgetMinValue;
         data.maxBudget = budgetMaxValue;
         data.minDuration = durationMinValue;
         data.maxDuration = durationMaxValue;
 
-        const formData = new FormData();
-        Object.entries(data).forEach(([Key, value]) => {
-            if (value !== undefined && value !== "") {
-                formData.append(Key, value as string);
-                // formData.append(`projectPreference[${Key}]`, value as string);
+        // Ensure that projectPreference is set correctly in the data object
+        data.projectPreference = inputs;
 
+        const formData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            if (value !== undefined && value !== "") {
+                formData.append(key, value as string);
             }
         });
 
         formData.append('name[firstName]', data.firstName);
         formData.append('name[lastName]', data.lastName);
-        // console.log('my data is', data.minBudget);
-        // console.log('my data is', data.maxBudget);
-
         formData.append('projectDurationRange[max]', data.maxDuration);
         formData.append('projectDurationRange[min]', data.minDuration);
         formData.append('budgetRange[min]', data.minBudget);
         formData.append('budgetRange[max]', data.maxBudget);
-        formData.append('projectPreference', data.projectPreference)
 
         if (Array.isArray(data.projectPreference)) {
             data.projectPreference.forEach((preference: string) => {
                 if (preference !== undefined && preference !== "") {
                     formData.append('projectPreference[]', preference);
+                    console.log('My project preference: ', preference);
                 }
             });
         }
+
         if (selectProject) {
             formData.append('projectUrl', selectProject);
         }
@@ -169,21 +169,19 @@ export default function Client() {
         if (selectedImage instanceof File) {
             formData.append('profileUrl', selectedImage);
         }
+
         try {
             const res = await editclientProfile({ id: userIdValue, data: formData });
-            // console.log(res);
             if (res) {
-                toast.success("Profile updated successfully")
-
+                toast.success("Profile updated successfully");
             } else {
-                toast.error("Profile can't updated successfully")
+                toast.error("Profile can't be updated successfully");
             }
         } catch (error) {
-            toast.error("can't  successfully")
+            toast.error("Can't update successfully");
             console.log(error);
         }
         // reset();
-
     };
 
     // const watchSelectedService = watch("selectedService");
@@ -243,7 +241,7 @@ export default function Client() {
     }
 
     // Handle button click to trigger file input
-    const [inputs, setInputs] = useState<string[]>([profileData?.data?.projectPreference]);
+    const [inputs, setInputs] = useState<string[]>(profileData?.data?.projectPreference || []);
 
     const handleAddInput = () => {
         setInputs((prevInputs) => [...prevInputs, ""]);
@@ -258,7 +256,6 @@ export default function Client() {
     useEffect(() => {
         console.log("selectProject state updated:", selectProject)
     }, [selectProject])
-    console.log('my profile is', profileData?.data);
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -463,6 +460,7 @@ export default function Client() {
                                                 <input
                                                     type="text"
                                                     value={inputValue}
+                                                    {...register(`projectPreference[${index}]`)}
                                                     onChange={(e) => {
                                                         const updatedInputs = [...inputs];
                                                         updatedInputs[index] = e.target.value;
