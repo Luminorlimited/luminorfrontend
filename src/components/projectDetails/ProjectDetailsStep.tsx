@@ -5,7 +5,7 @@ import { Download } from "lucide-react";
 import Button from "@/components/common/Button";
 import RequirementsStep from "./RequirementStep";
 import PaymentInfoStep from "./PaymentInfoStep";
-import { useGetSingleOfferQuery } from "@/redux/api/offerApi";
+import { useGetSingleOfferQuery } from "@/redux/Api/offerApi";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 

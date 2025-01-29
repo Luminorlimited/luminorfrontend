@@ -7,10 +7,9 @@ import { CheckCheck } from "lucide-react";
 import avatar1 from "@/assets/images/msgavatar1.png";
 import avatar2 from "@/assets/images/msgavatar2.png";
 import Image from "next/image";
-import { useGetProfileQuery } from "@/redux/api/userApi";
 import useDecodedToken from "@/components/common/DecodeToken";
 import Link from "next/link";
-// import demoimg from '@/assets/images/demoimg.png';
+import { useGetProfileQuery } from "@/redux/Api/userApi";
 
 
 
@@ -130,7 +129,7 @@ const Communication: FC<CommunicationProps> = ({
       <div className="h-full">
         <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
           {/* Render each message */}
-          {messages.map((message, index: number) => (
+          {messages?.map((message, index: number) => (
             <MessageBubble
               key={index}
               message={message}

@@ -14,9 +14,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "next/navigation";
-import { useEditclientprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import avatar from '@/assets/images/avatar.jpg';
 import { toast } from "sonner";
+import { useEditclientprofileMutation, useGetProfileQuery } from "@/redux/Api/userApi";
 // import { get } from "lodash";
 
 const servicesData = [
@@ -56,6 +56,10 @@ const minGap = 0;
 const minPrice = 1;
 const maxPrice = 400;
 
+interface ProfileData {
+    [key: string]: any; // Use a more specific type if you know the data shape
+}
+
 export default function Client() {
 
     interface DecodedToken {
@@ -82,7 +86,31 @@ export default function Client() {
     const [editclientProfile] = useEditclientprofileMutation();
 
     const { data: profileData } = useGetProfileQuery(userIdValue);
+    const [myProfileData, setProfileData] = useState<ProfileData>(profileData || {});
 
+    useEffect(() => {
+        // Update local state when profileData is fetched
+        if (profileData) {
+            setProfileData(profileData);
+        }
+    }, [profileData]);
+
+    const handleChange = (key: string, value: any) => {
+        setProfileData((prevData: ProfileData) => {
+            const newData = structuredClone(prevData); // Deep clone the object (modern way)
+
+            const keys = key.split(".");
+            let temp: any = newData;
+
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (!temp[keys[i]]) temp[keys[i]] = {};
+                temp = temp[keys[i]];
+            }
+
+            temp[keys[keys.length - 1]] = value;
+            return newData;
+        });
+    };
 
 
 
@@ -256,6 +284,7 @@ export default function Client() {
     useEffect(() => {
         console.log("selectProject state updated:", selectProject)
     }, [selectProject])
+ 
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -305,12 +334,13 @@ export default function Client() {
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                                 <div>
                                     <label htmlFor="fname" className="block text-sm mb-2">First name</label>
-                                    <input id="fname" defaultValue={profileData?.data?.client?.name?.firstName || ''} {...register("firstName")} onChange={(e) => setValue("firstName", e.target.value)}
+                                    <input id="fname" value={myProfileData?.data?.client?.name?.firstName || ""} {...register("firstName")} onChange={(e) => handleChange("data.client.name.firstName", e.target.value)}
+
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" placeholder="first name" />
                                 </div>
                                 <div>
                                     <label htmlFor="lname" className="block text-sm mb-2">Last name</label>
-                                    <input id="lname" defaultValue={profileData?.data?.client?.name?.lastName || ''}  {...register("lastName")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => setValue("lastName", e.target.value)} placeholder="last name" />
+                                    <input id="lname" value={myProfileData?.data?.client?.name?.lastName || ''}  {...register("lastName")} className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" onChange={(e) => handleChange("data.client.name.lastName", e.target.value)} placeholder="last name" />
                                 </div>
                             </div>
                             <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">

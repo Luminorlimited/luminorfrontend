@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
-import { useGetOfferQuery } from "@/redux/api/offerApi";
+import { useGetOfferQuery } from "@/redux/Api/offerApi";
 // import io from 'socket.io-client'; // Import the socket.io-client
 // import useDecodedToken from "../DecodeToken";
 

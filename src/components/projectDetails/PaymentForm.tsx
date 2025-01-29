@@ -7,8 +7,8 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { PaymentInfoStepProps } from './PaymentInfoStep'
 import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useParams } from 'next/navigation'
-import { useGetProfileQuery } from '@/redux/api/userApi'
-import { useOfferpaymentMutation } from '@/redux/api/paymentApi'
+import { useGetProfileQuery } from '@/redux/Api/userApi'
+import { useOfferpaymentMutation } from '@/redux/Api/paymentApi'
 import { toast } from 'sonner'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

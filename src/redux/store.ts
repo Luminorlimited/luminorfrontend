@@ -2,9 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import adminAuth from './ReduxFunction'; // Assuming your auth slice is here
+import baseApi from './Api/baseApi';
 
-import baseApi from './api/baseApi'; // RTK Query API
-// import { projectSlice } from './slice/projectslice';
 
 // Persist configuration for Auth
 const authPersistConfig = {

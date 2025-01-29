@@ -5,7 +5,7 @@ import Milestones from "@/components/reviewdetails/milestones";
 import OrderDetails from "@/components/reviewdetails/OrderDetails";
 import OrderHeader from "@/components/reviewdetails/OrderHeader";
 import Timeline from "@/components/reviewdetails/timeline";
-import { useGetSingleOrderQuery } from "@/redux/api/paymentApi";
+import { useGetSingleOrderQuery } from "@/redux/Api/paymentApi";
 import { useParams } from "next/navigation";
 
 

@@ -4,7 +4,7 @@ import Button from "@/components/common/Button";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import offer from "@/assets/images/offer.png";
-import { useDeleteOfferMutation } from "@/redux/api/offerApi";
+import { useDeleteOfferMutation } from "@/redux/Api/offerApi";
 import { toast } from "sonner";
 
 interface OrderDetailsModalProps {

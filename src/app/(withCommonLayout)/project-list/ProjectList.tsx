@@ -4,13 +4,13 @@ import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
 import Pagination from '@/components/common/pagination/Pagination';
-import { useClientListQuery, useLazyClientFilterListQuery, useLazyProfessionalListQuery, useProfessionalFilterListQuery } from '@/redux/api/projectApi';
 import profileImgFallback from '@/assets/images/profilepix.jpg'; // Fallback profile image
 import projectImgFallback from '@/assets/images/package.png'; // Fallback project image
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { setclientFilter } from '@/redux/ReduxFunction';
+import { useClientListQuery, useLazyClientFilterListQuery, useLazyProfessionalListQuery, useProfessionalFilterListQuery } from '@/redux/Api/projectApi';
 
 interface ProjectListProps {
     FilteredData: { industry: string[]; timeline: string[]; skillType: string[] };
@@ -18,16 +18,19 @@ interface ProjectListProps {
 
 const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
-    console.log('My filter data is ', FilteredData);
+
+
     const route = usePathname();
-
+    
     const dispatch = useDispatch();
-
+    
     const [clientLazyData] = useLazyProfessionalListQuery();
     const [professionalLazyData] = useLazyClientFilterListQuery();
-
+    
     const { data: clientData } = useClientListQuery({});
     const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
+    // console.log('get client ', clientData);
+    // console.log('get professional ', professionalData);
     const [filteredData, setFilteredData] = useState(null);
 
     useEffect(() => {
@@ -55,21 +58,19 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         ? filteredData
         : professionalData;
 
-    // console.log('my client', clientData);
-    console.log('my professional', professionalData);
-
+ 
     useEffect(() => {
         if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
             dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
         }
     }, [FilteredData, dispatch]);
-    console.log({ industry: [], timeline: [], skillType: [] });
+    // console.log({ industry: [], timeline: [], skillType: [] });
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
 
     const indexOfLastItem = currentPage * itemsPerPage;
-    const data = (route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data) || []; // Ensure `data` is always an array
+    const data = (route === '/project-list/client' ? professionalServicesToShow?.data : servicesToShow?.data) || []; // Ensure `data` is always an array
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
@@ -79,13 +80,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         setCurrentPage(pageNumber);
     };
 
-    console.log('currentItems', currentItems);
-
+    // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
+    console.log("My test is", currentItems);
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
-                {route === '/project-list/retireProfessional' ? (
-                    professionalData?.data.map((data: any, index: number) => (
+                {route === '/project-list/client' ? (
+                    currentItems?.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -111,7 +112,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                 <div className="mb-3 flex items-center gap-3">
                                     <h2>Preference: </h2>
                                     <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
-                                        {data?.preferedProjects || "Not Specified"}
+                                        {data?.expertise || "Not Specified"}
                                     </span>
                                 </div>
 
@@ -140,18 +141,18 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                 </div>
 
                                 <h3 className="mb-4 text-xl font-bold text-black">
-                                    {data.bio || "Untitled Project"}
+                                    {data.preferedProjects || "Untitled Projects"}
                                 </h3>
 
-                                <div className="flex items-center justify-between">
-                                    <div className="text-xl">
+                                <div className="">
+                                    {/* <div className="text-xl">
                                         <span className="text-gray-500">Budget: </span>
                                         <span className="font-medium text-gray-900">
                                             ${data.hourlyRate || "N/A"}
                                         </span>
-                                    </div>
+                                    </div> */}
 
-                                    <Link className='rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat/${data?.userDetails?._id}`}>Connect Now</Link>
+                                    <Link className='rounded-[12px] w-full block text-center  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200' href={`/chat/${data?.userDetails?._id}`}>Connect Now</Link>
 
                                     {/* <Button>Connect Now</Button> */}
                                 </div>
@@ -185,7 +186,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                 <div className="mb-3 flex items-center gap-3">
                                     <h2>Preferences: </h2>
                                     <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
-                                        {data.servicePreference?.[0] || "Not Specified"}
+                                        {data.projectPreference?.[0] || "Not Specified"}
                                     </span>
                                 </div>
 
@@ -207,7 +208,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
                                     <div className="flex items-center gap-1">
                                         <span className="text-[16px] font-medium text-gray-900">
-                                            ★ 4.7
+                                            ★ {data.client?.name?.firstName || "Client"}
                                         </span>
                                         <span className="text-[16px] text-gray-500">(123)</span>
                                     </div>

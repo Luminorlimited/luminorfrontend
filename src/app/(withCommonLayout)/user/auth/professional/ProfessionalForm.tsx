@@ -10,7 +10,7 @@ import circleshape from "@/assets/shapes/circleshape.png";
 import Password from "./Password";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { useProfessionalUserMutation } from "@/redux/api/userApi";
+import { useProfessionalUserMutation } from "@/redux/Api/userApi";
 import SuccessPage from "./Success";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";

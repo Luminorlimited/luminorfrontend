@@ -6,7 +6,7 @@ import circleshape from '@/assets/shapes/circleshape.png'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import ImageCarousel from "./ImageCarousel/ImageCarousel";
-import { useLoginUserMutation } from "@/redux/api/userApi";
+import { useLoginUserMutation } from "@/redux/Api/userApi";
 import { useRouter } from "next/navigation";
 import Link from "next/link"
 import { Button } from "@/components/ui/button"

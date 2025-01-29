@@ -1,19 +1,9 @@
-import baseApi from "@/redux/api/baseApi";
+import baseApi from "./baseApi"
 
 
 const offerApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-        // loginUser: build.mutation({
-        //     query: ({id, data}) => {
-        //         console.log(data)
-        //         return {
-        //             url: `/offer/professional/${id}`,
-        //             method: 'POST',
-        //             body: data
-        //         }
-        //     },
-        //     invalidatesTags: ['Offer']
-        // }),
+      
         getOffer: build.query({
             query: (userId) => {
                 console.log(userId)

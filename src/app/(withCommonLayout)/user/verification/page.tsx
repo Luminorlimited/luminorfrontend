@@ -8,7 +8,7 @@ import ImageCarousel from "../auth/login/ImageCarousel/ImageCarousel";
 import { useState } from "react";
 // import { setVerify } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
-import { useGetProfileQuery, useVerifyUserMutation } from "@/redux/api/userApi";
+import { useGetProfileQuery, useVerifyUserMutation } from "@/redux/Api/userApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import Cookies from 'js-cookie';

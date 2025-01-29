@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import Image from "next/image";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaCog } from 'react-icons/fa';
 import { AiOutlinePlus, AiOutlineUpload } from 'react-icons/ai'
 import CheckBox from "@/components/common/checkbox/CheckBox";
@@ -12,10 +12,10 @@ import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
-import { useEditprofessionalprofileMutation, useGetProfileQuery } from "@/redux/api/userApi";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import avatar from '@/assets/images/avatar.jpg';
+import { useEditprofessionalprofileMutation, useGetProfileQuery } from "@/redux/Api/userApi";
 
 const servicesData = [
     {
@@ -50,6 +50,9 @@ const servicesData = [
     }
 ];
 
+interface ProfileData {
+    [key: string]: any; // Use a more specific type if you know the data shape
+}
 export default function Professional() {
 
     const [isDragging, setIsDragging] = useState(false)
@@ -80,10 +83,30 @@ export default function Professional() {
 
     //   const watchSelectedService = watch("selectedService");
     const { data: profileData } = useGetProfileQuery(userIdValue);
-    console.log('my profile is', profileData);
+    const [myProfileData, setProfileData] = useState<ProfileData>(profileData || {})
 
+    useEffect(() => {
+        if (profileData) {
+            setProfileData(profileData)
+        }
+    }, [profileData])
 
-    console.log('my profile data is', profileData?.data);
+    const handleChange = (key: string, value: any) => {
+        setProfileData((prevData: ProfileData) => {
+            const newData = structuredClone(prevData); // Deep clone the object (modern way)
+
+            const keys = key.split(".");
+            let temp: any = newData;
+
+            for (let i = 0; i < keys.length - 1; i++) {
+                if (!temp[keys[i]]) temp[keys[i]] = {};
+                temp = temp[keys[i]];
+            }
+
+            temp[keys[keys.length - 1]] = value;
+            return newData;
+        });
+    };
 
     const handleSubmitForm = async (data: any) => {
         if (!data || typeof data !== "object") {
@@ -219,9 +242,9 @@ export default function Professional() {
                                         id="fname"
                                         {...register("firstName")}
                                         placeholder="John"
-                                        defaultValue={profileData?.data?.retireProfessional?.name?.firstName}
+                                        value={myProfileData?.data?.retireProfessional?.name?.firstName}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                                        // onChange={(e) => setValue("firstName", e.target.value)}
+                                        onChange={(e) => handleChange("data.retireProfessional.name.firstName", e.target.value)}
                                         required
                                     />
                                 </div>
@@ -231,9 +254,9 @@ export default function Professional() {
                                         id="fname"
                                         {...register("lastName")}
                                         placeholder="Watson"
-                                        defaultValue={profileData?.data?.retireProfessional?.name?.lastName}
+                                        value={myProfileData?.data?.retireProfessional?.name?.lastName}
                                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                                        // onChange={(e) => setValue("lastName", e.target.value)}
+                                        onChange={(e) => handleChange("data.retireProfessional.name.lastName", e.target.value)}
                                         required
                                     />
                                     {/* <input id="lname" placeholder="Watson" {...register("lastName")} defaultValue={profileData?.data.retireProfessional.name.lastName} onChange={(e) => setValue("lname", e.target.value)}

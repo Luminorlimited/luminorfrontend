@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ArrowUpDown, Download, Search } from 'lucide-react'
-import { useTransactionListQuery } from '@/redux/api/paymentApi'
+import { useTransactionListQuery } from '@/redux/Api/paymentApi'
 import { toast } from 'sonner'
 import Link from 'next/link'
 // import Link from 'next/link'

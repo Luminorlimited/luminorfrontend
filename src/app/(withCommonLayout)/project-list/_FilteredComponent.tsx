@@ -1,9 +1,9 @@
 'use client'
 import { ReactNode,  useState } from "react";
-import { MobileSidebar, Sidebar } from "@/app/(withCommonLayout)/project-list/Sidebar";
+// import { MobileSidebar, Sidebar } from "@/app/(withCommonLayout)/project-list/Sidebar";
 import React from "react";
+import { MobileSidebar, Sidebar } from "./sidebar";
 
-// import { initializeFilteredData } from "@/redux/api/filterSlice";
 
 export type Filters = {
     industry: string[];

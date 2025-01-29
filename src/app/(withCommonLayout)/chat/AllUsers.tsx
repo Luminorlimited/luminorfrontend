@@ -35,6 +35,7 @@ export default function AllUsers({ handleshowMessage, getConversation, messageNo
                 lastName = nameParts.slice(1).join(" ");
               }
               const userId = user?.id
+              console.log("my user id ", getConversation);
               return (
                 <li
                   onClick={() => handleshowMessage({

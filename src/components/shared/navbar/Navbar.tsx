@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { BiMessage } from "react-icons/bi";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
-import { useGetProfileQuery } from "@/redux/api/userApi";
+import { useGetProfileQuery } from "@/redux/Api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
 import Cookies from "js-cookie";
 import useDecodedToken from "@/components/common/DecodeToken";

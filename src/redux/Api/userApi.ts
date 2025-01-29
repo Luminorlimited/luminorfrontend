@@ -1,8 +1,9 @@
-import baseApi from "@/redux/api/baseApi";
 import { ClientData, IProfessional } from "@/utils/Interfaces";
+import baseApi from "./baseApi";
 
 
 const userApi = baseApi.injectEndpoints({
+    overrideExisting: true,  // Allow overriding existing endpoints
     endpoints: (build) => ({
         loginUser: build.mutation({
             query: (data: any) => {

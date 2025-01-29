@@ -8,7 +8,7 @@ import Business from "./Business";
 import Password from "./Password";
 import Signup from "./Signup";
 import { useForm } from "react-hook-form";
-import { useClientUserMutation } from "@/redux/api/userApi";
+import { useClientUserMutation } from "@/redux/Api/userApi";
 import Stepper from "./Stepper";
 import SuccessPage from "./Success";
 import { useDispatch } from "react-redux";

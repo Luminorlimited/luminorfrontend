@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 import { GoBell } from "react-icons/go";
-import { useGetProfileQuery } from "@/redux/api/userApi";
+import { useGetProfileQuery } from "@/redux/Api/userApi";
 
 
 interface DecodedToken {
