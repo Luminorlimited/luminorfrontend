@@ -15,16 +15,17 @@ import EmojiPicker from 'emoji-picker-react';
 
 import { Video, FileText, Images } from 'lucide-react';
 import io from "socket.io-client";
-import { useGetConversationQuery, useGetuserQuery } from '@/redux/api/messageApi';
+// import { useGetConversationQuery, useGetMessageQuery, useGetuserQuery } from '@/redux/api/messageApi';
 // import  { JwtPayload } from "jsonwebtoken";
 import demoimg from '@/assets/images/demoimg.png';
 import { useGetProfileQuery } from "@/redux/api/userApi";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
-import { useGetMessageQuery } from "@/redux/api/messageApi";
+// import { useGetMessageQuery } from "@/redux/api/messageApi";
 import useDecodedToken from "@/components/common/DecodeToken";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
+import { useGetConversationQuery, useGetMessageQuery, useGetuserQuery } from "@/redux/Api/messageApi";
 
 
 
