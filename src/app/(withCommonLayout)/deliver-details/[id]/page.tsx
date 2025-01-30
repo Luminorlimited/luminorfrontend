@@ -1,5 +1,5 @@
 'use client'
-import Chat from "@/components/reviewdetails/chat";
+// import Chat from "@/components/reviewdetails/chat";
 import ConversationHeader from "@/components/reviewdetails/conversation-header";
 import Milestones from "@/components/reviewdetails/milestones";
 import OrderDetails from "@/components/reviewdetails/OrderDetails";
@@ -22,7 +22,7 @@ export default function Page() {
                     <ConversationHeader getSingleOrder={getSingleOrder} />
                     <Timeline getSingleOrder={getSingleOrder} />
                     <Milestones getSingleOrder={getSingleOrder} />
-                    <Chat />
+                    {/* <Chat /> */}
                 </div>
                 <div>
                     <OrderDetails getSingleOrder={getSingleOrder} />

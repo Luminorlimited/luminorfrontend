@@ -123,6 +123,7 @@ export default function Professional() {
                 formData.append(Key, value as string);
             }
         });
+        console.log("My profile url is", selectedImage);
 
         formData.append('name[firstName]', data.firstName);
         formData.append('name[lastName]', data.lastName);
@@ -130,16 +131,18 @@ export default function Professional() {
         if (selectedImage instanceof File) {
             formData.append('profileUrl', selectedImage);
         }
+        console.log("My FOrm data", formData);
 
         try {
             const res = await editprofessionalProfile({ id: userIdValue, data: formData });
-
             if (!res || typeof res !== "object") {
                 throw new Error("Invalid response from the server");
+            } else {
+                toast.success("Profile Updated Successfully")
+    
+                console.log("My response is", formData);
+                
             }
-            toast.success("Profile Updated Successfully")
-
-            console.log("API Response:", res);
             // reset();
         } catch (error: any) {
             console.error("Error occurred:", error);
@@ -166,18 +169,18 @@ export default function Professional() {
 
     const imageSrc = useMemo(() => {
         if (selectedImage instanceof File) {
-            return URL.createObjectURL(selectedImage); // If it's a file, create an object URL
+            return URL.createObjectURL(selectedImage);
         }
         if (typeof selectedImage === "string" && selectedImage.length) {
-            return selectedImage; // If it's a valid string URL, use it
+            return selectedImage; 
         }
-        return avatar.src; // Fallback to default avatar
+        return avatar.src; 
     }, [selectedImage]);
 
     useMemo(() => {
         if (selectedImage instanceof File) {
             const url = URL.createObjectURL(selectedImage);
-            return () => URL.revokeObjectURL(url); // Cleanup object URL
+            return () => URL.revokeObjectURL(url); 
         }
     }, [selectedImage]);
 
@@ -229,7 +232,7 @@ export default function Professional() {
                                 </button>
                             </div>
 
-                            <h1 className="text-2xl font-semibold mt-4">John Watson</h1>
+                            <h1 className="text-2xl font-semibold mt-4">{myProfileData?.data?.retireProfessional?.name?.firstName} {myProfileData?.data?.retireProfessional?.name?.lastName}</h1>
                             <p className="text-gray-600"> I am {profileData?.data?.expertise || 'an expert'}</p>
                         </div>
 

@@ -13,13 +13,18 @@ import { useGetProfileQuery } from "@/redux/Api/userApi";
 
 
 
+export interface userInfo {
+  email: string;
+  name: string;
+  profileUrl?: string
+}
 
 // Interfaces
 export interface Message {
   id: number;
   message: string;
   meetingLink: string;
-  sender: "sender" | "recipient"; // Determines if the message is sent or received
+  sender: userInfo; // Determines if the message is sent or received
   createdAt: string; // ISO timestamp
 }
 
@@ -46,12 +51,10 @@ interface MessageBubbleProps {
 }
 
 const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorScheme, profileUrl }) => {
-  const isSender = message?.sender === currentUser;
+  const isSender = message?.sender.email === currentUser;
 
   const token = useDecodedToken()
   const { data: profileData } = useGetProfileQuery(token?.id);
-
-  // console.log("My message", messages)
 
 
 

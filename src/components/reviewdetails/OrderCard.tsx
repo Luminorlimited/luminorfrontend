@@ -5,6 +5,7 @@ import img12 from '@/assets/images/offer.png'
 // import { useParams } from "next/navigation";
 import { useDeliverOrderMutation } from "@/redux/Api/paymentApi";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 // import { useRouter } from "next/navigation";
 
 export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
@@ -47,6 +48,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
     // console.log('my order id', id);
     // const { data: deliverOrder } = useDeliverOrderMutation(id)
     const [deliverOrder, { isLoading }] = useDeliverOrderMutation({})
+    const router= useRouter()
 
     const handleDeliver = async () => {
         // if (!id) {
@@ -63,6 +65,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
 
 
                     toast.success("Order delivered successfully");
+                    router.push(`/deliver-details/addreview/${getSingleOrder?.data?.client[0]._id}`)
                     console.log("Order delivered:", res);
                 }
             } else {

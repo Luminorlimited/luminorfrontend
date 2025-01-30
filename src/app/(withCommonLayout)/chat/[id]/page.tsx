@@ -42,15 +42,17 @@ const Page: React.FC = () => {
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
   const id = useParams()
   const { data: getToUser } = useGetuserQuery(id.id)
-  const receivermail = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
-  const { data: oldMessages } = useGetMessageQuery({ user1, receivermail })
+  const user2 = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
+
+  // const receivermail = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
+  const { data: oldMessages } = useGetMessageQuery({ user1, user2 })
   const { data: getConversation } = useGetConversationQuery(undefined);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
 
 
-  console.log('My user id', getToUser)
+  // console.log('My Receive Mail is:', getConversation)
 
 
   const handleClick = () => {
@@ -119,39 +121,23 @@ const Page: React.FC = () => {
 
   };
   // 678f173ecd61d3d7199126de
-  const user2 = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
 
-  console.log("My user2 email", user2);
+  // console.log("My user2 email", user2);
   const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
-    const { id, email, profileUrl } = user;
+    const { id, profileUrl } = user;
 
-    console.log("select user", id)
     router.push(`/chat/${id}`)
 
 
 
     setProfileUrl(profileUrl || demoimg.src);
 
-    const filteredMessages = oldMessages?.data.messages.filter(
-      (message: any) => message.sender === email || message.recipient === email
-    );
-    console.log("Selected User ID:", filteredMessages);
+    // const filteredMessages = oldMessages?.data.messages.filter(
+    //   (message: any) => message.sender.email === email || message.recipient.email === email
+    // );
 
-    const messageList = filteredMessages?.map((msg: any, index: number) => ({
-      id: index + 1,
-      message: msg.message,
-      sender: msg.sender === user1 ? user1 : user2,
-      createdAt: msg.createdAt,
-    }))
-    console.log(messageList, "chekc message list")
-    setInbox(
-      filteredMessages?.map((msg: any, index: number) => ({
-        id: index + 1,
-        message: msg.message,
-        sender: msg.sender === user1 ? user1 : user2,
-        createdAt: msg.createdAt,
-      }))
-    );
+    setInbox(oldMessages?.data?.messages)
+    // console.log(filteredMessages, "chekc message list")
   };
 
 
@@ -159,6 +145,7 @@ const Page: React.FC = () => {
   // convert image to  base64 
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  console.log(selectedImages);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>([]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -215,21 +202,16 @@ const Page: React.FC = () => {
       return;
     }
 
-    console.log("My selected files", selectedBase64Images)
-    const base64Images = selectedImages.map(async (file) => await convertFileToBase64(file));
-    console.log('my base64 images', base64Images);
+    // const base64Images = selectedImages.map(async (file) => await convertFileToBase64(file));
     if (messages.trim()) {
 
-      console.log("i am messages trip", messages)
       const message = {
         toEmail: user2,
         message: messages.trim() || null,
         fromEmail: token?.email,
         media: selectedBase64Images
       };
-      // console.log('my media is', media);
-      console.log(message, "check message")
-      console.log(selectedImages, "check message from emit")
+
 
       socket.emit("privateMessage", JSON.stringify(message));
 
@@ -292,25 +274,34 @@ const Page: React.FC = () => {
     });
 
     mysocket.on("message-notification", (data) => {
-      console.log("New offer notification:", data);
       setmessageNotifications((prevCount) => prevCount + 1);
       toast.success(`${data.sender} sent you a new offer!`);
+    });
+    mysocket.on("conversation-list", (data) => {
+      console.log(data, "check convirsation list  data")
+      // setUsers((prevUser) => {
+      //   return [...prevUser, data];
+      // })
+      setUsers(data)
+      // setUsers(data)
     });
 
 
     mysocket.on("privateMessage", (data) => {
-      console.log("Received private message:", data.message);
       const { message } = data;
+      console.warn(message);
       if (message) {
         setInbox((prevInbox) => [
           ...prevInbox,
           message
         ]);
-        const filteredUsers = users.filter(user => {
-          return user?.email !== message.sender
-        })
-        const filteredUser = users.filter(user => user?.email === message.sender)
-        setUsers([filteredUser[0], ...filteredUsers])
+        // const filteredUsers = users.filter(user => {
+        //   return user?.email !== message.sender
+        // })
+        // const filteredUser = users.filter(user => user?.email === message.sender)
+        // setUsers([filteredUser[0], ...filteredUsers])
+
+
       }
     });
 
@@ -348,19 +339,19 @@ const Page: React.FC = () => {
       mysocket.off("privateMessage");
       mysocket.disconnect();
     };
-  }, [token?.email, users]);
+  }, [token?.email,]);
 
 
   // add user in conversation sidebar
-  useEffect(() => {
-    setUsers((prevUsers) => {
-      if (getConversation?.data) {
-        return [...getConversation?.data];
-      }
-      return prevUsers;
-    });
-  }, [getConversation?.data]);
-
+  // useEffect(() => {
+  //   setUsers((prevUsers) => {
+  //     if (getConversation?.data) {
+  //       return [...getConversation?.data];
+  //     }
+  //     return prevUsers;
+  //   });
+  // }, [getConversation?.data]);
+  console.log('My length', getToUser);
 
 
 
@@ -389,6 +380,7 @@ const Page: React.FC = () => {
 
         <div className="w-2/3 flex flex-col relative">
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
+            {getToUser?.data && (
             <div className="flex items-center">
               <Image
                 src={getToUser?.data?.profileUrl || demoimg}
@@ -399,13 +391,15 @@ const Page: React.FC = () => {
               />
               <div className="ml-3">
                 <h3 className="text-sm font-medium text-gray-900">
-                  {getToUser?.data?.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data?.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
+                  {getToUser?.data.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
                 </h3>
                 <p className="text-xs text-gray-500">
                   Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
                 </p>
               </div>
             </div>
+             )} 
+
             {token?.role === "retireProfessional" ? (
 
               <div className="flex items-center gap-6">
@@ -436,7 +430,7 @@ const Page: React.FC = () => {
                   onClick={handleOpenModal}
                   className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
                 >
-                  Current Offersss
+                  Current Offers
                   {/* {messageNotifications > 0 && (
                     <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
                       {messageNotifications}

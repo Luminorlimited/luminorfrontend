@@ -14,7 +14,7 @@ interface AllUsersProps {
 }
 
 export default function AllUsers({ handleshowMessage, getConversation, messageNotifications }: AllUsersProps) {
-  console.log('selected id is', getConversation);
+  // console.log('selected id is', getConversation);
   return (
     <div>
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">
@@ -35,7 +35,7 @@ export default function AllUsers({ handleshowMessage, getConversation, messageNo
                 lastName = nameParts.slice(1).join(" ");
               }
               const userId = user?.id
-              console.log("my user id ", getConversation);
+              // console.log("my user id ", getConversation);
               return (
                 <li
                   onClick={() => handleshowMessage({
@@ -65,14 +65,6 @@ export default function AllUsers({ handleshowMessage, getConversation, messageNo
 
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
-
-
-                      {/* {getUser?.client?.name?.firstName ||
-                        getUser?.retireProfessional?.name?.firstName ||
-                        'Unknown'}{''}
-                      {getUser?.retireProfessional?.name?.lastName ||
-                        getUser?.client?.name?.lastName ||
-                        ''} */}
                       <h3 className="text-sm font-semibold" key={index}>
                         {user?.firstName && user?.lastName
                           ? `${user?.firstName} ${user?.lastName}`

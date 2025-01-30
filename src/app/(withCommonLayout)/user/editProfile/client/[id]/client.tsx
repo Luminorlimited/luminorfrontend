@@ -185,10 +185,11 @@ export default function Client() {
             data.projectPreference.forEach((preference: string) => {
                 if (preference !== undefined && preference !== "") {
                     formData.append('projectPreference[]', preference);
-                    console.log('My project preference: ', preference);
+                    // console.log('My project preference: ', preference);
                 }
             });
         }
+        console.log("My profile url is", selectedImage);
 
         if (selectProject) {
             formData.append('projectUrl', selectProject);
@@ -197,11 +198,13 @@ export default function Client() {
         if (selectedImage instanceof File) {
             formData.append('profileUrl', selectedImage);
         }
+        
 
         try {
             const res = await editclientProfile({ id: userIdValue, data: formData });
             if (res) {
                 toast.success("Profile updated successfully");
+                console.log("My response is", formData);
             } else {
                 toast.error("Profile can't be updated successfully");
             }
@@ -212,18 +215,13 @@ export default function Client() {
         // reset();
     };
 
-    // const watchSelectedService = watch("selectedService");
-
-    // console.log(profileData?.data?.profileUrl);
-
     const [selectedImage, setSelectedImage] = useState<string | File>(
-        profileData?.data?.profileUrl || avatar.src
-    );
+            profileData?.data?.profileUrl
+        );
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Ensure only image files are processed
             if (!file.type.startsWith("image/")) {
                 alert("Please select a valid image file.");
                 return;
@@ -237,21 +235,22 @@ export default function Client() {
     // console.log('my selected image', selectedImage);
     const imageSrc = useMemo(() => {
         if (selectedImage instanceof File) {
-            return URL.createObjectURL(selectedImage); // If it's a file, create an object URL
+            return URL.createObjectURL(selectedImage);
         }
         if (typeof selectedImage === "string" && selectedImage.length) {
-            return selectedImage; // If it's a valid string URL, use it
+            return selectedImage;
         }
-        return avatar.src; // Fallback to default avatar
+        return avatar.src;
     }, [selectedImage]);
 
-    // Revoke object URLs when the component unmounts or the file changes
     useMemo(() => {
         if (selectedImage instanceof File) {
             const url = URL.createObjectURL(selectedImage);
-            return () => URL.revokeObjectURL(url); // Cleanup object URL
+            return () => URL.revokeObjectURL(url);
         }
     }, [selectedImage]);
+
+
 
 
 
@@ -268,7 +267,6 @@ export default function Client() {
         }
     }
 
-    // Handle button click to trigger file input
     const [inputs, setInputs] = useState<string[]>(profileData?.data?.projectPreference || []);
 
     const handleAddInput = () => {
