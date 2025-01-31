@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -12,7 +13,7 @@ import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
 import EmojiPicker from 'emoji-picker-react';
-
+import { IoMdMenu } from "react-icons/io";
 import { Video, FileText, Images } from 'lucide-react';
 import io from "socket.io-client";
 import demoimg from '@/assets/images/demoimg.png';
@@ -44,12 +45,13 @@ const Page: React.FC = () => {
   const { data: getToUser } = useGetuserQuery(id.id)
   const user2 = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
 
-  // const receivermail = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
   const { data: oldMessages } = useGetMessageQuery({ user1, user2 })
   const { data: getConversation } = useGetConversationQuery(undefined);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
+  // const [messageNotifications, setmessageNotifications] = useState(0); 
+  // const [offerNotification, setOfferNotification] = useState(0); 
 
 
   // console.log('My Receive Mail is:', getConversation)
@@ -107,7 +109,7 @@ const Page: React.FC = () => {
 
   const { data: profileData } = useGetProfileQuery(token?.id);
 
-  console.log(profileData?.data?.retireProfessional?.stripe.isOnboardingSucess);
+  // console.log(profileData?.data?.retireProfessional?.stripe.isOnboardingSucess);
 
   const handleProjectModal = () => {
     if (isButtonDisabled) return;
@@ -145,7 +147,7 @@ const Page: React.FC = () => {
   // convert image to  base64 
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  console.log(selectedImages);
+  // console.log(selectedImages);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>([]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,9 +258,8 @@ const Page: React.FC = () => {
   }, []);
 
 
-  const [messageNotifications, setmessageNotifications] = useState(0); // Badge count for offers
 
-  console.log("my offer notification", messageNotifications);
+  // console.log("my offer notification", messageNotifications);
   //socket connection
   useEffect(() => {
     if (!token?.email) {
@@ -273,17 +274,10 @@ const Page: React.FC = () => {
       mysocket.emit("register", JSON.stringify({ email: token?.email }));
     });
 
-    mysocket.on("message-notification", (data) => {
-      setmessageNotifications((prevCount) => prevCount + 1);
-      toast.success(`${data.sender} sent you a new offer!`);
-    });
+
     mysocket.on("conversation-list", (data) => {
       console.log(data, "check convirsation list  data")
-      // setUsers((prevUser) => {
-      //   return [...prevUser, data];
-      // })
       setUsers(data)
-      // setUsers(data)
     });
 
 
@@ -330,7 +324,7 @@ const Page: React.FC = () => {
 
     // Handle Zoom meeting errors
     mysocket.on("zoomMeetingError", (err) => {
-      console.error("Zoom meeting error:", err);
+      console.log("Zoom meeting error:", err);
       toast.error("Failed to create Zoom meeting. Please try again.");
     });
     return () => {
@@ -351,8 +345,25 @@ const Page: React.FC = () => {
   //     return prevUsers;
   //   });
   // }, [getConversation?.data]);
-  console.log('My length', getToUser);
+  // console.log('My length', getToUser);
+  const [showSidebar, setShowSidebar] = useState(false);
 
+  const handleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  };
+
+  const handleClickOutside = (event:any) => {
+    if (showSidebar && !event.target.closest('.sidebar')) {
+      setShowSidebar(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSidebar]);
 
 
   return (
@@ -362,9 +373,37 @@ const Page: React.FC = () => {
           <Link href={'/'} className='text-gray-700'>Home - </Link>
           <Link href={'/chat'} className='font-semibold'>Chat</Link>
         </div>
+        <button onClick={handleSidebar} className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden">
+          <IoMdMenu className="text-white text-[24px]" />
+        </button>
+
+        {/* Sidebar with Overlay */}
+        <div className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
+            <div className="p-4">
+              <div className="flex items-center border rounded-[12px] px-3 py-4">
+                <BiSearch className="text-gray-500 text-lg" />
+                <input
+                  type="text"
+                  placeholder="Search message..."
+                  className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
+                />
+              </div>
+              <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Backdrop Overlay */}
+        {showSidebar && (
+          <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={handleSidebar}></div>
+        )}
+
+
       </div>
-      <div className="flex max-w-[1320px] overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
-        <div className="w-1/3 border-r border-gray-300 bg-white overflow-y-scroll ">
+      <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
+     
+        <div className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar? "hidden": "block"}`}>
           <div className="p-4">
             <div className="flex items-center border  rounded-[12px] px-3 py-4">
               <BiSearch className="text-gray-500 text-lg" />
@@ -374,31 +413,36 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-            <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} messageNotifications={messageNotifications} />
+            <AllUsers
+              handleshowMessage={handleshowMessage}
+              getConversation={{ data: users }}
+            // messageNotifications={messageNotifications}
+            />
           </div>
         </div>
+       
 
-        <div className="w-2/3 flex flex-col relative">
+        <div className="lg:w-2/3 w-full  flex flex-col relative">
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
             {getToUser?.data && (
-            <div className="flex items-center">
-              <Image
-                src={getToUser?.data?.profileUrl || demoimg}
-                alt="Jane Cooper"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <div className="ml-3">
-                <h3 className="text-sm font-medium text-gray-900">
-                  {getToUser?.data.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
-                </h3>
-                <p className="text-xs text-gray-500">
-                  Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
-                </p>
+              <div className="flex items-center">
+                <Image
+                  src={getToUser?.data?.profileUrl || demoimg}
+                  alt="Jane Cooper"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-gray-900">
+                    {getToUser?.data.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
+                  </p>
+                </div>
               </div>
-            </div>
-             )} 
+            )}
 
             {token?.role === "retireProfessional" ? (
 

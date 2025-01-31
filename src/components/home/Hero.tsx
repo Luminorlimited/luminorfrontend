@@ -32,7 +32,7 @@ const Hero = () => {
         {!decodedToken ? (
 
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#5633D1] relative overflow-hidden">
+            <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-bg_primary relative overflow-hidden">
               <div className="z-20">
                 <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
                   I&apos;m  a Retired Professional
