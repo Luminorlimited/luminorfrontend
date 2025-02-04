@@ -227,7 +227,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
 
                   // Process the file (e.g., update state or form data)
                   // Example: Save file details in state
-                  setValue("fileDetails", { fileName, filePath, fileType });
+                  setValue("workSample", { fileName, filePath, fileType });
                 }
               }
             }}

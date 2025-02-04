@@ -75,7 +75,7 @@ export default function Professional() {
 
 
     const { register, handleSubmit, setValue, watch } = useForm();
-
+    const [loading, setLoading] = useState(false)
     const [editprofessionalProfile] = useEditprofessionalprofileMutation()
     const userId = useParams()
 
@@ -107,8 +107,12 @@ export default function Professional() {
             return newData;
         });
     };
+    const [workSample, setWorkSample] = useState<string | File>(
+        profileData?.data?.workSample
+    );
 
     const handleSubmitForm = async (data: any) => {
+        setLoading(true)
         if (!data || typeof data !== "object") {
             console.error("Invalid form data");
             toast.error("Invalid form data")
@@ -131,7 +135,12 @@ export default function Professional() {
         if (selectedImage instanceof File) {
             formData.append('profileUrl', selectedImage);
         }
-        console.log("My FOrm data", formData);
+        if (workSample instanceof File) {
+            formData.append('workSample', workSample);
+            console.log("Work Sample file added:", workSample);
+        }
+
+        console.log("My Form data", formData);
 
         try {
 
@@ -166,6 +175,8 @@ export default function Professional() {
             console.error("Error occurred:", error);
             toast.success(error.message || "Profile Update Failed")
 
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -304,8 +315,7 @@ export default function Professional() {
                                         onChange={(e) => handleChange("data.retireProfessional.name.lastName", e.target.value)}
                                         required
                                     />
-                                    {/* <input id="lname" placeholder="Watson" {...register("lastName")} defaultValue={profileData?.data.retireProfessional.name.lastName} onChange={(e) => setValue("lname", e.target.value)}
-                                        required className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3" /> */}
+                                   
                                 </div>
                             </div>
 
@@ -421,39 +431,24 @@ export default function Professional() {
                                         Upload
                                     </button>
                                 </div>
-
                                 <input
                                     type="file"
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                    accept=".pdf,.docx,.doc,.rtf,.txt"
-                                    value={profileData?.data?.workSample || ''}
-                                    {...register("workSample")} // Add validation rules
+                                    accept=".png,.jpeg,.jpg"
                                     onChange={(e) => {
                                         const file = e.target.files?.[0];
                                         if (file) {
-                                            // Extract necessary file properties
-                                            const fileName = file.name;
-                                            const filePath = file.webkitRelativePath || file.name; // Fallback to name if relative path is unavailable
-                                            const fileType = file.type;
-
-                                            // Check if required fields are present
-                                            if (!fileName || !filePath || !fileType) {
-                                                console.error("Missing required file properties");
-                                            } else {
-                                                console.log("File Selected:", { fileName, filePath, fileType });
-
-                                                // Process the file (e.g., update state or form data)
-                                                // Example: Save file details in state
-                                                setValue("fileDetails", { fileName, filePath, fileType });
-                                            }
+                                            setWorkSample(file); // Update file state
+                                            setValue("workSample", file); // Update React Hook Form value
+                                            console.log("File selected:", file);
                                         }
                                     }}
                                 />
                             </div>
 
                             <div className="flex justify-center">
-                                <button className="bg-primary py-5 px-7 rounded-[50px] my-14 text-white">
-                                    Save Information
+                                <button className={`bg-primary py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-black" : "bg-primary text-white "}`}>
+                                    {loading ? "Saving..." : "Save Information"}
                                 </button>
                             </div>
 

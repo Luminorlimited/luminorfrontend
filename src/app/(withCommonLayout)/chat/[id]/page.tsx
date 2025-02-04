@@ -62,6 +62,8 @@ const Page: React.FC = () => {
     }, 200)
   }
 
+  
+
   const handleFileClick = (type: string) => {
     const input = document.getElementById("fileInput") as HTMLInputElement;
 
@@ -510,8 +512,7 @@ const Page: React.FC = () => {
             </div>
           </div>
 
-          <div
-            className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
+          <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
             <div
               className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
                 ? "opacity-100 translate-y-0"

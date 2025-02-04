@@ -110,9 +110,15 @@ export function Sidebar({ setFilters }: { setFilters: React.Dispatch<React.SetSt
 
 
     const industryOptions = [
-        { label: 'Tech', value: 'tech' },
-        { label: 'Marketing', value: 'marketing' },
-        { label: 'Finance', value: 'finance' },
+        { label: 'EDUCATION', value: 'EDUCATION' },
+        { label: 'ECOMMERCE', value: 'ECOMMERCE' },
+        { label: 'REAL_ESTATE', value: 'REAL_ESTATE' },
+        { label: 'ENTERTAINMENT', value: 'ENTERTAINMENT' },
+        { label: 'TRAVEL', value: 'TRAVEL' },
+        { label: 'AUTOMOTIVE', value: 'AUTOMOTIVE' },
+        { label: 'MANUFACTURING', value: 'MANUFACTURING' },
+        { label: 'FOOD', value: 'FOOD' },
+        { label: 'FASHION', value: 'FASHION' },
     ];
 
     const timelineOptions = [

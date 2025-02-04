@@ -136,7 +136,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                         <span className="text-[16px] font-medium text-gray-900">
                                             ★ {data?.averageRating || "0"}
                                         </span>
-                                        <span className="text-[16px] text-gray-500">({clientData.data.length})</span>
+                                        <span className="text-[16px] text-gray-500">({clientData?.data?.length})</span>
                                     </div>
                                 </div>
 

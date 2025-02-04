@@ -72,10 +72,7 @@ const Navbar = () => {
     // Close the profile dropdown if clicking outside
     if (dropdownRef.current && !dropdownRef.current.contains(target)) {
       showFileBtn(false);
-    }
-
-    // Close the notification bar if clicking outside
-    
+    }    
   };
 
   useEffect(() => {
