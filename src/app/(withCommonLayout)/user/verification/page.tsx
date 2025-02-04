@@ -113,7 +113,7 @@ export default function Page() {
 
       <div className="mx-auto min-h-screen z-30">
         <div className=" lg:flex gap-[288px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-          <div className="lg:w-[500px] w-full space-y-8 lg:mt-0 mt-[150px]">
+          <div className="lg:w-[500px] w-full space-y-8 lg:mt-0 mt-[150px] lg:flex-none md:flex-none flex flex-col items-center justify-center">
             <div className="text-center">
               <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
                 2 Step Verification!
@@ -123,7 +123,7 @@ export default function Page() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-6 ">
+            <form onSubmit={handleSubmit} className="mt-8 space-y-6 w-full ">
               <div className="space-y-6">
                 <div>
                   <label

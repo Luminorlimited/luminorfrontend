@@ -20,6 +20,7 @@ import { toast } from "sonner";
 export default function ProfessionalForm() {
   const [step, setStep] = useState(1);
   const { register, handleSubmit, setValue, getValues } = useForm();
+  const [loading, setLoading] = useState(false)
   const dispatch = useDispatch();
 
   const [createProfessional] = useProfessionalUserMutation();
@@ -73,10 +74,11 @@ export default function ProfessionalForm() {
     formData.append(`industry`, data.industry);
 
     formData.append("businessType", data.businessType);
+    setLoading(true)
 
     try {
       const res: any = await createProfessional(formData);
-      if (res?.data) {
+      if (res?.statusCode === 200) {
 
         dispatch(
           setUser({
@@ -98,12 +100,16 @@ export default function ProfessionalForm() {
       } else {
         console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
         toast.error(res?.error?.data?.message)
+        setLoading(false)
 
 
       }
     } catch (error) {
       console.error("An error occurred:", error);
+
       toast.error("An error occurred while submitting the form.")
+    } finally {
+      setLoading(false); // Stop loading after the operation
 
     }
   };
@@ -177,7 +183,7 @@ export default function ProfessionalForm() {
                 <Password
                   register={register}
                   handleBack={() => setStep(3)}
-
+                  loading={loading}
                   handleNext={() => setStep(5)}
                 />
               )}

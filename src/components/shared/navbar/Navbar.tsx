@@ -3,11 +3,6 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 // import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
 // import { Search } from "lucide-react";
@@ -16,6 +11,12 @@ import { useDispatch } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 import { BiMessage } from "react-icons/bi";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
@@ -54,29 +55,39 @@ const Navbar = () => {
 
   // State for dropdown menu visibility
   const [fileBtn, showFileBtn] = useState<boolean>(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const notificationRef = useRef<HTMLDivElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
 
   const handleClick = () => {
-    setTimeout(() => {
-      showFileBtn((prev) => !prev);
-    }, 200);
+    showFileBtn((prev) => !prev);
   };
 
 
 
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
 
-  const handleOpenNotificationBar = () => {
-    setIsOpen(!isOpen)
-  }
+    // Close the profile dropdown if clicking outside
+    if (dropdownRef.current && !dropdownRef.current.contains(target)) {
+      showFileBtn(false);
+    }
 
-  // Sample notifications
-  // const notifications: Notification[] = [
-   
-  // ]
+    // Close the notification bar if clicking outside
+    
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+
+
+  
 
   useEffect(() => {
     // Establish socket connection
@@ -86,7 +97,7 @@ const Navbar = () => {
     mysocket.on("connect", () => {
       console.log("Connected to the server.");
 
-      mysocket.on("notification", (notification) => {
+      mysocket.on("privateMessage", (notification) => {
         console.log("Notification received:", notification);
 
         // Update state with the new notification
@@ -108,10 +119,10 @@ const Navbar = () => {
   }, []);
 
 
-
-  const notificationClick = () => {
-    console.log('my notification is come successfully.');
-  }
+  const handleNotificationClick = (id: number) => {
+    console.log(`Notification ${id} clicked`);
+    // Implement additional logic if needed, like marking as read
+  };
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
@@ -160,29 +171,33 @@ const Navbar = () => {
         {decodedToken ? (
           <div className="flex gap-3 items-center relative" ref={dropdownRef}>
             <div className="relative">
-              <button onClick={handleOpenNotificationBar} className="focus:outline-none">
-                <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
-              </button>
-
-              {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="focus:outline-none">
+                    <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-80 bg-white rounded-md shadow-lg border border-gray-200">
                   <div className="py-2">
                     <h3 className="text-lg font-semibold px-4 py-2 border-b">Notifications</h3>
-                    {notifications.map((notification) => (
-                      <div key={notification.id} className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={notificationClick}>
-                        <p className="text-sm text-gray-800">{notification.message}</p>
-                        <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
-                      </div>
-                    ))}
-                    {notifications.length === 0 && (
+                    {notifications.length > 0 ? (
+                      notifications.map((notification) => (
+                        <DropdownMenuItem
+                          key={notification.id}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => handleNotificationClick(notification.id)}
+                        >
+                          <p className="text-sm text-gray-800">{notification.message}</p>
+                          <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                        </DropdownMenuItem>
+                      ))
+                    ) : (
                       <p className="text-sm text-gray-500 px-4 py-2">No new notifications</p>
                     )}
                   </div>
-                  {/* <div className="border-t px-4 py-2">
-                    <button className="text-sm text-primary hover:underline">View all notifications</button>
-                  </div> */}
-                </div>
-              )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+         
             </div>
             {/* Notification */}
 
@@ -203,7 +218,7 @@ const Navbar = () => {
                 onClick={handleClick}
               />
               <ul
-                className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${fileBtn
+                className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${fileBtn
                   ? "opacity-100 translate-y-0 z-[50]"
                   : "opacity-0 translate-y-5 pointer-events-none z-[10]"
                   }`}

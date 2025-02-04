@@ -3,27 +3,62 @@
 // import OrderCard from '@/components/reviewdetails/OrderCard'
 import { Star } from 'lucide-react'
 import Button from '@/components/common/Button'
+import { Controller, useForm } from 'react-hook-form';
+import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
+import { useClientReviewMutation, useProfessionalAddReviewMutation } from '@/redux/Api/reviewApi';
+import useDecodedToken from '@/components/common/DecodeToken';
+// import { useRouter } from 'next/navigation';
 
-import { useState } from 'react'
 // import OrderCard from '@/components/reviewdetails/OrderCard';
 
 
 export default function FeedbackForm() {
-    const [rating, setRating] = useState(0);
-    const [hoveredRating, setHoveredRating] = useState(0);
-    const [feedback, setFeedback] = useState('');
-    const maxLength = 700;
+    const { handleSubmit, control, reset, setValue, watch } = useForm({
+        defaultValues: {
+            rating: 0,
+            feedback: '',
+            // user: '',
+        },
+    });
 
-    const handleSubmit = () => {
-        console.log('Rating:', rating);
-        console.log('Feedback:', feedback);
-        if (feedback.trim() && rating > 0) {
-            alert("Feedback successfully submitted!");
-            // Reset form after submission
-            setRating(0);
-            setFeedback('');
-        } else {
+    const token = useDecodedToken()
+    const [clientReview] = useProfessionalAddReviewMutation()
+    const [professionalReview] = useClientReviewMutation()
+
+   
+
+    const maxLength = 700;
+    const feedbackValue = watch('feedback');
+    const ratingValue = watch('rating');
+    const userId = useParams()
+    const id = userId?.id
+    console.log("my id is", userId);
+    // const router = useRouter()
+    const onSubmit = async (data: any) => {
+        console.log("My data is", data);
+        if (!data.feedback.trim() || data.rating <= 0) {
             alert("Please provide both feedback and a rating.");
+            return;
+        }
+
+        try {
+            let res;
+            if (token?.role === "client") {
+                res = await professionalReview({ id, data });
+            } else {
+                res = await clientReview({ id, data });
+            }
+
+            if (res?.data) {
+                toast.success("Thanks for review!!!");
+                reset();
+            } else {
+                toast.error("You are unauthorized.");
+            }
+        } catch (error) {
+            console.error("Error submitting review:", error);
+            toast.error("An error occurred.");
         }
     };
 
@@ -43,16 +78,12 @@ export default function FeedbackForm() {
                     {[1, 2, 3, 4, 5].map((star) => (
                         <button
                             key={star}
-                            onClick={() => setRating(star)}
-                            onMouseEnter={() => setHoveredRating(star)}
-                            onMouseLeave={() => setHoveredRating(0)}
+                            onClick={() => setValue('rating', star)}
+                            onMouseEnter={() => setValue('rating', star)}
                             className="focus:outline-none"
                         >
                             <Star
-                                className={`w-8 h-8 ${star <= (hoveredRating || rating)
-                                    ? 'fill-[#FFA500] stroke-[#FFA500]'
-                                    : 'stroke-[#FFA500]'
-                                    }`}
+                                className={`w-8 h-8 ${star <= ratingValue ? 'fill-[#FFA500] stroke-[#FFA500]' : 'stroke-[#FFA500]'}`}
                             />
                         </button>
                     ))}
@@ -62,24 +93,28 @@ export default function FeedbackForm() {
                 <div className="space-y-4">
                     <h3 className="text-xl font-semibold text-gray-900">Write about the consultant</h3>
                     <div className="relative">
-                        <textarea
-                            value={feedback}
-                            onChange={(e) => setFeedback(e.target.value.slice(0, maxLength))}
-                            className="w-full min-h-[200px] p-6 text-gray-700 text-lg border rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            placeholder="Share your experience working with the consultant..."
+                        <Controller
+                            name="feedback"
+                            control={control}
+                            rules={{ maxLength: maxLength }}
+                            render={({ field }) => (
+                                <textarea
+                                    {...field}
+                                    className="w-full min-h-[200px] p-6 text-gray-700 text-lg border rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    placeholder="Share your experience working with the consultant..."
+                                />
+                            )}
                         />
                         <div className="absolute bottom-4 right-4 text-gray-500">
-                            {feedback.length}/{maxLength}
+                            {feedbackValue.length}/{maxLength}
                         </div>
                     </div>
                     <div className='flex gap-3 justify-end'>
-                        <Button className='bg-gray-500 rounded-[25px]' onClick={() => setFeedback('')}>Skip</Button>
-                        <Button className='rounded-[25px]' onClick={handleSubmit}>Submit</Button>
+                        <Button className='bg-gray-500 rounded-[25px]' onClick={() => reset()}>Skip</Button>
+                        <Button className='rounded-[25px]' onClick={handleSubmit(onSubmit)}>Submit</Button>
                     </div>
                 </div>
             </div>
-
-            {/* <OrderCard/> */}
         </div>
     );
 }

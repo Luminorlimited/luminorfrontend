@@ -11,6 +11,7 @@ import { FlatFeeModal } from '@/components/common/modal/FlatFeeModal';
 import { useForm } from 'react-hook-form';
 import io from 'socket.io-client'; // Import the socket.io-client
 import { toast } from 'sonner';
+import { useGetProfileQuery } from '@/redux/Api/userApi';
 
 interface projectModalProps {
     onClose: () => void;
@@ -69,28 +70,33 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
     }, [user1])
 
 
+    const { data: getProfile } = useGetProfileQuery(undefined)
+    console.log("getProfile", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
+    // let onboarding = getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess
     const onSubmit = (data: any) => {
         console.log("Final Form Values:", data);
 
-        // Safely stringify data
-        console.log(data, "check data")
-        console.log(user1, "user 1")
-        console.log(user2, "user 2")
+        // Check if onboarding is successful
+        if (!getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
+            toast.error("Please complete the onboarding process before sending an offer.");
+            return; // Exit the function early if onboarding is false
+        }
+
         try {
             const myOffer = {
                 fromEmail: user1,
                 toEmail: user2,
                 offer: data,
                 professionalEmail: user1,
-                clientEmail: user2
+                clientEmail: user2,
             };
 
             console.log("My offer is", JSON.stringify(myOffer));
-            socket.emit('sendOffer', JSON.stringify(myOffer));
-            toast.success("Offer Sent successfully....")
+            socket.emit("sendOffer", JSON.stringify(myOffer));
+            toast.success("Offer Sent successfully!");
         } catch (error) {
             console.error("Error stringifying data:", error);
-            toast.error("Something went wrong")
+            toast.error("Something went wrong");
         }
 
         onClose();

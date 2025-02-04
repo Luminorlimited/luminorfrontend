@@ -52,7 +52,7 @@ export default function Timeline({ getSingleOrder }: { getSingleOrder: any }) {
     };
     return (
         <div className="p-4 bg-[#FAFAFA] rounded-[10px]">
-            <div className="text-sm text-center text-gray-500 mb-4">--------- 19 Oct ---------</div>
+            <div className="text-sm text-center text-gray-500 mb-4">--------- {new Date().toLocaleDateString()} ---------</div>
             <div className="space-y-4 ">
                 <div className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full text-icon-primary flex items-center justify-center ">
@@ -96,7 +96,11 @@ export default function Timeline({ getSingleOrder }: { getSingleOrder: any }) {
                     <div className="flex-1">
                         <div className="flex items-center justify-between">
                             <span className="text-gray-700">Order has been started</span>
-                            <span className="text-gray-500 text-sm">{getSingleOrder?.data?.result?.project?.createdAt}</span>
+                            <span className="text-gray-500 text-sm">{new Date(getSingleOrder?.data?.result?.project?.createdAt).toLocaleDateString('en-US', {
+                                year: "2-digit",
+                                month: "2-digit",
+                                day: "2-digit",
+                            })}</span>
                         </div>
 
                     </div>

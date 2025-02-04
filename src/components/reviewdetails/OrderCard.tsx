@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 // import { useRouter } from "next/navigation";
 
 export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
+    console.log('my get single order is', getSingleOrder);
 
     const initdata = getSingleOrder?.data?.result?.project
     // console.log(initdata);
@@ -48,8 +49,9 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
     // console.log('my order id', id);
     // const { data: deliverOrder } = useDeliverOrderMutation(id)
     const [deliverOrder, { isLoading }] = useDeliverOrderMutation({})
-    const router= useRouter()
+    const router = useRouter()
 
+    // console.log("my order id", getSingleOrder?.data?.client[0]._id);
     const handleDeliver = async () => {
         // if (!id) {
         //     toast.error("Order ID is missing!");
@@ -61,8 +63,10 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
             if (id) {
                 console.log('this is console', id);
                 const res = await deliverOrder(id);
-                if (res) {
+                console.log("my response is",);
+                if (res?.data?.statusCode) {
 
+                    // console.log("my response is", res?.data?.statusCode);
 
                     toast.success("Order delivered successfully");
                     router.push(`/deliver-details/addreview/${getSingleOrder?.data?.client[0]._id}`)

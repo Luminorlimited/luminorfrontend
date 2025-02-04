@@ -23,7 +23,7 @@ import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import { useGetConversationQuery, useGetMessageQuery, useGetuserQuery } from "@/redux/Api/messageApi";
-import { useGetProfileQuery } from "@/redux/Api/userApi";
+import { useGetOfferQuery } from "@/redux/Api/offerApi";
 
 
 
@@ -50,8 +50,7 @@ const Page: React.FC = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
-  // const [messageNotifications, setmessageNotifications] = useState(0); 
-  // const [offerNotification, setOfferNotification] = useState(0); 
+  const [timeStamp, setTimeStamp] = useState("")
 
 
   // console.log('My Receive Mail is:', getConversation)
@@ -105,11 +104,13 @@ const Page: React.FC = () => {
   };
   const handleOpenModal = () => {
     setIsModalOpen((e) => !e);
+    // socket.on("sendoffer", (data:any) => {
+    //   console.log("my data is", data);
+    // })
+
   };
 
-  const { data: profileData } = useGetProfileQuery(token?.id);
 
-  // console.log(profileData?.data?.retireProfessional?.stripe.isOnboardingSucess);
 
   const handleProjectModal = () => {
     if (isButtonDisabled) return;
@@ -122,21 +123,17 @@ const Page: React.FC = () => {
 
 
   };
-  // 678f173ecd61d3d7199126de
 
-  // console.log("My user2 email", user2);
   const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
     const { id, profileUrl } = user;
 
     router.push(`/chat/${id}`)
 
+    socket.emit("userInChat", JSON.stringify({ userEmail: token?.email, chattingWith: user2 }));
+
 
 
     setProfileUrl(profileUrl || demoimg.src);
-
-    // const filteredMessages = oldMessages?.data.messages.filter(
-    //   (message: any) => message.sender.email === email || message.recipient.email === email
-    // );
 
     setInbox(oldMessages?.data?.messages)
     // console.log(filteredMessages, "chekc message list")
@@ -289,11 +286,7 @@ const Page: React.FC = () => {
           ...prevInbox,
           message
         ]);
-        // const filteredUsers = users.filter(user => {
-        //   return user?.email !== message.sender
-        // })
-        // const filteredUser = users.filter(user => user?.email === message.sender)
-        // setUsers([filteredUser[0], ...filteredUsers])
+
 
 
       }
@@ -336,23 +329,13 @@ const Page: React.FC = () => {
   }, [token?.email,]);
 
 
-  // add user in conversation sidebar
-  // useEffect(() => {
-  //   setUsers((prevUsers) => {
-  //     if (getConversation?.data) {
-  //       return [...getConversation?.data];
-  //     }
-  //     return prevUsers;
-  //   });
-  // }, [getConversation?.data]);
-  // console.log('My length', getToUser);
   const [showSidebar, setShowSidebar] = useState(false);
 
   const handleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  const handleClickOutside = (event:any) => {
+  const handleClickOutside = (event: any) => {
     if (showSidebar && !event.target.closest('.sidebar')) {
       setShowSidebar(false);
     }
@@ -364,6 +347,16 @@ const Page: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showSidebar]);
+
+  const [offerNotification, setOfferNotification] = useState(0);
+  const { data: getoffer } = useGetOfferQuery(user1);
+  useEffect(() => {
+    if (getoffer?.data?.data?.count > 0) {
+      setOfferNotification(getoffer?.data?.data.count);
+    }
+  }, [getoffer]);
+
+  const formattedTime = new Date("2025-02-04T11:02:21.927Z").toLocaleTimeString("en-US", { hour12: false });
 
 
   return (
@@ -389,7 +382,7 @@ const Page: React.FC = () => {
                   className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
                 />
               </div>
-              <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} />
+              <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} setTimeStamp={setTimeStamp} />
             </div>
           </div>
         </div>
@@ -402,8 +395,8 @@ const Page: React.FC = () => {
 
       </div>
       <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
-     
-        <div className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar? "hidden": "block"}`}>
+
+        <div className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"}`}>
           <div className="p-4">
             <div className="flex items-center border  rounded-[12px] px-3 py-4">
               <BiSearch className="text-gray-500 text-lg" />
@@ -413,18 +406,20 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
+            
             <AllUsers
               handleshowMessage={handleshowMessage}
               getConversation={{ data: users }}
+              setTimeStamp={setTimeStamp}
             // messageNotifications={messageNotifications}
             />
           </div>
         </div>
-       
+
 
         <div className="lg:w-2/3 w-full  flex flex-col relative">
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
-            {getToUser?.data && (
+            {getToUser?.data ? (
               <div className="flex items-center">
                 <Image
                   src={getToUser?.data?.profileUrl || demoimg}
@@ -438,11 +433,11 @@ const Page: React.FC = () => {
                     {getToUser?.data.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
                   </h3>
                   <p className="text-xs text-gray-500">
-                    Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
+                    {formattedTime}
                   </p>
                 </div>
               </div>
-            )}
+            ): (<p> No User Found</p>)}
 
             {token?.role === "retireProfessional" ? (
 
@@ -457,11 +452,12 @@ const Page: React.FC = () => {
 
 
                 </button>
-                {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
+                {/* {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />} */}
 
 
                 <Button onClick={handleProjectModal} disabled={isButtonDisabled} >
                   Create an Offer
+
                 </Button>
                 {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
                 <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
@@ -470,18 +466,20 @@ const Page: React.FC = () => {
               <div className="flex items-center gap-6">
 
 
-                <button
-                  onClick={handleOpenModal}
-                  className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
-                >
-                  Current Offers
-                  {/* {messageNotifications > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
-                      {messageNotifications}
-                    </span>
-                  )} */}
-                  {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center"> {offerNotifications}</span> */}
-                </button>
+                  <button
+                    onClick={handleOpenModal}
+                    className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
+                  >
+                    Current Offers 
+                      {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
+                        {offerNotification}
+                      </span> */}
+                    {offerNotification > 0 && (
+                      <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
+                        {offerNotification}
+                      </span>
+                    )}
+                  </button>
                 {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
 
                 <button onClick={handleProjectModal} disabled className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200">

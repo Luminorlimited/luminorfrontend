@@ -10,6 +10,7 @@ interface AllUsersProps {
   handleshowMessage: (user: any) => void;
   // getUser: User | null; // Replace `any` with proper type
   getConversation: any;
+  setTimeStamp: any;
   // messageNotifications: any;
 }
 
@@ -28,8 +29,10 @@ function formatTimeAgo(timestamp: string) {
   return messageTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-export default function AllUsers({ handleshowMessage, getConversation }: AllUsersProps) {
-  console.log('my last Message is', getConversation);
+export default function AllUsers({ handleshowMessage, getConversation, setTimeStamp }: AllUsersProps) {
+  // console.log('my last Message is', getConversation);
+  // const [messageNotifications, setMessageNotifications] = useState()
+
   return (
     <div>
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">
@@ -90,20 +93,23 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                       <span className="text-xs text-gray-500">
                         {user.lastMessageTimestamp && (
                           <p className='text-[12px] text-gray-700'>
-                            {formatTimeAgo(user.lastMessageTimestamp)} 
+                            {formatTimeAgo(user.lastMessageTimestamp)}
+                            {setTimeStamp(user.lastMessageTimestamp)}
                           </p>
                         )}
+                        <p>{ }</p>
 
 
-                        {/* {messageNotifications > 0 && (
-                          <span className=" bg-red-500 p-[3px] text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
-                          {messageNotifications}
-                          </span>
-                          )} */}
+                        {user?.unseenMessageCount > 0 && (
+                        <span className="bg-red-500 p-1 text-white text-sm rounded-full w-5 h-5 flex items-center justify-center">
+                          {user?.unseenMessageCount}
+                        </span>
+
+                          )} 
                       </span>
-                 
+
                     </div>
-                          <p className='text-[12px] text-gray-700'>{user.lastMessage}</p>
+                    <p className='text-[12px] text-gray-700'>{user.lastMessage}</p>
                     {/* <div className="flex justify-between items-center">
                       <h3 className="text-sm">mahi</h3>
                       <span className="text-xs text-white font-semibold bg-[#E03137] px-[10px] py-[2px] rounded-xl">

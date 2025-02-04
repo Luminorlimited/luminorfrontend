@@ -28,20 +28,6 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
     console.log("My requirement data is", requirementdata);
 
-    // const paymentData = {
-    //     data: {
-    //         amount: amount,
-    //         customerId: customerId,
-    //         paymentMethodId: paymentMethod?.id,
-    //         retireProfessionalId: token?.id,
-    //         offerId: offerId.id,
-    //         caption: requirementdata.captions,
-    //         additionalMessage: requirementdata.additionalMessage
-    //     }
-
-    // }
-
-    // Assuming `useOfferpaymentMutation` exists
     const [offerPayment, { isLoading }] = useOfferpaymentMutation({});
 
 
@@ -113,7 +99,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
             if (response.data) {
                 alert('Payment Successful!');
                 toast.success('Payment Successful!');
-                router.push('/')
+                router.push(`/deliver-details/addreview/${getSingleOffer?.data?.retireProfessional?._id}`)
 
             } else {
                 console.error('Payment failed:', response.error);
@@ -125,6 +111,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
         }
     };
 
+    console.log("my get single offer is", getSingleOffer?.data);
 
 
     return (
@@ -334,9 +321,9 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                     <svg className="h-4 w-4 text-[#25314C]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                                     </svg>
-                                    <span className="text-gray-600">Delivery Timesss</span>
+                                    <span className="text-gray-600">Delivery Time</span>
                                 </div>
-                                <span className="text-gray-600">  {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFeedelivery}</span>
+                                <span className="text-gray-600">  {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFee?.delivery}</span>
                             </div>
 
                             <hr className="border-gray-200" />
@@ -344,7 +331,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                             <div className="space-y-2 border rounded-[10px] p-5 bg-[#FAFAFA]">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Order From</span>
-                                    <span className="text-gray-900">{getSingleOffer?.data?.retireProfessional?.firstName || "Unknown"}</span>
+                                    <span className="text-gray-900">{getSingleOffer?.data?.retireProfessional?.name?.firstName || "Unknown"}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Order No</span>
@@ -360,7 +347,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Delivery time</span>
                                     <span className="text-gray-900">
-                                        {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFeedelivery}
+                                        {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFee?.delivery}
 
                                     </span>
 

@@ -134,6 +134,24 @@ export default function Professional() {
         console.log("My FOrm data", formData);
 
         try {
+
+            if (data.location) {
+                const geocodeResult = await geocodeLocation(data.location);
+
+                if (geocodeResult) {
+                    const locationData = {
+                        type: "point",
+                        coordinates: [geocodeResult.latitude, geocodeResult.longitude],
+                    };
+                    formData.append("location", JSON.stringify(locationData));
+                    console.log('My location data is', locationData);
+                }
+            } else {
+                console.warn("Location is undefined or empty.");
+            }
+
+
+
             const res = await editprofessionalProfile({ id: userIdValue, data: formData });
             if (!res || typeof res !== "object") {
                 throw new Error("Invalid response from the server");
@@ -151,6 +169,30 @@ export default function Professional() {
         }
     };
 
+    const geocodeLocation = async (location: string) => {
+        if (!location) return null;
+
+        try {
+            const apiKey = "AIzaSyD3oE6zpQw1EFzWBrCuhPdAeqedjp46tNA";
+            const response = await fetch(
+                `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${apiKey}`
+            );
+            const data = await response.json();
+
+            if (data.status === "OK" && data.results.length > 0) {
+                const { lat, lng } = data.results[0].geometry.location;
+                return { latitude: lat, longitude: lng };
+            } else {
+                console.error("Geocoding failed:", data.status);
+                toast.error("Unable to fetch location coordinates.");
+                return null;
+            }
+        } catch (error) {
+            console.error("Geocoding error:", error);
+            toast.error("Failed to fetch location coordinates.");
+            return null;
+        }
+    };
 
     const [selectedImage, setSelectedImage] = useState<string | File>(
         profileData?.data?.profileUrl

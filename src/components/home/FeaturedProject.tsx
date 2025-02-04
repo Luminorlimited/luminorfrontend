@@ -1,92 +1,32 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
-import Pagination from '@/components/common/pagination/Pagination';
-import profileImgFallback from '@/assets/images/profilepix.jpg'; // Fallback profile image
-import projectImgFallback from '@/assets/images/package.png'; // Fallback project image
+import profileImgFallback from '@/assets/images/profilepix.jpg'; 
+import projectImgFallback from '@/assets/images/package.png'; 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { useDispatch } from 'react-redux';
-import { setclientFilter } from '@/redux/ReduxFunction';
-import { useClientListQuery, useLazyClientFilterListQuery, useLazyProfessionalListQuery, useProfessionalFilterListQuery } from '@/redux/Api/projectApi';
+import { useClientListQuery, useProfessionalListQuery } from '@/redux/Api/projectApi';
 
-interface ProjectListProps {
-    FilteredData: { industry: string[]; timeline: string[]; skillType: string[] };
-}
 
-const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
+const FeaturedProject: React.FC = () => {
 
 
 
     const route = usePathname();
+    const clientData = useClientListQuery(undefined)
+    const professionalData = useProfessionalListQuery(undefined)
+    console.log("my clientData is", clientData);
+    console.log("my professionalData is", professionalData);
     
-    const dispatch = useDispatch();
-    
-    const [clientLazyData] = useLazyProfessionalListQuery();
-    const [professionalLazyData] = useLazyClientFilterListQuery();
-    
-    const { data: clientData } = useClientListQuery({});
-    const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
-    // console.log('get client ', clientData);
-    // console.log('get professional ', professionalData);
-    const [filteredData, setFilteredData] = useState(null);
+  
 
-    useEffect(() => {
-        // Determine which lazy query to call based on the route
-        const fetchFilteredData = async () => {
-            if (route === "/project-list/professional") {
-                const response = await clientLazyData({ FilteredData });
-
-                setFilteredData(response?.data);
-                // console.log("response");
-            } else {
-                const response = await professionalLazyData(FilteredData);
-                setFilteredData(response?.data);
-            }
-        };
-
-        fetchFilteredData(); // Trigger the fetch
-    }, [route, FilteredData, professionalLazyData, clientLazyData]);
-    // console.log('filter aaaadata is:', FilteredData);
-
-    const servicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
-        ? filteredData
-        : clientData;
-    const professionalServicesToShow = FilteredData.industry.length || FilteredData.timeline.length || FilteredData.skillType.length
-        ? filteredData
-        : professionalData;
-
- 
-    useEffect(() => {
-        if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
-            dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
-        }
-    }, [FilteredData, dispatch]);
-    // console.log({ industry: [], timeline: [], skillType: [] });
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 4;
-
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const data = (route === '/project-list/client' ? professionalServicesToShow?.data : servicesToShow?.data) || []; // Ensure `data` is always an array
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-
-    const totalPages = Math.ceil(data.length / itemsPerPage);
-
-    const handlePageChange = (pageNumber: number) => {
-        setCurrentPage(pageNumber);
-    };
-
-    // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-    console.log("My test is", currentItems  );
     return (
         <div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
+            <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 justify-center mb-8">
                 {route === '/project-list/client' ? (
-                    currentItems?.map((data: any, index: number) => (
+                    professionalData?.data?.data?.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -134,9 +74,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
                                     <div className="flex items-center gap-1">
                                         <span className="text-[16px] font-medium text-gray-900">
-                                            ★ {data?.averageRating || "0"}
+                                            ★ {data?.averageRating || ""}
                                         </span>
-                                        <span className="text-[16px] text-gray-500">({clientData.data.length})</span>
+                                        <span className="text-[16px] text-gray-500">(123)</span>
                                     </div>
                                 </div>
 
@@ -160,7 +100,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                         </div>
                     ))
                 ) : (
-                    currentItems?.map((data: any, index: number) => (
+                        clientData?.data?.data?.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -208,9 +148,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
                                     <div className="flex items-center gap-1">
                                         <span className="text-[16px] font-medium text-gray-900">
-                                            ★ {data?.averageRating || "0"}
+                                            ★ {data.client?.name?.firstName || "Client"}
                                         </span>
-                                        <span className="text-[16px] text-gray-500">({professionalData.data.length})</span>
+                                        <span className="text-[16px] text-gray-500">(123)</span>
                                     </div>
                                 </div>
 
@@ -233,13 +173,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 )}
             </div>
 
-            <Pagination
+            {/* <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
-            />
+            /> */}
         </div>
     );
 }
 
-export default ProjectList;
+export default FeaturedProject;

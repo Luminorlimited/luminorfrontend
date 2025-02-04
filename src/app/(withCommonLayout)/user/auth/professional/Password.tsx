@@ -4,7 +4,7 @@ import { FaEye } from "react-icons/fa";
 import { useState } from "react";
 import { FaEyeSlash } from "react-icons/fa6";
 
-export default function Password({ register, handleBack }: any) {
+export default function Password({ register, handleBack, loading }: any) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -147,9 +147,10 @@ export default function Password({ register, handleBack }: any) {
         </Button>
         <Button
           onClick={handleSubmit}
-          className="w-28 h-12 bg-primary rounded-[10px] hover:bg-[#5B32C2] text-white"
+          disabled={loading} // Disable button during loading
+          className={`w-28 h-12 bg-primary rounded-[10px] text-white ${loading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-[#5B32C2]"}`}
         >
-          Done
+          {loading ? "Loading..." : "Done"}
         </Button>
       </div>
     </div>

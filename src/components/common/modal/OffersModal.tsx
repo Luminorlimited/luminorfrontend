@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import OrderDetailsModal from "./OrderDetailsModal";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
-// import io from 'socket.io-client'; // Import the socket.io-client
-// import useDecodedToken from "../DecodeToken";
 
 interface OffersModalProps {
 
@@ -45,35 +43,27 @@ export interface Offer {
 
 
 const OffersModal: React.FC<OffersModalProps> = ({ onClose, user1 }) => {
-
-    // const [oldOffer, setOldOffer] = useState
     const { data: getoffer, isLoading } = useGetOfferQuery(user1)
-    console.log("My email", user1);
-    console.log("My offer", getoffer);
+
     const [offers, setOffers] = useState<Offer[]>([]);
     console.log("user 2", offers);
-    console.log("user 2", user1);
-
-
-    // const [socket, setSocket] = useState<any>(null);
-    // const token = useDecodedToken()
-    // const user1 = token?.email
+   
 
 
     const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null)
 
 
+
     const onOfferClick = (offer: Offer) => {
         setSelectedOffer(offer)
-
     }
+
     useEffect(() => {
         if (getoffer?.data?.data) {
-            setOffers(getoffer.data.data); // Populate offers from API
+            setOffers(getoffer.data.data); 
         }
     }, [getoffer]);
-
-
+    // console.log("get all offer", getoffer?.data);
 
 
 
@@ -95,7 +85,7 @@ const OffersModal: React.FC<OffersModalProps> = ({ onClose, user1 }) => {
                         <div className="flex justify-between items-center mb-4">
                             <div className="flex gap-3 items-center">
                                 <h3 className="text-lg font-semibold">Orders with you</h3>
-                                <p className="text-[#4A4C56] text-sm">(Total-{getoffer?.data?.data.length})</p>
+                                <p className="text-[#4A4C56] text-sm">(Total-{getoffer?.data?.data?.offersWithUserInfo.length})</p>
                             </div>
 
                         </div>
@@ -103,7 +93,7 @@ const OffersModal: React.FC<OffersModalProps> = ({ onClose, user1 }) => {
                             {isLoading ? (
                                 <p className="text-center text-xl">Loading...</p>
                             ) : (
-                                getoffer?.data?.data.map((offer: any) => {
+                                    getoffer?.data?.data?.offersWithUserInfo.map((offer: any) => {
                                     // Convert createdAt date to "11 January 2025" format
                                     const formattedDate = new Date(offer.createdAt).toLocaleDateString('en-GB', {
                                         day: '2-digit',
