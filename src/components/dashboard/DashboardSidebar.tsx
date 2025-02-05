@@ -83,13 +83,15 @@ export function DashboardSidebar() {
     return (
         <div className="flex h-screen w-64 flex-col bg-[#ececec] text-black">
             <div className="p-4">
-                <Image
-                    src={logo}
-                    alt="Quick Online Deals"
-                    width={180}
-                    height={40}
-                    className="mb-6 lg:ml-0 ml-12"
-                />
+                <Link href={'/'}>
+                    <Image
+                        src={logo}
+                        alt="Quick Online Deals"
+                        width={180}
+                        height={40}
+                        className="mb-6 lg:ml-0 ml-12"
+                    />
+                </Link>
                 <nav className="space-y-1">
                     {menuItems.map((item) => {
                         const isActive = pathname === item.href
