@@ -13,10 +13,10 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <div className="h-screen max-h-screen overflow-hidden grid grid-cols-1 lg:grid-cols-[250px,1fr] bg-[#0C0C0C] text-white">
+        <div className="h-screen max-h-screen overflow-hidden grid grid-cols-1 lg:grid-cols-[250px,1fr] bg-[#ececec] text-white">
             {/* Sidebar */}
             <div
-                className={`fixed top-0 left-0 lg:!static z-50 w-full max-w-[300px] sm:max-w-[400px] bg-[#1D1D1D] h-screen ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+                className={`fixed top-0 left-0 lg:!static z-50 w-full max-w-[300px] sm:max-w-[400px] bg-[#ececec] h-screen ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                     } transform transition-transform duration-300 ease-in-out`}
             >
                 <DashboardSidebar />
@@ -25,7 +25,7 @@ const Wrapper = ({ children }: { children: ReactNode }) => {
             <div className="relative">
                 <button
                     onClick={toggleSidebar}
-                    className="lg:hidden absolute top-4 left-4 z-50 p-2 rounded-[8px] bg-[#1D1D1D] text-white hover:bg-slate-500 "
+                    className="lg:hidden absolute top-4 left-4 z-50 p-2 rounded-[8px] bg-bg_primary text-white hover:bg-slate-500 "
                     aria-label="Toggle sidebar"
                 >
                     <IoMenu size={24} />
