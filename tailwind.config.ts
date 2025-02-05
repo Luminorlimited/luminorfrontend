@@ -26,6 +26,7 @@ export default {
       },
       colors: {
         bg_primary: '#5633D1',
+        bg_secondary: "#e7e7e7",
         primary: {
           DEFAULT: "#5633D1",
           light: "#8B6FE3",
