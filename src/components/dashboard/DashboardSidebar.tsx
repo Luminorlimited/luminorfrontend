@@ -12,7 +12,7 @@ import {
     User,
     // Grid,
     // ArrowUpRight,
-    // Tag,
+    Tag,
     // Ticket,
     // Upload,
     LogOut,
@@ -39,6 +39,11 @@ const menuItems = [
         title: "All User",
         icon: Package,
         href: "/dashboard/users",
+    },
+    {
+        title: "All Offers",
+        icon: Tag,
+        href: "/dashboard/offers",
     },
     {
         title: "My profile",

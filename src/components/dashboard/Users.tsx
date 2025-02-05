@@ -8,17 +8,25 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
 // Define types for our user data
-interface User {
+interface Client {
     id: number
     name: string
     image: string
     rating: number
     bio: string
 }
+interface Professional {
+    id: number
+    name: string
+    image: string
+    rating: number
+    onBoarding: string
+    bio: string
+}
 
 export default function Users() {
     // Sample data for clients
-    const [clients, setClients] = useState<User[]>([
+    const [clients, setClients] = useState<Client[]>([
         {
             id: 1,
             name: "John Doe",
@@ -43,11 +51,12 @@ export default function Users() {
     ])
 
     // Sample data for retired professionals
-    const [professionals, setProfessionals] = useState<User[]>([
+    const [professionals, setProfessionals] = useState<Professional[]>([
         {
             id: 1,
             name: "Dr. Robert Wilson",
             rating: 4,
+            onBoarding: "true",
             image: "/placeholder.svg?height=40&width=40",
             bio: "Retired Cardiologist with 30 years experience",
         },
@@ -55,6 +64,7 @@ export default function Users() {
             id: 2,
             name: "Prof. Emily Brown",
             rating: 4,
+            onBoarding: "false",
             image: "/placeholder.svg?height=40&width=40",
             bio: "Former University Professor in Economics",
         },
@@ -62,6 +72,7 @@ export default function Users() {
             id: 3,
             name: "Arch. James Miller",
             rating: 4,
+            onBoarding: "true",
             image: "/placeholder.svg?height=40&width=40",
             bio: "Retired Architect specializing in sustainable design",
         },
@@ -90,7 +101,7 @@ export default function Users() {
     }
 
     // Table component to avoid repetition
-    const UserTable = ({ users, userType }: { users: User[]; userType: "client" | "professional" }) => (
+    const ClientUserTable = ({ users, userType }: { users: Client[]; userType: "client" | "professional" }) => (
         <Table>
             <TableHeader className="text-gray-900  text-center">
                 <TableRow>
@@ -99,6 +110,7 @@ export default function Users() {
                     <TableHead>Image</TableHead>
                     <TableHead>Bio</TableHead>
                     <TableHead>Rating</TableHead>
+                 
                     <TableHead className="text-right">Action</TableHead>
                 </TableRow>
             </TableHeader>
@@ -112,6 +124,49 @@ export default function Users() {
                         </TableCell>
                         <TableCell>{user.bio}</TableCell>
                         <TableCell>{user.rating}</TableCell>
+                        
+                        <TableCell className="text-right">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                onClick={() => handleDelete(user.id, userType)}
+                            >
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    )
+    const ProfessionalUserTable = ({ users, userType }: { users: Professional[]; userType: "client" | "professional" }) => (
+        <Table>
+            <TableHeader className="text-gray-900  text-center">
+                <TableRow>
+                    <TableHead className="w-[100px]">Serial</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Image</TableHead>
+                    <TableHead>Bio</TableHead>
+                    <TableHead>Rating</TableHead>
+                    <TableHead>OnBoarding</TableHead>
+                 
+                    <TableHead className="text-right">Action</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody className="text-black">
+                {users.map((user, index) => (
+                    <TableRow key={user.id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>
+                            <Image width={50} height={50} src={user.image || "/placeholder.svg"} alt={user.name} className="w-10 h-10 rounded-full" />
+                        </TableCell>
+                        <TableCell>{user.bio}</TableCell>
+                        <TableCell>{user.rating}</TableCell>
+                        <TableCell className={` font-medium ${user.onBoarding === "true"?"text-green-800": "text-red-800"}`}>{user.onBoarding}</TableCell>
+
+                
                         <TableCell className="text-right">
                             <Button
                                 variant="ghost"
@@ -133,14 +188,14 @@ export default function Users() {
             <div className="bg-bg_secondary rounded-[10px] p-4 mb-3">
                 <h2 className="text-2xl font-bold mb-4 text-black">Client Users</h2>
                 <div className="rounded-md border">
-                    <UserTable users={clients} userType="client" />
+                    <ClientUserTable users={clients} userType="client" />
                 </div>
             </div>
 
             <div className="bg-bg_secondary rounded-[10px] p-4 mb-3">
                 <h2 className="text-2xl font-bold mb-4 text-black">Retired Professionals</h2>
                 <div className="rounded-md border">
-                    <UserTable users={professionals} userType="professional" />
+                    <ProfessionalUserTable users={professionals} userType="professional" />
                 </div>
             </div>
         </div>
