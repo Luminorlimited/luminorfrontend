@@ -155,84 +155,82 @@ export default function Client() {
 
     const { register, handleSubmit, setValue, watch } = useForm();
 
-
+    const [selectedImage, setSelectedImage] = useState<string | File>(
+        profileData?.data?.profileUrl
+    );
     // console.log(profileData?.data?.budgetRange?.min);
     const handleSubmitForm = async (data: any) => {
-        // Update the data object with min/max budget and duration values
         data.minBudget = budgetMinValue;
         data.maxBudget = budgetMaxValue;
         data.minDuration = durationMinValue;
-        data.maxDuration = durationMaxValue;
-
-        // Ensure that projectPreference is set correctly in the data object
+        data.maxDuration = durationMinValue;
         data.projectPreference = inputs;
 
         const formData = new FormData();
+
+        // Append valid data fields
         Object.entries(data).forEach(([key, value]) => {
             if (value !== undefined && value !== "") {
-                formData.append(key, value as string);
+                formData.append(key, String(value));
             }
         });
 
+        // Append structured fields
         formData.append('name[firstName]', data.firstName);
         formData.append('name[lastName]', data.lastName);
-        formData.append('projectDurationRange[max]', data.maxDuration);
-        formData.append('projectDurationRange[min]', data.minDuration);
-        formData.append('budgetRange[min]', data.minBudget);
-        formData.append('budgetRange[max]', data.maxBudget);
+        formData.append('projectDurationRange[max]', String(data.maxDuration));
+        formData.append('projectDurationRange[min]', String(data.minDuration));
+        formData.append('budgetRange[min]', String(data.minBudget));
+        formData.append('budgetRange[max]', String(data.maxBudget));
 
+        // Append project preferences array
         if (Array.isArray(data.projectPreference)) {
             data.projectPreference.forEach((preference: string) => {
-                if (preference !== undefined && preference !== "") {
+                if (preference.trim()) {
                     formData.append('projectPreference[]', preference);
-                    // console.log('My project preference: ', preference);
                 }
             });
         }
-        console.log("My profile url is", selectedImage);
 
+        // Append projectUrl if available
         if (selectProject) {
             formData.append('projectUrl', selectProject);
         }
 
+        // Append the profile image if it's a file
         if (selectedImage instanceof File) {
             formData.append('profileUrl', selectedImage);
         }
-        
 
         try {
             const res = await editclientProfile({ id: userIdValue, data: formData });
-            if (res) {
-                toast.success("Profile updated successfully");
-                console.log("My response is", formData);
+            if ('data' in res) {
+                toast.success("Profile Updated Successfully");
+                console.log("Profile update response:", res.data);
             } else {
-                toast.error("Profile can't be updated successfully");
+                throw new Error("Failed to update profile");
             }
         } catch (error) {
-            toast.error("Can't update successfully");
-            console.log(error);
+            toast.error("Profile update failed");
+            console.error(error);
         }
-        // reset();
     };
 
-    const [selectedImage, setSelectedImage] = useState<string | File>(
-            profileData?.data?.profileUrl
-        );
+
+
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Ensure only image files are processed
             if (!file.type.startsWith("image/")) {
                 alert("Please select a valid image file.");
                 return;
             }
-            setSelectedImage(file); // Set the file directly
+            setSelectedImage(file);
         }
     };
 
-
-    // Determine the image source to display
-    // console.log('my selected image', selectedImage);
     const imageSrc = useMemo(() => {
         if (selectedImage instanceof File) {
             return URL.createObjectURL(selectedImage);
@@ -249,6 +247,7 @@ export default function Client() {
             return () => URL.revokeObjectURL(url);
         }
     }, [selectedImage]);
+
 
 
 
@@ -282,7 +281,7 @@ export default function Client() {
     useEffect(() => {
         console.log("selectProject state updated:", selectProject)
     }, [selectProject])
- 
+
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -292,10 +291,10 @@ export default function Client() {
                     <form encType="multipart/form-data" onSubmit={handleSubmit(handleSubmitForm)} className="flex flex-col gap-y-3">
                         <div className="relative text-center mb-12">
                             <div className="relative inline-block">
+
                                 <Image
                                     src={imageSrc}
                                     alt="profile-img"
-                                    // {...register('profileUrl')}
                                     onChange={(e) => setValue("profileUrl", (e.target as HTMLInputElement).value)}
                                     width={160}
                                     height={160}

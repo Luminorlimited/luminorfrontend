@@ -111,6 +111,10 @@ export default function Professional() {
         profileData?.data?.workSample
     );
 
+    const [selectedImage, setSelectedImage] = useState<string | File>(
+        profileData?.data?.profileUrl
+    );
+
     const handleSubmitForm = async (data: any) => {
         setLoading(true)
         if (!data || typeof data !== "object") {
@@ -205,9 +209,6 @@ export default function Professional() {
         }
     };
 
-    const [selectedImage, setSelectedImage] = useState<string | File>(
-        profileData?.data?.profileUrl
-    );
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
