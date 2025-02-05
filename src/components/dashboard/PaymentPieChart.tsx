@@ -106,14 +106,14 @@ export default function PaymentPieChart() {
                 </div>
                 <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-[#FF6B00] rounded-full" />
+                        <div className="w-1.5 h-6 bg-bg_primary rounded-full" />
                         <p className="text-gray-800">
                             <span className="font-semibold mr-2">02</span>
                             <span className="text-gray-700">Claim Product Review</span>
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-6 bg-[#FF6B00] opacity-30 rounded-full" />
+                        <div className="w-1.5 h-6 bg-[#7B5AED] opacity-30 rounded-full" />
                         <p className="text-gray-800">
                             <span className="font-semibold mr-2">31</span>
                             <span className="text-gray-700">Positive Product Review</span>

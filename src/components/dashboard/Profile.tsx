@@ -67,7 +67,7 @@ export default function Profile() {
                     <div className="md:w-1/3 bg-bg_primary  p-8 text-white">
                         <div className="text-center">
                             <Avatar className="w-48 h-48 mx-auto mb-6 border-4 border-white">
-                                <Image src={profile.avatar} alt={profile.name} />
+                                <Image src={profile.avatar} alt={profile.name} width={192} height={192} />
                                 <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <h2 className="text-3xl font-bold mb-2">{profile.name}</h2>

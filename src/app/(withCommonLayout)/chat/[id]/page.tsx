@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import ChatWindow, { Message } from "@/app/(withCommonLayout)/chat/ChatWindow";
 import Button from "@/components/common/Button";
@@ -62,7 +62,7 @@ const Page: React.FC = () => {
     }, 200)
   }
 
-  
+
 
   const handleFileClick = (type: string) => {
     const input = document.getElementById("fileInput") as HTMLInputElement;
@@ -337,12 +337,12 @@ const Page: React.FC = () => {
     setShowSidebar(!showSidebar);
   };
 
-  const handleClickOutside = (event: any) => {
+  
+  const handleClickOutside = useCallback((event: any) => {
     if (showSidebar && !event.target.closest('.sidebar')) {
       setShowSidebar(false);
     }
-  };
-
+  }, [showSidebar]);
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -408,7 +408,7 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-            
+
             <AllUsers
               handleshowMessage={handleshowMessage}
               getConversation={{ data: users }}
@@ -439,7 +439,7 @@ const Page: React.FC = () => {
                   </p>
                 </div>
               </div>
-            ): (<p> No User Found</p>)}
+            ) : (<p> No User Found</p>)}
 
             {token?.role === "retireProfessional" ? (
 
@@ -468,20 +468,20 @@ const Page: React.FC = () => {
               <div className="flex items-center gap-6">
 
 
-                  <button
-                    onClick={handleOpenModal}
-                    className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
-                  >
-                    Current Offers 
-                      {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
+                <button
+                  onClick={handleOpenModal}
+                  className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
+                >
+                  Current Offers
+                  {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
                         {offerNotification}
                       </span> */}
-                    {offerNotification > 0 && (
-                      <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
-                        {offerNotification}
-                      </span>
-                    )}
-                  </button>
+                  {offerNotification > 0 && (
+                    <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
+                      {offerNotification}
+                    </span>
+                  )}
+                </button>
                 {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
 
                 <button onClick={handleProjectModal} disabled className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200">

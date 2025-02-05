@@ -2,11 +2,14 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
-    const { register, handleSubmit, watch, reset } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false)
+
+    const router = useRouter()
 
     const onSubmit = async (data: any) => {
         setLoading(true);
@@ -16,6 +19,7 @@ export default function AdminLogin() {
 
             // Simulate API call for demonstration
             await new Promise((resolve) => setTimeout(resolve, 2000));
+            router.push('/dashboard')
 
         } catch (e) {
             console.error("Error:", e);

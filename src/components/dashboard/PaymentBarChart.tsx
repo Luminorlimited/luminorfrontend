@@ -43,7 +43,7 @@ export default function PayementBarChart() {
                 <h2 className="text-xl text-black">Statistics</h2>
                 <Button
                     variant="outline"
-                    className="text-gray-300 bg-transparent border-gray-700"
+                    className="text-gray-800 bg-transparent border-gray-700"
                 >
                     This Yearly
                     <ChevronDown className="ml-2 h-4 w-4" />

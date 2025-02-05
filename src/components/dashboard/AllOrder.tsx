@@ -82,25 +82,19 @@ export default function AllOrders() {
     ]);
 
     const getStatusColor = (status: string) => {
-        switch (status) {
-            case "Completed":
-            case "Shipped":
-                return "text-green-500";
-            case "Pending":
-            case "Refunds":
-                return "text-yellow-500";
-            case "Failed":
-                return "text-red-500";
-            case "Refunds":
-                return "text-blue-500";
-            case "Delivered":
-                return "text-amber-500";
-            case "Returns":
-                return "text-red-500";
-            default:
-                return "text-gray-500";
-        }
+        const statusColors: Record<string, string> = {
+            Completed: "text-green-500",
+            Shipped: "text-green-500",
+            Pending: "text-yellow-500",
+            Refunds: "text-blue-500",
+            Failed: "text-red-500",
+            Delivered: "text-amber-500",
+            Returns: "text-red-500",
+        };
+        return statusColors[status] || "text-gray-500";
     };
+
+    
 
     const handlePaymentStatusChange = (orderIndex: number, newStatus: string) => {
         setOrders((prevOrders) =>
@@ -132,13 +126,13 @@ export default function AllOrders() {
                     : order
             )
         );
-        toast.success(`Order status updated ${newStatus}`);
-
+        
         setOpenOrderStatus(null);
     };
-
+    
     const handleOrderSelect = (orderIndex: number) => {
         setSelectedOrder(orderIndex === selectedOrder ? null : orderIndex);
+        toast.success(`Order status updated`);
         if (orderIndex !== selectedOrder) {
             handleOrderStatusChange(orderIndex, "Shipped");
         }
@@ -154,9 +148,9 @@ export default function AllOrders() {
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="outline"
-                                    className="bg-transparent border-gray-700 text-gray-900 hover:bg-gray-300 hover:text-white gap-2"
+                                    className="bg-transparent border-gray-700 text-gray-900 hover:bg-gray-300 hover:text-gray-800 gap-2"
                                 >
-                                    Filter
+                                    Payment Status Filter
                                     <Menu className="h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>

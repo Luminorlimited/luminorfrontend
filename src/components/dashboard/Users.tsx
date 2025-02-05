@@ -5,20 +5,21 @@ import { useState } from "react"
 import Swal from "sweetalert2"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import Image, { StaticImageData } from "next/image"
+import logo from '@/assets/images/demoimg.png'
 
 // Define types for our user data
 interface Client {
     id: number
     name: string
-    image: string
+    image: StaticImageData
     rating: number
     bio: string
 }
 interface Professional {
     id: number
     name: string
-    image: string
+    image: StaticImageData
     rating: number
     onBoarding: string
     bio: string
@@ -31,21 +32,21 @@ export default function Users() {
             id: 1,
             name: "John Doe",
             rating: 4,
-            image: "/placeholder.svg?height=40&width=40",
+            image: logo,
             bio: "Regular customer since 2022",
         },
         {
             id: 2,
             name: "Sarah Smith",
             rating: 4,
-            image: "/placeholder.svg?height=40&width=40",
+            image: logo,
             bio: "Frequent buyer of premium products",
         },
         {
             id: 3,
             name: "Mike Johnson",
             rating: 4,
-            image: "/placeholder.svg?height=40&width=40",
+            image: logo,
             bio: "New customer with high engagement",
         },
     ])
@@ -57,7 +58,7 @@ export default function Users() {
             name: "Dr. Robert Wilson",
             rating: 4,
             onBoarding: "true",
-            image: "/placeholder.svg?height=40&width=40",
+            image: logo,
             bio: "Retired Cardiologist with 30 years experience",
         },
         {
@@ -65,7 +66,7 @@ export default function Users() {
             name: "Prof. Emily Brown",
             rating: 4,
             onBoarding: "false",
-            image: "/placeholder.svg?height=40&width=40",
+            image: logo,
             bio: "Former University Professor in Economics",
         },
         {
@@ -73,7 +74,7 @@ export default function Users() {
             name: "Arch. James Miller",
             rating: 4,
             onBoarding: "true",
-            image: "/placeholder.svg?height=40&width=40",
+            image: logo,
             bio: "Retired Architect specializing in sustainable design",
         },
     ])

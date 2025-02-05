@@ -10,8 +10,10 @@ import {
 } from "recharts";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
-const data = [
+// Sample datasets
+const weeklyData = [
   { day: "Mon", value: 0 },
   { day: "Tue", value: 55 },
   { day: "Wed", value: 25 },
@@ -21,24 +23,45 @@ const data = [
   { day: "Sun", value: 100 },
 ];
 
+const monthlyData = [
+  { day: "January", value: 60 },
+  { day: "February", value: 75 },
+  { day: "March", value: 50 },
+  { day: "April", value: 90 },
+];
+
 export default function OrderInsightsCard() {
+  const [chartData, setChartData] = useState(weeklyData);
+  const [viewMode, setViewMode] = useState("Weekly");
+
+  const handleToggleView = () => {
+    if (viewMode === "Weekly") {
+      setViewMode("Monthly");
+      setChartData(monthlyData);
+    } else {
+      setViewMode("Weekly");
+      setChartData(weeklyData);
+    }
+  };
+
   return (
-    <div className=" p-6 rounded-lg w-full overflow-x-auto">
+    <div className="p-6 rounded-lg w-full overflow-x-auto">
       <div className="flex justify-between items-center mb-6 min-w-[400px]">
         <h2 className="text-xl text-black ">Order insights</h2>
         <Button
           variant="outline"
+          onClick={handleToggleView}
           className="text-gray-400 bg-transparent border-gray-700"
         >
-          Weekly
+          {viewMode}
           <ChevronDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
 
-      <div className="h-[400px] w-full min-w-[400px] ">
-        <ResponsiveContainer width="100%" className={"w-full"} height="100%">
+      <div className="h-[400px] w-full min-w-[400px]">
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={data}
+            data={chartData}
             margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
           >
             <CartesianGrid
@@ -56,7 +79,7 @@ export default function OrderInsightsCard() {
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#666" }}
-              ticks={[0, 10, 30, 50, 70, 90, 100]}
+              ticks={[0, 20, 40, 60, 80, 100]}
               domain={[0, 100]}
               tickFormatter={(value: number) => `${value}%`}
             />
