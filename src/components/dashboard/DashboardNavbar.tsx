@@ -46,6 +46,12 @@ export default function DashboardNav() {
                                             </div>
 
                                         ) :
+                                            pathName.startsWith("/dashboard/users/") ? (
+                                            <div>
+                                                <h3 className="lg:text-[23px] md:text-xl font-semibold">User Profile</h3>
+                                            </div>
+
+                                        ) :
                                             ("")
                 }
                 <Link href={'/dashboard/profile'} className=" flex items-center gap-2 cursor-pointer hover:bg-[#b8b8b8] rounded-[20px] px-4 py-2 duration-200">

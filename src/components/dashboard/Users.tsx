@@ -120,7 +120,7 @@ export default function Users() {
                 {users.map((user, index) => (
                     <TableRow key={user.id}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell><Link href={`/dashboard/users/${user.id}`}>
+                        <TableCell><Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user.id}`}>
                             {user.name}
                         </Link></TableCell>
                         
@@ -164,7 +164,7 @@ export default function Users() {
                     <TableRow key={user.id}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
-                            <Link href={`/dashboard/users/${user.id}`}>
+                            <Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user.id}`}>
                             {user.name}
                             </Link>
                         </TableCell>

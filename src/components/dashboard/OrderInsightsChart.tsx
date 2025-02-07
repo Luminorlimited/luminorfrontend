@@ -8,7 +8,16 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { Menu } from "lucide-react";
+
 import { ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -43,6 +52,10 @@ export default function OrderInsightsCard() {
       setChartData(weeklyData);
     }
   };
+  const statusOptions = ["Monthly", "Weekly"];
+  const [status, setStatus] = useState("all");
+
+
 
   return (
     <div className="p-6 rounded-lg w-full overflow-x-auto">
@@ -56,6 +69,35 @@ export default function OrderInsightsCard() {
           {viewMode}
           <ChevronDown className="ml-2 h-4 w-4" />
         </Button>
+
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="bg-transparent border-gray-700 text-gray-900 hover:bg-gray-300 hover:text-gray-800 gap-2"
+            >
+              Payment Status Filter
+              <Menu className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="bg-gray-300 border-gray-700">
+            <DropdownMenuRadioGroup
+              value={status}
+              onValueChange={setStatus}
+            >
+              {statusOptions?.map((item, indx) => (
+                <DropdownMenuRadioItem
+                  key={indx}
+                  value={item}
+                  className="text-gray-900 focus:bg-white focus:text-gray-900"
+                >
+                  {item}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="h-[400px] w-full min-w-[400px]">
