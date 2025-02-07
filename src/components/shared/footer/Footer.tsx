@@ -2,16 +2,10 @@
 import Link from "next/link";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { IoIosArrowDown } from "react-icons/io";
 import { RiInstagramFill } from "react-icons/ri";
 import bg from "@/assets/images/footerbg.png";
 import logo from "@/assets/Logo2.png";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 // import Logo from "@/utils/Logo";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -119,20 +113,7 @@ export default function Footer() {
           </div>
           <div className="flex items-center gap-5 mr-20">
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <p className="flex items-center gap-2 text-white">
-                  USD
-                  <IoIosArrowDown />
-                  <span className="sr-only">Select currency</span>
-                </p>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-32">
-                <DropdownMenuItem>USD</DropdownMenuItem>
-                <DropdownMenuItem>EUR</DropdownMenuItem>
-                <DropdownMenuItem>GBP</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+           
           </div>
         </div>
         <hr className="opacity-40 my-10" />

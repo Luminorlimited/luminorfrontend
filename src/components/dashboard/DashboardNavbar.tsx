@@ -12,7 +12,7 @@ export default function DashboardNav() {
                 {
                     pathName === '/dashboard' ? (
                         <div>
-                            <h3 className="lg:text-[23px] md:text-xl font-semibold">Welcome to Luminor Dashboard </h3>
+                            <h3 className="lg:text-[23px] md:text-xl font-semibold">Welcome to Dashboard </h3>
                         </div>
 
                     ) :

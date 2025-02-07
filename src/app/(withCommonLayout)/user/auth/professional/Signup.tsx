@@ -3,31 +3,33 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import mainlogo from '@/assets/images/mainlogo.png'
+import Image from "next/image";
 import { toast } from "sonner";
 
 export default function Signup({ register, handleNext, getValues }: any) {
   // Validation function to check if all required fields are filled
-const validateFields = () => {
-  const values = getValues();
-  const { firstName, lastName, dob, email, phone } = values;
+  const validateFields = () => {
+    const values = getValues();
+    const { firstName, lastName, dob, email, phone } = values;
 
-  // Regular expression for validating email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Regular expression for validating email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Check if any required field is empty
-  if (!firstName || !lastName || !dob || !email || !phone) {
-    toast.error("Please fill in all required fields.")
-    return false; 
-  }
+    // Check if any required field is empty
+    if (!firstName || !lastName || !dob || !email || !phone) {
+      toast.error("Please fill in all required fields.")
+      return false;
+    }
 
-  // Validate email format
-  if (!emailRegex.test(email)) {
-    toast.error("Please enter a valid email address.")
-    return false; 
-  }
+    // Validate email format
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email address.")
+      return false;
+    }
 
-  return true; // Return true if all fields are filled and email is valid
-};
+    return true; // Return true if all fields are filled and email is valid
+  };
 
   // Handle Next button click
   const handleButtonClick = () => {
@@ -39,9 +41,15 @@ const validateFields = () => {
   return (
     <div>
       <div className="mb-8 text-center">
-        <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
-          Join Luminor Today
-        </h1>
+        <div className="flex gap-3 py-2 items-center justify-center">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Join
+          </h1>
+          <Image src={mainlogo} width={150} height={200} alt="logo" />
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Today
+          </h1>
+        </div>
         <h2 className="mb-1 font-medium text-[16px] text-gray-600">
           Sign up as a professional
         </h2>

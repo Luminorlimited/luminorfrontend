@@ -3,7 +3,7 @@ import Image from "next/image";
 import Logo from "@/utils/Logo";
 import usertypeshape from "@/assets/shapes/usertypeshape.png";
 import circleshape from "@/assets/shapes/circleshape.png";
-import CheckBox from "@/components/common/checkbox/CheckBox";
+// import CheckBox from "@/components/common/checkbox/CheckBox";
 import ImageCarousel from "../auth/login/ImageCarousel/ImageCarousel";
 import { useState } from "react";
 // import { setVerify } from "@/redux/ReduxFunction";
@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import Cookies from 'js-cookie';
 import { toast } from "sonner";
-import useDecodedToken from "@/components/common/DecodeToken";
+import { useDecodedToken } from "@/components/common/DecodeToken";
 
 export default function Page() {
   const [otp, setOtp] = useState("")
@@ -152,10 +152,10 @@ export default function Page() {
                 {isLoading ? "Verifying..." : "Verify"}
               </button>
 
-              <div className="flex items-center gap-3">
+              {/* <div className="flex items-center gap-3">
                 <CheckBox />
                 <p>Remember this device.</p>
-              </div>
+              </div> */}
             </form>
           </div>
           <div className="relative  lg:block  hidden w-[650px]  ">

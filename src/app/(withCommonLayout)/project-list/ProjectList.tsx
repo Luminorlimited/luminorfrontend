@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
 import Pagination from '@/components/common/pagination/Pagination';
-import profileImgFallback from '@/assets/images/profilepix.jpg'; // Fallback profile image
+// import demoimg from '@/assets/images/demoimg.png'; 
 import projectImgFallback from '@/assets/images/package.png'; // Fallback project image
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -21,12 +21,12 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
 
     const route = usePathname();
-    
+
     const dispatch = useDispatch();
-    
+
     const [clientLazyData] = useLazyProfessionalListQuery();
     const [professionalLazyData] = useLazyClientFilterListQuery();
-    
+
     const { data: clientData } = useClientListQuery({});
     const { data: professionalData } = useProfessionalFilterListQuery(FilteredData);
     // console.log('get client ', clientData);
@@ -58,7 +58,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
         ? filteredData
         : professionalData;
 
- 
+
     useEffect(() => {
         if (!FilteredData.industry.length && !FilteredData.timeline.length && !FilteredData.skillType.length) {
             dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
@@ -81,7 +81,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     };
 
     // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-    console.log("My test is", currentItems  );
+    console.log("My test is", currentItems);
     return (
         <div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
@@ -119,13 +119,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                 <div className="mb-2 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div className="h-15 w-10 overflow-hidden rounded-full">
-                                            <Image
-                                                src={data?.profileUrl || profileImgFallback}
+                                            {/* <Image
+                                                src={data?.profileUrl || demoimg}
                                                 alt={data?.userDetails?.name?.firstName || "Client"}
                                                 width={40}
                                                 height={40}
                                                 className="object-cover"
-                                            />
+                                            /> */}
                                         </div>
                                         <span className="text-sm font-medium text-gray-900">
                                             {data.userDetails?.name?.firstName || "Unknown"} {data.userDetails?.name?.lastName || ""}
@@ -193,13 +193,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                                 <div className="mb-2 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div className="h-15 w-10 overflow-hidden rounded-full">
-                                            <Image
-                                                src={data?.profileUrl || profileImgFallback}
+                                            {/* <Image
+                                                src={data?.profileUrl || demoimg}
                                                 alt={data.client?.name?.firstName || "Client"}
                                                 width={40}
                                                 height={40}
                                                 className="object-cover"
-                                            />
+                                            /> */}
                                         </div>
                                         <span className="text-sm font-medium text-gray-900">
                                             {data.client?.name?.firstName || "Unknown"} {data.client?.name?.lastName || ""}

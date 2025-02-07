@@ -2,10 +2,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { store } from "@/redux/store";
 
+const public_url = process.env.NEXT_PUBLIC_BACKEND_VERCEL_URL
+
 export const baseApi = createApi({
     reducerPath: 'baseApi', // The key for this API in the Redux store
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:5001/api/v1",
+        baseUrl: public_url,
         prepareHeaders: (headers) => {
             const token = store.getState().Auth.token;
             if (token) {

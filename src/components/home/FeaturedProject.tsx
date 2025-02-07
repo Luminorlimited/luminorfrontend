@@ -3,8 +3,8 @@
 import React from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
-import profileImgFallback from '@/assets/images/profilepix.jpg';
-import projectImgFallback from '@/assets/images/package.png';
+import profileImgFallback from '@/assets/images/profilepix.jpg'; 
+import projectImgFallback from '@/assets/images/package.png'; 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useClientListQuery, useProfessionalListQuery } from '@/redux/Api/projectApi';
@@ -19,8 +19,8 @@ const FeaturedProject: React.FC = () => {
     const professionalData = useProfessionalListQuery(undefined)
     console.log("my clientData is", clientData);
     console.log("my professionalData is", professionalData);
-
-
+    
+  
 
     return (
         <div>
@@ -100,7 +100,7 @@ const FeaturedProject: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                    clientData?.data?.data?.map((data: any, index: number) => (
+                        clientData?.data?.data?.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -133,13 +133,13 @@ const FeaturedProject: React.FC = () => {
                                 <div className="mb-2 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div className="h-15 w-10 overflow-hidden rounded-full">
-                                            <Image
+                                            {/* <Image
                                                 src={data?.profileUrl || profileImgFallback}
                                                 alt={data.client?.name?.firstName || "Client"}
                                                 width={40}
                                                 height={40}
                                                 className="object-cover"
-                                            />
+                                            /> */}
                                         </div>
                                         <span className="text-sm font-medium text-gray-900">
                                             {data.client?.name?.firstName || "Unknown"} {data.client?.name?.lastName || ""}
@@ -148,7 +148,7 @@ const FeaturedProject: React.FC = () => {
 
                                     <div className="flex items-center gap-1">
                                         <span className="text-[16px] font-medium text-gray-900">
-                                            ★ {data.averageRating || "0"}
+                                            ★ {data.client?.name?.firstName || "Client"}
                                         </span>
                                         <span className="text-[16px] text-gray-500">(123)</span>
                                     </div>

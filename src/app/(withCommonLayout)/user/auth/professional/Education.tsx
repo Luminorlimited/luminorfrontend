@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import { useState } from "react";
 import { AiOutlinePlus, AiOutlineUpload } from "react-icons/ai";
 import { toast } from "sonner";
+import mainlogo from '@/assets/images/mainlogo.png'
 
 
 
@@ -80,9 +82,15 @@ export default function Education({ register, handleNext, setValue, handleBack }
 
     <div >
       <div className="space-y-2 text-center lg:mt-0 mt-6">
-        <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
-          Join Luminor Today
-        </h1>
+        <div className="flex gap-3 py-2 items-center justify-center">
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Join
+          </h1>
+          <Image src={mainlogo} width={150} height={200} alt="logo" />
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Today
+          </h1>
+        </div>
         <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a professional</h2>
 
         <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>

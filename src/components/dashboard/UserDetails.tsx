@@ -59,6 +59,7 @@ const userData: UserData = {
 
 export default function UserDetails() {
     const [user, setUser] = useState<UserData>(userData)
+    console.log(setUser)
 
 
     return (

@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaCog } from 'react-icons/fa';
+import { PiNotePencilBold } from "react-icons/pi";
 import { AiOutlinePlus, AiOutlineUpload } from 'react-icons/ai'
 import CheckBox from "@/components/common/checkbox/CheckBox";
 import { useForm } from "react-hook-form";
@@ -280,8 +279,8 @@ export default function Professional() {
                                         }
                                     }}
                                 >
-                                    <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105 transition-all rounded-full">
-                                        <FaCog className="cog-icon text-3xl text-primary " />
+                                    <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
+                                        <PiNotePencilBold className="cog-icon text-3xl text-white " />
                                     </div>
                                 </button>
                             </div>

@@ -7,9 +7,9 @@ import { CheckCheck } from "lucide-react";
 import avatar1 from "@/assets/images/msgavatar1.png";
 import avatar2 from "@/assets/images/msgavatar2.png";
 import Image from "next/image";
-import useDecodedToken from "@/components/common/DecodeToken";
 import Link from "next/link";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
+import { useDecodedToken } from "@/components/common/DecodeToken";
 
 
 

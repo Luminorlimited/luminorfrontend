@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Pencil, Trash2 } from "lucide-react"
+import {  Trash2 } from "lucide-react"
 import Swal from "sweetalert2"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -19,18 +19,18 @@ interface Offer {
 
 export default function OffersTable() {
     const [offers, setOffers] = useState<Offer[]>([
-        { id: 1, senderName: "John Doe", receiverName: "Jane Smith", offerType: "Job Offer", price: 500 },
-        { id: 2, senderName: "Alice Johnson", receiverName: "Bob Williams", offerType: "Partnership", price: 500 },
-        { id: 3, senderName: "Eva Brown", receiverName: "Michael Davis", offerType: "Project Collaboration", price: 500 },
+        { id: 1, senderName: "John Doe", receiverName: "Jane Smith", offerType: "hourly fee", price: 500 },
+        { id: 2, senderName: "Alice Johnson", receiverName: "Bob Williams", offerType: "Flat Fee", price: 500 },
+        { id: 3, senderName: "Eva Brown", receiverName: "Michael Davis", offerType: "Milestone", price: 500 },
     ])
 
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
     const [editingOffer, setEditingOffer] = useState<Offer | null>(null)
 
-    const handleEdit = (offer: Offer) => {
-        setEditingOffer(offer)
-        setIsEditDialogOpen(true)
-    }
+    // const handleEdit = (offer: Offer) => {
+    //     setEditingOffer(offer)
+    //     setIsEditDialogOpen(true)
+    // }
 
     const handleDelete = (id: number) => {
         Swal.fire({
@@ -82,9 +82,9 @@ export default function OffersTable() {
                             <TableCell>{offer.offerType}</TableCell>
                             <TableCell>{offer.price}</TableCell>
                             <TableCell className="text-right">
-                                <Button variant="ghost" className="hover:bg-green-200 text-green-800 rounded-[8px]" size="sm" onClick={() => handleEdit(offer)}>
+                                {/* <Button variant="ghost" className="hover:bg-green-200 text-green-800 rounded-[8px]" size="sm" onClick={() => handleEdit(offer)}>
                                     <Pencil className="h-4 w-4" />
-                                </Button>
+                                </Button> */}
                                 <Button variant="ghost" className="hover:bg-red-200 text-red-800 rounded-[8px]" size="sm" onClick={() => handleDelete(offer.id)}>
                                     <Trash2 className="h-4 w-4" />
                                 </Button>

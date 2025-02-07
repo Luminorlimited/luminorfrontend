@@ -4,10 +4,10 @@ import Link from "next/link";
 import React from "react";
 import professionalhero from '@/assets/images/professionalhero.png'
 import clientherobg from '@/assets/images/clientherobg.png'
-import useDecodedToken from "../common/DecodeToken";
+import { useDecodedToken } from "../common/DecodeToken";
 
 const Hero = () => {
-  const decodedToken = useDecodedToken();
+  const decodedToken = useDecodedToken()
   return (
     <section
       style={{

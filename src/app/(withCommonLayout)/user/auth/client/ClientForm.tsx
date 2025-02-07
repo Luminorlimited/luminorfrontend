@@ -121,7 +121,7 @@ export default function ClientForm() {
               <Password
                 register={register}
                 handleBack={handleBack}
-
+                isLoading={isLoading}
                 handleNext={handleNext}
               />
             )}

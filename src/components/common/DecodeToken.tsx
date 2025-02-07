@@ -7,7 +7,7 @@ interface DecodedToken extends JwtPayload {
     role?: string;
 }
 
-const useDecodedToken = (): DecodedToken | null => {
+export function useDecodedToken (): DecodedToken | null  {
     const token = useSelector((state: RootState) => state.Auth.token);
 
     if (!token) return null;
@@ -20,4 +20,4 @@ const useDecodedToken = (): DecodedToken | null => {
     }
 };
 
-export default useDecodedToken;
+

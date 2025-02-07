@@ -7,7 +7,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { useClientReviewMutation, useProfessionalAddReviewMutation } from '@/redux/Api/reviewApi';
-import useDecodedToken from '@/components/common/DecodeToken';
+import { useDecodedToken } from '@/components/common/DecodeToken';
 // import { useRouter } from 'next/navigation';
 
 // import OrderCard from '@/components/reviewdetails/OrderCard';

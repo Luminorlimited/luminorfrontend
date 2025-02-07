@@ -1,5 +1,5 @@
 'use client'
-import useDecodedToken from '@/components/common/DecodeToken';
+import { useDecodedToken } from '@/components/common/DecodeToken';
 import { useTransactionListQuery, useProfessionalOrderQuery } from '@/redux/Api/paymentApi'
 import Link from 'next/link';
 // import Link from "next/link";

@@ -1,14 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
 
 import { useState } from "react";
+import mainlogo from '@/assets/images/mainlogo.png'
+
 import {  FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 
-export default function Password({ register, handleBack }: any) {
+export default function Password({ register, handleBack, isLoading }: any) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmshowPassword, setConfirmShowPassword] = useState(false);
 
 
   const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
@@ -47,9 +51,15 @@ export default function Password({ register, handleBack }: any) {
   return (
       <div>
         <div className="space-y-2 text-center lg:mt-0 mt-6 mb-7">
+        <div className="flex gap-3 py-2 items-center justify-center">
           <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
-            Join Luminor Today
+            Join
           </h1>
+          <Image src={mainlogo} width={150} height={200} alt="logo" />
+          <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
+            Today
+          </h1>
+        </div>
           <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a Client</h2>
 
           <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
@@ -101,7 +111,7 @@ export default function Password({ register, handleBack }: any) {
               <input
                 id="confirm-password"
                 {...register("confirmPassword")}
-                type={showPassword ? "text" : "password"}
+                type={confirmshowPassword ? "text" : "password"}
                 required
                 className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Confirm Password"
@@ -110,10 +120,10 @@ export default function Password({ register, handleBack }: any) {
               />
               <button
                 type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
+              onClick={() => setConfirmShowPassword((prev) => !prev)}
                 className="absolute inset-y-0 right-4 flex items-center text-gray-500"
               >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              {confirmshowPassword ? <FaEyeSlash /> : <FaEye />}
               </button>
           </div>
           {errors.confirmPassword && (
@@ -165,10 +175,12 @@ export default function Password({ register, handleBack }: any) {
         </Button>
         <Button
           onClick={handleSubmit}
-          className="h-12 rounded-xl bg-primary text-white hover:bg-[#6D28D9] px-[50px]"
+          disabled={isLoading} // Disable button during loading
+
+          className={`w-28 h-12 bg-primary rounded-[10px] text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-[#5B32C2]"}`}
           type="submit"
         >
-          Done
+          {isLoading ? "Loading..." : "Done"}
         </Button>
       </div>
 

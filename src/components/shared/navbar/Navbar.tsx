@@ -22,8 +22,8 @@ import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
 import Cookies from "js-cookie";
-import useDecodedToken from "@/components/common/DecodeToken";
 import { io } from "socket.io-client";
+import { useDecodedToken } from "@/components/common/DecodeToken";
 
 
 interface Notification {
@@ -39,7 +39,7 @@ const Navbar = () => {
   const router = useRouter();
 
 
-  const decodedToken = useDecodedToken();
+  const decodedToken = useDecodedToken()
 
   const { data: profileData } = useGetProfileQuery(decodedToken?.id || "", {
     skip: !decodedToken,

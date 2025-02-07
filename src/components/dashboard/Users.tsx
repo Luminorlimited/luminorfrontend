@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import Image, { StaticImageData } from "next/image"
 import logo from '@/assets/images/demoimg.png'
+import Link from "next/link"
 
 // Define types for our user data
 interface Client {
@@ -119,7 +120,10 @@ export default function Users() {
                 {users.map((user, index) => (
                     <TableRow key={user.id}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{user.name}</TableCell>
+                        <TableCell><Link href={`/dashboard/users/${user.id}`}>
+                            {user.name}
+                        </Link></TableCell>
+                        
                         <TableCell>
                             <Image width={50} height={50} src={user.image || "/placeholder.svg"} alt={user.name} className="w-10 h-10 rounded-full" />
                         </TableCell>
@@ -159,7 +163,11 @@ export default function Users() {
                 {users.map((user, index) => (
                     <TableRow key={user.id}>
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{user.name}</TableCell>
+                        <TableCell>
+                            <Link href={`/dashboard/users/${user.id}`}>
+                            {user.name}
+                            </Link>
+                        </TableCell>
                         <TableCell>
                             <Image width={50} height={50} src={user.image || "/placeholder.svg"} alt={user.name} className="w-10 h-10 rounded-full" />
                         </TableCell>

@@ -1,5 +1,7 @@
 'use client'
 import Image from "next/image";
+import { Checkbox } from "@/components/ui/checkbox";
+
 import Logo from "@/utils/Logo";
 import usertypeshape from '@/assets/shapes/usertypeshape.png'
 import circleshape from '@/assets/shapes/circleshape.png'
@@ -9,53 +11,44 @@ import ImageCarousel from "./ImageCarousel/ImageCarousel";
 import { useLoginUserMutation } from "@/redux/Api/userApi";
 import { useRouter } from "next/navigation";
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { toast } from "sonner";
 // import { signIn } from "next-auth/react"
 
 
 export default function Login() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-
-    const router = useRouter()
-
-
-    const [LogInUser, { isLoading }] = useLoginUserMutation()
-    // const dispatch = useDispatch();
-
-
-
+    const router = useRouter();
+    const [LogInUser] = useLoginUserMutation();
+    
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault(); // Prevent default form submission
         const data = { email, password }; // Gather email and password
-        console.log(email, password); // Debugging: Log email and password
-
 
         try {
+            setIsLoading(true); // Set loading state to true
             const res: any = await LogInUser(data);
             console.log("Login Response:", res);
+
             if (res?.data?.success) {
                 localStorage.setItem("email", email);
-                toast.success("Check your email for verification")
+                toast.success("Check your email for verification");
                 router.push("/user/verification");
             } else {
-                toast.error(res?.data?.message || "Wrong email or password")
+                toast.error(res?.data?.message || "Wrong email or password");
             }
         } catch (error) {
-            if (error instanceof Error) {
-                toast.error("Login Failed")
-                console.error("Login Error:", error);
-            } else {
-                toast.error("An unknown error occurred" )
-                console.error("Unexpected Error:", error);
-            }
+            toast.error("Login Failed");
+            console.error("Login Error:", error);
+        } finally {
+            setIsLoading(false); // Reset loading state
         }
     };
-
 
 
     // const handlegooglelogin = async () => {
@@ -65,11 +58,11 @@ export default function Login() {
     //         })
     //         if (res) {
     //             console.log('login succssfully');
-                
+
     //         }
     //     } catch (e) {
     //         console.log('error login', e);
-            
+
     //     }
     // }
 
@@ -136,24 +129,38 @@ export default function Login() {
                                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                                         </button>
                                     </div>
+
+                                    <div className="flex items-center space-x-2 pt-3">
+                                        <Checkbox
+                                            id="pass"
+                                            required
+                                            className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
+                                        />
+                                        <label
+                                            htmlFor="pass"
+                                            className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                        >
+                                            Remember this device
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
                             <button
                                 type="submit"
-                                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium text-white bg-primary hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF]"
-                                disabled={isLoading}
+                                className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${isLoading ? "text-white bg-[#181522] " : "text-white bg-primary "}`}
+                                disabled={isLoading} 
                             >
                                 {isLoading ? "Logging in..." : "Log in"}
                             </button>
 
-                            <div className="flex items-center gap-2 justify-center">
+                            {/* <div className="flex items-center gap-2 justify-center">
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                                 <span className="text-[16px] font-medium text-[#1D1F2C]">Or</span>
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
-                            </div>
+                            </div> */}
 
-                            <div className="grid gap-4">
+                            {/* <div className="grid gap-4">
                                 <Button variant="outline" className="w-full py-[23px] rounded-[10px] text-lg">
                                     <svg
                                         className="mr-2  "
@@ -193,13 +200,13 @@ export default function Login() {
                                     </svg>
                                     Log in with Google
                                 </Button>
-                            </div>
+                            </div> */}
 
-                            <div className="flex items-center gap-2 justify-center">
+                            {/* <div className="flex items-center gap-2 justify-center">
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                                 <span className="text-[16px] font-medium text-[#1D1F2C]">Or</span>
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
-                            </div>
+                            </div> */}
 
                             <div className="text-center text-lg flex mx-auto justify-center gap-2">
                                 Don&apos;t have an account?

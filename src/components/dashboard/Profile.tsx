@@ -1,11 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { User, Mail, Phone, MapPin, Briefcase, Calendar, Edit2, Check, X } from "lucide-react"
+import { User, Mail, Phone,  Briefcase, Calendar, Edit2, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import logo from '@/assets/images/palak.jpg'
@@ -15,8 +14,6 @@ interface AdminProfile {
     name: string
     email: string
     phone: string
-    address: string
-    bio: string
     avatar: string | StaticImageData
     position: string
     joinDate: string
@@ -27,8 +24,6 @@ export default function Profile() {
         name: "Sarah Johnson",
         email: "sarah.johnson@example.com",
         phone: "+1 (555) 123-4567",
-        address: "789 Oak Avenue, Springfield, ST 12345",
-        bio: "Dedicated and innovative IT professional with over a decade of experience in system administration and network security. Passionate about implementing cutting-edge technologies to streamline operations and enhance user experience.",
         avatar: logo,
         position: "Senior Systems Administrator",
         joinDate: "January 15, 2018",
@@ -171,37 +166,9 @@ export default function Profile() {
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="address" className="text-sm font-medium text-gray-800">
-                                        Address
-                                    </Label>
-                                    <div className="relative">
-                                        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                                        <Input
-                                            id="address"
-                                            name="address"
-                                            value={profile.address}
-                                            onChange={handleInputChange}
-                                            disabled={!isEditing}
-                                            className="pl-10"
-                                        />
-                                    </div>
-                                </div>
+                                
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="bio" className="text-sm font-medium text-gray-800">
-                                    Bio
-                                </Label>
-                                <Textarea
-                                    id="bio"
-                                    name="bio"
-                                    value={profile.bio}
-                                    onChange={handleInputChange}
-                                    disabled={!isEditing}
-                                    rows={4}
-                                    className="w-full"
-                                />
-                            </div>
+                           
                         </form>
                     </div>
                 </div>

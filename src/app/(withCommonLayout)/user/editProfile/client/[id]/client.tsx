@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useCallback, useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { FaCog } from 'react-icons/fa';
+import { PiNotePencilBold } from "react-icons/pi";
 import BusinesSvg from "@/components/svg/BusinesSvg";
 import SettingSvg from "@/components/svg/Settings";
 import TechnicalSvg from "@/components/svg/TechnicalSvg";
@@ -317,8 +317,8 @@ export default function Client() {
                                         }
                                     }}
                                 >
-                                    <div className="p-2 bg-white hover:bg-slate-100 hover:scale-105 transition-all rounded-full">
-                                        <FaCog className="cog-icon text-3xl text-primary " />
+                                    <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
+                                        <PiNotePencilBold className="cog-icon text-3xl text-white " />
                                     </div>
                                 </button>
                             </div>

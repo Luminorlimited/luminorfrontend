@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown,  Check, Menu } from "lucide-react";
-import { toast } from "sonner";
+import {  Menu } from "lucide-react";
+// import { toast } from "sonner";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -12,35 +12,31 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-interface Order {
-    customerName: string;
-    phoneNumber: string;
-    paymentMethod: string;
-    location: string;
-    paymentStatus: "Completed" | "Pending" | "Failed";
-    orderStatus: "Shipped" | "Delivered" | "Refunds" | "Returns";
-    orderSL: string;
-}
+// interface Order {
+//     customerName: string;
+//     phoneNumber: string;
+//     paymentMethod: string;
+//     location: string;
+//     orderStatus: "Delivered" | "Refunds" | "Returns";
+//     orderSL: string;
+// }
 
 export default function AllOrders() {
-    const [openPaymentStatus, setOpenPaymentStatus] = useState<number | null>(
-        null
-    );
-    const [openOrderStatus, setOpenOrderStatus] = useState<number | null>(null);
-    const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
+
+    // const [openOrderStatus, setOpenOrderStatus] = useState<number | null>(null);
+    // const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
 
     const statusOptions = ["Completed", "Pending", "Failed"];
-    const orderStatusOptions = ["Shipped", "Delivered", "Refunds", "Returns"];
+    // const orderStatusOptions = ["Shipped", "Delivered", "Refunds", "Returns"];
     const [status, setStatus] = useState("all");
 
-    const [orders, setOrders] = useState<Order[]>([
+    const orders = [
         {
             customerName: "Johan Smith",
             phoneNumber: "+5788585758",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
-            paymentStatus: "Completed",
-            orderStatus: "Shipped",
+            orderStatus: "Completed",
             orderSL: "#d445448841",
         },
         {
@@ -48,8 +44,7 @@ export default function AllOrders() {
             phoneNumber: "+5788585758",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
-            paymentStatus: "Pending",
-            orderStatus: "Shipped",
+            orderStatus: "Delivered",
             orderSL: "#d445448841",
         },
         {
@@ -57,8 +52,15 @@ export default function AllOrders() {
             phoneNumber: "+5788585758",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
-            paymentStatus: "Failed",
-            orderStatus: "Shipped",
+            orderStatus: "Delivered",
+            orderSL: "#d445448841",
+        },
+        {
+            customerName: "Johan Smith",
+            phoneNumber: "+5788585758",
+            location: "Loss Angles",
+            paymentMethod: "Credit Card",
+            orderStatus: "Delivered",
             orderSL: "#d445448841",
         },
         {
@@ -66,25 +68,14 @@ export default function AllOrders() {
             phoneNumber: "+5788585758",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
-            paymentStatus: "Completed",
-            orderStatus: "Shipped",
+            orderStatus: "Delivered",
             orderSL: "#d445448841",
         },
-        {
-            customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
-            paymentMethod: "Credit Card",
-            location: "Loss Angles",
-            paymentStatus: "Pending",
-            orderStatus: "Shipped",
-            orderSL: "#d445448841",
-        },
-    ]);
+    ]
 
     const getStatusColor = (status: string) => {
         const statusColors: Record<string, string> = {
             Completed: "text-green-500",
-            Shipped: "text-green-500",
             Pending: "text-yellow-500",
             Refunds: "text-blue-500",
             Failed: "text-red-500",
@@ -94,49 +85,35 @@ export default function AllOrders() {
         return statusColors[status] || "text-gray-500";
     };
 
-    
 
-    const handlePaymentStatusChange = (orderIndex: number, newStatus: string) => {
-        setOrders((prevOrders) =>
-            prevOrders.map((order, index) =>
-                index === orderIndex
-                    ? {
-                        ...order,
-                        paymentStatus: newStatus as "Completed" | "Pending" | "Failed",
-                    }
-                    : order
-            )
-        );
-        toast.success(`Payment status updated ${newStatus}`);
-        setOpenPaymentStatus(null);
-    };
 
-    const handleOrderStatusChange = (orderIndex: number, newStatus: string) => {
-        setOrders((prevOrders) =>
-            prevOrders.map((order, index) =>
-                index === orderIndex
-                    ? {
-                        ...order,
-                        orderStatus: newStatus as
-                            | "Shipped"
-                            | "Delivered"
-                            | "Refunds"
-                            | "Returns",
-                    }
-                    : order
-            )
-        );
-        
-        setOpenOrderStatus(null);
-    };
-    
-    const handleOrderSelect = (orderIndex: number) => {
-        setSelectedOrder(orderIndex === selectedOrder ? null : orderIndex);
-        toast.success(`Order status updated`);
-        if (orderIndex !== selectedOrder) {
-            handleOrderStatusChange(orderIndex, "Shipped");
-        }
-    };
+
+
+    // const handleOrderStatusChange = (orderIndex: number, newStatus: string) => {
+    //     setOrders((prevOrders) =>
+    //         prevOrders.map((order, index) =>
+    //             index === orderIndex
+    //                 ? {
+    //                     ...order,
+    //                     orderStatus: newStatus as
+    //                         | "Delivered"
+    //                         | "Refunds"
+    //                         | "Returns",
+    //                 }
+    //                 : order
+    //         )
+    //     );
+
+    //     setOpenOrderStatus(null);
+    // };
+
+    // const handleOrderSelect = (orderIndex: number) => {
+    //     setSelectedOrder(orderIndex === selectedOrder ? null : orderIndex);
+    //     toast.success(`Order status updated`);
+    //     if (orderIndex !== selectedOrder) {
+    //         handleOrderStatusChange(orderIndex, "Shipped");
+    //     }
+    // };
 
     return (
         <div className=" bg-bg_secondary px-2 rounded-[12px] min-h-[80vh]">
@@ -185,7 +162,6 @@ export default function AllOrders() {
                                 <th className="p-4 text-left">Phone number</th>
                                 <th className="p-4 text-left">Payment Method</th>
                                 <th className="p-4 text-left">Location</th>
-                                <th className="p-4 text-left">Payment status</th>
                                 <th className="p-4 text-left">Order Status</th>
                                 <th className="p-4 text-left">Order SL</th>
                             </tr>
@@ -194,54 +170,16 @@ export default function AllOrders() {
                             {orders.map((order, index) => (
                                 <tr
                                     key={index}
-                                    className={`text-sm text-gray-900 cursor-pointer ${orders.length - 1 === index
-                                            ? ""
-                                            : "border-b border-gray-700"
-                                        }  ${selectedOrder === index ? "bg-gray-300" : ""}`}
-                                    onClick={() => handleOrderSelect(index)}
+                                    className={`text-sm text-gray-900 cursor-pointer border-b border-gray-700 hover:bg-gray-300`}
+                                    // onClick={() => handleOrderSelect(index)}
                                 >
                                     <td className="p-4">{order.customerName}</td>
                                     <td className="p-4">{order.phoneNumber}</td>
                                     <td className="p-4">{order.paymentMethod}</td>
                                     <td className="p-4">{order.location}</td>
-                                    <td className="p-4 relative font-medium">
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setOpenPaymentStatus(
-                                                    openPaymentStatus === index ? null : index
-                                                );
-                                            }}
-                                            className={`flex items-center gap-1 ${getStatusColor(
-                                                order.paymentStatus
-                                            )}`}
-                                        >
-                                            {order.paymentStatus}
-                                            <ChevronDown className="h-4 w-4" />
-                                        </button>
-                                        {openPaymentStatus === index && (
-                                            <div className="absolute left-0 top-full z-10 mt-1 w-36 rounded-md border border-gray-700 bg-gray-300 py-1 shadow-lg">
-                                                {statusOptions.map((status) => (
-                                                    <button
-                                                        key={status}
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handlePaymentStatusChange(index, status);
-                                                        }}
-                                                        className={`flex w-full items-center justify-between px-4 py-2 text-left hover:bg-gray-200 ${getStatusColor(
-                                                            status
-                                                        )}`}
-                                                    >
-                                                        {status}
-                                                        {order.paymentStatus === status && (
-                                                            <Check className="h-4 w-4" />
-                                                        )}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </td>
-                                    <td className="p-4 relative font-medium">
+                                    <td className={`p-4 font-medium ${getStatusColor(order.orderStatus)}`}>{order.orderStatus}</td>
+
+                                    {/* <td className="p-4 relative font-medium">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -277,7 +215,7 @@ export default function AllOrders() {
                                                 ))}
                                             </div>
                                         )}
-                                    </td>
+                                    </td> */}
                                     <td className="p-4">{order.orderSL}</td>
                                 </tr>
                             ))}
