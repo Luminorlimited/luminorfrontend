@@ -99,7 +99,7 @@ export default function Profile() {
                     </div>
 
                     {/* Right column - Editable fields */}
-                    <div className="md:w-2/3 p-8 text-black">
+                    <div className="md:w-2/3 p-8 text-black bg-[#e6e6e6]">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-2xl font-semibold">Profile Information</h3>
                             {!isEditing ? (
