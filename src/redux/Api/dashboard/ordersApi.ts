@@ -4,7 +4,7 @@ import baseApi from "@/redux/Api/baseApi"
 const orderapi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         // get all api
-        getOrders: build.query({
+        totalOrder: build.query({
             query: () => ({
                 url: '/order/get-all-orders',
                 method: 'GET',
@@ -46,4 +46,4 @@ const orderapi = baseApi.injectEndpoints({
     }),
 });
 
-export const {useGetOrdersQuery, useGetTransactionQuery, useLastTransactionQuery, useTotalReveneueQuery, useTotalRefundQuery} = orderapi;
+export const {useTotalOrderQuery, useGetTransactionQuery, useLastTransactionQuery, useTotalReveneueQuery, useTotalRefundQuery} = orderapi;

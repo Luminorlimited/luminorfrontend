@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {  Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 // import { toast } from "sonner";
 import {
     DropdownMenu,
@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useGetOrdersQuery } from "@/redux/Api/dashboard/ordersApi";
+import { useTotalOrderQuery } from "@/redux/Api/dashboard/ordersApi";
 
 // interface Order {
 //     customerName: string;
@@ -74,19 +74,19 @@ export default function AllOrders() {
     //     },
     // ]
 
-    const getStatusColor = (status: string) => {
-        const statusColors: Record<string, string> = {
-            Completed: "text-green-500",
-            Pending: "text-yellow-500",
-            Refunds: "text-blue-500",
-            Failed: "text-red-500",
-            Delivered: "text-amber-500",
-            Returns: "text-red-500",
-        };
-        return statusColors[status] || "text-gray-500";
-    };
+    // const getStatusColor = (status: string) => {
+    //     const statusColors: Record<string, string> = {
+    //         Completed: "text-green-500",
+    //         Pending: "text-yellow-500",
+    //         Refunds: "text-blue-500",
+    //         Failed: "text-red-500",
+    //         Delivered: "text-amber-500",
+    //         Returns: "text-red-500",
+    //     };
+    //     return statusColors[status] || "text-gray-500";
+    // };
 
-    const {data: getAllOrders} = useGetOrdersQuery(undefined)
+    const { data: getAllOrders } = useTotalOrderQuery(undefined)
     console.log("get all orders", getAllOrders?.data?.result);
 
     return (
@@ -132,25 +132,26 @@ export default function AllOrders() {
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-gray-600 text-sm font-medium text-gray-950">
-                                <th className="p-4 text-left">Customer name</th>
-                                <th className="p-4 text-left">email</th>
-                                <th className="p-4 text-left">Location</th>
-                                <th className="p-4 text-left">Order Status</th>
-                                <th className="p-4 text-left">Order SL</th>
+                                <th className="p-4 text-left">Date</th>
+                                <th className="p-4 text-left">Order From</th>
+                                <th className="p-4 text-left">Order Receiver</th>
+                                <th className="p-4 text-left">Project Type</th>
+                                <th className="p-4 text-left">Total Price</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {getAllOrders?.data?.result.map((order:any, index:number) => (
+                            {getAllOrders?.data?.result.map((order: any, index: number) => (
                                 <tr
                                     key={index}
                                     className={`text-sm text-gray-900 cursor-pointer border-b border-gray-700 hover:bg-gray-300`}
-                                    // onClick={() => handleOrderSelect(index)}
+                                // onClick={() => handleOrderSelect(index)}
                                 >
-                                    <td className="p-4">{order.customerName}</td>
-                                    <td className="p-4">{order.email}</td>
+                                    <td className="p-4">{order.createdAt}</td>
+                                    <td className="p-4">{order?.orderFrom?.name?.firstName} {order?.orderFrom?.name?.lastName}</td>
                                     {/* <td className="p-4">{order.paymentMethod}</td> */}
-                                    <td className="p-4">{order.location}</td>
-                                    <td className={`p-4 font-medium ${getStatusColor(order.orderStatus)}`}>{order.orderStatus}</td>
+                                    <td className="p-4">{order?.orderReciver?.name?.firstName} {order?.orderReciver?.name?.lastName}</td>
+                                    <td className="p-4">{order?.project?.agreementType} </td>
+                                    <td className="p-4">{order?.project?.totalPrice} </td>
 
                                     {/* <td className="p-4 relative font-medium">
                                         <button

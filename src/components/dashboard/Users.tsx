@@ -11,6 +11,8 @@ import { useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboar
 export default function Users() {
     const { data: getClient, isLoading: clientLoading } = useGetClientQuery(undefined)
     const { data: getProfessional, isLoading: professionalLoading } = useGetProfessionalQuery(undefined)
+    console.log("my client is ", getClient);
+    console.log("my getProfessional is ", getProfessional);
 
     const [clients, setClients] = useState(getClient?.data)
     const [professionals, setProfessionals] = useState(getProfessional?.data)
@@ -80,7 +82,7 @@ export default function Users() {
                         <TableRow key={index}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>
-                                <Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user._id}`}>
+                                <Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user?.client ? user?.client?._id : user?.retireProfessional?._id}`}>
                                     <span className={user?.[userType]?.name?.lastName ? "" : "font-bold"}>
                                         {user?.[userType]?.name?.firstName} {user?.[userType]?.name?.lastName || "Unknown User"}
                                     </span>

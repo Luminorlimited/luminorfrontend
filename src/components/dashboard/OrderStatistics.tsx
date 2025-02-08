@@ -1,31 +1,50 @@
-import { ShoppingCart, HandCoins, MessageSquare} from "lucide-react"
+import { ShoppingCart, HandCoins, MessageSquare } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useTotalUserQuery } from "@/redux/Api/dashboard/userapi"
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTotalOrderQuery, useTotalReveneueQuery } from "@/redux/Api/dashboard/ordersApi";
 
 export default function OrderStatistics() {
 
     const { data: totalUser, isLoading } = useTotalUserQuery(undefined)
-    
+    const { data: totalRevenue, isLoading: isTotalRevenueLoading } = useTotalReveneueQuery(undefined)
+    const { data: totalOrder, isLoading: isTotalOrderLoading } = useTotalOrderQuery(undefined)
+
+
     return (
         <div className="grid gap-4 md:grid-cols-3">
-            <Card className="bg-slate-100 hover:bg-slate-200 cursor-pointer rounded-[13px] text-black ">
+
+            <Card className="bg-slate-100 hover:bg-slate-200 cursor-pointer rounded-[13px] text-black">
                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                     <CardTitle className="text-[26px] font-medium">Total Order</CardTitle>
                     <HandCoins className="w-4 h-4 text-orange-500" />
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col gap-1">
-                        <div className="text-2xl font-bold ">0</div>
-                        <div className="flex items-center text-xs text-zinc-400">
+                        {isTotalOrderLoading ? (
+                            <Skeleton className="h-8 w-16 bg-gray-300 rounded" />
+                        ) : (
+                            <div className="text-2xl font-bold">{totalOrder?.data?.result.length}</div>
+                        )}
 
-                            <span className="ml-1">from last month</span>
+                        <div className="flex items-center text-xs text-zinc-400">
+                            {isTotalOrderLoading ? (
+                                <Skeleton className="h-4 w-24 bg-gray-200 rounded" />
+                            ) : (
+                                <span className="ml-1">from last month</span>
+                            )}
                         </div>
-                        <p className="text-xs text-zinc-500 mt-2">Total processed orders across all categories</p>
+
+                        {isTotalOrderLoading ? (
+                            <Skeleton className="h-4 w-full bg-gray-200 rounded mt-2" />
+                        ) : (
+                            <p className="text-xs text-zinc-500 mt-2">
+                                Total processed orders across all categories
+                            </p>
+                        )}
                     </div>
                 </CardContent>
             </Card>
-
             <Card className="bg-slate-100 hover:bg-slate-200 cursor-pointer rounded-[13px] text-black">
                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                     <CardTitle className="text-[26px] font-medium">Total User</CardTitle>
@@ -52,24 +71,34 @@ export default function OrderStatistics() {
                 </CardContent>
             </Card>
 
-            <Card className="bg-slate-100 hover:bg-slate-200 cursor-pointer rounded-[13px] text-black ">
+
+            <Card className="bg-slate-100 hover:bg-slate-200 cursor-pointer rounded-[13px] text-black">
                 <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
                     <CardTitle className="text-[26px] font-medium">Income</CardTitle>
                     <MessageSquare className="w-4 h-4 text-purple-500" />
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col gap-1">
-                        <div className="text-2xl font-bold ">0</div>
+                        {isTotalRevenueLoading ? (
+                            <Skeleton className="h-8 w-32 bg-gray-300 rounded" />
+                        ) : (
+                            <div className="text-2xl font-bold">{totalRevenue?.data?.totalRevenue}</div>
+                        )}
                         <div className="flex items-center text-xs text-zinc-400">
-                            {/* <TrendingUp className="w-4 h-4 mr-1 text-green-500" />
-                            <span className="text-green-500">+8.1%</span> */}
-                            <span className="ml-1">from last week</span>
+                            {isTotalRevenueLoading ? (
+                                <Skeleton className="h-4 w-24 bg-gray-200 rounded" />
+                            ) : (
+                                <>
+                                    <span className="ml-1">from last week</span>
+                                </>
+                            )}
                         </div>
-                        <p className="text-xs text-zinc-500 mt-2">Standard orders with fixed specifications</p>
-                        {/* <div className="flex justify-between text-xs text-zinc-500 mt-2">
-                            <span>Fulfillment Rate:</span>
-                            <span>98.5%</span>
-                        </div> */}
+                        {isTotalRevenueLoading ? (
+                            <Skeleton className="h-4 w-full bg-gray-200 rounded mt-2" />
+                        ) : (
+                            <p className="text-xs text-zinc-500 mt-2">Standard orders with fixed specifications</p>
+                        )}
+                        {/* Optionally add more skeletons for other placeholders if needed */}
                     </div>
                 </CardContent>
             </Card>
