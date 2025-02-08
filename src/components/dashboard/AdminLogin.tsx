@@ -3,29 +3,39 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useLoginUserMutation } from "@/redux/Api/userApi";
+import { toast } from "sonner";
 
 export default function AdminLogin() {
-    const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit } = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false)
 
     const router = useRouter()
 
+    const [loginUser] = useLoginUserMutation();
+
+
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
             const formData = data;
+            const res = await loginUser(formData);
+
+            if (res?.data?.success) {
+                toast.success("Login successfully");
+                router.push('/dashboard');
+            } else {
+                toast.error("Invalid email or password. Please try again.");
+            }
+
             console.log("Form Data as JSON:", formData);
-
-            // Simulate API call for demonstration
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            router.push('/dashboard')
-
         } catch (e) {
             console.error("Error:", e);
+            toast.error("An error occurred during login.");
         } finally {
             setLoading(false);
-            reset();
+            // reset();
         }
     };
 

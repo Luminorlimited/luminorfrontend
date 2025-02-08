@@ -4,6 +4,10 @@ import baseApi from "@/redux/Api/baseApi"
 const userApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         // get all api
+     
+
+
+
         totalUser: build.query({
             query: () => ({
                 url: '/auth/get-all-users',

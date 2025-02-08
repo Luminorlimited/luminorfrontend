@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { useGetTransactionQuery } from "@/redux/Api/dashboard/ordersApi";
+import { useTotalTransactionQuery } from "@/redux/Api/dashboard/ordersApi";
 // import { Menu } from "lucide-react";
 
 // import { useState } from "react";
@@ -22,48 +22,32 @@ export default function PaymentPieChart() {
     // const orderStatusOptions = ["Shipped", "Delivered", "Refunds", "Returns"];
     // const [status, setStatus] = useState("all");
 
-    const orders = [
-        {
-            customerName: "Johan Smith",
-            email: "example@gmail.com",
-            paymentMethod: "Credit Card",
-            location: "Loss Angles",
-            orderStatus: "Completed",
-            orderSL: "#d445448841",
-        },
-        {
-            customerName: "Johan Smith",
-            email: "example@gmail.com",
-            paymentMethod: "Credit Card",
-            location: "Loss Angles",
-            orderStatus: "Delivered",
-            orderSL: "#d445448841",
-        },
-    ]
 
-    const { data: getTransaction } = useGetTransactionQuery(undefined)
-    
+
+    const { data: getTransaction, isLoading } = useTotalTransactionQuery(undefined)
+
+
     console.log("get transction", getTransaction);
 
     const getStatusColor = (status: string) => {
         const statusColors: Record<string, string> = {
-            Completed: "text-green-500",
-            Pending: "text-yellow-500",
-            Refunds: "text-blue-500",
-            Failed: "text-red-500",
-            Delivered: "text-amber-500",
-            Returns: "text-red-500",
+            pending: "text-red-500",
+            delivered: "text-green-500",
         };
         return statusColors[status] || "text-gray-500";
     };
+
+    if (isLoading) {
+        return <div className="text-black text-2xl">Loading....</div>
+    }
 
 
     return (
         <Card className="bg-bg_secondary  p-6 w-full border-none rounded-[15px] ">
             <div>
                 <div className="mb-6 flex items-center justify-between p-5">
-                    <h1 className="text-2xl font-medium text-black">Transaction list</h1>
-                    
+                    <h1 className="text-2xl font-medium text-black">Transaction listssss</h1>
+
                 </div>
 
                 <div className="rounded-lg overflow-x-auto min-h-[33vh]">
@@ -72,24 +56,21 @@ export default function PaymentPieChart() {
                             <tr className="border-b border-gray-600 text-sm font-medium text-gray-950">
                                 <th className="p-4 text-left">Date</th>
                                 <th className="p-4 text-left">Amount</th>
-                                <th className="p-4 text-left">Offer Type</th>
-                                <th className="p-4 text-left">Location</th>
                                 <th className="p-4 text-left">Payment Status</th>
-                                <th className="p-4 text-left">transactionId</th>
+                                <th className="p-4 text-left">Order Id</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map((order, index) => (
+                            {getTransaction?.data && getTransaction?.data.map((order: any, index: number) => (
                                 <tr
                                     key={index}
                                     className={`text-sm text-gray-900 cursor-pointer border-b border-gray-700 hover:bg-gray-300`}
                                 // onClick={() => handleOrderSelect(index)}
                                 >
-                                    <td className="p-4">{order.customerName}</td>
-                                    <td className="p-4">{order.email}</td>
-                                    <td className="p-4">{order.paymentMethod}</td>
-                                    <td className="p-4">{order.location}</td>
-                                    <td className={`p-4 font-medium ${getStatusColor(order.orderStatus)}`}>{order.orderStatus}</td>
+                                    <td className="p-4">{order?.updatedAt}</td>
+                                    <td className="p-4">{order?.amount}</td>
+                                    {/* <td className="p-4">{order.paymentMethod}</td> */}
+                                    <td className={`p-4 font-medium ${getStatusColor(order.paymentStatus)}`}>{order.paymentStatus}</td>
 
                                     {/* <td className="p-4 relative font-medium">
                                         <button
@@ -128,8 +109,7 @@ export default function PaymentPieChart() {
                                             </div>
                                         )}
                                     </td> */}
-                                    <td className="p-4">{order.orderSL}</td>
-                                </tr>
+                                    <td className="p-4">#{order?.orderId?._id}</td>                                </tr>
                             ))}
                         </tbody>
                     </table>

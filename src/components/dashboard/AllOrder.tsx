@@ -146,7 +146,7 @@ export default function AllOrders() {
                                     className={`text-sm text-gray-900 cursor-pointer border-b border-gray-700 hover:bg-gray-300`}
                                 // onClick={() => handleOrderSelect(index)}
                                 >
-                                    <td className="p-4">{order.createdAt}</td>
+                                    <td className="p-4">{new Date(order.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                                     <td className="p-4">{order?.orderFrom?.name?.firstName} {order?.orderFrom?.name?.lastName}</td>
                                     {/* <td className="p-4">{order.paymentMethod}</td> */}
                                     <td className="p-4">{order?.orderReciver?.name?.firstName} {order?.orderReciver?.name?.lastName}</td>

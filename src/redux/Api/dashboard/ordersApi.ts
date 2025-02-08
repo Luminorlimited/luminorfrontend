@@ -11,7 +11,7 @@ const orderapi = baseApi.injectEndpoints({
             }),
             providesTags: ['orders'],
         }),
-        getTransaction: build.query({
+        totalTransaction: build.query({
             query: () => ({
                 url: '/transaction/get-all-trasaction',
                 method: 'GET',
@@ -46,4 +46,4 @@ const orderapi = baseApi.injectEndpoints({
     }),
 });
 
-export const {useTotalOrderQuery, useGetTransactionQuery, useLastTransactionQuery, useTotalReveneueQuery, useTotalRefundQuery} = orderapi;
+export const {useTotalOrderQuery, useTotalTransactionQuery, useLastTransactionQuery, useTotalReveneueQuery, useTotalRefundQuery} = orderapi;
