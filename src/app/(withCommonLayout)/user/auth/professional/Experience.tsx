@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { toast } from "sonner";
 import mainlogo from '@/assets/images/mainlogo.png'
+import { useState } from "react";
 
 
 
@@ -30,6 +31,11 @@ export default function Experience({ register, handleNext, handleBack, getValues
       return false; // Return false if validation fails
     }
     return true; // Return true if all fields are valid
+  };
+  const [showOtherField, setShowOtherField] = useState(false);
+
+  const handleIndustryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setShowOtherField(event.target.value === '');
   };
 
   // Handle "Next" button click
@@ -63,6 +69,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
             id="industry"
             {...register("industry")}
             className="h-12 rounded-xl border cursor-pointer w-full px-3 pr-3"
+            onChange={handleIndustryChange}
           >
             <option disabled selected>
               Select Previous Position
@@ -76,8 +83,20 @@ export default function Experience({ register, handleNext, handleBack, getValues
             <option value="MANUFACTURING">Manufacturing and Industrial</option>
             <option value="FOOD">Food and Beverage</option>
             <option value="FASHION">Fashion and Lifestyle</option>
+            <option value=""><b>Others+</b></option>
 
           </select>
+          {showOtherField && (
+            <div>
+              <Label htmlFor="otherIndustry">Please specify your industry</Label>
+              <input
+                id="otherIndustry"
+                {...register("industry")}
+                className="h-12 rounded-xl border w-full px-3"
+                placeholder="Enter industry"
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-y-[12px]">

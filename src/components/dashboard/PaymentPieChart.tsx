@@ -1,30 +1,30 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Menu } from "lucide-react";
+// import { Menu } from "lucide-react";
 
-import { useState } from "react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+// import { useState } from "react";
+// import {
+//     DropdownMenu,
+//     DropdownMenuContent,
+//     DropdownMenuRadioGroup,
+//     DropdownMenuRadioItem,
+//     DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { Button } from "@/components/ui/button";
 
 
 
 
 export default function PaymentPieChart() {
-    const statusOptions = ["Completed", "Pending", "Failed"];
+    // const statusOptions = ["Completed", "Pending", "Failed"];
     // const orderStatusOptions = ["Shipped", "Delivered", "Refunds", "Returns"];
-    const [status, setStatus] = useState("all");
+    // const [status, setStatus] = useState("all");
 
     const orders = [
         {
             customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
+            email: "example@gmail.com",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
             orderStatus: "Completed",
@@ -32,7 +32,7 @@ export default function PaymentPieChart() {
         },
         {
             customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
+            email: "example@gmail.com",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
             orderStatus: "Delivered",
@@ -58,7 +58,7 @@ export default function PaymentPieChart() {
             <div>
                 <div className="mb-6 flex items-center justify-between p-5">
                     <h1 className="text-2xl font-medium text-black">Transaction list</h1>
-                    <div className="flex items-center gap-4">
+                    {/* <div className="flex items-center gap-4">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -89,7 +89,7 @@ export default function PaymentPieChart() {
                         <button className="text-sm hover:text-gray-700 text-gray-900 ">
                             See All
                         </button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="rounded-lg overflow-x-auto min-h-[33vh]">
@@ -112,7 +112,7 @@ export default function PaymentPieChart() {
                                 // onClick={() => handleOrderSelect(index)}
                                 >
                                     <td className="p-4">{order.customerName}</td>
-                                    <td className="p-4">{order.phoneNumber}</td>
+                                    <td className="p-4">{order.email}</td>
                                     <td className="p-4">{order.paymentMethod}</td>
                                     <td className="p-4">{order.location}</td>
                                     <td className={`p-4 font-medium ${getStatusColor(order.orderStatus)}`}>{order.orderStatus}</td>

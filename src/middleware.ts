@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import {jwtDecode} from "jwt-decode"; // Ensure proper import for jwtDecode
+import { jwtDecode } from "jwt-decode"; // Ensure proper import for jwtDecode
 
 export function middleware(request: NextRequest) {
     const loginRoute = `${request.nextUrl.origin}/user/auth/login`; // Define the login route
@@ -85,8 +85,8 @@ export const config = {
         "/project-list/professional",
         "/user/editProfile/client",
         "/user/editProfile/retireProfessional",
-        // "/project-list/default",
-        // "/chat",
+        "/project-list/default",
+        // "/chat/:params",
         "/user/auth/login",
         "/usertype",
         "/user/auth/professional",

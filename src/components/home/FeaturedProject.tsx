@@ -3,8 +3,8 @@
 import React from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
-import profileImgFallback from '@/assets/images/profilepix.jpg'; 
-import projectImgFallback from '@/assets/images/package.png'; 
+import profileImgFallback from '@/assets/images/profilepix.jpg';
+import projectImgFallback from '@/assets/images/package.png';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useClientListQuery, useProfessionalListQuery } from '@/redux/Api/projectApi';
@@ -19,8 +19,8 @@ const FeaturedProject: React.FC = () => {
     const professionalData = useProfessionalListQuery(undefined)
     console.log("my clientData is", clientData);
     console.log("my professionalData is", professionalData);
-    
-  
+
+
 
     return (
         <div>
@@ -76,7 +76,7 @@ const FeaturedProject: React.FC = () => {
                                         <span className="text-[16px] font-medium text-gray-900">
                                             ★ {data?.averageRating || ""}
                                         </span>
-                                        <span className="text-[16px] text-gray-500">(123)</span>
+                                        <span className="text-[16px] text-gray-500">({professionalData?.data?.meta?.limit})</span>
                                     </div>
                                 </div>
 
@@ -100,7 +100,7 @@ const FeaturedProject: React.FC = () => {
                         </div>
                     ))
                 ) : (
-                        clientData?.data?.data?.map((data: any, index: number) => (
+                    clientData?.data?.data?.map((data: any, index: number) => (
                         <div
                             key={index}
                             className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
@@ -148,9 +148,9 @@ const FeaturedProject: React.FC = () => {
 
                                     <div className="flex items-center gap-1">
                                         <span className="text-[16px] font-medium text-gray-900">
-                                            ★ {data.client?.name?.firstName || "Client"}
+                                            ★ {clientData?.currentData?.meta?.limit }
                                         </span>
-                                        <span className="text-[16px] text-gray-500">(123)</span>
+                                        <span className="text-[16px] text-gray-500">{ data?.length}</span>
                                     </div>
                                 </div>
 

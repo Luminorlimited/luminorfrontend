@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 
 // interface Order {
 //     customerName: string;
-//     phoneNumber: string;
+//     email: sexample@gmail.com
 //     paymentMethod: string;
 //     location: string;
 //     orderStatus: "Delivered" | "Refunds" | "Returns";
@@ -33,7 +33,7 @@ export default function AllOrders() {
     const orders = [
         {
             customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
+            email: "example@gmail.com",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
             orderStatus: "Completed",
@@ -41,7 +41,7 @@ export default function AllOrders() {
         },
         {
             customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
+            email: "example@gmail.com",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
             orderStatus: "Delivered",
@@ -49,7 +49,7 @@ export default function AllOrders() {
         },
         {
             customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
+            email: "example@gmail.com",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
             orderStatus: "Delivered",
@@ -57,7 +57,7 @@ export default function AllOrders() {
         },
         {
             customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
+            email: "example@gmail.com",
             location: "Loss Angles",
             paymentMethod: "Credit Card",
             orderStatus: "Delivered",
@@ -65,7 +65,7 @@ export default function AllOrders() {
         },
         {
             customerName: "Johan Smith",
-            phoneNumber: "+5788585758",
+            email: "example@gmail.com",
             paymentMethod: "Credit Card",
             location: "Loss Angles",
             orderStatus: "Delivered",
@@ -85,35 +85,6 @@ export default function AllOrders() {
         return statusColors[status] || "text-gray-500";
     };
 
-
-
-
-
-    // const handleOrderStatusChange = (orderIndex: number, newStatus: string) => {
-    //     setOrders((prevOrders) =>
-    //         prevOrders.map((order, index) =>
-    //             index === orderIndex
-    //                 ? {
-    //                     ...order,
-    //                     orderStatus: newStatus as
-    //                         | "Delivered"
-    //                         | "Refunds"
-    //                         | "Returns",
-    //                 }
-    //                 : order
-    //         )
-    //     );
-
-    //     setOpenOrderStatus(null);
-    // };
-
-    // const handleOrderSelect = (orderIndex: number) => {
-    //     setSelectedOrder(orderIndex === selectedOrder ? null : orderIndex);
-    //     toast.success(`Order status updated`);
-    //     if (orderIndex !== selectedOrder) {
-    //         handleOrderStatusChange(orderIndex, "Shipped");
-    //     }
-    // };
 
     return (
         <div className=" bg-bg_secondary px-2 rounded-[12px] min-h-[80vh]">
@@ -159,7 +130,7 @@ export default function AllOrders() {
                         <thead>
                             <tr className="border-b border-gray-600 text-sm font-medium text-gray-950">
                                 <th className="p-4 text-left">Customer name</th>
-                                <th className="p-4 text-left">Phone number</th>
+                                <th className="p-4 text-left">email</th>
                                 <th className="p-4 text-left">Payment Method</th>
                                 <th className="p-4 text-left">Location</th>
                                 <th className="p-4 text-left">Order Status</th>
@@ -174,7 +145,7 @@ export default function AllOrders() {
                                     // onClick={() => handleOrderSelect(index)}
                                 >
                                     <td className="p-4">{order.customerName}</td>
-                                    <td className="p-4">{order.phoneNumber}</td>
+                                    <td className="p-4">{order.email}</td>
                                     <td className="p-4">{order.paymentMethod}</td>
                                     <td className="p-4">{order.location}</td>
                                     <td className={`p-4 font-medium ${getStatusColor(order.orderStatus)}`}>{order.orderStatus}</td>

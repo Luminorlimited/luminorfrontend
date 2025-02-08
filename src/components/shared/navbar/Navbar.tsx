@@ -10,7 +10,7 @@ import { MobileNavbar } from "./MobileNavbar";
 import { useDispatch } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
-import { BiMessage } from "react-icons/bi";
+// import { BiMessage } from "react-icons/bi";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,7 +72,7 @@ const Navbar = () => {
     // Close the profile dropdown if clicking outside
     if (dropdownRef.current && !dropdownRef.current.contains(target)) {
       showFileBtn(false);
-    }    
+    }
   };
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const Navbar = () => {
 
 
 
-  
+
 
   useEffect(() => {
     // Establish socket connection
@@ -194,16 +194,16 @@ const Navbar = () => {
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
-         
+
             </div>
             {/* Notification */}
 
             {/* <Link href={`/project-list/${decodedToken.role}`}>
               <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
             </Link> */}
-            <Link href="/chat">
+            {/* <Link href="/chat">
               <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
-            </Link>
+            </Link> */}
             <div ref={notificationRef}
             >
               <Image
@@ -259,7 +259,7 @@ const Navbar = () => {
 
       {/* Mobile Navbar */}
       <div className="lg:hidden block">
-        <MobileNavbar decodedToken={decodedToken}  />
+        <MobileNavbar decodedToken={decodedToken} />
       </div>
     </nav>
   );

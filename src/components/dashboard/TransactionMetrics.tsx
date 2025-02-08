@@ -41,7 +41,7 @@ export default function TransactionMetrics() {
                 <CardContent>
                     <div className="flex flex-col gap-1">
                         <div className="text-3xl font-bold ">128</div>
-                        <p className="text-xs text-green-500">8.3% more then last month</p>
+                        {/* <p className="text-xs text-green-500">8.3% more then last month</p> */}
 
                         {/* Additional Revenue Details */}
                         <div className="mt-4 space-y-2">
@@ -70,7 +70,7 @@ export default function TransactionMetrics() {
                 <CardContent>
                     <div className="flex flex-col gap-1">
                         <div className="text-3xl font-bold ">128</div>
-                        <p className="text-xs text-red-500">8.3% less then last month</p>
+                        {/* <p className="text-xs text-red-500">8.3% less then last month</p> */}
 
                         {/* Additional Refund Details */}
                         <div className="mt-4 space-y-2">
