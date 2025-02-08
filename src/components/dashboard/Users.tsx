@@ -6,7 +6,9 @@ import Swal from "sweetalert2"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboard/userapi"
+import { useDeleteUserMutation, useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboard/userapi"
+import logo from '@/assets/images/avatar.jpg'
+import Image from "next/image"
 
 export default function Users() {
     const { data: getClient, isLoading: clientLoading } = useGetClientQuery(undefined)
@@ -31,7 +33,10 @@ export default function Users() {
         return items?.slice(startIndex, startIndex + itemsPerPage)
     }
 
-    const handleDelete = (userId: number, userType: "client" | "retireProfessional") => {
+
+    const [deleteUser] = useDeleteUserMutation()
+    const handleDelete = (id: number) => {
+        console.log("my deleted data is ", id);
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -40,17 +45,20 @@ export default function Users() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!",
-        }).then((result: any) => {
+        }).then(async (result: any) => {
             if (result.isConfirmed) {
-                if (userType === "client") {
-                    setClients(clients?.filter((client: any) => client.id !== userId))
-                } else {
-                    setProfessionals(professionals?.filter((professional: any) => professional.id !== userId))
+                try {
+                    // Ensure deleteUser is called with a valid payload
+                    await deleteUser(id).unwrap();
+                    Swal.fire("Deleted!", "User has been deleted.", "success");
+                } catch (error) {
+                    Swal.fire("Error!", "Something went wrong during deletion.", "error");
+                    console.error(error);
                 }
-                Swal.fire("Deleted!", "User has been deleted.", "success")
             }
-        })
-    }
+        });
+    };
+
 
     const UserTable = ({
         users,
@@ -89,7 +97,7 @@ export default function Users() {
                                 </Link>
                             </TableCell>
                             <TableCell>
-                                {/* <Image width={50} height={50} src={user.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" /> */}
+                                <Image width={50} height={50} src={user.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" />
                             </TableCell>
                             <TableCell>{user?.[userType === "client" ? "description" : "bio"] || "Undefined"}</TableCell>
                             <TableCell>{user?.averageRating || 0}</TableCell>
@@ -105,7 +113,7 @@ export default function Users() {
                                     variant="ghost"
                                     size="icon"
                                     className="text-red-500 hover:text-red-700 hover:bg-red-100"
-                                    onClick={() => handleDelete(user.id, userType)}
+                                    onClick={() => handleDelete(user?.client?._id || user?.retireProfessional?._id)}
                                 >
                                     <Trash2 className="h-4 w-4" />
                                 </Button>

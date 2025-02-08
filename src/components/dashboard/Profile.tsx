@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { User, Mail, Phone,  Briefcase, Calendar, Edit2, Check, X } from "lucide-react"
+import { User, Mail, Phone, Briefcase, Calendar, Edit2, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,6 +9,11 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import logo from '@/assets/images/palak.jpg'
 import Image, { StaticImageData } from 'next/image'
+import { useGetSingleUserQuery } from "@/redux/Api/dashboard/userapi"
+// import { useSelector } from "react-redux"
+// import { RootState } from "@/redux/store";
+import { useDecodedToken } from "../common/DecodeToken"
+
 
 interface AdminProfile {
     name: string
@@ -20,6 +25,19 @@ interface AdminProfile {
 }
 
 export default function Profile() {
+
+    // const token = 
+
+    // const { data: getUserDetails, isLoading, error } = useGetSingleUserQuery(params?.id as string)
+    const token = useDecodedToken()
+    console.log("my token isssss", token);
+
+    const { data: getProfile } = useGetSingleUserQuery(token?.id)
+
+    console.log("My admin Profile is", getProfile);
+    
+
+
     const [profile, setProfile] = useState<AdminProfile>({
         name: "Sarah Johnson",
         email: "sarah.johnson@example.com",
@@ -166,9 +184,9 @@ export default function Profile() {
                                         />
                                     </div>
                                 </div>
-                                
+
                             </div>
-                           
+
                         </form>
                     </div>
                 </div>

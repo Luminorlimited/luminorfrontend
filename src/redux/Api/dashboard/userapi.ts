@@ -8,6 +8,15 @@ const userApi = baseApi.injectEndpoints({
 
 
 
+        deleteUser: build.mutation({
+            query: (id) => ({
+                url: `/auth/delete-user/${id}`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: ['dashboard'],
+        }),
+
+        
         totalUser: build.query({
             query: () => ({
                 url: '/auth/get-all-users',
@@ -43,9 +52,10 @@ const userApi = baseApi.injectEndpoints({
             }),
             providesTags: ['dashboard'],
         }),
+
        
        
     }),
 });
 
-export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery} = userApi;
+export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery, useDeleteUserMutation} = userApi;

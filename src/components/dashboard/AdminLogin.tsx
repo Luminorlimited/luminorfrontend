@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useLoginUserMutation } from "@/redux/Api/userApi";
 import { toast } from "sonner";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/ReduxFunction";
+import Cookies from 'js-cookie';
+
 
 export default function AdminLogin() {
     const { register, handleSubmit } = useForm();
@@ -15,14 +19,36 @@ export default function AdminLogin() {
  
     const [loginUser] = useLoginUserMutation();
 
+    const dispatch = useDispatch();
 
     const onSubmit = async (data: any) => {
         setLoading(true);
         try {
             const formData = data;
             const res = await loginUser(formData);
+            // const accessToken = res.data.data.accessToken;
 
             if (res?.data?.success) {
+                console.log("My response is", res?.data?.data?.accessToken);
+
+                dispatch(
+                    setUser({
+                        user: {
+                            email:  res?.data?.data?.isUserExist?.email || "",
+                            role: res?.data?.data?.isUserExist?.role || "",
+                            id: res?.data?.data?.isUserExist?._id || "",
+                        },
+                        token: res.data.data.accessToken,
+                    })
+                );
+                
+                localStorage.setItem("token", res?.data?.data?.accessToken )
+                Cookies.set('token', res?.data?.data?.accessToken, {
+                          expires: 7, 
+                          secure: true, 
+                          sameSite: 'Strict', 
+                          path: '/', 
+                        });
                 toast.success("Login successfully");
                 router.push('/dashboard');
             } else {

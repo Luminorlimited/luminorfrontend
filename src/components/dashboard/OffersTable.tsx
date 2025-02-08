@@ -33,11 +33,17 @@ export default function OffersTable() {
             confirmButtonText: "Yes, delete it!",
         }).then(async (result) => {
             if (result.isConfirmed) {
-                await deleteOffers(id).unwrap()
-                Swal.fire("Deleted!", "The offer has been deleted.", "success")
+                try {
+                    await deleteOffers({ id }).unwrap(); // Assuming the API expects an object
+                    Swal.fire("Deleted!", "The offer has been deleted.", "success");
+                } catch (error) {
+                    Swal.fire("Error!", "Failed to delete the offer.", "error");
+                    console.error("Delete error:", error);
+                }
             }
-        })
-    }
+        });
+    };
+
 
 
 

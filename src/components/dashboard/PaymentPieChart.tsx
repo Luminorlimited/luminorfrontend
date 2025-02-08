@@ -46,7 +46,7 @@ export default function PaymentPieChart() {
         <Card className="bg-bg_secondary  p-6 w-full border-none rounded-[15px] ">
             <div>
                 <div className="mb-6 flex items-center justify-between p-5">
-                    <h1 className="text-2xl font-medium text-black">Transaction listssss</h1>
+                    <h1 className="text-2xl font-medium text-black">Transaction lists</h1>
 
                 </div>
 
