@@ -6,6 +6,8 @@ import { Star, Briefcase, Clock, DollarSign, Linkedin, FileText, Phone, Calendar
 import { MdOutlineEmail } from "react-icons/md"
 
 import avatar from "@/assets/images/avatar.jpg"
+import { useParams } from "next/navigation"
+import { useGetSingleUserQuery } from "@/redux/Api/dashboard/userapi"
 
 type UserData = {
     name: { firstName?: string; lastName?: string }
@@ -62,6 +64,11 @@ export default function UserDetails() {
     console.log(setUser)
 
 
+    const params = useParams()
+    console.log("my id is", params?.id);
+    const { data: getUserDetails } = useGetSingleUserQuery(params?.id)
+
+    const users = getUserDetails?.data
     return (
         <div className="bg-bg_secondary min-h-screen p-8">
             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -77,7 +84,7 @@ export default function UserDetails() {
                     </div>
                     <div className="p-8">
                         <h1 className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                            {user.name?.firstName} {user.name?.lastName}
+                            {users?.retireProfessional?.name?.firstName || users?.client?.name?.firstName} {users?.retireProfessional?.name?.lastName || users?.client?.name?.lastName}
                         </h1>
                         <p className="mt-2 text-xl text-gray-500">{user.expertise}</p>
                         <div className="mt-4 flex items-center">

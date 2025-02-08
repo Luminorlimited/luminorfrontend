@@ -1,9 +1,16 @@
 import baseApi from "@/redux/Api/baseApi"
 
 
-const projectApi = baseApi.injectEndpoints({
+const userApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         // get all api
+        totalUser: build.query({
+            query: () => ({
+                url: '/auth/get-all-users',
+                method: 'GET',
+            }),
+            providesTags: ['dashboard'],
+        }),
         getClient: build.query({
             query: () => ({
                 url: '/auth/get-all-clients',
@@ -18,7 +25,15 @@ const projectApi = baseApi.injectEndpoints({
             }),
             providesTags: ['dashboard'],
         }),
+        getSingleUser: build.query({
+            query: (id) => ({
+                url: `/auth/get-single-user/${id}`,
+                method: 'GET',
+            }),
+            providesTags: ['dashboard'],
+        }),
+       
     }),
 });
 
-export const {useGetClientQuery, useGetProfessionalQuery} = projectApi;
+export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery} = userApi;

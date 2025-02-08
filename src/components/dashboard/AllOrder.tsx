@@ -11,6 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useGetOrdersQuery } from "@/redux/Api/dashboard/ordersApi";
 
 // interface Order {
 //     customerName: string;
@@ -30,48 +31,48 @@ export default function AllOrders() {
     // const orderStatusOptions = ["Shipped", "Delivered", "Refunds", "Returns"];
     const [status, setStatus] = useState("all");
 
-    const orders = [
-        {
-            customerName: "Johan Smith",
-            email: "example@gmail.com",
-            paymentMethod: "Credit Card",
-            location: "Loss Angles",
-            orderStatus: "Completed",
-            orderSL: "#d445448841",
-        },
-        {
-            customerName: "Johan Smith",
-            email: "example@gmail.com",
-            paymentMethod: "Credit Card",
-            location: "Loss Angles",
-            orderStatus: "Delivered",
-            orderSL: "#d445448841",
-        },
-        {
-            customerName: "Johan Smith",
-            email: "example@gmail.com",
-            paymentMethod: "Credit Card",
-            location: "Loss Angles",
-            orderStatus: "Delivered",
-            orderSL: "#d445448841",
-        },
-        {
-            customerName: "Johan Smith",
-            email: "example@gmail.com",
-            location: "Loss Angles",
-            paymentMethod: "Credit Card",
-            orderStatus: "Delivered",
-            orderSL: "#d445448841",
-        },
-        {
-            customerName: "Johan Smith",
-            email: "example@gmail.com",
-            paymentMethod: "Credit Card",
-            location: "Loss Angles",
-            orderStatus: "Delivered",
-            orderSL: "#d445448841",
-        },
-    ]
+    // const orders = [
+    //     {
+    //         customerName: "Johan Smith",
+    //         email: "example@gmail.com",
+    //         paymentMethod: "Credit Card",
+    //         location: "Loss Angles",
+    //         orderStatus: "Completed",
+    //         orderSL: "#d445448841",
+    //     },
+    //     {
+    //         customerName: "Johan Smith",
+    //         email: "example@gmail.com",
+    //         paymentMethod: "Credit Card",
+    //         location: "Loss Angles",
+    //         orderStatus: "Delivered",
+    //         orderSL: "#d445448841",
+    //     },
+    //     {
+    //         customerName: "Johan Smith",
+    //         email: "example@gmail.com",
+    //         paymentMethod: "Credit Card",
+    //         location: "Loss Angles",
+    //         orderStatus: "Delivered",
+    //         orderSL: "#d445448841",
+    //     },
+    //     {
+    //         customerName: "Johan Smith",
+    //         email: "example@gmail.com",
+    //         location: "Loss Angles",
+    //         paymentMethod: "Credit Card",
+    //         orderStatus: "Delivered",
+    //         orderSL: "#d445448841",
+    //     },
+    //     {
+    //         customerName: "Johan Smith",
+    //         email: "example@gmail.com",
+    //         paymentMethod: "Credit Card",
+    //         location: "Loss Angles",
+    //         orderStatus: "Delivered",
+    //         orderSL: "#d445448841",
+    //     },
+    // ]
 
     const getStatusColor = (status: string) => {
         const statusColors: Record<string, string> = {
@@ -85,6 +86,8 @@ export default function AllOrders() {
         return statusColors[status] || "text-gray-500";
     };
 
+    const {data: getAllOrders} = useGetOrdersQuery(undefined)
+    console.log("get all orders", getAllOrders?.data?.result);
 
     return (
         <div className=" bg-bg_secondary px-2 rounded-[12px] min-h-[80vh]">
@@ -131,14 +134,13 @@ export default function AllOrders() {
                             <tr className="border-b border-gray-600 text-sm font-medium text-gray-950">
                                 <th className="p-4 text-left">Customer name</th>
                                 <th className="p-4 text-left">email</th>
-                                <th className="p-4 text-left">Payment Method</th>
                                 <th className="p-4 text-left">Location</th>
                                 <th className="p-4 text-left">Order Status</th>
                                 <th className="p-4 text-left">Order SL</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.map((order, index) => (
+                            {getAllOrders?.data?.result.map((order:any, index:number) => (
                                 <tr
                                     key={index}
                                     className={`text-sm text-gray-900 cursor-pointer border-b border-gray-700 hover:bg-gray-300`}
@@ -146,7 +148,7 @@ export default function AllOrders() {
                                 >
                                     <td className="p-4">{order.customerName}</td>
                                     <td className="p-4">{order.email}</td>
-                                    <td className="p-4">{order.paymentMethod}</td>
+                                    {/* <td className="p-4">{order.paymentMethod}</td> */}
                                     <td className="p-4">{order.location}</td>
                                     <td className={`p-4 font-medium ${getStatusColor(order.orderStatus)}`}>{order.orderStatus}</td>
 

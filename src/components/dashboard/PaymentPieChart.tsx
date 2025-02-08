@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
+import { useGetTransactionQuery } from "@/redux/Api/dashboard/ordersApi";
 // import { Menu } from "lucide-react";
 
 // import { useState } from "react";
@@ -40,6 +41,10 @@ export default function PaymentPieChart() {
         },
     ]
 
+    const { data: getTransaction } = useGetTransactionQuery(undefined)
+    
+    console.log("get transction", getTransaction);
+
     const getStatusColor = (status: string) => {
         const statusColors: Record<string, string> = {
             Completed: "text-green-500",
@@ -58,50 +63,19 @@ export default function PaymentPieChart() {
             <div>
                 <div className="mb-6 flex items-center justify-between p-5">
                     <h1 className="text-2xl font-medium text-black">Transaction list</h1>
-                    {/* <div className="flex items-center gap-4">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="bg-transparent border-gray-700 text-gray-900 hover:bg-gray-300 hover:text-gray-800 gap-2"
-                                >
-                                    Payment Status Filter
-                                    <Menu className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-gray-300 border-gray-700">
-                                <DropdownMenuRadioGroup
-                                    value={status}
-                                    onValueChange={setStatus}
-                                >
-                                    {statusOptions?.map((item, indx) => (
-                                        <DropdownMenuRadioItem
-                                            key={indx}
-                                            value={item}
-                                            className="text-gray-900 focus:bg-white focus:text-gray-900"
-                                        >
-                                            {item}
-                                        </DropdownMenuRadioItem>
-                                    ))}
-                                </DropdownMenuRadioGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <button className="text-sm hover:text-gray-700 text-gray-900 ">
-                            See All
-                        </button>
-                    </div> */}
+                    
                 </div>
 
                 <div className="rounded-lg overflow-x-auto min-h-[33vh]">
                     <table className="w-full">
                         <thead>
                             <tr className="border-b border-gray-600 text-sm font-medium text-gray-950">
-                                <th className="p-4 text-left">Customer name</th>
-                                <th className="p-4 text-left">Phone number</th>
-                                <th className="p-4 text-left">Payment Method</th>
+                                <th className="p-4 text-left">Date</th>
+                                <th className="p-4 text-left">Amount</th>
+                                <th className="p-4 text-left">Offer Type</th>
                                 <th className="p-4 text-left">Location</th>
-                                <th className="p-4 text-left">Order Status</th>
-                                <th className="p-4 text-left">Order SL</th>
+                                <th className="p-4 text-left">Payment Status</th>
+                                <th className="p-4 text-left">transactionId</th>
                             </tr>
                         </thead>
                         <tbody>

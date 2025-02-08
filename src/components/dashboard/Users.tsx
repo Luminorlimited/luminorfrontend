@@ -1,29 +1,18 @@
 "use client"
 
-import { Trash2 } from "lucide-react"
+import { Trash2, Loader2 } from "lucide-react"
 import { useState, useEffect } from "react"
 import Swal from "sweetalert2"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-// import Image from "next/image"
-// import logo from '@/assets/images/demoimg.png'
 import Link from "next/link"
 import { useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboard/userapi"
 
-// Define types for our user data
-
-
 export default function Users() {
-    // Sample data for clients
+    const { data: getClient, isLoading: clientLoading } = useGetClientQuery(undefined)
+    const { data: getProfessional, isLoading: professionalLoading } = useGetProfessionalQuery(undefined)
 
-    const { data: getClient } = useGetClientQuery(undefined)
-    const { data: getProfessional } = useGetProfessionalQuery(undefined)
-
-    console.log('my client', getClient);
-    console.log('my professional', getProfessional);
     const [clients, setClients] = useState(getClient?.data)
-
-    // Sample data for retired professionals
     const [professionals, setProfessionals] = useState(getProfessional?.data)
 
     const [currentPageClients, setCurrentPageClients] = useState(1)
@@ -37,10 +26,9 @@ export default function Users() {
 
     const paginate = (items: any[], pageNumber: number) => {
         const startIndex = (pageNumber - 1) * itemsPerPage
-        return items.slice(startIndex, startIndex + itemsPerPage)
+        return items?.slice(startIndex, startIndex + itemsPerPage)
     }
 
-    // Handle delete function
     const handleDelete = (userId: number, userType: "client" | "retireProfessional") => {
         Swal.fire({
             title: "Are you sure?",
@@ -53,124 +41,105 @@ export default function Users() {
         }).then((result: any) => {
             if (result.isConfirmed) {
                 if (userType === "client") {
-                    setClients(clients.filter((client: any) => client.id !== userId))
+                    setClients(clients?.filter((client: any) => client.id !== userId))
                 } else {
-                    setProfessionals(professionals.filter((professional: any) => professional.id !== userId))
+                    setProfessionals(professionals?.filter((professional: any) => professional.id !== userId))
                 }
                 Swal.fire("Deleted!", "User has been deleted.", "success")
             }
         })
     }
 
-
-
-    // Table component to avoid repetition
-    const ClientUserTable = ({ users, userType }: { users: any; userType: "client" | "retireProfessional" }) => (
+    const UserTable = ({
+        users,
+        userType,
+        currentPage,
+        isLoading,
+    }: { users: any; userType: "client" | "retireProfessional"; currentPage: number; isLoading: boolean }) => (
         <Table>
-            <TableHeader className="text-gray-900  text-center">
+            <TableHeader className="text-gray-900 text-center">
                 <TableRow>
                     <TableHead className="w-[100px]">Serial</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Image</TableHead>
-                    <TableHead>Description</TableHead>
+                    <TableHead>{userType === "client" ? "Description" : "Bio"}</TableHead>
                     <TableHead>Rating</TableHead>
-
+                    {userType === "retireProfessional" && <TableHead>OnBoarding</TableHead>}
                     <TableHead className="text-right">Action</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody className="text-black">
-                {paginate(users, currentPageClients)?.map((user: any, index: number) => (
-                    <TableRow key={index}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                            <Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user._id}`}>
-                                <span className={user?.client?.name?.lastName ? "" : "font-bold"}>
-                                    {user?.client?.name?.firstName} {user?.client?.name?.lastName || "Unknown User"}
-                                </span>
-                            </Link>
-                        </TableCell>
-
-                        <TableCell>
-                            {/* <Image width={50} height={50} src={user.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" /> */}
-                        </TableCell>
-                        <TableCell>{user?.description || "Undefined"}</TableCell>
-                        <TableCell>{user?.averageRating || 0}</TableCell>
-
-                        <TableCell className="text-right">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-red-500 hover:text-red-700 hover:bg-red-100"
-                                onClick={() => handleDelete(user.id, userType)}
-                            >
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
+                {isLoading ? (
+                    <TableRow>
+                        <TableCell colSpan={userType === "client" ? 6 : 7} className="text-center py-4">
+                            <Loader2 className="h-6 w-6 animate-spin mx-auto" />
                         </TableCell>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    )
-    const ProfessionalUserTable = ({ users, userType }: { users: any; userType: "client" | "retireProfessional" }) => (
-        <Table>
-            <TableHeader className="text-gray-900  text-center">
-                <TableRow>
-                    <TableHead className="w-[100px]">Serial</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Image</TableHead>
-                    <TableHead>Bio</TableHead>
-                    <TableHead>Rating</TableHead>
-                    <TableHead>OnBoarding</TableHead>
-
-                    <TableHead className="text-right">Action</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody className="text-black">
-                {paginate(users, currentPageProfessionals)?.map((user: any, index: number) => (
-                    <TableRow key={index}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                            <Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user._id}`}>
-                                <span className={user?.retireProfessional?.name?.lastName ? "" : "font-bold"}>
-                                    {user?.retireProfessional?.name?.firstName} {user?.retireProfessional?.name?.lastName || "Unknown User"}
-                                </span>
-                            </Link>
-                        </TableCell>
-                        <TableCell>
-                            {/* <Image width={50} height={50} src={user.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" /> */}
-                        </TableCell>
-                        <TableCell>{user?.bio || "Undefined"}</TableCell>
-                        <TableCell>{user?.averageRating || 0}</TableCell>
-                        <TableCell className={`font-medium ${user?.retireProfessional?.stripe?.isOnboardingSucess ? "text-green-800" : "text-red-800"}`}>
-                            {user?.retireProfessional?.stripe?.isOnboardingSucess ? "Success" : "Failed"}
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-red-500 hover:text-red-700 hover:bg-red-100"
-                                onClick={() => handleDelete(user.id, userType)}
-                            >
-                                <Trash2 className="h-4 w-4" />
-                            </Button>
+                ) : users?.length > 0 ? (
+                    paginate(users, currentPage)?.map((user: any, index: number) => (
+                        <TableRow key={index}>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>
+                                <Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user._id}`}>
+                                    <span className={user?.[userType]?.name?.lastName ? "" : "font-bold"}>
+                                        {user?.[userType]?.name?.firstName} {user?.[userType]?.name?.lastName || "Unknown User"}
+                                    </span>
+                                </Link>
+                            </TableCell>
+                            <TableCell>
+                                {/* <Image width={50} height={50} src={user.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" /> */}
+                            </TableCell>
+                            <TableCell>{user?.[userType === "client" ? "description" : "bio"] || "Undefined"}</TableCell>
+                            <TableCell>{user?.averageRating || 0}</TableCell>
+                            {userType === "retireProfessional" && (
+                                <TableCell
+                                    className={`font-medium ${user?.retireProfessional?.stripe?.isOnboardingSucess ? "text-green-800" : "text-red-800"}`}
+                                >
+                                    {user?.retireProfessional?.stripe?.isOnboardingSucess ? "Success" : "Failed"}
+                                </TableCell>
+                            )}
+                            <TableCell className="text-right">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                                    onClick={() => handleDelete(user.id, userType)}
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={userType === "client" ? 6 : 7} className="text-center py-4">
+                            No User Found..
                         </TableCell>
                     </TableRow>
-                ))}
+                )}
             </TableBody>
         </Table>
     )
 
     return (
-        <div className="space-y-8 ">
+        <div className="space-y-8">
             <div className="bg-bg_secondary rounded-[10px] p-4 mb-3">
                 <h2 className="text-2xl font-bold mb-4 text-black">Client Users</h2>
                 <div className="rounded-md border">
-                    <ClientUserTable users={clients} userType="client" />
+                    <UserTable users={clients} userType="client" currentPage={currentPageClients} isLoading={clientLoading} />
                     <div className="flex justify-between mt-4">
-                        <Button className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]" onClick={() => setCurrentPageClients(currentPageClients - 1)} disabled={currentPageClients === 1}>
+                        <Button
+                            className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]"
+                            onClick={() => setCurrentPageClients(currentPageClients - 1)}
+                            disabled={currentPageClients === 1}
+                        >
                             Previous
                         </Button>
-                        <Button className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]"  onClick={() => setCurrentPageClients(currentPageClients + 1)} disabled={currentPageClients * itemsPerPage >= clients.length}>
+                        <Button
+                            className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]"
+                            onClick={() => setCurrentPageClients(currentPageClients + 1)}
+                            disabled={currentPageClients * itemsPerPage >= (clients?.length || 0)}
+                        >
                             Next
                         </Button>
                     </div>
@@ -180,12 +149,25 @@ export default function Users() {
             <div className="bg-bg_secondary rounded-[10px] p-4 mb-3">
                 <h2 className="text-2xl font-bold mb-4 text-black">Retired Professionals</h2>
                 <div className="rounded-md border">
-                    <ProfessionalUserTable users={professionals} userType="retireProfessional" />
+                    <UserTable
+                        users={professionals}
+                        userType="retireProfessional"
+                        currentPage={currentPageProfessionals}
+                        isLoading={professionalLoading}
+                    />
                     <div className="flex justify-between mt-4">
-                        <Button className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]" onClick={() => setCurrentPageProfessionals(currentPageProfessionals - 1)} disabled={currentPageProfessionals === 1}>
+                        <Button
+                            className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]"
+                            onClick={() => setCurrentPageProfessionals(currentPageProfessionals - 1)}
+                            disabled={currentPageProfessionals === 1}
+                        >
                             Previous
                         </Button>
-                        <Button className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]" onClick={() => setCurrentPageProfessionals(currentPageProfessionals + 1)} disabled={currentPageProfessionals * itemsPerPage >= professionals.length}>
+                        <Button
+                            className="bg-bg_primary rounded-[8px] hover:bg-[#21205fef]"
+                            onClick={() => setCurrentPageProfessionals(currentPageProfessionals + 1)}
+                            disabled={currentPageProfessionals * itemsPerPage >= (professionals?.length || 0)}
+                        >
                             Next
                         </Button>
                     </div>
