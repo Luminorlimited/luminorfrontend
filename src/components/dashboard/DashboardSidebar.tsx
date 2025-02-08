@@ -2,8 +2,9 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import logo from '@/assets/images/mainlogo.png'
+import Cookies from "js-cookie";
 import {
     LayoutDashboard,
     CreditCard,
@@ -18,6 +19,10 @@ import {
     LogOut,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useDispatch } from "react-redux";
+import { logOut } from "@/redux/ReduxFunction"
+import { useState } from "react"
+import { toast } from "sonner"
 
 const menuItems = [
     {
@@ -50,35 +55,32 @@ const menuItems = [
         icon: User,
         href: "/dashboard/profile",
     },
-    // {
-    //     title: "All Categories",
-    //     icon: Grid,
-    //     href: "/",
-    // },
-    // {
-    //     title: "Elevating Styles",
-    //     icon: ArrowUpRight,
-    //     href: "/",
-    // },
-    // {
-    //     title: "All Offer",
-    //     icon: Tag,
-    //     href: "/",
-    // },
-    // {
-    //     title: "All Coupon",
-    //     icon: Ticket,
-    //     href: "/",
-    // },
-    // {
-    //     title: "Upload Cover Banner",
-    //     icon: Upload,
-    //     href: "/",
-    // },
+  
 ]
+
+
 
 export function DashboardSidebar() {
     const pathname = usePathname()
+    const dispatch = useDispatch()
+    const router = useRouter();
+
+    const [loading, setLoading] = useState(false);
+
+    const handleLogOut = async () => {
+        setLoading(true);
+        try {
+            await dispatch(logOut());
+            router.push("/");
+            Cookies.remove("token");
+            toast.success("Successfully logged out");
+        } catch (e) {
+            console.error("Error during logout:", e);
+            toast.error("Logout error");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="flex h-screen w-64 flex-col bg-[#ececec] text-black">
@@ -112,9 +114,18 @@ export function DashboardSidebar() {
                 </nav>
             </div>
             <div className="mt-auto p-4">
-                <button className="flex w-full items-center gap-3 rounded-[8px] bg-bg_primary px-3 py-2 text-sm text-white transition-colors hover:bg-bg_primary ">
-                    <LogOut className="h-5 w-5" />
-                    Logout
+                <button
+                    onClick={handleLogOut}
+                    disabled={loading}
+                    className={`flex w-full items-center gap-3 rounded-[8px] px-3 py-2 text-sm text-white transition-colors ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-bg_primary hover:bg-[#161574]'}`}>
+                    {loading ? (
+                        <span className="loader animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+                    ) : (
+                        <>
+                            <LogOut className="h-5 w-5" />
+                            Logout
+                        </>
+                    )}
                 </button>
             </div>
         </div>

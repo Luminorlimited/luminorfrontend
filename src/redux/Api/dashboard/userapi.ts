@@ -36,8 +36,16 @@ const userApi = baseApi.injectEndpoints({
             }),
             providesTags: ['dashboard'],
         }),
+        getTotalOffer: build.query({
+            query: () => ({
+                url: `/offer/get-all-offers`,
+                method: 'GET',
+            }),
+            providesTags: ['dashboard'],
+        }),
+       
        
     }),
 });
 
-export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery} = userApi;
+export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery} = userApi;

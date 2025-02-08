@@ -1,36 +1,26 @@
 "use client"
 
-import { useState } from "react"
-import {  Trash2 } from "lucide-react"
+import { Trash2 } from "lucide-react"
 import Swal from "sweetalert2"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 
-interface Offer {
-    id: number
-    senderName: string
-    receiverName: string
-    offerType: string
-    price: number
-}
+import { useGetTotalOfferQuery } from "@/redux/Api/dashboard/userapi"
+import { useDeleteOfferMutation } from "@/redux/Api/offerApi"
+
+
 
 export default function OffersTable() {
-    const [offers, setOffers] = useState<Offer[]>([
-        { id: 1, senderName: "John Doe", receiverName: "Jane Smith", offerType: "hourly fee", price: 500 },
-        { id: 2, senderName: "Alice Johnson", receiverName: "Bob Williams", offerType: "Flat Fee", price: 500 },
-        { id: 3, senderName: "Eva Brown", receiverName: "Michael Davis", offerType: "Milestone", price: 500 },
-    ])
 
-    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-    const [editingOffer, setEditingOffer] = useState<Offer | null>(null)
 
-    // const handleEdit = (offer: Offer) => {
-    //     setEditingOffer(offer)
-    //     setIsEditDialogOpen(true)
-    // }
+    const { data: totalOffer, isLoading } = useGetTotalOfferQuery(undefined)
+
+    console.log("total Offer", totalOffer)
+
+
+
+    const [deleteOffers] = useDeleteOfferMutation()
+
 
     const handleDelete = (id: number) => {
         Swal.fire({
@@ -41,23 +31,18 @@ export default function OffersTable() {
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!",
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                setOffers(offers.filter((offer) => offer.id !== id))
+                await deleteOffers(id).unwrap()
                 Swal.fire("Deleted!", "The offer has been deleted.", "success")
             }
         })
     }
 
-    const handleSaveEdit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
 
-        if (editingOffer) {
-            setOffers(offers.map((offer) => (offer.id === editingOffer.id ? editingOffer : offer)))
-            setIsEditDialogOpen(false)
-            console.log("my updated offer is", editingOffer);
-            setEditingOffer(null)
-        }
+
+    if (isLoading) {
+        return <div className="text-black text-2xl">Loading....</div>
     }
 
     return (
@@ -66,6 +51,7 @@ export default function OffersTable() {
                 <TableHeader>
                     <TableRow className="">
                         <TableHead className="w-[100px]">Serial</TableHead>
+                        <TableHead>Project Name</TableHead>
                         <TableHead>Sender Name</TableHead>
                         <TableHead>Receiver Name</TableHead>
                         <TableHead>Offer Type</TableHead>
@@ -74,18 +60,19 @@ export default function OffersTable() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {offers.map((offer, index) => (
+                    {totalOffer?.data && totalOffer?.data.map((offer: any, index: number) => (
                         <TableRow key={offer.id} className="text-black">
                             <TableCell className="font-medium">{index + 1}</TableCell>
-                            <TableCell>{offer.senderName}</TableCell>
-                            <TableCell>{offer.receiverName}</TableCell>
-                            <TableCell>{offer.offerType}</TableCell>
-                            <TableCell>{offer.price}</TableCell>
+                            <TableCell>{offer?.projectName}</TableCell>
+                            <TableCell>{offer?.professionalEmail?.name?.firstName} {offer?.professionalEmail?.name?.lastName}</TableCell>
+                            <TableCell>{offer?.clientEmail?.name?.firstName} {offer?.clientEmail?.name?.lastName}</TableCell>
+                            <TableCell>{offer?.flatFee ? "Flat Fee" : offer?.hourlyFee ? "Hourly Fee" : "Milestone"}</TableCell>
+                            <TableCell>{offer.totalPrice}</TableCell>
                             <TableCell className="text-right">
                                 {/* <Button variant="ghost" className="hover:bg-green-200 text-green-800 rounded-[8px]" size="sm" onClick={() => handleEdit(offer)}>
                                     <Pencil className="h-4 w-4" />
                                 </Button> */}
-                                <Button variant="ghost" className="hover:bg-red-200 text-red-800 rounded-[8px]" size="sm" onClick={() => handleDelete(offer.id)}>
+                                <Button variant="ghost" className="hover:bg-red-200 text-red-800 rounded-[8px]" size="sm" onClick={() => handleDelete(offer._id)}>
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                             </TableCell>
@@ -94,53 +81,7 @@ export default function OffersTable() {
                 </TableBody>
             </Table>
 
-            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                <DialogContent className="sm:max-w-[525px]">
-                    <DialogHeader>
-                        <DialogTitle>Edit Offer</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleSaveEdit}>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="senderName" className="text-right">
-                                    Sender Name
-                                </Label>
-                                <Input
-                                    id="senderName"
-                                    value={editingOffer?.senderName}
-                                    onChange={(e) => setEditingOffer((prev) => ({ ...prev!, senderName: e.target.value }))}
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="receiverName" className="text-right">
-                                    Receiver Name
-                                </Label>
-                                <Input
-                                    id="receiverName"
-                                    value={editingOffer?.receiverName}
-                                    onChange={(e) => setEditingOffer((prev) => ({ ...prev!, receiverName: e.target.value }))}
-                                    className="col-span-3"
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="offerType" className="text-right">
-                                    Offer Type
-                                </Label>
-                                <Input
-                                    id="offerType"
-                                    value={editingOffer?.offerType}
-                                    onChange={(e) => setEditingOffer((prev) => ({ ...prev!, offerType: e.target.value }))}
-                                    className="col-span-3"
-                                />
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button className="bg-bg_primary rounded-[10px] hover:bg-[#4125a5]" type="submit">Save changes</Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
+
         </div>
     )
 }

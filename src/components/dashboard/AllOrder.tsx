@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { Menu } from "lucide-react";
+// import { useState } from "react";
+// import { Menu } from "lucide-react";
 // import { toast } from "sonner";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+// import {
+//     DropdownMenu,
+//     DropdownMenuContent,
+//     DropdownMenuRadioGroup,
+//     DropdownMenuRadioItem,
+//     DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { Button } from "@/components/ui/button";
 import { useTotalOrderQuery } from "@/redux/Api/dashboard/ordersApi";
 
 // interface Order {
@@ -27,9 +27,9 @@ export default function AllOrders() {
     // const [openOrderStatus, setOpenOrderStatus] = useState<number | null>(null);
     // const [selectedOrder, setSelectedOrder] = useState<number | null>(null);
 
-    const statusOptions = ["Completed", "Pending", "Failed"];
+    // const statusOptions = ["Completed", "Pending", "Failed"];
     // const orderStatusOptions = ["Shipped", "Delivered", "Refunds", "Returns"];
-    const [status, setStatus] = useState("all");
+    // const [status, setStatus] = useState("all");
 
     // const orders = [
     //     {
@@ -94,7 +94,7 @@ export default function AllOrders() {
             <div>
                 <div className="mb-6 flex items-center justify-between p-5">
                     <h1 className="text-2xl font-medium text-black">All Order list</h1>
-                    <div className="flex items-center gap-4">
+                    {/* <div className="flex items-center gap-4">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -125,7 +125,7 @@ export default function AllOrders() {
                         <button className="text-sm hover:text-gray-700 text-gray-900 ">
                             See All
                         </button>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="rounded-lg overflow-x-auto min-h-[50vh]">
