@@ -15,6 +15,7 @@ import SuccessPage from "./Success";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 
 export default function ProfessionalForm() {
@@ -24,6 +25,8 @@ export default function ProfessionalForm() {
   const dispatch = useDispatch();
 
   const [createProfessional] = useProfessionalUserMutation();
+
+  const router = useRouter()
   const handleSubmitProfessionalForm = async (data?: any) => {
     const formData = new FormData();
 
@@ -96,7 +99,8 @@ export default function ProfessionalForm() {
 
         console.log("Form submitted successfully:", res.data);
         toast.success("Form submitted successfully!")
-        setStep(5);
+        // setStep(5);
+        router.push('/user/auth/login')
       } else {
         console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
         toast.error(res?.error?.data?.message)
@@ -136,7 +140,7 @@ export default function ProfessionalForm() {
           alt="imgshape2"
           className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48"
         />
-        
+
         <Image
           src={circleshape}
           width={173}

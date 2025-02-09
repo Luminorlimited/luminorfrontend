@@ -9,45 +9,27 @@ import {
     ResponsiveContainer,
     Tooltip,
 } from "recharts";
-import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useYearlyTransactionQuery } from "@/redux/Api/dashboard/ordersApi";
 
-const data = [
-    { month: "Jan", value: 45 },
-    { month: "Feb", value: 85 },
-    { month: "Mar", value: 45 },
-    { month: "Apr", value: 70 },
-    { month: "Mai", value: 45 },
-    { month: "Jun", value: 45 },
-    { month: "Jul", value: 95 },
-    { month: "Aug", value: 45 },
-    { month: "Sep", value: 45 },
-    { month: "Oct", value: 65 },
-    { month: "Nov", value: 85 },
-    { month: "Dec", value: 75 },
-];
-
-// Process data to include the fill color dynamically
-const processedData = data.map((item, index, arr) => {
-    const prevValue = index > 0 ? arr[index - 1].value : item.value;
-    return {
-        ...item,
-        fill: item.value > prevValue ? "#5633D1" : "#828181", // Set color dynamically
-    };
-});
 
 export default function PayementBarChart() {
+    
+    const { data: yearlyTransaction } = useYearlyTransactionQuery(undefined)
+    console.log("my yearly transaction is", yearlyTransaction?.data?.yearlyIncome);
+    const processedData = yearlyTransaction?.data?.yearlyIncome.map((item:any, index:number, arr:any) => {
+        const prevValue = index > 0 ? arr[index - 1].totalIncome : item.totalIncome;
+        return {
+            ...item,
+            fill: item.value > prevValue ? "#5633D1" : "#828181", // Set color dynamically
+        };
+    });
+
+    
     return (
         <div className="bg-bg_secondary p-6 rounded-[15px] w-full max-w-full overflow-x-auto">
             <div className="flex justify-between items-center mb-6 min-w-[600px]">
                 <h2 className="text-xl text-black">Statistics</h2>
-                <Button
-                    variant="outline"
-                    className="text-gray-800 bg-transparent border-gray-700"
-                >
-                    This Yearly
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                </Button>
+               
             </div>
 
             <div className="h-[350px] w-full min-w-[600px]">

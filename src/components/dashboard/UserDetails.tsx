@@ -232,7 +232,7 @@ function ContactInformation({ user }: { user: any }) {
                 )}
                 <li className="flex items-center text-gray-600">
                     <Calendar className="h-5 w-5 mr-2" />
-                    Born: {user.dateOfBirth}
+                    Born:  {new Date(user.dateOfBirth).toLocaleDateString('en-GB').replace(/\//g, '-')}
                 </li>
             </ul>
         </div>

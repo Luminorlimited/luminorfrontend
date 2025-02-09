@@ -1,6 +1,6 @@
 "use client"
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from "recharts"
 import { Menu } from "lucide-react"
 
 import {
@@ -11,41 +11,44 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useOrderInsightQuery } from "@/redux/Api/dashboard/ordersApi"
 
-// Sample datasets
-const weeklyData = [
-  { day: "Mon", value: 0 },
-  { day: "Tue", value: 55 },
-  { day: "Wed", value: 25 },
-  { day: "Thu", value: 90 },
-  { day: "Fri", value: 92 },
-  { day: "Sat", value: 65 },
-  { day: "Sun", value: 100 },
-]
+interface TimelineData {
+  day: string
+  value: number
+}
 
-const monthlyData = [
-  { day: "January", value: 60 },
-  { day: "February", value: 75 },
-  { day: "March", value: 50 },
-  { day: "April", value: 90 },
-]
+interface OrderInsightData {
+  timeframe: string
+  totalOrders: number
+  totalRevenue: number
+  timeline: { [key: string]: number }
+}
 
 export default function OrderInsightsCard() {
-  const [chartData, setChartData] = useState(monthlyData)
-  const [viewMode, setViewMode] = useState("Monthly")
+  const [chartData, setChartData] = useState<TimelineData[]>([])
+  const [viewMode, setViewMode] = useState("weekly")
+  const [insightData, setInsightData] = useState<OrderInsightData | null>(null)
+
+  const { data, isLoading, error } = useOrderInsightQuery({ timeframe: viewMode })
+
+  useEffect(() => {
+    if (data && data.success) {
+      const timelineData = Object.entries(data.data.timeline).map(([key, value]) => ({
+        day: key,
+        value: Number(value),
+      }))
+      setChartData(timelineData)
+      setInsightData(data.data)
+    }
+  }, [data])
 
   const handleToggleView = (selectedView: string) => {
-    if (selectedView === "Weekly") {
-      setViewMode("Weekly")
-      setChartData(weeklyData)
-    } else {
-      setViewMode("Monthly")
-      setChartData(monthlyData)
-    }
+    setViewMode(selectedView.toLowerCase())
   }
 
-  const statusOptions = ["Monthly", "Weekly"]
+  const statusOptions = ["Weekly", "Monthly"]
 
   return (
     <div className="p-6 rounded-lg w-full overflow-x-auto">
@@ -58,7 +61,7 @@ export default function OrderInsightsCard() {
               variant="outline"
               className="bg-transparent border-gray-700 text-gray-900 hover:bg-gray-300 hover:text-gray-800 gap-2"
             >
-              Payment Status Filter
+              {viewMode === "weekly" ? "Weekly" : "Monthly"}
               <Menu className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -67,7 +70,7 @@ export default function OrderInsightsCard() {
               {statusOptions.map((item, index) => (
                 <DropdownMenuRadioItem
                   key={index}
-                  value={item}
+                  value={item.toLowerCase()}
                   className="text-gray-900 focus:bg-white focus:text-gray-900"
                 >
                   {item}
@@ -78,22 +81,51 @@ export default function OrderInsightsCard() {
         </DropdownMenu>
       </div>
 
+      {insightData && (
+        <div className="flex justify-between mb-4">
+          <div>
+            <p className="text-sm text-gray-600">Total Orders</p>
+            <p className="text-2xl font-bold text-black">{insightData.totalOrders}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-600">Total Revenue</p>
+            <p className="text-2xl font-bold text-black">${insightData.totalRevenue.toLocaleString()}</p>
+          </div>
+        </div>
+      )}
+
       <div className="h-[400px] w-full min-w-[400px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#181818" />
-            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#666" }} />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#666" }}
-              ticks={[0, 20, 40, 60, 80, 100]}
-              domain={[0, 100]}
-              tickFormatter={(value: number) => `${value}%`}
-            />
-            <Line type="linear" dataKey="value" stroke="#181818" strokeWidth={2} dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
+        {isLoading ? (
+          <p>Loading data...</p>
+        ) : error ? (
+          <p>Error fetching data.</p>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={chartData} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#181818" />
+              <XAxis
+                dataKey="day"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#666" }}
+                interval={0}
+                angle={-45}
+                textAnchor="end"
+                height={60}
+              />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: "#666" }} allowDecimals={false} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#181818"
+                strokeWidth={2}
+                dot={{ r: 4 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   )

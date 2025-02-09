@@ -8,6 +8,14 @@ const userApi = baseApi.injectEndpoints({
 
 
 
+        updateAdmin: build.mutation({
+            query: (data) => ({
+                url: `/auth/update-admin`,
+                method: 'PATCH',
+                body: data
+            }),
+            invalidatesTags: ['dashboard'],
+        }),
         deleteUser: build.mutation({
             query: (id) => ({
                 url: `/auth/delete-user/${id}`,
@@ -58,4 +66,4 @@ const userApi = baseApi.injectEndpoints({
     }),
 });
 
-export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery, useDeleteUserMutation} = userApi;
+export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery, useDeleteUserMutation, useUpdateAdminMutation} = userApi;
