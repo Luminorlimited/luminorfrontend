@@ -31,6 +31,7 @@ interface AdminProfile {
 export default function Profile() {
     const { data: getProfile } = useGetProfileQuery(undefined)
     const [updateProfile] = useUpdateAdminMutation()
+    const [updateProfileImage] = useUpdateAdminMutation()
 
     const [profile, setProfile] = useState<AdminProfile | null>(null)
     const [isEditing, setIsEditing] = useState(false)
@@ -58,6 +59,7 @@ export default function Profile() {
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
+        console.log("my file ", file);
         if (file) {
             setNewProfileImage(file)
         }
@@ -67,15 +69,28 @@ export default function Profile() {
         e.preventDefault()
         if (!profile) return
 
-        const formData = new FormData()
-        formData.append("firstName", profile.name.firstName)
-        formData.append("lastName", profile.name.lastName)
-        if (newProfileImage) {
-            formData.append("profileImage", newProfileImage)
-        }
-
         try {
-            await updateProfile(formData).unwrap()
+            // Update profile data
+
+            if (newProfileImage) {
+                const formData = new FormData()
+                formData.append("profileUrl", newProfileImage)
+                await updateProfileImage(formData).unwrap()
+            }
+
+            await updateProfile({
+                // profileUrl: profile.profileUrl,
+                name: {
+                    firstName: profile.name.firstName,
+                    lastName: profile.name.lastName,
+                },
+            }).unwrap()
+
+            
+
+            // Update profile image if a new one was selected
+            
+
             setIsEditing(false)
             setNewProfileImage(null)
         } catch (error) {
@@ -218,5 +233,4 @@ export default function Profile() {
         </div>
     )
 }
-
 
