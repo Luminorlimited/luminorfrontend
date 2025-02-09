@@ -1,11 +1,17 @@
-import { User } from "lucide-react";
+import { useGetProfileQuery } from "@/redux/Api/userApi";
+import Image from "next/image";
 import Link from "next/link";
+import avatar from '@/assets/images/avatar.jpg'
 import { usePathname } from "next/navigation";
 
 export default function DashboardNav() {
 
     const pathName = usePathname()
     console.log('pathname is', pathName);
+    const { data: getProfile } = useGetProfileQuery(undefined)
+
+    console.log("My get profile is", getProfile);
+
     return (
         <div>
             <div className="w-full flex items-center justify-between gap-0 sm:gap-10 bg-[#e9e9e9] text-black lg:px-4 px-20 py-4">
@@ -47,21 +53,22 @@ export default function DashboardNav() {
 
                                         ) :
                                             pathName.startsWith("/dashboard/users/") ? (
-                                            <div>
-                                                <h3 className="lg:text-[23px] md:text-xl font-semibold">User Profile</h3>
-                                            </div>
+                                                <div>
+                                                    <h3 className="lg:text-[23px] md:text-xl font-semibold">User Profile</h3>
+                                                </div>
 
-                                        ) :
-                                            ("")
+                                            ) :
+                                                ("")
                 }
                 <Link href={'/dashboard/profile'} className=" flex items-center gap-2 cursor-pointer hover:bg-[#b8b8b8] rounded-[20px] px-4 py-2 duration-200">
                     <div className=" hover:bg-transparent border p-2 rounded-full">
-                        <User className="h-5 sm:h-[22px] w-5 sm:w-[22px] text-gray-600" />
+                        {/* <User className="h-5 sm:h-[22px] w-5 sm:w-[22px] text-gray-600" /> */}
+                        <Image src={getProfile?.data?.profileUrl || avatar } width={50} height={50} alt="profile-url"/>
                     </div>
-                    <p>Johan</p>
+                    <p>{getProfile?.data?.name?.firstName}</p>
                 </Link>
             </div>
 
-            </div>
-            );
+        </div>
+    );
 }
