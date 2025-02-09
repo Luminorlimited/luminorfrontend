@@ -36,7 +36,9 @@ const TransactionMetrics = () => {
                             <div className="mt-4 space-y-2">
                                 <div className="flex justify-between text-xs">
                                     <span className="">Latest Time</span>
-                                    <span className="text-slate-800">{lasttransaction?.data?.createdAt}</span>
+                                        <span className="text-slate-800">{}
+                                            {new Date(lasttransaction?.data?.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between text-xs">
                                     <span className="">Transaction ID</span>
