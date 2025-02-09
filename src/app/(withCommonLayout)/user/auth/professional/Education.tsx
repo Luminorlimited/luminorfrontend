@@ -106,9 +106,10 @@ export default function Education({ register, handleNext, setValue, handleBack }
                 id="edu"
                 {...register("edubackground")}
                 required
-                className="h-12 rounded-xl border-[#E5E7EB] w-full px-3 border"
+              className="h-12 rounded-xl border-[#E5E7EB] w-full px-3 border"
+              defaultValue={''}
             >
-              <option value="" disabled selected>
+              <option value="" disabled >
                 Select your educational background
               </option>
               <option value="high_school">High School Diploma or Equivalent</option>
