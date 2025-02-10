@@ -228,6 +228,8 @@ export function Sidebar({
     ]
   );
 
+  console.log(currentLocation);
+
   const getLocationProgressStyle = useCallback(() => {
     const left = ((locMinLoc - minLoc) / (maxLoc - minLoc)) * 100;
     const right = 100 - ((locMaxLoc - minLoc) / (maxLoc - minLoc)) * 100;

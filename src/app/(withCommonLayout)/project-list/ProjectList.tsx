@@ -13,6 +13,7 @@ import { setclientFilter } from "@/redux/ReduxFunction";
 import {
   useClientListQuery,
   useLazyClientFilterListQuery,
+  useLazyLocationFilterQuery,
   useLazyProfessionalListQuery,
   useProfessionalFilterListQuery,
 } from "@/redux/Api/projectApi";
@@ -24,57 +25,71 @@ interface ProjectListProps {
 
 const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
   const sidebarFilters = useSelector((state: RootState) => state.filters);
-  const route = usePathname();
+  const locationFilters = useSelector(
+    (state: RootState) => state.locationFilter
+  );
 
+  const [fetchLocationData] = useLazyLocationFilterQuery(); // Get location data from API
+  const route = usePathname();
   const dispatch = useDispatch();
 
-  const [clientLazyData] = useLazyProfessionalListQuery();
-  const [professionalLazyData] = useLazyClientFilterListQuery();
+  const [clientLazyData] = useLazyClientFilterListQuery();
+  const [professionalLazyData] = useLazyProfessionalListQuery();
 
   const { data: clientData } = useClientListQuery({});
   const { data: professionalData } =
     useProfessionalFilterListQuery(FilteredData);
-  // console.log('get client ', clientData);
-  // console.log('get professional ', professionalData);
-  const [filteredData, setFilteredData] = useState(null);
+
+  const [filteredData, setFilteredData] = useState<any[]>([]); // Ensure it's always an array
 
   useEffect(() => {
-    // Determine which lazy query to call based on the route
     const fetchFilteredData = async () => {
-      if (route === "/project-list/professional") {
-        const response = await clientLazyData({ filteredData });
+      try {
+        if (route === "/project-list/professional") {
+          const response = await clientLazyData(sidebarFilters).unwrap();
+          if (Array.isArray(response?.data)) {
+            setFilteredData(response.data);
+          }
+        } else {
+          if (
+            locationFilters.lat !== undefined &&
+            locationFilters.long !== undefined &&
+            (locationFilters.max || locationFilters.min)
+          ) {
+            const response = await fetchLocationData(locationFilters).unwrap();
+            if (Array.isArray(response?.data)) {
+              setFilteredData(response.data);
+            }
+          } else {
+            const response = await professionalLazyData(
+              sidebarFilters
+            ).unwrap();
 
-        setFilteredData(response?.data);
-        // console.log("response");
-      } else {
-        const response = await professionalLazyData(sidebarFilters);
-        setFilteredData(response?.data);
+            if (Array.isArray(response?.data)) {
+              setFilteredData(response.data);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching filtered data:", error);
       }
     };
 
-    fetchFilteredData(); // Trigger the fetch
+    fetchFilteredData();
   }, [
     route,
-    FilteredData,
-    professionalLazyData,
-    clientLazyData,
     sidebarFilters,
+    locationFilters,
+    fetchLocationData,
+    clientLazyData,
+    professionalLazyData,
     filteredData,
   ]);
-  // console.log('filter aaaadata is:', FilteredData);
 
-  const servicesToShow =
-    FilteredData.industry.length ||
-    FilteredData.timeline.length ||
-    FilteredData.skillType.length
-      ? filteredData
-      : clientData;
-  const professionalServicesToShow =
-    FilteredData.industry.length ||
-    FilteredData.timeline.length ||
-    FilteredData.skillType.length
-      ? filteredData
-      : professionalData;
+  // Ensure correct data is assigned
+  const servicesToShow = filteredData;
+
+  const professionalServicesToShow = filteredData;
 
   useEffect(() => {
     if (
@@ -85,7 +100,6 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
       dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
     }
   }, [FilteredData, dispatch]);
-  // console.log({ industry: [], timeline: [], skillType: [] });
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
@@ -93,8 +107,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const data =
     (route === "/project-list/client"
-      ? professionalServicesToShow?.data
-      : servicesToShow?.data) || []; // Ensure `data` is always an array
+      ? professionalServicesToShow
+      : servicesToShow) || []; // Ensure fallback to empty array
+
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
@@ -103,9 +118,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
-
   // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-  console.log("My test is", currentItems);
+  //   console.log("My test is", currentItems);
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
