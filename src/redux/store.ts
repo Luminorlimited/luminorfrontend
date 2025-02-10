@@ -3,7 +3,8 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import adminAuth from "./ReduxFunction"; // Assuming your auth slice is here
 import baseApi from "./Api/baseApi";
-// import filtersReducer from "./slice/Sidebar";
+import filtersReducer from "./slice/Sidebar";
+import filterReducer from "./ReduxFunction";
 
 // Persist configuration for Auth
 const authPersistConfig = {
@@ -18,8 +19,8 @@ const persistedAuthReducer = persistReducer(authPersistConfig, adminAuth);
 export const store = configureStore({
   reducer: {
     Auth: persistedAuthReducer,
-    // filters: filtersReducer,
-    // project: projectSlice.reducer, // No persistence for project
+    filters: filtersReducer,
+    project: filterReducer, // No persistence for project
     [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

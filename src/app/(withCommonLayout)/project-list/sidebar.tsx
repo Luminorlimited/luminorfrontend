@@ -8,6 +8,15 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useDispatch } from "react-redux";
 import { setclientFilter } from "@/redux/ReduxFunction";
+import {
+  setIndustry,
+  setMaxBudget,
+  setMaxRange,
+  setMinBudget,
+  setMinRange,
+  setSkillType,
+  setTimeline,
+} from "@/redux/slice/Sidebar";
 
 export type Filters = {
   industry: string[];
@@ -43,7 +52,7 @@ export function Sidebar({
   const dispatch = useDispatch();
 
   const [budgetMinValue, setBudgetMinValue] = useState(1);
-  const [budgetMaxValue, setBudgetMaxValue] = useState(400);
+  const [budgetMaxValue, setBudgetMaxValue] = useState(5000);
   const [durationMinValue, setDurationMinValue] = useState(1);
   const [durationMaxValue, setDurationMaxValue] = useState(90);
 
@@ -55,7 +64,7 @@ export function Sidebar({
       );
       setBudgetMinValue(value);
       setFilters((prev) => ({ ...prev, minPrice: value }));
-      dispatch(setclientFilter({ minPrice: value }));
+      dispatch(setMinBudget({ min: value }));
     },
     [budgetMaxValue, dispatch, setFilters]
   );
@@ -68,7 +77,7 @@ export function Sidebar({
       );
       setBudgetMaxValue(value);
       setFilters((prev) => ({ ...prev, maxPrice: value }));
-      dispatch(setclientFilter({ maxPrice: value }));
+      dispatch(setMaxBudget({ max: value }));
     },
     [budgetMinValue, dispatch, setFilters]
   );
@@ -91,7 +100,7 @@ export function Sidebar({
       );
       setDurationMinValue(value);
       setFilters((prev) => ({ ...prev, minDay: value }));
-      dispatch(setclientFilter({ minDay: value }));
+      dispatch(setMinRange({ min: value }));
     },
     [dispatch, durationMaxValue, setFilters]
   );
@@ -104,7 +113,7 @@ export function Sidebar({
       );
       setDurationMaxValue(value);
       setFilters((prev) => ({ ...prev, maxDay: value }));
-      dispatch(setclientFilter({ maxDay: value }));
+      dispatch(setMaxRange({ max: value }));
     },
     [dispatch, durationMinValue, setFilters]
   );
@@ -197,6 +206,9 @@ export function Sidebar({
     }));
 
     dispatch(setclientFilter(updatedSelection));
+    dispatch(setIndustry(updatedSelection.industry));
+    dispatch(setTimeline(updatedSelection.timeline));
+    dispatch(setSkillType(updatedSelection.skillType));
   };
 
   return (
