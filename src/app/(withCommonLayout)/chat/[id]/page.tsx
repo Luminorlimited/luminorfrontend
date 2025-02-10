@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import ChatWindow, { Message } from "@/app/(withCommonLayout)/chat/ChatWindow";
 import Button from "@/components/common/Button";
@@ -12,91 +12,345 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker from "emoji-picker-react";
 import { IoMdMenu } from "react-icons/io";
-import { Video, FileText, Images } from 'lucide-react';
-import io from "socket.io-client";
-import demoimg from '@/assets/images/demoimg.png';
+import { Video, FileText, Images } from "lucide-react";
+import io, { Socket } from "socket.io-client";
+import demoimg from "@/assets/images/demoimg.png";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { useGetConversationQuery, useGetMessageQuery, useGetuserQuery } from "@/redux/Api/messageApi";
+import {
+  useGetConversationQuery,
+  useGetMessageQuery,
+  useGetuserQuery,
+} from "@/redux/Api/messageApi";
+import { conforms } from "lodash";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
 import { useDecodedToken } from "@/components/common/DecodeToken";
 
-
-
 const Page: React.FC = () => {
-
-  const router = useRouter()
+  const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [fileBtn, showFileBtn] = useState(false);
-  const token = useDecodedToken()
+  const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
-  const user1 = token?.email
-  const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
-  const id = useParams()
-  const { data: getToUser } = useGetuserQuery(id.id)
-  const user2 = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
+  const user1 = token?.id;
 
-  const { data: oldMessages } = useGetMessageQuery({ user1, user2 })
-  const { data: getConversation } = useGetConversationQuery(undefined);
+  const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
+  const id = useParams();
+  const { data: getToUser } = useGetuserQuery(id.id);
+  console.log(id.id, "check id");
+
+  const user2 = useMemo(() => {
+    return (
+      getToUser?.data?.client?.email ||
+      getToUser?.data?.retireProfessional?.email
+    );
+  }, [getToUser]);
+
+  const {
+    data: oldMessages,
+    refetch,
+    isFetching,
+  } = useGetMessageQuery({ user1, user2: id.id }, { skip: !id.id });
+
+  // console.log(oldMessages, "check old messages");
+  // console.log(oldSingleMessages, "check old single messages");
+  const { data: getConversation } = useGetConversationQuery(undefined, {
+    skip: !id.id,
+  });
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
-  const [timeStamp, setTimeStamp] = useState("")
+  const [offerNotification, setOfferNotification] = useState(0);
+  const [latestOffer, setLatestOffer] = useState();
+  const socketRef = useRef<Socket | null>(null);
+  const [isSocketReady, setIsSocketReady] = useState(false);
+  const { data: getoffer, refetch: offerRefetch } = useGetOfferQuery(token?.id);
+  // const [messageNotifications, setmessageNotifications] = useState(0);
 
+  // const [offerNotification, setOfferNotification] = useState(0);
 
   // console.log('My Receive Mail is:', getConversation)
+  const [isLoading, setIsLoading] = useState(true);
 
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  // console.log(selectedImages);
+  const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
+    []
+  );
+  const [showSidebar, setShowSidebar] = useState(false);
 
-  const handleClick = () => {
-    setTimeout(() => {
-      showFileBtn((prev) => !prev)
-    }, 200)
-  }
+  useEffect(() => {
+    if (id) {
+      setOfferNotification(getoffer?.data?.data?.offersWithUserInfo?.count);
+      refetch();
+    }
+  }, [getoffer?.data?.data?.offersWithUserInfo?.count, id, refetch]);
+  useEffect(() => {
+    if (!token?.email) return;
 
+    if (!socketRef.current) {
+      const mysocket = io("ws://localhost:5001");
+      socketRef.current = mysocket;
 
+      mysocket.on("connect", () => {
+        console.log("Connected to socket.io.");
+        setIsSocketReady(true);
+        mysocket.emit("register", JSON.stringify({ id: token?.id }));
+        mysocket.emit(
+          "userInChat",
+          JSON.stringify({ userId: token?.id, chattingWith: id.id })
+        );
+      });
 
+      mysocket.on("conversation-list", (data) => {
+        // console.log("Received conversation list:", data);
+        console.log(data, "check data from useeffet convirsation list");
+
+        setUsers(data);
+        setIsLoading(false);
+      });
+      mysocket.on("sendOffer", (data) => {
+        // console.log("Received conversation list:", data);
+        console.log(data, "check data from useeffet sendOffer");
+        console.log(data.offer, "heck data from useeffet sendOffer");
+        setOfferNotification(data?.offer?.count);
+        setLatestOffer(data?.offer);
+      });
+      mysocket.on("privateMessage", (data) => {
+        console.log("Received private message:", data);
+        const { message, fromUserId } = data;
+        console.log(getToUser, "check get to user");
+        console.log(fromUserId, "check from email");
+
+        if (
+          message &&
+          getToUser?.data?.[
+            getToUser?.data?.retireProfessional
+              ? "retireProfessional"
+              : "client"
+          ]?._id === fromUserId
+        ) {
+          setInbox((prevInbox) => [...prevInbox, message]);
+        }
+
+        // setInbox((prevInbox) => [...prevInbox, message]);
+      });
+
+      mysocket.on("createZoomMeeting", (data) => {
+        // console.log("Received Zoom meeting data:", data);
+        const { from, populateMessage } = data;
+        console.log(populateMessage, from, "check zoom saved message");
+        if (populateMessage?.meetingLink) {
+          console.log(from, "check from create meeting");
+          window.open(populateMessage?.meetingLink, "_blank");
+          const loggedInUserId =
+            getToUser?.data?.[
+              getToUser?.data?.retireProfessional
+                ? "retireProfessional"
+                : "client"
+            ]?._id;
+
+          if (
+            loggedInUserId === from ||
+            loggedInUserId === populateMessage?.sender?._id ||
+            loggedInUserId === populateMessage?.recipient?._id
+          ) {
+            setInbox((prevInbox) => [...prevInbox, populateMessage]);
+          }
+        } else {
+          toast.error("Invalid Zoom meeting data received.");
+        }
+      });
+
+      mysocket.on("zoomMeetingError", (err) => {
+        console.log("Zoom meeting error:", err);
+        toast.error("Failed to create Zoom meeting. Please try again.");
+      });
+    }
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.off("connect");
+        socketRef.current.off("conversation-list");
+        socketRef.current.off("privateMessage");
+        socketRef.current.off("createZoomMeeting");
+        socketRef.current.off("zoomMeetingError");
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, [token?.email, getToUser, token?.id, id.id]);
+
+  useEffect(() => {
+    if (oldMessages?.data?.messages) {
+      setInbox(oldMessages?.data?.messages);
+    }
+  }, [oldMessages, id.id]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showSidebar]);
+
+  const handleshowMessage = (user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileUrl: string | null;
+  }) => {
+    if (!isSocketReady) {
+      console.warn("Socket is still connecting...");
+      return;
+    }
+    const { id, profileUrl, email } = user;
+    const updatedUsers = users.map((u: any) =>
+      u.id === id ? { ...u, unseenMessageCount: 0 } : u
+    );
+    console.log(updatedUsers, "check updatedusers");
+    setUsers(updatedUsers);
+    router.push(`/chat/${id}`);
+    // refetch();
+
+    if (socketRef.current) {
+      console.log("Sending userInChat event with:", {
+        userEmail: token?.email,
+        chattingWith: email,
+      });
+
+      socketRef.current.emit(
+        "userInChat",
+        JSON.stringify({ userEmail: token?.email, chattingWith: email })
+      );
+    } else {
+      console.error("Socket is not initialized.");
+    }
+
+    setProfileUrl(profileUrl || demoimg.src);
+    setInbox(oldMessages?.data?.messages);
+  };
+  const onSendMessage = (e: any) => {
+    e.preventDefault();
+    if (!messages.trim()) {
+      alert("Please enter a message or select an image.");
+      return;
+    }
+
+    if (!socketRef.current) {
+      toast.error("Socket connection not established.");
+      return;
+    }
+
+    if (messages.trim()) {
+      const message: any = {
+        toUserId: id.id,
+        message: messages.trim() || null,
+        fromUserId: token?.id,
+        media: selectedBase64Images,
+      };
+
+      socketRef.current.emit("privateMessage", JSON.stringify(message));
+
+      const temporaryMessage: any = {
+        id: Date.now(), // Ensure a unique ID for temporary messages
+        message: messages.trim() || null,
+        meetingLink: "",
+        sender: { _id: token?.id },
+        recipient: { _id: id.id },
+        createdAt: new Date().toISOString(),
+      };
+
+      setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
+      console.log(inbox, "check messages from send message handler");
+
+      let currentUser = users.find((user) => user.email === user2);
+
+      if (!currentUser) {
+        currentUser = {
+          email: getToUser?.data?.retireProfessional
+            ? getToUser?.data?.retireProfessional?.email
+            : getToUser?.data?.client?.email,
+          name: `${getToUser?.data?.retireProfessional
+            ? getToUser.data.retireProfessional.name.firstName
+            : getToUser?.data?.client?.name.firstName
+            } ${getToUser?.data?.retireProfessional
+              ? getToUser.data.retireProfessional.name.lastName
+              : getToUser?.data?.client?.name.lastName
+            }`,
+          profileUrl: getToUser?.data?.retireProfessional
+            ? getToUser?.data?.retireProfessional?.profileUrl
+            : getToUser?.data?.client?.profileUrl,
+        };
+      }
+
+      currentUser.lastMessage = messages.trim();
+      currentUser.lastMessageTimestamp = new Date().toISOString();
+
+      // setUsers([currentUser, ...users.filter((user) => user.email !== user2)]);
+
+      setMessages("");
+      setSelectedImages([]);
+      setSelectedBase64Images([]);
+    }
+  };
+  const handleCreateZoomMeeting = () => {
+    if (!socketRef.current) {
+      toast.error("Socket connection not established.");
+      return;
+    }
+
+    const callInfo = {
+      fromUserId: token?.id,
+      toUserId: id.id,
+    };
+
+    socketRef.current.emit("createZoomMeeting", JSON.stringify(callInfo));
+    console.log(callInfo, "check zoom link");
+  };
   const handleFileClick = (type: string) => {
     const input = document.getElementById("fileInput") as HTMLInputElement;
 
     if (type === "image") {
       input.accept = "image/*"; // Accept images only
     } else if (type === "document") {
-      input.accept = "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"; // Accept documents
+      input.accept =
+        "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"; // Accept documents
     }
 
     // Trigger the click event for the file input
     input.click();
   };
 
-
-
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const target = e.target;
-  //   if (target?.files) {
-  //     const newFiles = Array.from(target.files);
-  //     setSelectedFiles(prevFiles => [...prevFiles, ...newFiles]);
-
-  //     // convert base64
-  //     const firstImageFile = newFiles[0];
-  //     if (firstImageFile) {
-  //       const reader = new FileReader()
-  //       reader.readAsDataURL(firstImageFile)
-  //       reader.onload = () => {
-  //         const base64String = reader.result
-  //         console.log(`My image base64 is: `, base64String);
-  //       }
-  //     }
-  //   }
-  // };
+  const handleClick = () => {
+    setTimeout(() => {
+      showFileBtn((prev) => !prev);
+    }, 200);
+  };
 
   const handleEmojiClick = (emojiObject: any) => {
     setMessages((prevMessages) => prevMessages + emojiObject.emoji);
@@ -105,14 +359,9 @@ const Page: React.FC = () => {
     setShowEmojiPicker((prev) => !prev);
   };
   const handleOpenModal = () => {
+    offerRefetch();
     setIsModalOpen((e) => !e);
-    // socket.on("sendoffer", (data:any) => {
-    //   console.log("my data is", data);
-    // })
-
   };
-
-
 
   const handleProjectModal = () => {
     if (isButtonDisabled) return;
@@ -121,33 +370,31 @@ const Page: React.FC = () => {
     setTimeout(() => {
       setIsButtonDisabled(false);
     });
-
-
-
   };
 
-  const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
-    const { id, profileUrl } = user;
+  // const handleshowMessage = (user: {
+  //   id: string;
+  //   email: string;
+  //   firstName: string;
+  //   lastName: string;
+  //   profileUrl: string | null;
+  // }) => {
+  //   refetch();
+  //   const { id, profileUrl } = user;
 
-    router.push(`/chat/${id}`)
+  //   router.push(`/chat/${id}`);
 
-    socket.emit("userInChat", JSON.stringify({ userEmail: token?.email, chattingWith: user2 }));
+  //   socket.emit(
+  //     "userInChat",
+  //     JSON.stringify({ userEmail: token?.email, chattingWith: user2 })
+  //   );
+  //   // console.log("handle show message");
 
+  //   setProfileUrl(profileUrl || demoimg.src);
 
-
-    setProfileUrl(profileUrl || demoimg.src);
-
-    setInbox(oldMessages?.data?.messages)
-    // console.log(filteredMessages, "chekc message list")
-  };
-
-
-
-  // convert image to  base64 
-
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  // console.log(selectedImages);
-  const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>([]);
+  //   setInbox(oldMessages?.data?.messages);
+  //   // console.log(filteredMessages, "chekc message list")
+  // };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -189,191 +436,43 @@ const Page: React.FC = () => {
     }
   };
 
-
-
-
-
-
-  const onSendMessage = (e: any) => {
-
-
-    e.preventDefault();
-    if (!messages.trim() && selectedBase64Images.length === 0) {
-      alert("Please enter a message or select an image.");
-      return;
-    }
-
-    // const base64Images = selectedImages.map(async (file) => await convertFileToBase64(file));
-    if (messages.trim()) {
-
-      const message = {
-        toEmail: user2,
-        message: messages.trim() || null,
-        fromEmail: token?.email,
-        media: selectedBase64Images
-      };
-
-
-      socket.emit("privateMessage", JSON.stringify(message));
-
-
-      setMessages("");
-      setSelectedImages([])
-      setSelectedBase64Images([])
-
-    }
-  };
-
-
-
-  const handleCreateZoomMeeting = () => {
-    if (socket) {
-      const callInfo = {
-        fromEmail: token?.email,
-        toEmail: user2,
-      };
-
-      socket.emit("createZoomMeeting", JSON.stringify(callInfo));
-    } else {
-      toast.error("Socket connection not established.");
-    }
-  };
-
-
-
-
-  // emoji picker
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
-        setShowEmojiPicker(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-
-
-  // console.log("my offer notification", messageNotifications);
-  //socket connection
-  useEffect(() => {
-    if (!token?.email) {
-      return;
-    }
-
-    const mysocket = io("ws://localhost:5001");
-    setSocket(mysocket);
-
-    mysocket.on("connect", () => {
-      console.log("Connected to socket.io.");
-      mysocket.emit("register", JSON.stringify({ email: token?.email }));
-    });
-
-
-    mysocket.on("conversation-list", (data) => {
-      console.log(data, "check convirsation list  data")
-      setUsers(data)
-    });
-
-
-    mysocket.on("privateMessage", (data) => {
-      const { message } = data;
-      console.warn(message);
-      if (message) {
-        setInbox((prevInbox) => [
-          ...prevInbox,
-          message
-        ]);
-
-
-
-      }
-    });
-
-
-
-    mysocket.on("createZoomMeeting", (data) => {
-      console.log("Zoom meeting data received from socket:", data);
-      const { savedMessage } = data;
-      // console.log(JSON.parse(data));
-
-      console.log('my meeting link is', data)
-      console.log("My start url is", savedMessage);
-      // console.log('my data is', data.start_url);
-      const { meetingLink } = savedMessage
-
-      if (savedMessage && savedMessage.meetingLink) {
-        window.open(meetingLink, "_blank");
-
-        setInbox((prevInbox) => [...prevInbox, savedMessage]);
-      } else {
-        toast.error("Invalid Zoom meeting data received.");
-        // console.log("invalid data", data.start_url)
-      }
-    });
-
-
-    // Handle Zoom meeting errors
-    mysocket.on("zoomMeetingError", (err) => {
-      console.log("Zoom meeting error:", err);
-      toast.error("Failed to create Zoom meeting. Please try again.");
-    });
-    return () => {
-      console.log("Cleaning up socket listeners...");
-      mysocket.off("connect");
-      mysocket.off("privateMessage");
-      mysocket.disconnect();
-    };
-  }, [token?.email,]);
-
-
-  const [showSidebar, setShowSidebar] = useState(false);
-
   const handleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  
-  const handleClickOutside = useCallback((event: any) => {
-    if (showSidebar && !event.target.closest('.sidebar')) {
+  const handleClickOutside = (event: any) => {
+    if (showSidebar && !event.target.closest(".sidebar")) {
       setShowSidebar(false);
     }
-  }, [showSidebar]);
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showSidebar]);
+  };
 
-  const [offerNotification, setOfferNotification] = useState(0);
-  const { data: getoffer } = useGetOfferQuery(user1);
-  useEffect(() => {
-    if (getoffer?.data?.data?.count > 0) {
-      setOfferNotification(getoffer?.data?.data.count);
-    }
-  }, [getoffer]);
+  if (isLoading) {
+    return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2" />
 
-  const formattedTime = new Date("2025-02-04T11:02:21.927Z").toLocaleTimeString("en-US", { hour12: false });
-
-
+  }
   return (
     <section>
       <div className="container mx-auto pt-[20px]">
-        <div className='text-[16px] flex gap-2'>
-          <Link href={'/'} className='text-gray-700'>Home - </Link>
-          <Link href={'/chat'} className='font-semibold'>Chat</Link>
+        <div className="text-[16px] flex gap-2">
+          <Link href={"/"} className="text-gray-700">
+            Home -{" "}
+          </Link>
+          <Link href={"/chat"} className="font-semibold">
+            Chat
+          </Link>
         </div>
-        <button onClick={handleSidebar} className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden">
+        <button
+          onClick={handleSidebar}
+          className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden"
+        >
           <IoMdMenu className="text-white text-[24px]" />
         </button>
 
         {/* Sidebar with Overlay */}
-        <div className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div
+          className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? "translate-x-0" : "-translate-x-full"
+            }`}
+        >
           <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
             <div className="p-4">
               <div className="flex items-center border rounded-[12px] px-3 py-4">
@@ -384,21 +483,27 @@ const Page: React.FC = () => {
                   className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
                 />
               </div>
-              <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} setTimeStamp={setTimeStamp} />
+              <AllUsers
+                handleshowMessage={handleshowMessage}
+                getConversation={{ data: users }}
+              />
             </div>
           </div>
         </div>
 
         {/* Backdrop Overlay */}
         {showSidebar && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={handleSidebar}></div>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-30 z-40"
+            onClick={handleSidebar}
+          ></div>
         )}
-
-
       </div>
       <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
-
-        <div className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"}`}>
+        <div
+          className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
+            }`}
+        >
           <div className="p-4">
             <div className="flex items-center border  rounded-[12px] px-3 py-4">
               <BiSearch className="text-gray-500 text-lg" />
@@ -408,87 +513,119 @@ const Page: React.FC = () => {
                 className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
               />
             </div>
-
             <AllUsers
               handleshowMessage={handleshowMessage}
               getConversation={{ data: users }}
-              setTimeStamp={setTimeStamp}
             // messageNotifications={messageNotifications}
             />
           </div>
         </div>
 
-
         <div className="lg:w-2/3 w-full  flex flex-col relative">
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
-            {getToUser?.data ? (
+            {getToUser?.data && (
               <div className="flex items-center">
-                <Image
-                  src={getToUser?.data?.profileUrl || demoimg}
-                  alt="Jane Cooper"
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
+                <div className="w-[40px] h-[40px]">
+                  <Image
+                    src={getToUser?.data?.profileUrl || demoimg}
+                    alt="Jane Cooper"
+                    width={40}
+                    height={40}
+                    className="rounded-full w-full h-full"
+                  />
+                </div>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-gray-900">
-                    {getToUser?.data.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
+                    {getToUser?.data.client?.name?.firstName ||
+                      getToUser?.data?.retireProfessional?.name?.firstName}{" "}
+                    {getToUser?.data.client?.name?.lastName ||
+                      getToUser?.data?.retireProfessional?.name?.lastName}
                   </h3>
                   <p className="text-xs text-gray-500">
-                    {formattedTime}
+                    Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
                   </p>
                 </div>
               </div>
-            ) : (<p> No User Found</p>)}
+            )}
 
             {token?.role === "retireProfessional" ? (
-
               <div className="flex items-center gap-6">
-
                 <button
                   onClick={handleOpenModal}
                   className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
                   disabled
                 >
                   Current Offers
-
-
                 </button>
-                {/* {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />} */}
+                {isModalOpen && (
+                  <OffersModal
+                    onClose={handleOpenModal}
+                    user1={token.id}
+                    offerNotification={offerNotification}
+                    setOfferNotification={setOfferNotification}
+                    latestOffer={latestOffer}
+                  />
+                )}
 
-
-                <Button onClick={handleProjectModal} disabled={isButtonDisabled} >
+                <Button
+                  onClick={handleProjectModal}
+                  disabled={isButtonDisabled}
+                >
                   Create an Offer
-
                 </Button>
-                {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+                {isProjectModal && (
+                  <ProjectModal
+                    onClose={handleProjectModal}
+                    user1={token.id}
+                    user2={typeof id.id === 'string' ? id.id : ''}
+                  />
+                )}
+                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                  <HiOutlineDotsVertical />
+                </Link>
               </div>
             ) : (
               <div className="flex items-center gap-6">
-
-
                 <button
                   onClick={handleOpenModal}
                   className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
                 >
                   Current Offers
-                  {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
-                        {offerNotification}
-                      </span> */}
                   {offerNotification > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-4 h-4 flex items-center justify-center">
+                    <span className="absolute p-2 top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
                       {offerNotification}
                     </span>
                   )}
+                  {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center"> {offerNotifications}</span> */}
                 </button>
-                {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
+                {isModalOpen && (
+                  // <OffersModal onClose={handleOpenModal} user1={typeof token?.id === "string" ? token?.id : ""} />
+                  <OffersModal
+                    onClose={handleOpenModal}
+                    user1={typeof token?.id === "string" ? token?.id : ""}
+                    offerNotification={offerNotification}
+                    setOfferNotification={setOfferNotification}
+                    latestOffer={latestOffer}
+                  />
+                )}
 
-                <button onClick={handleProjectModal} disabled className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200">
+                <button
+                  onClick={handleProjectModal}
+                  disabled
+                  className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
+                >
                   Create an Offer
                 </button>
-                {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+                {isProjectModal && (
+                  <ProjectModal
+                    onClose={handleProjectModal}
+                    user1={token?.id || ""}
+                    user2={typeof id.id === 'string' ? id.id : ''}
+                  />
+                )}
+                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                  <HiOutlineDotsVertical />
+                </Link>
               </div>
             )}
           </div>
@@ -496,18 +633,21 @@ const Page: React.FC = () => {
           <div className="flex-1">
             <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
               <div className="flex flex-col overflow-y-auto  h-full">
-                <ChatWindow
-                  handleOpenModal={handleOpenModal}
-                  messages={inbox}
-                  currentUser={user1}
-                  profileUrl={profileUrl}
-                  colorScheme={{
-                    senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
-                    receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
-                  }}
-                  senderName={""}
-                />
-
+                {isFetching ? (
+                  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-[330px] right-[400px]" />
+                ) : (
+                  <ChatWindow
+                    handleOpenModal={handleOpenModal}
+                    messages={inbox}
+                    currentUser={user1 ?? ""}
+                    profileUrl={profileUrl}
+                    colorScheme={{
+                      senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
+                      receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
+                    }}
+                    senderName={""}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -519,22 +659,25 @@ const Page: React.FC = () => {
                 : "opacity-0 translate-y-5 pointer-events-none"
                 }`}
             >
-              <button onClick={() => handleFileClick("document")} className="bg-primary rounded-full">
-                <FileText
-
-                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
-                />
+              <button
+                onClick={() => handleFileClick("document")}
+                className="bg-primary rounded-full"
+              >
+                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
               </button>
-              <button onClick={() => handleFileClick("image")} className="bg-primary rounded-full">
-                <Images
-
-                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
-                />
+              <button
+                onClick={() => handleFileClick("image")}
+                className="bg-primary rounded-full"
+              >
+                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
               </button>
             </div>
 
-
-            <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full" encType="multipart/form-data">
+            <form
+              onSubmit={onSendMessage}
+              className="flex items-center gap-2 p-4 w-full"
+              encType="multipart/form-data"
+            >
               <AiOutlinePaperClip
                 onClick={handleClick}
                 className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
@@ -583,15 +726,16 @@ const Page: React.FC = () => {
               </button>
             </form>
 
-            <FaRegSmile onClick={toggleEmojiPicker}
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <FaRegSmile
+              onClick={toggleEmojiPicker}
+              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
+            />
             {showEmojiPicker && (
               <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}
-            <MdOutlineKeyboardVoice
-              className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
             <button
               onClick={handleCreateZoomMeeting}
               className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
@@ -601,7 +745,7 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-    </section >
+    </section>
   );
 };
 

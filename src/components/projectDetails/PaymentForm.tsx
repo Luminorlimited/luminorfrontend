@@ -99,7 +99,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
             if (response.data) {
                 alert('Payment Successful!');
                 toast.success('Payment Successful!');
-                router.push(`/deliver-details/addreview/${getSingleOffer?.data?.retireProfessional?._id}`)
+                router.push(`/deliver-details/addreview/${getSingleOffer?.data?.offer?.professionalEmail}`)
 
             } else {
                 console.error('Payment failed:', response.error);

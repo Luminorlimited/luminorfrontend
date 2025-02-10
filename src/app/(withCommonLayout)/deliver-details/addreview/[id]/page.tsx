@@ -4,7 +4,7 @@
 import { Star } from 'lucide-react'
 import Button from '@/components/common/Button'
 import { Controller, useForm } from 'react-hook-form';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useClientReviewMutation, useProfessionalAddReviewMutation } from '@/redux/Api/reviewApi';
 import { useDecodedToken } from '@/components/common/DecodeToken';
@@ -35,6 +35,7 @@ export default function FeedbackForm() {
     const id = userId?.id
     console.log("my id is", userId);
     // const router = useRouter()
+    const router = useRouter()
     const onSubmit = async (data: any) => {
         console.log("My data is", data);
         if (!data.feedback.trim() || data.rating <= 0) {
@@ -53,6 +54,8 @@ export default function FeedbackForm() {
             if (res?.data) {
                 toast.success("Thanks for review!!!");
                 reset();
+                router.push('/')
+
             } else {
                 toast.error("You are unauthorized.");
             }

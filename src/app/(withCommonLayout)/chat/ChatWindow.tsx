@@ -11,21 +11,20 @@ import Link from "next/link";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import { useDecodedToken } from "@/components/common/DecodeToken";
 
-
-
 export interface userInfo {
-  email: string;
+  _id: string;
   name: string;
-  profileUrl?: string
+  profileUrl?: string;
 }
 
 // Interfaces
 export interface Message {
-  id: number;
-  message: string;
-  meetingLink: string;
+  id?: number;
+  message?: string;
+  meetingLink?: string;
   sender: userInfo; // Determines if the message is sent or received
-  createdAt: string; // ISO timestamp
+  createdAt?: string;
+  toEmail?: string;
 }
 
 interface CommunicationProps {
@@ -50,20 +49,32 @@ interface MessageBubbleProps {
   };
 }
 
-const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorScheme, profileUrl }) => {
-  const isSender = message?.sender.email === currentUser;
+const MessageBubble: FC<MessageBubbleProps> = ({
+  message,
+  currentUser,
+  colorScheme,
+  profileUrl,
+}) => {
+  const isSender = message?.sender._id == currentUser;
+  // console.log(message.sender, "from chat window message");
+  // console.log(currentUser, "from chat window current user");
 
-  const token = useDecodedToken()
+  const token = useDecodedToken();
   const { data: profileData } = useGetProfileQuery(token?.id);
-
-
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
-      <div className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"}`}>
+      <div
+        className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"
+          }`}
+      >
         <Avatar className="w-10 h-10">
           <Image
-            src={isSender ? profileData?.data?.profileUrl || avatar1 : profileUrl || avatar2}
+            src={
+              isSender
+                ? profileData?.data?.profileUrl || avatar1
+                : profileUrl || avatar2
+            }
             alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
             width={50}
             height={50}
@@ -73,8 +84,11 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorSche
         {/* Message Content */}
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
-            className={`p-3 ${isSender ? "rounded-l-[10px] rounded-b-[10px]" : "rounded-r-[10px] rounded-b-[10px]"
-              } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg}`}
+            className={`p-3 ${isSender
+                ? "rounded-l-[10px] rounded-b-[10px]"
+                : "rounded-r-[10px] rounded-b-[10px]"
+              } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
+              }`}
           >
             {message?.message?.startsWith("https://") ? (
               <Link
@@ -83,21 +97,25 @@ const MessageBubble: FC<MessageBubbleProps> = ({ message, currentUser, colorSche
                 rel="noopener noreferrer"
                 className="text-blue-600 cursor-pointer hover:underline"
               >
-                {message?.message.length > 25 ? `${message?.message.substring(0, 25)}...` : message?.message}
+                {message?.message.length > 25
+                  ? `${message?.message.substring(0, 25)}...`
+                  : message?.message}
               </Link>
             ) : (
               <span>{message?.message}</span>
             )}
-
           </div>
 
-
-
-          <div className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"}`}>
-            {message?.createdAt ? new Date(message.createdAt).toLocaleTimeString() : "N/A"} {/* Add fallback */}
+          <div
+            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"
+              }`}
+          >
+            {message?.createdAt
+              ? new Date(message.createdAt).toLocaleTimeString()
+              : "N/A"}{" "}
+            {/* Add fallback */}
             {isSender && <CheckCheck />}
           </div>
-
         </div>
       </div>
     </div>
@@ -110,8 +128,6 @@ const Communication: FC<CommunicationProps> = ({
   profileUrl,
   currentUser,
   colorScheme,
-
-
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -123,12 +139,10 @@ const Communication: FC<CommunicationProps> = ({
     scrollToBottom();
   }, [messages]);
 
-
-
-
   return (
     <div className="flex-1 h-full">
       {/* Chat Area */}
+
       <div className="h-full">
         <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
           {/* Render each message */}
@@ -147,7 +161,6 @@ const Communication: FC<CommunicationProps> = ({
       </div>
 
       {/* Modal for actions (if open) */}
-
     </div>
   );
 };

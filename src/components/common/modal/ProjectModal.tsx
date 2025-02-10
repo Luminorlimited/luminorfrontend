@@ -1,17 +1,16 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Button from '@/components/common/Button';
-import { PaymentModal } from '@/components/common/modal/PaymentModal';
-import { HourlyFeeModal } from '@/components/common/modal/HourlyFeeModal';
-import MilestoneModal from '@/components/common/modal/MilestoneModal';
-import { MilestoneList } from '@/components/common/modal/MilestoneList';
-import ProjectDescModal from '@/components/common/modal/ProjectDescModal';
-import { FlatFeeModal } from '@/components/common/modal/FlatFeeModal';
-import { useForm } from 'react-hook-form';
-import io from 'socket.io-client'; // Import the socket.io-client
-import { toast } from 'sonner';
-import { useGetProfileQuery } from '@/redux/Api/userApi';
+import React, { useEffect, useState } from "react";
+import Button from "@/components/common/Button";
+import { PaymentModal } from "@/components/common/modal/PaymentModal";
+import { HourlyFeeModal } from "@/components/common/modal/HourlyFeeModal";
+import MilestoneModal from "@/components/common/modal/MilestoneModal";
+import { MilestoneList } from "@/components/common/modal/MilestoneList";
+import ProjectDescModal from "@/components/common/modal/ProjectDescModal";
+import { FlatFeeModal } from "@/components/common/modal/FlatFeeModal";
+import { useForm } from "react-hook-form";
+import io from "socket.io-client"; // Import the socket.io-client
+import { toast } from "sonner";
 
 interface projectModalProps {
     onClose: () => void;
@@ -27,8 +26,14 @@ interface Milestone {
     description: string;
 }
 
-const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) => {
+const ProjectModal: React.FC<projectModalProps> = ({
+    onClose,
+    user1,
+    user2,
+}) => {
+    console.log(user1, "check user1 from offer modal ");
 
+    console.log(user2, "check user 2 from offer modal");
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [open, setOpen] = useState(true);
@@ -49,7 +54,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
         },
     ]);
 
-
     const { register, handleSubmit, getValues, setValue } = useForm();
     const handleNext = () => {
         if (step < totalSteps) setStep(step + 1);
@@ -64,24 +68,18 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
         mysocket.on("connect", () => {
             console.log("Connected to special socket.io.");
-            setSocket(mysocket)
-            mysocket.emit("register", JSON.stringify({ email: user1 }));
+            setSocket(mysocket);
+            mysocket.emit("register", JSON.stringify({ id: user1 }));
         });
-    }, [user1])
+    }, [user1]);
 
-
-    const { data: getProfile } = useGetProfileQuery(undefined)
-    console.log("getProfile", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
-    // let onboarding = getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess
     const onSubmit = (data: any) => {
         console.log("Final Form Values:", data);
 
-        // Check if onboarding is successful
-        if (!getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
-            toast.error("Please complete the onboarding process before sending an offer.");
-            return; // Exit the function early if onboarding is false
-        }
-
+        // Safely stringify data
+        // console.log(data, "check data");
+        // console.log(user1, "user 1");
+        // console.log(user2, "user 2");
         try {
             const myOffer = {
                 fromEmail: user1,
@@ -93,7 +91,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
             console.log("My offer is", JSON.stringify(myOffer));
             socket.emit("sendOffer", JSON.stringify(myOffer));
-            toast.success("Offer Sent successfully!");
+            toast.success("Offer Sent successfully....");
         } catch (error) {
             console.error("Error stringifying data:", error);
             toast.error("Something went wrong");
@@ -101,7 +99,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 
         onClose();
     };
-
 
     return (
         <div
@@ -139,10 +136,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                 <div className="space-y-6 py-4 px-4 max-h-[550px] overflow-y-scroll">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         {step === 1 ? (
-                            <ProjectDescModal
-                                register={register}
-                                handleNext={handleNext}
-                            />
+                            <ProjectDescModal register={register} handleNext={handleNext} />
                         ) : step === 2 ? (
                             <PaymentModal
                                 register={register}
@@ -160,10 +154,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                             // setValue={setValue}
                             />
                         ) : step === 4 ? (
-                            <HourlyFeeModal
-                                register={register}
-                                getValues={getValues}
-                            />
+                            <HourlyFeeModal register={register} getValues={getValues} />
                         ) : step === 5 ? (
                             <MilestoneModal
                                 handleBack={handleBack}
@@ -173,11 +164,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                 setMileStones={setMilestones}
                             />
                         ) : step === 6 ? (
-                            <MilestoneList
-                                setStep={setStep}
-
-                                milestones={milestones}
-                            />
+                            <MilestoneList setStep={setStep} milestones={milestones} />
                         ) : (
                             <div>Thank You</div>
                         )}
@@ -186,9 +173,9 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                         <div className="flex justify-end">
                             {step === 1 ? (
                                 <Button
-                                    type='button'
+                                    type="button"
                                     className="w-[100px] bg-[#6938EF] text-white py-2 rounded-[10px] hover:bg-[#6938EF]/90"
-                                    onClick={() => setStep(step => step + 1)}
+                                    onClick={() => setStep((step) => step + 1)}
                                 >
                                     Next
                                 </Button>
@@ -201,7 +188,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                         Back
                                     </button>
                                     <Button
-                                        type='submit'
+                                        type="submit"
                                         className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
                                     >
                                         Submit
@@ -233,7 +220,7 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                         Back
                                     </button>
                                     <Button
-                                        type='submit'
+                                        type="submit"
                                         className="w-[100px] rounded-[15px] bg-[#6938EF] text-white py-2 hover:bg-[#6938EF]/90"
                                     >
                                         Submit
@@ -248,17 +235,17 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                                 <div key={stepNumber} className="flex items-center">
                                     <div
                                         className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium ${stepNumber < step
-                                            ? 'bg-[#6938EF] text-white'
-                                            : stepNumber === step
-                                                ? 'border-2 border-[#6938EF] text-[#6938EF]'
-                                                : 'border-2 border-gray-200 text-gray-400'
+                                                ? "bg-[#6938EF] text-white"
+                                                : stepNumber === step
+                                                    ? "border-2 border-[#6938EF] text-[#6938EF]"
+                                                    : "border-2 border-gray-200 text-gray-400"
                                             }`}
                                     >
-                                        {stepNumber < step ? '✓' : stepNumber}
+                                        {stepNumber < step ? "✓" : stepNumber}
                                     </div>
                                     {stepNumber < totalSteps && (
                                         <div
-                                            className={`w-12 h-0.5 ${stepNumber < step ? 'bg-[#6938EF]' : 'bg-gray-200'
+                                            className={`w-12 h-0.5 ${stepNumber < step ? "bg-[#6938EF]" : "bg-gray-200"
                                                 }`}
                                         />
                                     )}
@@ -266,7 +253,6 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
                             ))}
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
@@ -274,8 +260,3 @@ const ProjectModal: React.FC<projectModalProps> = ({ onClose, user1, user2 }) =>
 };
 
 export default ProjectModal;
-
-
-
-
-
