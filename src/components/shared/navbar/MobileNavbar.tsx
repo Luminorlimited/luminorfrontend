@@ -9,60 +9,47 @@ import Image from "next/image";
 
 // import { FaRegHeart } from "react-icons/fa";
 // import { GoBell } from "react-icons/go";
-import {  useRef, useState } from "react";
+import { useRef, useState } from "react";
 import demoprofile from "@/assets/images/avatar.jpg";
 // import jwt, { JwtPayload } from "jsonwebtoken";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 import { GoBell } from "react-icons/go";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
+import { RootState } from "@/redux/store";
 
-
-interface DecodedToken {
-  decodedToken: any;
-}
-
-
-export function MobileNavbar({ decodedToken}: DecodedToken) {
+export function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
   const router = useRouter();
-  const notificationRef = useRef<HTMLDivElement>(null)
+  const notificationRef = useRef<HTMLDivElement>(null);
   const handleOpenNotificationBar = () => {
-    setIsOpen(!isOpen)
-  }
-
- 
- 
-
-    
-
-  
+    setIsOpen(!isOpen);
+  };
 
   // console.log('my token is', decodedToken);
 
   const handleLogOut = () => {
-    dispatch(logOut())
+    dispatch(logOut());
     // cookies.remove("token")
-    router.push('/')
-  }
-  const [fileBtn, showFileBtn] = useState(false)
+    router.push("/");
+  };
+  const [fileBtn, showFileBtn] = useState(false);
 
   const handleClick = () => {
     setTimeout(() => {
       // showFileBtn(false)
-      showFileBtn((prev) => !prev)
-    }, 200)
-  }
-
-  const { data: profileData } = useGetProfileQuery(decodedToken?.id || "", {
-    skip: !decodedToken,
+      showFileBtn((prev) => !prev);
+    }, 200);
+  };
+  const user = useSelector((state: RootState) => state.Auth.user);
+  const { data: profileData } = useGetProfileQuery(user?.id || "", {
+    skip: !user?.token,
   });
 
   const demoimg = profileData?.data?.profileUrl || demoprofile;
-
 
   return (
     <Sheet>
@@ -122,13 +109,15 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
 
           {/* User Section */}
           <div className="flex items-center flex-wrap gap-4">
-            {decodedToken && decodedToken.id ? (
+            {user && user?.id ? (
               <div className="flex gap-3 items-center relative">
-                <button onClick={handleOpenNotificationBar} className="focus:outline-none">
+                <button
+                  onClick={handleOpenNotificationBar}
+                  className="focus:outline-none"
+                >
                   <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
                 </button>
-              
-               
+
                 <div ref={notificationRef}>
                   <Image
                     src={demoimg}
@@ -139,12 +128,13 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
                     onClick={handleClick}
                   />
                   <ul
-                    className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${fileBtn
-                      ? "opacity-100 translate-y-0 z-[50]"
-                      : "opacity-0 translate-y-5 pointer-events-none z-[10]"
-                      }`}
+                    className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${
+                      fileBtn
+                        ? "opacity-100 translate-y-0 z-[50]"
+                        : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+                    }`}
                   >
-                    <Link href={`/user/editProfile/${decodedToken.role}/${decodedToken.id}`}>
+                    <Link href={`/user/editProfile/${user?.role}/${user?.id}`}>
                       <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
                         Edit Profile
                       </li>
@@ -179,6 +169,5 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
         </div>
       </SheetContent>
     </Sheet>
-
   );
 }

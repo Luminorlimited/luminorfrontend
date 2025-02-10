@@ -7,7 +7,7 @@ import { navbarLinks } from "@/utils/navbarData";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
 // import { Search } from "lucide-react";
 import { MobileNavbar } from "./MobileNavbar";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 // import { BiMessage } from "react-icons/bi";
@@ -23,34 +23,33 @@ import { useGetProfileQuery } from "@/redux/Api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
 import Cookies from "js-cookie";
 import { io } from "socket.io-client";
-import { useDecodedToken } from "@/components/common/DecodeToken";
-
+// import { useDecodedToken } from "@/components/common/DecodeToken";
+import { RootState } from "@/redux/store";
 
 interface Notification {
-  id: number
-  message: string
-  time: string
+  id: number;
+  message: string;
+  time: string;
 }
-
-
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const user = useSelector((state: RootState) => state.Auth.user);
 
-  const decodedToken = useDecodedToken()
-
-  const { data: profileData } = useGetProfileQuery(decodedToken?.id || "", {
-    skip: !decodedToken,
+  const { data: profileData } = useGetProfileQuery(user?.id || "", {
+    skip: !user?.token,
   });
 
   const demoimg = profileData?.data?.profileUrl || demoprofile;
 
+  console.log(user)
+
   const handleLogOut = () => {
     dispatch(logOut());
-    router.push("/");
     Cookies.remove("token");
+    router.push("/");
   };
 
   // State for dropdown menu visibility
@@ -59,12 +58,9 @@ const Navbar = () => {
   const notificationRef = useRef<HTMLDivElement | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-
   const handleClick = () => {
     showFileBtn((prev) => !prev);
   };
-
-
 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as Node;
@@ -76,15 +72,11 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-
-
-
 
   useEffect(() => {
     // Establish socket connection
@@ -115,7 +107,6 @@ const Navbar = () => {
     };
   }, []);
 
-
   const handleNotificationClick = (id: number) => {
     console.log(`Notification ${id} clicked`);
     // Implement additional logic if needed, like marking as read
@@ -145,9 +136,7 @@ const Navbar = () => {
                       {item.title}
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-
-                  </DropdownMenuContent>
+                  <DropdownMenuContent></DropdownMenuContent>
                 </DropdownMenu>
               </li>
             ) : (
@@ -165,7 +154,7 @@ const Navbar = () => {
         {/* <LanguageSwitcher /> */}
 
         {/* User Section */}
-        {decodedToken ? (
+        {user ? (
           <div className="flex gap-3 items-center relative" ref={dropdownRef}>
             <div className="relative">
               <DropdownMenu>
@@ -176,25 +165,34 @@ const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-80 bg-white rounded-md shadow-lg border border-gray-200">
                   <div className="py-2">
-                    <h3 className="text-lg font-semibold px-4 py-2 border-b">Notifications</h3>
+                    <h3 className="text-lg font-semibold px-4 py-2 border-b">
+                      Notifications
+                    </h3>
                     {notifications.length > 0 ? (
                       notifications.map((notification) => (
                         <DropdownMenuItem
                           key={notification.id}
                           className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => handleNotificationClick(notification.id)}
+                          onClick={() =>
+                            handleNotificationClick(notification.id)
+                          }
                         >
-                          <p className="text-sm text-gray-800">{notification.message}</p>
-                          <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                          <p className="text-sm text-gray-800">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {notification.time}
+                          </p>
                         </DropdownMenuItem>
                       ))
                     ) : (
-                      <p className="text-sm text-gray-500 px-4 py-2">No new notifications</p>
+                      <p className="text-sm text-gray-500 px-4 py-2">
+                        No new notifications
+                      </p>
                     )}
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
-
             </div>
             {/* Notification */}
 
@@ -204,8 +202,7 @@ const Navbar = () => {
             {/* <Link href="/chat">
               <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
             </Link> */}
-            <div ref={notificationRef}
-            >
+            <div ref={notificationRef}>
               <Image
                 src={demoimg}
                 width={40}
@@ -215,15 +212,13 @@ const Navbar = () => {
                 onClick={handleClick}
               />
               <ul
-                className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${fileBtn
-                  ? "opacity-100 translate-y-0 z-[50]"
-                  : "opacity-0 translate-y-5 pointer-events-none z-[10]"
-                  }`}
+                className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${
+                  fileBtn
+                    ? "opacity-100 translate-y-0 z-[50]"
+                    : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+                }`}
               >
-
-                <Link
-                  href={`/user/editProfile/${decodedToken.role}/${decodedToken.id}`}
-                >
+                <Link href={`/user/editProfile/${user.role}/${user.id}`}>
                   <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
                     Edit Profile
                   </li>
@@ -236,7 +231,6 @@ const Navbar = () => {
                 </li>
               </ul>
             </div>
-
           </div>
         ) : (
           <div className="flex gap-3">
@@ -259,7 +253,7 @@ const Navbar = () => {
 
       {/* Mobile Navbar */}
       <div className="lg:hidden block">
-        <MobileNavbar decodedToken={decodedToken} />
+        <MobileNavbar />
       </div>
     </nav>
   );

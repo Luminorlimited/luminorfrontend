@@ -11,24 +11,20 @@ import { useRouter } from "next/navigation";
 import { useGetProfileQuery, useVerifyUserMutation } from "@/redux/Api/userApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { useDecodedToken } from "@/components/common/DecodeToken";
 
 export default function Page() {
-  const [otp, setOtp] = useState("")
+  const [otp, setOtp] = useState("");
 
-  const [setVerify, { isLoading }] = useVerifyUserMutation()
+  const [setVerify, { isLoading }] = useVerifyUserMutation();
   const dispatch = useDispatch();
 
-
-
-
-  const router = useRouter()
-
+  const router = useRouter();
 
   // Inside verify.ts after OTP verification
-  const token = useDecodedToken()
+  const token = useDecodedToken();
   const { data: profileData } = useGetProfileQuery(token?.id);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,45 +36,50 @@ export default function Page() {
 
       console.log(res);
       if (res) {
-
-        toast.success("Verification Complete")
-
+        toast.success("Verification Complete");
 
         // console.log('my stripe', getProfile)
-        const { role } = res.data.user;
-        const accessToken = res.data.accessToken;
 
+        const accessToken = res.data.accessToken;
+        const user = res?.data?.user;
         // Dispatch the correctly structured object
         dispatch(
           setUser({
             user: {
-              email: email || "", role,
-              id: ""
-            }, 
+              email: email as string,
+              role: user?.role,
+              name: user?.name?.firstName + " " + user?.name?.lastName,
+              id: user?.userId,
+              token: accessToken,
+            },
             token: accessToken,
           })
         );
-        Cookies.set('token', res.data.accessToken, {
-          expires: 7, 
-          secure: true, 
-          sameSite: 'Strict', 
-          path: '/', 
+        Cookies.set("token", res.data.accessToken, {
+          expires: 7,
+          secure: true,
+          sameSite: "Strict",
+          path: "/",
         });
 
         console.log("My profile is ", profileData);
 
-        if (profileData?.data?.retireProfessional?.stripe.isOnboardingSucess === false) {
-          router.push(profileData?.data?.retireProfessional?.stripe.onboardingUrl)
+        if (
+          profileData?.data?.retireProfessional?.stripe.isOnboardingSucess ===
+          false
+        ) {
+          router.push(
+            profileData?.data?.retireProfessional?.stripe.onboardingUrl
+          );
         } else {
-          router.push('/')
+          router.push("/");
         }
-
       } else {
-        toast.error(res.message || "Verification failed")
+        toast.error(res.message || "Verification failed");
       }
     } catch (error: any) {
       // Handle API errors or rejected promises
-      toast.error("Error Validation. Check your mail.")
+      toast.error("Error Validation. Check your mail.");
       console.error(error);
     }
   };
@@ -119,7 +120,8 @@ export default function Page() {
                 2 Step Verification!
               </h1>
               <p className="text-[#666666] text-xl">
-                Get your verification code from your <b>{localStorage.getItem('email')}</b>
+                Get your verification code from your{" "}
+                <b>{localStorage.getItem("email")}</b>
               </p>
             </div>
 

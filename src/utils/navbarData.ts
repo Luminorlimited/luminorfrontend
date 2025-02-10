@@ -9,7 +9,7 @@ interface DecodedToken extends JwtPayload {
   role?: string;
 }
 
-const token = store.getState().Auth.token;
+const token = store.getState().Auth?.user?.token;
 
 const decodedToken: DecodedToken | null = token
   ? (jwt.decode(token) as DecodedToken)
