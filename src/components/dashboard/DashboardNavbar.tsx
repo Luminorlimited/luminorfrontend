@@ -1,14 +1,14 @@
-import { useGetProfileQuery } from "@/redux/Api/userApi";
 import Image from "next/image";
 import Link from "next/link";
 import avatar from '@/assets/images/avatar.jpg'
 import { usePathname } from "next/navigation";
+import { useGetAdminProfileQuery } from "@/redux/Api/dashboard/userapi";
 
 export default function DashboardNav() {
 
     const pathName = usePathname()
     console.log('pathname is', pathName);
-    const { data: getProfile } = useGetProfileQuery(undefined)
+    const { data: getProfile } = useGetAdminProfileQuery(undefined)
 
     console.log("My get profile is", getProfile);
 
