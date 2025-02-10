@@ -38,7 +38,7 @@ const userApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['User']
         }),
-        
+
         clientUser: build.mutation<ClientData, any>({
             query: (data) => {
                 console.log(data)
@@ -61,9 +61,9 @@ const userApi = baseApi.injectEndpoints({
                 }
             },
             invalidatesTags: ['User']
-        }), 
+        }),
         editclientprofile: build.mutation({
-            query: ({id, data}) => {
+            query: ({ id, data }) => {
                 console.log(id)
                 return {
                     url: `/client/profile/${id}`,
@@ -71,7 +71,7 @@ const userApi = baseApi.injectEndpoints({
                     body: data
                 }
             },
-            invalidatesTags: ['User'] 
+            invalidatesTags: ['User']
         }),
         editprofessionalprofile: build.mutation({
             query: ({ id, data }) => {
@@ -91,7 +91,7 @@ const userApi = baseApi.injectEndpoints({
             }
         }),
         getProfileById: build.query({
-            query: ({id}) => {
+            query: ({ id }) => {
                 return {
                     url: `/client/${id}`,
                     method: 'GET',
@@ -99,8 +99,8 @@ const userApi = baseApi.injectEndpoints({
                 }
             }
         }),
-        
-      
+
+
 
 
     })
@@ -108,4 +108,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation} = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation, useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation } = userApi

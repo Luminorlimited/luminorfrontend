@@ -15,6 +15,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import avatar from '@/assets/images/avatar.jpg';
 import { useEditprofessionalprofileMutation, useGetProfileQuery, useUpdateCoverPhotoMutation } from "@/redux/Api/userApi";
+import bgCover from '@/assets/images/profilebanner.png'
 
 const servicesData = [
     {
@@ -264,6 +265,7 @@ export default function Professional() {
             }
         }
     };
+    console.log("cover url", profileData?.data?.coverUrl);
 
 
     return (
@@ -271,7 +273,7 @@ export default function Professional() {
             {/* Navigation */}
 
             {/* Header with gradient */}
-            <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: 'url(/images/profilebanner.png)' }} />
+            <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})` }}/>
 
             <button
                 type="button"

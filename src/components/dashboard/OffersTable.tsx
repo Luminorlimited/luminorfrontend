@@ -57,6 +57,7 @@ export default function OffersTable() {
                 <TableHeader>
                     <TableRow className="">
                         <TableHead className="w-[100px]">Serial</TableHead>
+                        <TableHead>Date</TableHead>
                         <TableHead>Project Name</TableHead>
                         <TableHead>Sender Name</TableHead>
                         <TableHead>Receiver Name</TableHead>
@@ -69,6 +70,7 @@ export default function OffersTable() {
                     {totalOffer?.data && totalOffer?.data.map((offer: any, index: number) => (
                         <TableRow key={offer.id} className="text-black">
                             <TableCell className="font-medium">{index + 1}</TableCell>
+                            <TableCell> {new Date(offer?.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</TableCell>
                             <TableCell>{offer?.projectName}</TableCell>
                             <TableCell>{offer?.professionalEmail?.name?.firstName} {offer?.professionalEmail?.name?.lastName}</TableCell>
                             <TableCell>{offer?.clientEmail?.name?.firstName} {offer?.clientEmail?.name?.lastName}</TableCell>

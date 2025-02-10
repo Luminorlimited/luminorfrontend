@@ -14,8 +14,8 @@ const FeaturedProject: React.FC = () => {
     const route = usePathname();
     const clientData = useClientListQuery(undefined);
     const professionalData = useProfessionalListQuery(undefined);
-    console.log("my clientData is", clientData);
-    console.log("my professionalData is", professionalData);
+    // console.log("my clientData is", clientData);
+    // console.log("my professionalData is", professionalData);
 
     const handleToggleShowAll = () => {
         setShowAll(!showAll);
