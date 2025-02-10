@@ -1,7 +1,7 @@
 import Logo from "@/utils/Logo";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-import SearchBox from "./SearchBox";
+// import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
 // import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
@@ -129,9 +129,9 @@ const Navbar = () => {
       </span>
 
       {/* Search Box */}
-      <div className="hidden lg:block max-[820px]:hidden">
+      {/* <div className="hidden lg:block max-[820px]:hidden">
         <SearchBox />
-      </div>
+      </div> */}
 
       {/* Navbar Links */}
       <div className="lg:flex md:flex hidden items-center gap-6">
@@ -204,14 +204,13 @@ const Navbar = () => {
             {/* <Link href="/chat">
               <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
             </Link> */}
-            <div ref={notificationRef}
-            >
+            <div ref={notificationRef} className="w-[40px] h-[40px]" >
               <Image
                 src={demoimg}
                 width={40}
                 height={40}
                 alt="profile"
-                className="rounded-full cursor-pointer hover:opacity-90 transition-all"
+                className="rounded-full w-full h-full cursor-pointer hover:opacity-90 transition-all"
                 onClick={handleClick}
               />
               <ul

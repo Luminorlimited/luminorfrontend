@@ -12,7 +12,7 @@ import Image from 'next/image'
 // import { useSelector } from "react-redux"
 // import { RootState } from "@/redux/store";
 import { useGetProfileQuery } from "@/redux/Api/userApi"
-import { useUpdateAdminMutation } from "@/redux/Api/dashboard/userapi"
+import { useUpdateAdminMutation, useUpdateProfileImgMutation } from "@/redux/Api/dashboard/userapi"
 import { AvatarFallback } from "@radix-ui/react-avatar"
 
 
@@ -31,7 +31,7 @@ interface AdminProfile {
 export default function Profile() {
     const { data: getProfile } = useGetProfileQuery(undefined)
     const [updateProfile] = useUpdateAdminMutation()
-    const [updateProfileImage] = useUpdateAdminMutation()
+    const [updateProfileImage] = useUpdateProfileImgMutation()
 
     const [profile, setProfile] = useState<AdminProfile | null>(null)
     const [isEditing, setIsEditing] = useState(false)

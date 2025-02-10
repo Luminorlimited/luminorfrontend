@@ -61,9 +61,14 @@ export default function DashboardNav() {
                                                 ("")
                 }
                 <Link href={'/dashboard/profile'} className=" flex items-center gap-2 cursor-pointer hover:bg-[#b8b8b8] rounded-[20px] px-4 py-2 duration-200">
-                    <div className=" hover:bg-transparent border p-2 rounded-full">
-                        {/* <User className="h-5 sm:h-[22px] w-5 sm:w-[22px] text-gray-600" /> */}
-                        <Image src={getProfile?.data?.profileUrl || avatar } width={50} height={50} alt="profile-url"/>
+                    <div className="hover:bg-transparent border p-2 rounded-full w-[58px] h-[58px]">
+                        <Image
+                            src={getProfile?.data?.profileUrl || avatar}
+                            width={58}
+                            height={58}
+                            alt="profile-url"
+                            className="rounded-full object-cover w-full h-full"
+                        />
                     </div>
                     <p>{getProfile?.data?.name?.firstName}</p>
                 </Link>
