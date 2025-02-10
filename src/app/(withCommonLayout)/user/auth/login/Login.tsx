@@ -14,7 +14,7 @@ import Link from "next/link"
 // import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { toast } from "sonner";
-// import { signIn } from "next-auth/react"
+import { motion } from "framer-motion";
 
 
 export default function Login() {
@@ -78,7 +78,19 @@ export default function Login() {
 
             <div className="mx-auto min-h-screen flex justify-center items-center">
                 <div className=" lg:flex gap-[188px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-                    <div className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]">
+                    <motion.div
+                        initial={{
+                            opacity: 0,
+                            x: -100,
+                        }}
+                        whileInView={{
+                            opacity: 1,
+                            x: 0,
+                        }}
+                        transition={{
+                            duration: 0.8,
+                        }}
+                        className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]">
                         <div className="text-center">
                             <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
                                 Welcome to Luminor!
@@ -217,11 +229,23 @@ export default function Login() {
                             </div>
                         </form>
 
-                    </div>
-                    <div className="relative  lg:block  hidden w-[650px]  ">
+                    </motion.div>
+                    <motion.div
+                        initial={{
+                            opacity: 0,
+                            x: 100,
+                        }}
+                        whileInView={{
+                            opacity: 1,
+                            x: 0,
+                        }}
+                        transition={{
+                            duration: 0.8,
+                        }}
+                        className="relative  lg:block  hidden w-[650px]  ">
                         <ImageCarousel />
                         {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
-                    </div>
+                    </motion.div>
                 </div>
             </div>
 
