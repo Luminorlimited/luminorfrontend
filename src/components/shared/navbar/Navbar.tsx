@@ -222,7 +222,7 @@ const Navbar = () => {
               >
 
                 <Link
-                  href={`${decodedToken?.role === "admin" ? `/dashboard` : `/user/editProfile/${decodedToken.role}/${decodedToken.id}`}`}
+                  href={`${decodedToken?.role === "admin" ? `/dashboard/profile` : `/user/editProfile/${decodedToken.role}/${decodedToken.id}`}`}
                 >
                   <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
                     Edit Profile

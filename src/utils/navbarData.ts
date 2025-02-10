@@ -29,7 +29,10 @@ export const navbarLinks: navbarDataTypes[] = [
   {
     id: 3,
     title: "Services",
-    link: `/project-list/${decodedToken?.role || "default"}`, // Fallback to "default" if role is undefined
+    link: `${decodedToken?.role === "client" || decodedToken?.role === "retireProfessional"
+      ? `/project-list/${decodedToken.role}`
+      : "/user/auth/login"
+      }`,
     icon: ChevronDown,
   },
 ];
