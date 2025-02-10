@@ -26,7 +26,6 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
   const sidebarFilters = useSelector((state: RootState) => state.filters);
   const route = usePathname();
 
-  console.log("Hello", sidebarFilters);
   const dispatch = useDispatch();
 
   const [clientLazyData] = useLazyProfessionalListQuery();
