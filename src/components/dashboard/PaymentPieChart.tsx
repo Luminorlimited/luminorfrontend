@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { useTotalTransactionQuery } from "@/redux/Api/dashboard/ordersApi";
+import TransactionListLoading from "./skeleton/TransactionListLoading";
 // import { Menu } from "lucide-react";
 
 // import { useState } from "react";
@@ -38,7 +39,7 @@ export default function PaymentPieChart() {
     };
 
     if (isLoading) {
-        return <div className="text-black text-2xl">Loading....</div>
+        return <TransactionListLoading />
     }
 
 
@@ -64,10 +65,10 @@ export default function PaymentPieChart() {
                             {getTransaction?.data && getTransaction?.data.map((order: any, index: number) => (
                                 <tr
                                     key={index}
-                                    className={`text-sm text-gray-900 cursor-pointer border-b border-gray-700 hover:bg-gray-300`}
+                                    className={`text-sm text-gray-900 border-b border-gray-700 hover:bg-gray-300`}
                                 // onClick={() => handleOrderSelect(index)}
                                 >
-                                    <td className="p-4">{order?.updatedAt}</td>
+                                    <td className="p-4">{new Date(order?.updatedAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>
                                     <td className="p-4">{order?.amount}</td>
                                     {/* <td className="p-4">{order.paymentMethod}</td> */}
                                     <td className={`p-4 font-medium ${getStatusColor(order.paymentStatus)}`}>{order.paymentStatus}</td>

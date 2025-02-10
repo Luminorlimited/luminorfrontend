@@ -121,6 +121,7 @@ const Navbar = () => {
     // Implement additional logic if needed, like marking as read
   };
 
+
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
       {/* Logo */}
@@ -221,7 +222,7 @@ const Navbar = () => {
               >
 
                 <Link
-                  href={`/user/editProfile/${decodedToken.role}/${decodedToken.id}`}
+                  href={`${decodedToken?.role === "admin" ? `/dashboard` : `/user/editProfile/${decodedToken.role}/${decodedToken.id}`}`}
                 >
                   <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
                     Edit Profile

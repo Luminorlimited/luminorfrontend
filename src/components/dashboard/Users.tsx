@@ -90,7 +90,7 @@ export default function Users() {
                         <TableRow key={index}>
                             <TableCell>{index + 1}</TableCell>
                             <TableCell>
-                                <Link className="hover:text-primary hover:underline" href={`/dashboard/users/${user?.client ? user?.client?._id : user?.retireProfessional?._id}`}>
+                                <Link className="text-primary hover:underline" href={`/dashboard/users/${user?.client ? user?.client?._id : user?.retireProfessional?._id}`}>
                                     <span className={user?.[userType]?.name?.lastName ? "" : "font-bold"}>
                                         {user?.[userType]?.name?.firstName} {user?.[userType]?.name?.lastName || "Unknown User"}
                                     </span>
@@ -99,7 +99,7 @@ export default function Users() {
                             <TableCell>
                                 <Image width={50} height={50} src={user.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" />
                             </TableCell>
-                            <TableCell>{user?.[userType === "client" ? "description" : "bio"] || "Undefined"}</TableCell>
+                            <TableCell>{user?.[userType === "client" ? "description" : "bio"] || "N/A"}</TableCell>
                             <TableCell>{user?.averageRating || 0}</TableCell>
                             {userType === "retireProfessional" && (
                                 <TableCell

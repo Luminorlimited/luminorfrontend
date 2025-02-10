@@ -14,6 +14,7 @@ import Image from 'next/image'
 import { useGetProfileQuery } from "@/redux/Api/userApi"
 import { useUpdateAdminMutation, useUpdateProfileImgMutation } from "@/redux/Api/dashboard/userapi"
 import { AvatarFallback } from "@radix-ui/react-avatar"
+import ProfileSkeleton from "./skeleton/ProfileSkeleton"
 
 
 interface AdminProfile {
@@ -29,7 +30,7 @@ interface AdminProfile {
 }
 
 export default function Profile() {
-    const { data: getProfile } = useGetProfileQuery(undefined)
+    const { data: getProfile, isLoading } = useGetProfileQuery(undefined)
     const [updateProfile] = useUpdateAdminMutation()
     const [updateProfileImage] = useUpdateProfileImgMutation()
 
@@ -98,10 +99,15 @@ export default function Profile() {
         }
     }
 
-    if (!profile) return null
+    if (!profile) return <ProfileSkeleton />
+
+    if (isLoading) {
+        return <ProfileSkeleton />
+    } 
 
     return (
         <div className="container mx-auto p-6 bg-bg_secondary min-h-[80vh]">
+            {/* <ProfileSkeleton/> */}
             <div className="max-w-6xl mx-auto rounded-lg shadow-lg overflow-hidden">
                 <div className="md:flex rounded-[10px] overflow-hidden">
                     {/* Left column - Avatar and basic info */}
