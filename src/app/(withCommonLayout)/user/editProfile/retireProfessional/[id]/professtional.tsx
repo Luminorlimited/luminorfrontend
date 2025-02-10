@@ -14,7 +14,7 @@ import Financial from "@/components/svg/Financial";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import avatar from '@/assets/images/avatar.jpg';
-import { useEditprofessionalprofileMutation, useGetProfileQuery } from "@/redux/Api/userApi";
+import { useEditprofessionalprofileMutation, useGetProfileQuery, useUpdateCoverPhotoMutation } from "@/redux/Api/userApi";
 
 const servicesData = [
     {
@@ -87,8 +87,10 @@ export default function Professional() {
     useEffect(() => {
         if (profileData) {
             setProfileData(profileData)
+            setValue("firstName", profileData?.retireProfessional?.name?.firstName || "");
+            setValue("lastName", profileData?.retireProfessional?.name?.lastName || "");
         }
-    }, [profileData])
+    }, [profileData, setValue])
 
     const handleChange = (key: string, value: any) => {
         setProfileData((prevData: ProfileData) => {
@@ -237,6 +239,31 @@ export default function Professional() {
         }
     }, [selectedImage]);
 
+    const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
+
+    const handleCoverPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            try {
+                const formData = new FormData();
+                formData.append('coverPhoto', file);
+
+                // Ensure the mutation correctly handles FormData
+                const response = await updateCoverPhoto(formData).unwrap();
+
+                if (response) {
+                    toast.success("Cover photo updated successfully");
+
+                    // Update the background image
+                    const newCoverPhotoUrl = URL.createObjectURL(file);
+                    document.querySelector('.bg-cover')?.setAttribute('style', `background-image: url(${newCoverPhotoUrl})`);
+                }
+            } catch (error) {
+                console.error("Error updating cover photo:", error);
+                toast.error("Failed to update cover photo");
+            }
+        }
+    };
 
 
     return (
@@ -244,7 +271,30 @@ export default function Professional() {
             {/* Navigation */}
 
             {/* Header with gradient */}
-            <div className="bg-cover bg-center h-[324px]" style={{ backgroundImage: 'url(/images/profilebanner.png)' }} />
+            <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: 'url(/images/profilebanner.png)' }} />
+
+            <button
+                type="button"
+                className="cog-button absolute top-[350px] right-4"
+                onClick={() => {
+                    const fileInput = document.getElementById("coverPhotoInput") as HTMLInputElement | null;
+                    if (fileInput) {
+                        fileInput.click();
+                    }
+                }}
+            >
+                <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
+                    <PiNotePencilBold className="cog-icon text-lg text-white " />
+                </div>
+            </button>
+            <input
+                type="file"
+                accept="image/*"
+                id="coverPhotoInput"
+                className="hidden"
+                onChange={handleCoverPhotoChange}
+            />
+
 
             {/* Main Content */}
             <main className="flex-1 -mt-24">
@@ -447,7 +497,7 @@ export default function Professional() {
                             </div>
 
                             <div className="flex justify-center">
-                                <button className={`bg-primary py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-black" : "bg-primary text-white "}`}>
+                                <button className={` py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-white" : "bg-primary text-white "}`}>
                                     {loading ? "Saving..." : "Save Information"}
                                 </button>
                             </div>

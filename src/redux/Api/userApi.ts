@@ -5,6 +5,17 @@ import baseApi from "./baseApi";
 const userApi = baseApi.injectEndpoints({
     overrideExisting: true,  // Allow overriding existing endpoints
     endpoints: (build) => ({
+        updateCoverPhoto: build.mutation({
+            query: (formData: any) => {
+                console.log(formData)
+                return {
+                    url: '/auth/update-cover-photo',
+                    method: 'PATCH',
+                    body: formData
+                }
+            },
+            invalidatesTags: ['User']
+        }),
         loginUser: build.mutation({
             query: (data: any) => {
                 console.log(data)
@@ -97,4 +108,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery} = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation , useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation} = userApi
