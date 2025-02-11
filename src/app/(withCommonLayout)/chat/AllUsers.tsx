@@ -32,7 +32,6 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
   // console.log('my last Message is', getConversation);
   // const [messageNotifications, setMessageNotifications] = useState()
 
-  
   return (
     <div>
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">

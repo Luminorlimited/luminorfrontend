@@ -65,7 +65,7 @@ const OffersModal: React.FC<OffersModalProps> = ({
     const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
     const onOfferClick = (offer: Offer) => {
-        // await refetch();
+       
         setSelectedOffer(offer);
     };
     useEffect(() => {
