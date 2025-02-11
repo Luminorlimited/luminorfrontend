@@ -94,6 +94,16 @@ const Page: React.FC = () => {
       refetch();
     }
   }, [getoffer?.data?.data?.offersWithUserInfo?.count, id, refetch]);
+
+ 
+  useEffect(() => {
+    if (token?.id) {
+      // console.log("Offer notification useEffect triggered");
+      // console.log(getoffer?.data?.data);
+      setOfferNotification(getoffer?.data?.data?.count);
+    }
+  }, [token?.id, getoffer]);
+
   useEffect(() => {
     if (!token?.email) return;
 
@@ -322,7 +332,7 @@ const Page: React.FC = () => {
       currentUser.lastMessage = messages.trim();
       currentUser.lastMessageTimestamp = new Date().toISOString();
 
-      // setUsers([currentUser, ...users.filter((user) => user.email !== user2)]);
+      setUsers([currentUser, ...users.filter((user) => user.email !== user2)]);
 
       setMessages("");
       setSelectedImages([]);
