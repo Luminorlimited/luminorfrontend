@@ -12,57 +12,56 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker from "emoji-picker-react";
 import { IoMdMenu } from "react-icons/io";
-import { Video, FileText, Images } from 'lucide-react';
+import { Video, FileText, Images } from "lucide-react";
 import io from "socket.io-client";
-import demoimg from '@/assets/images/demoimg.png';
+import demoimg from "@/assets/images/demoimg.png";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
-import { useGetConversationQuery, useGetMessageQuery, useGetuserQuery } from "@/redux/Api/messageApi";
+import {
+  useGetConversationQuery,
+  useGetMessageQuery,
+  useGetuserQuery,
+} from "@/redux/Api/messageApi";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
 import { useDecodedToken } from "@/components/common/DecodeToken";
 
-
-
 const Page: React.FC = () => {
-
-  const router = useRouter()
+  const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [fileBtn, showFileBtn] = useState(false);
-  const token = useDecodedToken()
+  const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
   const [socket, setSocket] = useState<any>(null);
-  const user1 = token?.email
+  const user1 = token?.email;
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
-  const id = useParams()
-  const { data: getToUser } = useGetuserQuery(id.id)
-  const user2 = getToUser?.data?.client?.email || getToUser?.data?.retireProfessional?.email
+  const id = useParams();
+  const { data: getToUser } = useGetuserQuery(id.id);
+  const user2 =
+    getToUser?.data?.client?.email ||
+    getToUser?.data?.retireProfessional?.email;
 
-  const { data: oldMessages } = useGetMessageQuery({ user1, user2 })
+  const { data: oldMessages } = useGetMessageQuery({ user1, user2 });
   const { data: getConversation } = useGetConversationQuery(undefined);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
-  const [timeStamp, setTimeStamp] = useState("")
-
+  const [timeStamp, setTimeStamp] = useState("");
 
   // console.log('My Receive Mail is:', getConversation)
 
-
   const handleClick = () => {
     setTimeout(() => {
-      showFileBtn((prev) => !prev)
-    }, 200)
-  }
-
-
+      showFileBtn((prev) => !prev);
+    }, 200);
+  };
 
   const handleFileClick = (type: string) => {
     const input = document.getElementById("fileInput") as HTMLInputElement;
@@ -70,14 +69,13 @@ const Page: React.FC = () => {
     if (type === "image") {
       input.accept = "image/*"; // Accept images only
     } else if (type === "document") {
-      input.accept = "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"; // Accept documents
+      input.accept =
+        "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"; // Accept documents
     }
 
     // Trigger the click event for the file input
     input.click();
   };
-
-
 
   // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const target = e.target;
@@ -109,10 +107,7 @@ const Page: React.FC = () => {
     // socket.on("sendoffer", (data:any) => {
     //   console.log("my data is", data);
     // })
-
   };
-
-
 
   const handleProjectModal = () => {
     if (isButtonDisabled) return;
@@ -121,33 +116,37 @@ const Page: React.FC = () => {
     setTimeout(() => {
       setIsButtonDisabled(false);
     });
-
-
-
   };
 
-  const handleshowMessage = (user: { id: string, email: string, firstName: string, lastName: string, profileUrl: string | null }) => {
+  const handleshowMessage = (user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profileUrl: string | null;
+  }) => {
     const { id, profileUrl } = user;
 
-    router.push(`/chat/${id}`)
+    router.push(`/chat/${id}`);
 
-    socket.emit("userInChat", JSON.stringify({ userEmail: token?.email, chattingWith: user2 }));
-
-
+    socket.emit(
+      "userInChat",
+      JSON.stringify({ userEmail: token?.email, chattingWith: user2 })
+    );
 
     setProfileUrl(profileUrl || demoimg.src);
 
-    setInbox(oldMessages?.data?.messages)
+    setInbox(oldMessages?.data?.messages);
     // console.log(filteredMessages, "chekc message list")
   };
 
-
-
-  // convert image to  base64 
+  // convert image to  base64
 
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   // console.log(selectedImages);
-  const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>([]);
+  const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
+    []
+  );
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -189,14 +188,7 @@ const Page: React.FC = () => {
     }
   };
 
-
-
-
-
-
   const onSendMessage = (e: any) => {
-
-
     e.preventDefault();
     if (!messages.trim() && selectedBase64Images.length === 0) {
       alert("Please enter a message or select an image.");
@@ -205,26 +197,20 @@ const Page: React.FC = () => {
 
     // const base64Images = selectedImages.map(async (file) => await convertFileToBase64(file));
     if (messages.trim()) {
-
       const message = {
         toEmail: user2,
         message: messages.trim() || null,
         fromEmail: token?.email,
-        media: selectedBase64Images
+        media: selectedBase64Images,
       };
-
 
       socket.emit("privateMessage", JSON.stringify(message));
 
-
       setMessages("");
-      setSelectedImages([])
-      setSelectedBase64Images([])
-
+      setSelectedImages([]);
+      setSelectedBase64Images([]);
     }
   };
-
-
 
   const handleCreateZoomMeeting = () => {
     if (socket) {
@@ -239,24 +225,22 @@ const Page: React.FC = () => {
     }
   };
 
-
-
-
   // emoji picker
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
+      ) {
         setShowEmojiPicker(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-
 
   // console.log("my offer notification", messageNotifications);
   //socket connection
@@ -273,38 +257,28 @@ const Page: React.FC = () => {
       mysocket.emit("register", JSON.stringify({ email: token?.email }));
     });
 
-
     mysocket.on("conversation-list", (data) => {
-      console.log(data, "check convirsation list  data")
-      setUsers(data)
+      console.log(data, "check convirsation list  data");
+      setUsers(data);
     });
-
 
     mysocket.on("privateMessage", (data) => {
       const { message } = data;
       console.warn(message);
       if (message) {
-        setInbox((prevInbox) => [
-          ...prevInbox,
-          message
-        ]);
-
-
-
+        setInbox((prevInbox) => [...prevInbox, message]);
       }
     });
-
-
 
     mysocket.on("createZoomMeeting", (data) => {
       console.log("Zoom meeting data received from socket:", data);
       const { savedMessage } = data;
       // console.log(JSON.parse(data));
 
-      console.log('my meeting link is', data)
+      console.log("my meeting link is", data);
       console.log("My start url is", savedMessage);
       // console.log('my data is', data.start_url);
-      const { meetingLink } = savedMessage
+      const { meetingLink } = savedMessage;
 
       if (savedMessage && savedMessage.meetingLink) {
         window.open(meetingLink, "_blank");
@@ -315,7 +289,6 @@ const Page: React.FC = () => {
         // console.log("invalid data", data.start_url)
       }
     });
-
 
     // Handle Zoom meeting errors
     mysocket.on("zoomMeetingError", (err) => {
@@ -328,8 +301,7 @@ const Page: React.FC = () => {
       mysocket.off("privateMessage");
       mysocket.disconnect();
     };
-  }, [token?.email,]);
-
+  }, [token?.email]);
 
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -337,18 +309,20 @@ const Page: React.FC = () => {
     setShowSidebar(!showSidebar);
   };
 
-  
-  const handleClickOutside = useCallback((event: any) => {
-    if (showSidebar && !event.target.closest('.sidebar')) {
-      setShowSidebar(false);
-    }
-  }, [showSidebar]);
+  const handleClickOutside = useCallback(
+    (event: any) => {
+      if (showSidebar && !event.target.closest(".sidebar")) {
+        setShowSidebar(false);
+      }
+    },
+    [showSidebar]
+  );
   useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showSidebar]);
+  }, [handleClickOutside, showSidebar]);
 
   const [offerNotification, setOfferNotification] = useState(0);
   const { data: getoffer } = useGetOfferQuery(user1);
@@ -358,22 +332,35 @@ const Page: React.FC = () => {
     }
   }, [getoffer]);
 
-  const formattedTime = new Date("2025-02-04T11:02:21.927Z").toLocaleTimeString("en-US", { hour12: false });
-
+  const formattedTime = new Date("2025-02-04T11:02:21.927Z").toLocaleTimeString(
+    "en-US",
+    { hour12: false }
+  );
 
   return (
     <section>
       <div className="container mx-auto pt-[20px]">
-        <div className='text-[16px] flex gap-2'>
-          <Link href={'/'} className='text-gray-700'>Home - </Link>
-          <Link href={'/chat'} className='font-semibold'>Chat</Link>
+        <div className="text-[16px] flex gap-2">
+          <Link href={"/"} className="text-gray-700">
+            Home -{" "}
+          </Link>
+          <Link href={"/chat"} className="font-semibold">
+            Chat
+          </Link>
         </div>
-        <button onClick={handleSidebar} className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden">
+        <button
+          onClick={handleSidebar}
+          className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden"
+        >
           <IoMdMenu className="text-white text-[24px]" />
         </button>
 
         {/* Sidebar with Overlay */}
-        <div className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div
+          className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${
+            showSidebar ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
           <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
             <div className="p-4">
               <div className="flex items-center border rounded-[12px] px-3 py-4">
@@ -384,21 +371,29 @@ const Page: React.FC = () => {
                   className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
                 />
               </div>
-              <AllUsers handleshowMessage={handleshowMessage} getConversation={{ data: users }} setTimeStamp={setTimeStamp} />
+              <AllUsers
+                handleshowMessage={handleshowMessage}
+                getConversation={{ data: users }}
+                setTimeStamp={setTimeStamp}
+              />
             </div>
           </div>
         </div>
 
         {/* Backdrop Overlay */}
         {showSidebar && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 z-40" onClick={handleSidebar}></div>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-30 z-40"
+            onClick={handleSidebar}
+          ></div>
         )}
-
-
       </div>
       <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
-
-        <div className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"}`}>
+        <div
+          className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${
+            showSidebar ? "hidden" : "block"
+          }`}
+        >
           <div className="p-4">
             <div className="flex items-center border  rounded-[12px] px-3 py-4">
               <BiSearch className="text-gray-500 text-lg" />
@@ -413,11 +408,10 @@ const Page: React.FC = () => {
               handleshowMessage={handleshowMessage}
               getConversation={{ data: users }}
               setTimeStamp={setTimeStamp}
-            // messageNotifications={messageNotifications}
+              // messageNotifications={messageNotifications}
             />
           </div>
         </div>
-
 
         <div className="lg:w-2/3 w-full  flex flex-col relative">
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
@@ -432,42 +426,48 @@ const Page: React.FC = () => {
                 />
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-gray-900">
-                    {getToUser?.data.client?.name?.firstName || getToUser?.data?.retireProfessional?.name?.firstName} {getToUser?.data.client?.name?.lastName || getToUser?.data?.retireProfessional?.name?.lastName}
+                    {getToUser?.data.client?.name?.firstName ||
+                      getToUser?.data?.retireProfessional?.name?.firstName}{" "}
+                    {getToUser?.data.client?.name?.lastName ||
+                      getToUser?.data?.retireProfessional?.name?.lastName}
                   </h3>
-                  <p className="text-xs text-gray-500">
-                    {formattedTime}
-                  </p>
+                  <p className="text-xs text-gray-500">{formattedTime}</p>
                 </div>
               </div>
-            ) : (<p> No User Found</p>)}
+            ) : (
+              <p> No User Found</p>
+            )}
 
             {token?.role === "retireProfessional" ? (
-
               <div className="flex items-center gap-6">
-
                 <button
                   onClick={handleOpenModal}
                   className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
                   disabled
                 >
                   Current Offers
-
-
                 </button>
                 {/* {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />} */}
 
-
-                <Button onClick={handleProjectModal} disabled={isButtonDisabled} >
+                <Button
+                  onClick={handleProjectModal}
+                  disabled={isButtonDisabled}
+                >
                   Create an Offer
-
                 </Button>
-                {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+                {isProjectModal && (
+                  <ProjectModal
+                    onClose={handleProjectModal}
+                    user1={user1}
+                    user2={user2}
+                  />
+                )}
+                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                  <HiOutlineDotsVertical />
+                </Link>
               </div>
             ) : (
               <div className="flex items-center gap-6">
-
-
                 <button
                   onClick={handleOpenModal}
                   className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
@@ -482,13 +482,27 @@ const Page: React.FC = () => {
                     </span>
                   )}
                 </button>
-                {isModalOpen && <OffersModal onClose={handleOpenModal} user1={user1} />}
+                {isModalOpen && (
+                  <OffersModal onClose={handleOpenModal} user1={user1} />
+                )}
 
-                <button onClick={handleProjectModal} disabled className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200">
+                <button
+                  onClick={handleProjectModal}
+                  disabled
+                  className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
+                >
                   Create an Offer
                 </button>
-                {isProjectModal && <ProjectModal onClose={handleProjectModal} user1={user1} user2={user2} />}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={'/'}><HiOutlineDotsVertical /></Link>
+                {isProjectModal && (
+                  <ProjectModal
+                    onClose={handleProjectModal}
+                    user1={user1}
+                    user2={user2}
+                  />
+                )}
+                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                  <HiOutlineDotsVertical />
+                </Link>
               </div>
             )}
           </div>
@@ -507,34 +521,37 @@ const Page: React.FC = () => {
                   }}
                   senderName={""}
                 />
-
               </div>
             </div>
           </div>
 
           <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
             <div
-              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-5 pointer-events-none"
-                }`}
+              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${
+                fileBtn
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-5 pointer-events-none"
+              }`}
             >
-              <button onClick={() => handleFileClick("document")} className="bg-primary rounded-full">
-                <FileText
-
-                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
-                />
+              <button
+                onClick={() => handleFileClick("document")}
+                className="bg-primary rounded-full"
+              >
+                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
               </button>
-              <button onClick={() => handleFileClick("image")} className="bg-primary rounded-full">
-                <Images
-
-                  className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2"
-                />
+              <button
+                onClick={() => handleFileClick("image")}
+                className="bg-primary rounded-full"
+              >
+                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
               </button>
             </div>
 
-
-            <form onSubmit={onSendMessage} className="flex items-center gap-2 p-4 w-full" encType="multipart/form-data">
+            <form
+              onSubmit={onSendMessage}
+              className="flex items-center gap-2 p-4 w-full"
+              encType="multipart/form-data"
+            >
               <AiOutlinePaperClip
                 onClick={handleClick}
                 className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
@@ -583,15 +600,16 @@ const Page: React.FC = () => {
               </button>
             </form>
 
-            <FaRegSmile onClick={toggleEmojiPicker}
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <FaRegSmile
+              onClick={toggleEmojiPicker}
+              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
+            />
             {showEmojiPicker && (
               <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}
-            <MdOutlineKeyboardVoice
-              className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
             <button
               onClick={handleCreateZoomMeeting}
               className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
@@ -601,7 +619,7 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-    </section >
+    </section>
   );
 };
 

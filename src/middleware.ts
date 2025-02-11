@@ -109,7 +109,12 @@ export function middleware(request: NextRequest) {
     "/user/auth/client",
   ];
 
-  const clientRoutes = ["/project-list/client", "/user/editProfile/client"];
+  const clientRoutes = [
+    "/project-list/client",
+    "/user/editProfile/client",
+    "/orders",
+  ];
+  const adminRoutes = ["/dashboard", "/dashboard/:params*"];
   const professionalRoutes = [
     "/project-list/professional",
     "/user/editProfile/retireProfessional",
@@ -143,6 +148,11 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginRoute);
     }
 
+    // Role-based route handling
+    if (adminRoutes.includes(pathname) && role !== "admin") {
+      return NextResponse.redirect(loginRoute);
+    }
+
     if (
       professionalRoutes.includes(pathname) &&
       role !== "retireProfessional"
@@ -165,6 +175,8 @@ export const config = {
     "/user/editProfile/client",
     "/user/editProfile/retireProfessional",
     "/project-list/default",
+    "/dashboard",
+    "/dashboard/:params*",
     "/chat",
     "/chat/:params*",
   ],
