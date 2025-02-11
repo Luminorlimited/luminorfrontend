@@ -15,18 +15,17 @@ import SuccessPage from "./Success";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-
+// import { useRouter } from "next/navigation";
 
 export default function ProfessionalForm() {
   const [step, setStep] = useState(1);
   const { register, handleSubmit, setValue, getValues } = useForm();
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const [createProfessional] = useProfessionalUserMutation();
 
-  const router = useRouter()
+  // const router = useRouter();
   const handleSubmitProfessionalForm = async (data?: any) => {
     const formData = new FormData();
 
@@ -45,8 +44,14 @@ export default function ProfessionalForm() {
       formData.append("cvOrCoverLetter", data.file[0]);
     }
 
-    const previousPositions = [data.prevPos1, data.prevPos2, data.prevPos3].filter(Boolean);
-    previousPositions.forEach((pos, index) => formData.append(`previousPositions[${index}]`, pos));
+    const previousPositions = [
+      data.prevPos1,
+      data.prevPos2,
+      data.prevPos3,
+    ].filter(Boolean);
+    previousPositions.forEach((pos, index) =>
+      formData.append(`previousPositions[${index}]`, pos)
+    );
 
     const references = [
       { name: data.refName1, emailOrPhone: data.refcontact1 },
@@ -77,12 +82,11 @@ export default function ProfessionalForm() {
     formData.append(`industry`, data.industry);
 
     formData.append("businessType", data.businessType);
-    setLoading(true)
+    setLoading(true);
 
     try {
       const res: any = await createProfessional(formData);
-      if (res?.statusCode === 200) {
-
+      if (res?.success) {
         dispatch(
           setUser({
             user: {
@@ -96,31 +100,23 @@ export default function ProfessionalForm() {
           })
         );
 
-
         console.log("Form submitted successfully:", res.data);
-        toast.success("Form submitted successfully!")
-        // setStep(5);
-        router.push('/user/auth/login')
+        toast.success("Form submitted successfully!");
+        setStep(5);
+        // router.push("/user/auth/login");
       } else {
         console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
-        toast.error(res?.error?.data?.message)
-        setLoading(false)
-
-
+        toast.error("Something went wrong.");
+        setLoading(false);
       }
     } catch (error) {
       console.error("An error occurred:", error);
 
-      toast.error("An error occurred while submitting the form.")
+      toast.error("An error occurred while submitting the form.");
     } finally {
       setLoading(false); // Stop loading after the operation
-
     }
   };
-
-
-
-
 
   return (
     <div>
@@ -151,7 +147,10 @@ export default function ProfessionalForm() {
         <div className="absolute top-0 left-0 mt-7 ml-28 lg:block hidden z-[999]">
           <Logo />
         </div>
-        <form onSubmit={handleSubmit(handleSubmitProfessionalForm)} encType="multipart/form-data">
+        <form
+          onSubmit={handleSubmit(handleSubmitProfessionalForm)}
+          encType="multipart/form-data"
+        >
           {/* Render Stepper on all steps */}
 
           <div className="flex justify-center items-center min-h-screen z-10 relative">
@@ -169,7 +168,6 @@ export default function ProfessionalForm() {
                   register={register}
                   handleNext={() => setStep(3)}
                   handleBack={() => setStep(1)}
-
                   getValues={getValues}
                   setValue={setValue}
                 />
@@ -179,7 +177,6 @@ export default function ProfessionalForm() {
                   register={register}
                   handleNext={() => setStep(4)}
                   handleBack={() => setStep(2)}
-
                   getValues={getValues}
                   setValue={setValue}
                 />

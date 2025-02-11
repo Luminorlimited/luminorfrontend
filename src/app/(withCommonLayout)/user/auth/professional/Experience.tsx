@@ -5,16 +5,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { toast } from "sonner";
-import mainlogo from '@/assets/images/mainlogo.png'
+import mainlogo from "@/assets/images/mainlogo.png";
 import { useState } from "react";
 
-
-
-export default function Experience({ register, handleNext, handleBack, getValues }: any) {
-
+export default function Experience({
+  register,
+  handleNext,
+  handleBack,
+  getValues,
+}: any) {
   const validateFields = () => {
     const values = getValues(); // Get all field values
-    const { industry, prevPos1, prevPos2, prevPos3, refName1, refcontact1, refName2, refcontact2 } = values;
+    const {
+      industry,
+      prevPos1,
+      prevPos2,
+      prevPos3,
+      refName1,
+      refcontact1,
+      refName2,
+      refcontact2,
+    } = values;
 
     // Check if any required field is empty
     if (
@@ -27,15 +38,17 @@ export default function Experience({ register, handleNext, handleBack, getValues
       !refName2 ||
       !refcontact2
     ) {
-      toast.error("Please fill in all required fields.")
+      toast.error("Please fill in all required fields.");
       return false; // Return false if validation fails
     }
     return true; // Return true if all fields are valid
   };
   const [showOtherField, setShowOtherField] = useState(false);
 
-  const handleIndustryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setShowOtherField(event.target.value === '');
+  const handleIndustryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setShowOtherField(event.target.value === "");
   };
 
   // Handle "Next" button click
@@ -46,7 +59,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
   };
 
   return (
-    <div >
+    <div>
       <div className="space-y-2 text-center lg:mt-0 mt-6">
         <div className="flex gap-3 py-2 items-center justify-center">
           <h1 className="text-[32px] font-semibold tracking-tight md:text-4xl text-[#1D1F2C]">
@@ -57,21 +70,25 @@ export default function Experience({ register, handleNext, handleBack, getValues
             Today
           </h1>
         </div>
-        <h2 className="mb-1 font-medium text-[16px] text-gray-600">Sign up as a professional</h2>
+        <h2 className="mb-1 font-medium text-[16px] text-gray-600">
+          Sign up as a professional
+        </h2>
 
-        <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
+        <p className="text-sm text-muted-foreground text-[#777980]">
+          Empower Your Journey
+        </p>
       </div>
       <div className="flex flex-col space-y-3">
-
         <div className="space-y-2">
           <Label htmlFor="industry">Industry</Label>
           <select
             id="industry"
             {...register("industry")}
             className="h-12 rounded-xl border cursor-pointer w-full px-3 pr-3"
+            defaultValue=""
             onChange={handleIndustryChange}
           >
-            <option disabled selected>
+            <option disabled value={""}>
               Select Previous Position
             </option>
             <option value="EDUCATION">Education and E-learning</option>
@@ -83,12 +100,13 @@ export default function Experience({ register, handleNext, handleBack, getValues
             <option value="MANUFACTURING">Manufacturing and Industrial</option>
             <option value="FOOD">Food and Beverage</option>
             <option value="FASHION">Fashion and Lifestyle</option>
-            <option value=""><b>Others+</b></option>
-
+            <option value="">Others+</option>
           </select>
           {showOtherField && (
             <div>
-              <Label htmlFor="otherIndustry">Please specify your industry</Label>
+              <Label htmlFor="otherIndustry">
+                Please specify your industry
+              </Label>
               <input
                 id="otherIndustry"
                 {...register("industry")}
@@ -131,7 +149,6 @@ export default function Experience({ register, handleNext, handleBack, getValues
               <Label htmlFor="reference-name">Reference name 1</Label>
               <Input
                 id="reference-name"
-
                 placeholder="Reference name 1"
                 required
                 {...register("refName1")}
@@ -139,9 +156,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
               />
             </div>
             <div className="space-y-2 w-full">
-              <Label htmlFor="refcontact1">
-                Reference Email/Phone Number
-              </Label>
+              <Label htmlFor="refcontact1">Reference Email/Phone Number</Label>
               <Input
                 id="refcontact1"
                 type="text"
@@ -165,9 +180,7 @@ export default function Experience({ register, handleNext, handleBack, getValues
               />
             </div>
             <div className="space-y-2 w-full">
-              <Label htmlFor="refcontact2">
-                Reference Email/Phone Number
-              </Label>
+              <Label htmlFor="refcontact2">Reference Email/Phone Number</Label>
               <Input
                 id="refcontact2"
                 type="text"
@@ -196,7 +209,6 @@ export default function Experience({ register, handleNext, handleBack, getValues
           Next
         </Button>
       </div>
-
     </div>
   );
 }

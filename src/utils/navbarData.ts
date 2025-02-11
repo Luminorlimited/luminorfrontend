@@ -1,38 +1,42 @@
 import { navbarDataTypes } from "@/types/global";
 import { ChevronDown } from "lucide-react";
-import jwt, { JwtPayload } from "jsonwebtoken";
+// import jwt, { JwtPayload } from "jsonwebtoken";
 // import { RootState } from "@/redux/store";
-import { store } from "@/redux/store";
+// import { store } from "@/redux/store";
 
-interface DecodedToken extends JwtPayload {
-  id: string;
-  role?: string;
-}
+// interface DecodedToken extends JwtPayload {
+//   id: string;
+//   role?: string;
+// }
 
-const token = store.getState().Auth.token;
+// const role = store.getState().Auth?.user?.role;
 
-const decodedToken: DecodedToken | null = token
-  ? (jwt.decode(token) as DecodedToken)
-  : null;
+// const decodedToken: DecodedToken | null = token
+//   ? (jwt.decode(token) as DecodedToken)
+//   : null;
 
-export const navbarLinks: navbarDataTypes[] = [
-  {
-    id: 1,
-    title: "Orders",
-    link: "/orders",
-  },
-  {
-    id: 2,
-    title: "About",
-    link: "#about",
-  },
-  {
-    id: 3,
-    title: "Services",
-    link: `${decodedToken?.role === "client" || decodedToken?.role === "retireProfessional"
-      ? `/project-list/${decodedToken.role}`
-      : "/user/auth/login"
+export const navbarLinks = (role: string): navbarDataTypes[] => {
+  return [
+    {
+      id: 1,
+      title: "Orders",
+      link: "/orders",
+    },
+    {
+      id: 2,
+      title: "About",
+      link: "#about",
+    },
+
+    {
+      id: 3,
+      title: "Services",
+      link: `${
+        role === "client" || role === "retireProfessional"
+          ? `/project-list/${role}`
+          : "/user/auth/login"
       }`,
-    icon: ChevronDown,
-  },
-];
+      icon: ChevronDown,
+    },
+  ];
+};

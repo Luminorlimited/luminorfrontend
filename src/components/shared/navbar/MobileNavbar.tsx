@@ -12,26 +12,22 @@ import Image from "next/image";
 import {  useEffect, useRef, useState } from "react";
 import demoprofile from "@/assets/images/avatar.jpg";
 // import jwt, { JwtPayload } from "jsonwebtoken";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
 import { GoBell } from "react-icons/go";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
+import { RootState } from "@/redux/store";
 
-
-interface DecodedToken {
-  decodedToken: any;
-}
-
-
-export function MobileNavbar({ decodedToken}: DecodedToken) {
+export function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const dispatch = useDispatch()
-  
+  const dispatch = useDispatch();
+
   const router = useRouter();
-  const notificationRef = useRef<HTMLDivElement>(null)
+  const notificationRef = useRef<HTMLDivElement>(null);
   const handleOpenNotificationBar = () => {
-    setIsOpen(!isOpen)
+    setIsOpen(!isOpen);
+ 
   }
 
  
@@ -56,25 +52,26 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
   // console.log('my token is', decodedToken);
 
   const handleLogOut = () => {
-    dispatch(logOut())
+    dispatch(logOut());
     // cookies.remove("token")
-    router.push('/')
-  }
-  const [fileBtn, showFileBtn] = useState(false)
+    router.push("/");
+  };
+  const [fileBtn, showFileBtn] = useState(false);
 
   const handleClick = () => {
     setTimeout(() => {
       // showFileBtn(false)
-      showFileBtn((prev) => !prev)
-    }, 200)
-  }
-
-  const { data: profileData } = useGetProfileQuery(decodedToken?.id || "", {
-    skip: !decodedToken,
+      showFileBtn((prev) => !prev);
+    }, 200);
+  };
+  const user = useSelector((state: RootState) => state.Auth.user);
+  const { data: profileData } = useGetProfileQuery(user?.id || "", {
+    skip: !user?.token,
   });
 
   const demoimg = profileData?.data?.profileUrl || demoprofile;
 
+  const menus = navbarLinks(user?.role as string);
 
   return (
     <Sheet>
@@ -87,7 +84,7 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
         <div className="grid gap-4 py-4">
           {/* Navbar Links */}
           <ul className="flex flex-col gap-4 w-full">
-            {navbarLinks?.map((item) =>
+            {menus?.map((item) =>
               item?.subMenus ? (
                 <li key={item.id} className="w-full">
                   <button
@@ -134,9 +131,12 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
 
           {/* User Section */}
           <div className="flex items-center flex-wrap gap-4">
-            {decodedToken && decodedToken.id ? (
+            {user && user?.id ? (
               <div className="flex gap-3 items-center relative">
-                <button onClick={handleOpenNotificationBar} className="focus:outline-none">
+                <button
+                  onClick={handleOpenNotificationBar}
+                  className="focus:outline-none"
+                >
                   <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
                 </button>
               
@@ -158,7 +158,7 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
                   >
 
                     <Link
-                      href={`/user/editProfile/${decodedToken.role}/${decodedToken.id}`}
+                      href={`/user/editProfile/${user.role}/${user.id}`}
                     >
                       <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
                         Edit Profile
@@ -194,6 +194,5 @@ export function MobileNavbar({ decodedToken}: DecodedToken) {
         </div>
       </SheetContent>
     </Sheet>
-
   );
 }

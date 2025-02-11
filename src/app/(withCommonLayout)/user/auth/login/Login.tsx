@@ -1,178 +1,215 @@
-'use client'
+"use client";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import Logo from "@/utils/Logo";
-import usertypeshape from '@/assets/shapes/usertypeshape.png'
-import circleshape from '@/assets/shapes/circleshape.png'
+import usertypeshape from "@/assets/shapes/usertypeshape.png";
+import circleshape from "@/assets/shapes/circleshape.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import ImageCarousel from "./ImageCarousel/ImageCarousel";
 import { useLoginUserMutation } from "@/redux/Api/userApi";
 import { useRouter } from "next/navigation";
-import Link from "next/link"
+import Link from "next/link";
 // import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
-
 export default function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const router = useRouter();
-    const [LogInUser] = useLoginUserMutation();
-    
-    const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const [LogInUser] = useLoginUserMutation();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); // Prevent default form submission
-        const data = { email, password }; // Gather email and password
+  const [isLoading, setIsLoading] = useState(false);
 
-        try {
-            setIsLoading(true); // Set loading state to true
-            const res: any = await LogInUser(data);
-            console.log("Login Response:", res);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent default form submission
+    const data = { email, password }; // Gather email and password
 
-            if (res?.data?.success) {
-                localStorage.setItem("email", email);
-                toast.success("Check your email for verification");
-                router.push("/user/verification");
-            } else {
-                toast.error(res?.data?.message || "Wrong email or password");
-            }
-        } catch (error) {
-            toast.error("Login Failed");
-            console.error("Login Error:", error);
-        } finally {
-            setIsLoading(false); // Reset loading state
-        }
-    };
+    try {
+      setIsLoading(true); // Set loading state to true
+      const res: any = await LogInUser(data);
+      console.log("Login Response:", res);
 
+      if (res?.data?.success) {
+        localStorage.setItem("email", email);
+        toast.success("Check your email for verification");
+        router.push("/user/verification");
+      } else {
+        toast.error(res?.data?.message || "Wrong email or password");
+      }
+    } catch (error) {
+      toast.error("Login Failed");
+      console.error("Login Error:", error);
+    } finally {
+      setIsLoading(false); // Reset loading state
+    }
+  };
 
-    // const handlegooglelogin = async () => {
-    //     try {
-    //         const res = await signIn("google", {
-    //            callbackUrl: "/"
-    //         })
-    //         if (res) {
-    //             console.log('login succssfully');
+  // const handlegooglelogin = async () => {
+  //     try {
+  //         const res = await signIn("google", {
+  //            callbackUrl: "/"
+  //         })
+  //         if (res) {
+  //             console.log('login succssfully');
 
-    //         }
-    //     } catch (e) {
-    //         console.log('error login', e);
+  //         }
+  //     } catch (e) {
+  //         console.log('error login', e);
 
-    //     }
-    // }
+  //     }
+  // }
 
-    return (
-        <div className="  relative">
-            <Image src={usertypeshape} width={558} height={766} alt="imgshape1" className="absolute top-0 right-0 lg:w-[558px] w-48 z-[-60]" />
-            <Image src={usertypeshape} width={558} height={766} alt="imgshape2" className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48 z-[-60]" />
-            <Image src={circleshape} width={173} height={167} alt="imgshape2" className="absolute left-[700px] top-0  lg:flex hidden z-[-60]" />
+  return (
+    <div className="  relative">
+      <Image
+        src={usertypeshape}
+        width={558}
+        height={766}
+        alt="imgshape1"
+        className="absolute top-0 right-0 lg:w-[558px] w-48 z-[-60]"
+      />
+      <Image
+        src={usertypeshape}
+        width={558}
+        height={766}
+        alt="imgshape2"
+        className="absolute left-0 bottom-0 rotate-180 lg:w-[558px] w-48 z-[-60]"
+      />
+      <Image
+        src={circleshape}
+        width={173}
+        height={167}
+        alt="imgshape2"
+        className="absolute left-[700px] top-0  lg:flex hidden z-[-60]"
+      />
 
-            <div className="absolute top-0 left-0 mt-7 ml-28 lg:block hidden">
-                <Logo />
+      <div className="absolute top-0 left-0 mt-7 ml-28 lg:block hidden">
+        <Logo />
+      </div>
+
+      <div className="mx-auto min-h-screen flex justify-center items-center">
+        <div className=" lg:flex gap-[188px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+          <div className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]">
+            <div className="text-center">
+              <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
+                Welcome to Luminor!
+              </h1>
+              <p className="text-[#666666] text-xl">
+                Please Enter your details
+              </p>
             </div>
 
-            <div className="mx-auto min-h-screen flex justify-center items-center">
+            <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+              <div className="space-y-6">
+                <label
+                  htmlFor="email"
+                  className="block text-lg font-medium text-[#1A1A1A] mb-2"
+                >
+                  Enter Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="mx-auto min-h-screen flex justify-center items-center">
                 <div className=" lg:flex gap-[188px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial={{
-                            opacity: 0,
-                            x: -100,
-                        }}
-                        whileInView={{
-                            opacity: 1,
-                            x: 0,
-                        }}
-                        transition={{
-                            duration: 0.8,
-                        }}
-                        className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]">
-                        <div className="text-center">
-                            <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
-                                Welcome to Luminor!
-                            </h1>
-                            <p className="text-[#666666] text-xl">
-                                Please Enter your details
-                            </p>
-                        </div>
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      x: -100,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    transition={{
+                      duration: 0.8,
+                    }}
+                    className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]"
+                  >
+                    <div className="text-center">
+                      <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
+                        Welcome to Luminor!
+                      </h1>
+                      <p className="text-[#666666] text-xl">
+                        Please Enter your details
+                      </p>
+                    </div>
+                  </motion.div>
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="block text-lg font-medium text-[#1A1A1A] mb-2"
+                    >
+                      Enter your Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
 
-                        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-                            <div className="space-y-6">
-                                <div>
-                                    <label htmlFor="email" className="block text-lg font-medium text-[#1A1A1A] mb-2">
-                                        Enter Email address
-                                    </label>
-                                    <input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        required
-                                        className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        placeholder="Email address"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </div>
+                    <div className="flex items-center space-x-2 pt-3">
+                      <label
+                        htmlFor="pass"
+                        className="text-sm flex gap-2 cursor-pointer items-center text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        <Checkbox
+                          id="pass"
+                          className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
+                        />
+                        Remember this device
+                      </label>
+                    </div>
+                  </div>
+                </div>
 
-                                <div>
-                                    <label htmlFor="password" className="block text-lg font-medium text-[#1A1A1A] mb-2">
-                                        Enter your Password
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            id="password"
-                                            name="password"
-                                            type={showPassword ? "text" : "password"}
-                                            required
-                                            className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                            placeholder="Password"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword((prev) => !prev)}
-                                            className="absolute inset-y-0 right-4 flex items-center text-gray-500"
-                                        >
-                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                        </button>
-                                    </div>
+                <button
+                  type="submit"
+                  className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium hover:shadow-lg transition-colors hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${
+                    isLoading
+                      ? "text-white bg-[#181522] "
+                      : "text-white bg-primary "
+                  }`}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Logging in..." : "Log in"}
+                </button>
 
-                                    <div className="flex items-center space-x-2 pt-3">
-                                        <Checkbox
-                                            id="pass"
-                                            required
-                                            className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
-                                        />
-                                        <label
-                                            htmlFor="pass"
-                                            className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                        >
-                                            Remember this device
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button
-                                type="submit"
-                                className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${isLoading ? "text-white bg-[#181522] " : "text-white bg-primary "}`}
-                                disabled={isLoading} 
-                            >
-                                {isLoading ? "Logging in..." : "Log in"}
-                            </button>
-
-                            {/* <div className="flex items-center gap-2 justify-center">
+                {/* <div className="flex items-center gap-2 justify-center">
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                                 <span className="text-[16px] font-medium text-[#1D1F2C]">Or</span>
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                             </div> */}
 
-                            {/* <div className="grid gap-4">
+                {/* <div className="grid gap-4">
                                 <Button variant="outline" className="w-full py-[23px] rounded-[10px] text-lg">
                                     <svg
                                         className="mr-2  "
@@ -214,43 +251,57 @@ export default function Login() {
                                 </Button>
                             </div> */}
 
-                            {/* <div className="flex items-center gap-2 justify-center">
+                {/* <div className="flex items-center gap-2 justify-center">
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                                 <span className="text-[16px] font-medium text-[#1D1F2C]">Or</span>
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                             </div> */}
 
-                            <div className="text-center text-lg flex mx-auto justify-center gap-2">
-                                Don&apos;t have an account?
-                                <Link href="/usertype" className="flex items-center gap-2 text-primary font-semibold hover:underline">
-                                    Create Account <FaArrowRightLong />
-
-                                </Link>
-                            </div>
-                        </form>
-
-                    </motion.div>
-                    <motion.div
-                        initial={{
-                            opacity: 0,
-                            x: 100,
-                        }}
-                        whileInView={{
-                            opacity: 1,
-                            x: 0,
-                        }}
-                        transition={{
-                            duration: 0.8,
-                        }}
-                        className="relative  lg:block  hidden w-[650px]  ">
-                        <ImageCarousel />
-                        {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
-                    </motion.div>
+                <div className="text-center text-lg flex mx-auto justify-center gap-2">
+                  Don&apos;t have an account?
+                  <Link
+                    href="/usertype"
+                    className="flex items-center gap-2 text-primary font-semibold hover:underline"
+                  >
+                    Create Account <FaArrowRightLong />
+                  </Link>
                 </div>
-            </div>
+              </div>
+              <div className="relative  lg:block  hidden w-[650px]  ">
+                <ImageCarousel />
+                {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
+              </div>
+              <div className="text-center text-lg flex mx-auto justify-center gap-2">
+                Don&apos;t have an account?
+                <Link
+                  href="/usertype"
+                  className="flex items-center gap-2 text-primary font-semibold hover:underline"
+                >
+                  Create Account <FaArrowRightLong />
+                </Link>
+              </div>
+            </form>
+          </div>
 
-
-
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: 100,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+            }}
+            transition={{
+              duration: 0.8,
+            }}
+            className="relative  lg:block  hidden w-[650px]  "
+          >
+            <ImageCarousel />
+            {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
+          </motion.div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

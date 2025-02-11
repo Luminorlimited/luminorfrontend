@@ -13,6 +13,7 @@ import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
 import { MdOutlineKeyboardVoice } from "react-icons/md";
 import EmojiPicker from "emoji-picker-react";
+import EmojiPicker from "emoji-picker-react";
 import { IoMdMenu } from "react-icons/io";
 import { Video, FileText, Images } from "lucide-react";
 import io, { Socket } from "socket.io-client";
@@ -32,11 +33,13 @@ import { useDecodedToken } from "@/components/common/DecodeToken";
 
 const Page: React.FC = () => {
   const router = useRouter();
+  const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [fileBtn, showFileBtn] = useState(false);
+  const token = useDecodedToken();
   const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
@@ -340,6 +343,8 @@ const Page: React.FC = () => {
     } else if (type === "document") {
       input.accept =
         "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"; // Accept documents
+      input.accept =
+        "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"; // Accept documents
     }
 
     // Trigger the click event for the file input
@@ -460,22 +465,67 @@ const Page: React.FC = () => {
           <Link href={"/chat"} className="font-semibold">
             Chat
           </Link>
-        </div>
-        <button
-          onClick={handleSidebar}
-          className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden"
-        >
-          <IoMdMenu className="text-white text-[24px]" />
-        </button>
+          <div className="text-[16px] flex gap-2">
+            <Link href={"/"} className="text-gray-700">
+              Home -{" "}
+            </Link>
+            <Link href={"/chat"} className="font-semibold">
+              Chat
+            </Link>
+          </div>
+          <button
+            onClick={handleSidebar}
+            className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden"
+          >
+            <button
+              onClick={handleSidebar}
+              className="bg-bg_primary rounded-[10px] p-4 flex items-center justify-center lg:hidden"
+            >
+              <IoMdMenu className="text-white text-[24px]" />
+            </button>
 
-        {/* Sidebar with Overlay */}
-        <div
-          className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? "translate-x-0" : "-translate-x-full"
-            }`}
-        >
-          <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
+            {/* Sidebar with Overlay */}
+            <div
+              className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? "translate-x-0" : "-translate-x-full"
+                }`}
+            >
+              <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
+                <div className="p-4">
+                  <div className="flex items-center border rounded-[12px] px-3 py-4">
+                    <BiSearch className="text-gray-500 text-lg" />
+                    <input
+                      type="text"
+                      placeholder="Search message..."
+                      className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
+                    />
+                  </div>
+                  <AllUsers
+                    handleshowMessage={handleshowMessage}
+                    getConversation={{ data: users }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Backdrop Overlay */}
+            {showSidebar && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-30 z-40"
+            onClick={handleSidebar}
+          ></div>
+          <div
+            className="fixed inset-0 bg-black bg-opacity-30 z-40"
+            onClick={handleSidebar}
+          ></div>
+            )}
+        </div>
+        <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
+          <div
+            className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
+              }`}
+          >
             <div className="p-4">
-              <div className="flex items-center border rounded-[12px] px-3 py-4">
+              <div className="flex items-center border  rounded-[12px] px-3 py-4">
                 <BiSearch className="text-gray-500 text-lg" />
                 <input
                   type="text"
@@ -486,267 +536,267 @@ const Page: React.FC = () => {
               <AllUsers
                 handleshowMessage={handleshowMessage}
                 getConversation={{ data: users }}
+              // messageNotifications={messageNotifications}
               />
             </div>
           </div>
-        </div>
 
-        {/* Backdrop Overlay */}
-        {showSidebar && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-30 z-40"
-            onClick={handleSidebar}
-          ></div>
-        )}
-      </div>
-      <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
-        <div
-          className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
-            }`}
-        >
-          <div className="p-4">
-            <div className="flex items-center border  rounded-[12px] px-3 py-4">
-              <BiSearch className="text-gray-500 text-lg" />
-              <input
-                type="text"
-                placeholder="Search message..."
-                className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
-              />
-            </div>
-            <AllUsers
-              handleshowMessage={handleshowMessage}
-              getConversation={{ data: users }}
-            // messageNotifications={messageNotifications}
-            />
-          </div>
-        </div>
-
-        <div className="lg:w-2/3 w-full  flex flex-col relative">
-          <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
-            {getToUser?.data && (
-              <div className="flex items-center">
-                <div className="w-[40px] h-[40px]">
-                  <Image
-                    src={getToUser?.data?.profileUrl || demoimg}
-                    alt="Jane Cooper"
-                    width={40}
-                    height={40}
-                    className="rounded-full w-full h-full"
-                  />
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-gray-900">
-                    {getToUser?.data.client?.name?.firstName ||
-                      getToUser?.data?.retireProfessional?.name?.firstName}{" "}
-                    {getToUser?.data.client?.name?.lastName ||
-                      getToUser?.data?.retireProfessional?.name?.lastName}
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {token?.role === "retireProfessional" ? (
-              <div className="flex items-center gap-6">
-                <button
-                  onClick={handleOpenModal}
-                  className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
-                  disabled
-                >
-                  Current Offers
-                </button>
-                {isModalOpen && (
-                  <OffersModal
-                    onClose={handleOpenModal}
-                    user1={token.id}
-                    offerNotification={offerNotification}
-                    setOfferNotification={setOfferNotification}
-                    latestOffer={latestOffer}
-                  />
-                )}
-
-                <Button
-                  onClick={handleProjectModal}
-                  disabled={isButtonDisabled}
-                >
-                  Create an Offer
-                </Button>
-                {isProjectModal && (
-                  <ProjectModal
-                    onClose={handleProjectModal}
-                    user1={token.id}
-                    user2={typeof id.id === 'string' ? id.id : ''}
-                  />
-                )}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
-                  <HiOutlineDotsVertical />
-                </Link>
-              </div>
-            ) : (
-              <div className="flex items-center gap-6">
-                <button
-                  onClick={handleOpenModal}
-                  className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
-                >
-                  Current Offers
-                  {offerNotification > 0 && (
-                    <span className="absolute p-2 top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
-                      {offerNotification}
-                    </span>
-                  )}
-                  {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center"> {offerNotifications}</span> */}
-                </button>
-                {isModalOpen && (
-                  // <OffersModal onClose={handleOpenModal} user1={typeof token?.id === "string" ? token?.id : ""} />
-                  <OffersModal
-                    onClose={handleOpenModal}
-                    user1={typeof token?.id === "string" ? token?.id : ""}
-                    offerNotification={offerNotification}
-                    setOfferNotification={setOfferNotification}
-                    latestOffer={latestOffer}
-                  />
-                )}
-
-                <button
-                  onClick={handleProjectModal}
-                  disabled
-                  className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
-                >
-                  Create an Offer
-                </button>
-                {isProjectModal && (
-                  <ProjectModal
-                    onClose={handleProjectModal}
-                    user1={token?.id || ""}
-                    user2={typeof id.id === 'string' ? id.id : ''}
-                  />
-                )}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
-                  <HiOutlineDotsVertical />
-                </Link>
-              </div>
-            )}
-          </div>
-
-          <div className="flex-1">
-            <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
-              <div className="flex flex-col overflow-y-auto  h-full">
-                {isFetching ? (
-                  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-[330px] right-[400px]" />
-                ) : (
-                  <ChatWindow
-                    handleOpenModal={handleOpenModal}
-                    messages={inbox}
-                    currentUser={user1 ?? ""}
-                    profileUrl={profileUrl}
-                    colorScheme={{
-                      senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
-                      receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
-                    }}
-                    senderName={""}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
-            <div
-              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-5 pointer-events-none"
-                }`}
-            >
-              <button
-                onClick={() => handleFileClick("document")}
-                className="bg-primary rounded-full"
-              >
-                <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
-              </button>
-              <button
-                onClick={() => handleFileClick("image")}
-                className="bg-primary rounded-full"
-              >
-                <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
-              </button>
-            </div>
-
-            <form
-              onSubmit={onSendMessage}
-              className="flex items-center gap-2 p-4 w-full"
-              encType="multipart/form-data"
-            >
-              <AiOutlinePaperClip
-                onClick={handleClick}
-                className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
-              />
-              {selectedBase64Images.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {selectedBase64Images.map((base64, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg"
-                    >
-                      <Image
-                        width={90}
-                        height={40}
-                        src={base64}
-                        alt="Selected"
-                        className="w-[90px] h-10 object-cover rounded"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleFileRemove(base64)}
-                        className="text-red-500 font-bold"
-                      >
-                        X
-                      </button>
-                    </div>
-                  ))}
+          <div className="lg:w-2/3 w-full  flex flex-col relative">
+            <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
+              {getToUser?.data && (
+                <div className="flex items-center">
+                  <div className="w-[40px] h-[40px]">
+                    <Image
+                      src={getToUser?.data?.profileUrl || demoimg}
+                      alt="Jane Cooper"
+                      width={40}
+                      height={40}
+                      className="rounded-full w-full h-full"
+                    />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-gray-900">
+                      {getToUser?.data.client?.name?.firstName ||
+                        getToUser?.data?.retireProfessional?.name?.firstName}{" "}
+                      {getToUser?.data.client?.name?.lastName ||
+                        getToUser?.data?.retireProfessional?.name?.lastName}
+                      {getToUser?.data.client?.name?.firstName ||
+                        getToUser?.data?.retireProfessional?.name?.firstName}{" "}
+                      {getToUser?.data.client?.name?.lastName ||
+                        getToUser?.data?.retireProfessional?.name?.lastName}
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
+                    </p>
+                  </div>
                 </div>
               )}
 
-              <input
-                id="fileInput"
-                type="file"
-                multiple // Allow multiple files selection
-                style={{ display: "none" }} // Hide the input element
-                onChange={handleImageChange}
-              />
-              <input
-                placeholder="Write message here..."
-                value={messages} // Use 'messages' state here
-                onChange={(e) => setMessages(e.target.value)} // Update state correctly on change
-                className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
-              />
-              <button type="submit" className="bg-primary rounded-full">
-                <FiSend className="text-lg text-white cursor-pointer w-8 h-8 p-2" />
-              </button>
-            </form>
+              {token?.role === "retireProfessional" ? (
+                <div className="flex items-center gap-6">
+                  <button
+                    onClick={handleOpenModal}
+                    className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
+                    disabled
+                  >
+                    Current Offers
+                  </button>
+                  {isModalOpen && (
+                    <OffersModal
+                      onClose={handleOpenModal}
+                      user1={token.id}
+                      offerNotification={offerNotification}
+                      setOfferNotification={setOfferNotification}
+                      latestOffer={latestOffer}
+                    />
+                  )}
 
-            <FaRegSmile
-              onClick={toggleEmojiPicker}
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
-            />
-            {showEmojiPicker && (
-              <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
-                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                  <Button
+                    onClick={handleProjectModal}
+                    disabled={isButtonDisabled}
+                  >
+                    Create an Offer
+                  </Button>
+                  {isProjectModal && (
+                    <ProjectModal
+                      onClose={handleProjectModal}
+                      user1={token.id}
+                      user2={typeof id.id === 'string' ? id.id : ''}
+                    />
+                  )}
+                  <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                    <HiOutlineDotsVertical />
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center gap-6">
+                  <button
+                    onClick={handleOpenModal}
+                    className="rounded-[12px] relative px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200"
+                  >
+                    Current Offers
+                    {offerNotification > 0 && (
+                      <span className="absolute p-2 top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
+                        {offerNotification}
+                      </span>
+                    )}
+                    {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center"> {offerNotifications}</span> */}
+                  </button>
+                  {isModalOpen && (
+                    // <OffersModal onClose={handleOpenModal} user1={typeof token?.id === "string" ? token?.id : ""} />
+                    <OffersModal
+                      onClose={handleOpenModal}
+                      user1={typeof token?.id === "string" ? token?.id : ""}
+                      offerNotification={offerNotification}
+                      setOfferNotification={setOfferNotification}
+                      latestOffer={latestOffer}
+                    />
+                  )}
+
+                  <button
+                    onClick={handleProjectModal}
+                    disabled
+                    className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
+                  >
+                    <button
+                      onClick={handleProjectModal}
+                      disabled
+                      className="rounded-[12px]  px-6 py-4 text-[16px] disabled:bg-gray-300 disabled:text-gray-500 font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
+                    >
+                      Create an Offer
+                    </button>
+                    {isProjectModal && (
+                      <ProjectModal
+                        onClose={handleProjectModal}
+                        user1={token?.id || ""}
+                        user2={typeof id.id === 'string' ? id.id : ''}
+                      />
+                    )}
+                    <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                      <HiOutlineDotsVertical />
+                    </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1">
+              <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
+                <div className="flex flex-col overflow-y-auto  h-full">
+                  {isFetching ? (
+                    <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-[330px] right-[400px]" />
+                  ) : (
+                    <ChatWindow
+                      handleOpenModal={handleOpenModal}
+                      messages={inbox}
+                      currentUser={user1 ?? ""}
+                      profileUrl={profileUrl}
+                      colorScheme={{
+                        senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
+                        receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
+                      }}
+                      senderName={""}
+                    />
+                  )}
+                </div>
               </div>
-            )}
-            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
-            <button
-              onClick={handleCreateZoomMeeting}
-              className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
-            >
-              <Video />
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+            </div>
+
+            <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
+              <div
+                className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-5 pointer-events-none"
+                  }`}
+              >
+                <button
+                  onClick={() => handleFileClick("document")}
+                  className="bg-primary rounded-full"
+                >
+                  <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+                  <button
+                    onClick={() => handleFileClick("document")}
+                    className="bg-primary rounded-full"
+                  >
+                    <FileText className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+                  </button>
+                  <button
+                    onClick={() => handleFileClick("image")}
+                    className="bg-primary rounded-full"
+                  >
+                    <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+                    <button
+                      onClick={() => handleFileClick("image")}
+                      className="bg-primary rounded-full"
+                    >
+                      <Images className="text-lg text-white cursor-pointer flex items-center justify-center w-10 h-10 p-2" />
+                    </button>
+                  </div>
+
+                  <form
+                    onSubmit={onSendMessage}
+                    className="flex items-center gap-2 p-4 w-full"
+                    encType="multipart/form-data"
+                  >
+                    <form
+                      onSubmit={onSendMessage}
+                      className="flex items-center gap-2 p-4 w-full"
+                      encType="multipart/form-data"
+                    >
+                      <AiOutlinePaperClip
+                        onClick={handleClick}
+                        className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
+                      />
+                      {selectedBase64Images.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {selectedBase64Images.map((base64, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg"
+                            >
+                              <Image
+                                width={90}
+                                height={40}
+                                src={base64}
+                                alt="Selected"
+                                className="w-[90px] h-10 object-cover rounded"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleFileRemove(base64)}
+                                className="text-red-500 font-bold"
+                              >
+                                X
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      <input
+                        id="fileInput"
+                        type="file"
+                        multiple // Allow multiple files selection
+                        style={{ display: "none" }} // Hide the input element
+                        onChange={handleImageChange}
+                      />
+                      <input
+                        placeholder="Write message here..."
+                        value={messages} // Use 'messages' state here
+                        onChange={(e) => setMessages(e.target.value)} // Update state correctly on change
+                        className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
+                      />
+                      <button type="submit" className="bg-primary rounded-full">
+                        <FiSend className="text-lg text-white cursor-pointer w-8 h-8 p-2" />
+                      </button>
+                    </form>
+
+                    <FaRegSmile
+                      onClick={toggleEmojiPicker}
+                      className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
+                    />
+                    <FaRegSmile
+                      onClick={toggleEmojiPicker}
+                      className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
+                    />
+                    {showEmojiPicker && (
+                      <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
+                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                      </div>
+                    )}
+                    <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+                    <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+                    <button
+                      onClick={handleCreateZoomMeeting}
+                      className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"
+                    >
+                      <Video />
+                    </button>
+                  </div>
+              </div>
+            </div>
+          </section>
+        </section>
+        );
 };
 
-export default Page;
+        export default Page;
