@@ -19,8 +19,9 @@ import { toast } from "sonner";
 import {
   useEditclientprofileMutation,
   useGetProfileQuery,
+  useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
-// import { get } from "lodash";
+import bgCover from "@/assets/images/profilebanner.png";
 
 const servicesData = [
   {
@@ -169,8 +170,9 @@ export default function Client() {
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
   );
-  // console.log(profileData?.data?.budgetRange?.min);
+  const [loading, setLoading] = useState(false);
   const handleSubmitForm = async (data: any) => {
+    setLoading(true);
     data.minBudget = budgetMinValue;
     data.maxBudget = budgetMaxValue;
     data.minDuration = durationMinValue;
@@ -215,7 +217,6 @@ export default function Client() {
 
     try {
       const res = await editclientProfile({ id: userIdValue, data: formData });
-      console.log(res);
       if ("data" in res) {
         toast.success("Profile Updated Successfully");
         console.log("Profile update response:", res.data);
@@ -225,6 +226,8 @@ export default function Client() {
     } catch (error) {
       toast.error("Profile update failed");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -286,12 +289,72 @@ export default function Client() {
     console.log("selectProject state updated:", selectProject);
   }, [selectProject]);
 
+  const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
+
+  const handleCoverPhotoChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("coverPhoto", file);
+
+        // Ensure the mutation correctly handles FormData
+        const response = await updateCoverPhoto(formData).unwrap();
+
+        if (response) {
+          toast.success("Cover photo updated successfully");
+
+          // Update the background image
+          const newCoverPhotoUrl = URL.createObjectURL(file);
+          document
+            .querySelector(".bg-cover")
+            ?.setAttribute(
+              "style",
+              `background-image: url(${newCoverPhotoUrl})`
+            );
+        }
+      } catch (error) {
+        console.error("Error updating cover photo:", error);
+        toast.error("Failed to update cover photo");
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <div
-        className="bg-cover bg-center h-[324px]"
-        style={{ backgroundImage: "url(/images/profilebanner.png)" }}
+        className="bg-cover bg-center h-[324px] relative"
+        style={{
+          backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})`,
+        }}
       />
+
+      <button
+        type="button"
+        className="cog-button absolute top-[350px] right-4"
+        onClick={() => {
+          const fileInput = document.getElementById(
+            "coverPhotoInput"
+          ) as HTMLInputElement | null;
+          if (fileInput) {
+            fileInput.click();
+          }
+        }}
+      >
+        <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
+          <PiNotePencilBold className="cog-icon text-lg text-white " />
+        </div>
+      </button>
+      <input
+        type="file"
+        accept="image/*"
+        id="coverPhotoInput"
+        className="hidden"
+        onChange={handleCoverPhotoChange}
+      />
+
       <main className="flex-1 -mt-24">
         <div className="max-w-[1100px] mx-auto px-6">
           <form
@@ -353,7 +416,9 @@ export default function Client() {
                   </label>
                   <input
                     id="fname"
-                    defaultValue={myProfileData?.data?.client?.name?.firstName || ""}
+                    defaultValue={
+                      myProfileData?.data?.client?.name?.firstName || ""
+                    }
                     {...register("firstName")}
                     onChange={(e) =>
                       handleChange("data.client.name.firstName", e.target.value)
@@ -368,7 +433,9 @@ export default function Client() {
                   </label>
                   <input
                     id="lname"
-                    defaultValue={myProfileData?.data?.client?.name?.lastName || ""}
+                    defaultValue={
+                      myProfileData?.data?.client?.name?.lastName || ""
+                    }
                     {...register("lastName")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     onChange={(e) =>
@@ -675,9 +742,13 @@ export default function Client() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="bg-primary hover:bg-blue-900 transition-all py-5 px-7 rounded-[50px] my-14 text-white"
+                  className={` py-5 px-7 rounded-[50px] my-14 ${
+                    loading
+                      ? "bg-gray-500 text-white"
+                      : "bg-primary text-white "
+                  }`}
                 >
-                  Save Information
+                  {loading ? "Saving..." : "Save Information"}
                 </button>
               </div>
             </div>

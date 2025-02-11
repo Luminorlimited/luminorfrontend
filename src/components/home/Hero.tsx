@@ -5,6 +5,8 @@ import React from "react";
 import professionalhero from '@/assets/images/professionalhero.png'
 import clientherobg from '@/assets/images/clientherobg.png'
 import { useDecodedToken } from "../common/DecodeToken";
+import { motion } from "framer-motion";
+
 
 const Hero = () => {
   const decodedToken = useDecodedToken()
@@ -31,8 +33,21 @@ const Hero = () => {
         </div>
         {!decodedToken ? (
 
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-bg_primary relative overflow-hidden">
+          <div
+             className="grid lg:grid-cols-2 grid-cols-1 gap-8">
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: -100,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.8,
+              }}
+              className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-bg_primary relative overflow-hidden">
               <div className="z-20">
                 <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
                   I&apos;m  a Retired Professional
@@ -45,8 +60,20 @@ const Hero = () => {
                 </Link>
               </div>
               <Image src={professionalhero} width={208} height={338} className="absolute bottom-0 left-0" alt="profimg" />
-            </div>
-            <div className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#E6AD60] relative overflow-hidden">
+            </motion.div>
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 100,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.8,
+              }}
+              className="flex-1 rounded-[12px] shadow-md flex flex-col items-start  p-8 bg-[#E6AD60] relative overflow-hidden">
               <div className="z-30">
                 <h2 className="text-white text-4xl font-open-sans  font-bold leading-[100% mb-[21px]">
                   I&apos;m a Client
@@ -60,7 +87,7 @@ const Hero = () => {
                 </Link>
               </div>
               <Image src={clientherobg} width={208} height={338} className="absolute top-0 left-0" alt="profimg" />
-            </div>
+            </motion.div>
           </div>
         ) : (
           ""

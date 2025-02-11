@@ -6,6 +6,8 @@ import Logo from "@/utils/Logo";
 import shape from "@/assets/shapes/shape-2.png";
 import Image from "next/image";
 import usertypeshape from '@/assets/shapes/usertypeshape.png'
+import { motion } from "framer-motion";
+
 export default function Signup() {
   return (
     <div className="min-h-screen  flex flex-col items-center justify-center relative">
@@ -39,7 +41,19 @@ export default function Signup() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-8">
-            <div className="relative h-auto p-6 bg-white text-textColor-secondary hover:text-white hover:bg-primary transition-all rounded-xl border shadow-md cursor-pointer group">
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: -100,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                duration: 0.8,
+              }}
+              className="relative h-auto p-6 bg-white text-textColor-secondary hover:text-white hover:bg-primary transition-all rounded-xl border shadow-md cursor-pointer group">
               {/* Decorative Background Shape */}
               <Image
                 src={shape}
@@ -60,12 +74,24 @@ export default function Signup() {
                   for a Client
                 </p>
               </Link>
-            </div>
+            </motion.div>
 
 
 
 
-            <div className="h-auto p-6 bg-white text-textColor-secondary hover:text-white hover:bg-primary transition-all rounded-xl border relative cursor-pointer">
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: 100,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                duration: 0.8,
+              }}
+              className="h-auto p-6 bg-white text-textColor-secondary hover:text-white hover:bg-primary transition-all rounded-xl border relative cursor-pointer">
               <Image
                 src={shape}
                 alt="shape"
@@ -80,7 +106,7 @@ export default function Signup() {
                   Professional
                 </p>
               </Link>
-            </div>
+            </motion.div>
 
           </div>
 

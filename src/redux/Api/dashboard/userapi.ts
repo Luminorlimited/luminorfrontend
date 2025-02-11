@@ -16,6 +16,22 @@ const userApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['dashboard'],
         }),
+        getAdminProfile: build.query({
+            query: () => ({
+                url: `/auth/get-profile`,
+                method: "GET"
+            }),
+            providesTags: ['dashboard']
+        }),
+
+        updateProfileImg: build.mutation({
+            query: (data) => ({
+                url: `/auth/update-admin-profile-image`,
+                method: 'PATCH',
+                body: data
+            }),
+            invalidatesTags: ['dashboard'],
+        }),
         deleteUser: build.mutation({
             query: (id) => ({
                 url: `/auth/delete-user/${id}`,
@@ -66,4 +82,4 @@ const userApi = baseApi.injectEndpoints({
     }),
 });
 
-export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery, useDeleteUserMutation, useUpdateAdminMutation} = userApi;
+export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery, useDeleteUserMutation, useUpdateAdminMutation, useUpdateProfileImgMutation , useGetAdminProfileQuery} = userApi;

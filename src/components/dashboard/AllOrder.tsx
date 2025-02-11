@@ -12,6 +12,7 @@
 // } from "@/components/ui/dropdown-menu";
 // import { Button } from "@/components/ui/button";
 import { useTotalOrderQuery } from "@/redux/Api/dashboard/ordersApi";
+import SkeletonOrderList from "./skeleton/SkeletonOrderList";
 
 // interface Order {
 //     customerName: string;
@@ -86,46 +87,19 @@ export default function AllOrders() {
     //     return statusColors[status] || "text-gray-500";
     // };
 
-    const { data: getAllOrders } = useTotalOrderQuery(undefined)
+    const { data: getAllOrders, isLoading } = useTotalOrderQuery(undefined)
     console.log("get all orders", getAllOrders?.data?.result);
+
+     if (isLoading) {
+         return <SkeletonOrderList />
+        }
 
     return (
         <div className=" bg-bg_secondary px-2 rounded-[12px] min-h-[80vh]">
             <div>
                 <div className="mb-6 flex items-center justify-between p-5">
                     <h1 className="text-2xl font-medium text-black">All Order list</h1>
-                    {/* <div className="flex items-center gap-4">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    className="bg-transparent border-gray-700 text-gray-900 hover:bg-gray-300 hover:text-gray-800 gap-2"
-                                >
-                                    Payment Status Filter
-                                    <Menu className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="bg-gray-300 border-gray-700">
-                                <DropdownMenuRadioGroup
-                                    value={status}
-                                    onValueChange={setStatus}
-                                >
-                                    {statusOptions?.map((item, indx) => (
-                                        <DropdownMenuRadioItem
-                                            key={indx}
-                                            value={item}
-                                            className="text-gray-900 focus:bg-white focus:text-gray-900"
-                                        >
-                                            {item}
-                                        </DropdownMenuRadioItem>
-                                    ))}
-                                </DropdownMenuRadioGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <button className="text-sm hover:text-gray-700 text-gray-900 ">
-                            See All
-                        </button>
-                    </div> */}
+                   
                 </div>
 
                 <div className="rounded-lg overflow-x-auto min-h-[50vh]">
@@ -140,10 +114,10 @@ export default function AllOrders() {
                             </tr>
                         </thead>
                         <tbody>
-                            {getAllOrders?.data?.result.map((order: any, index: number) => (
+                            {getAllOrders?.data && getAllOrders?.data?.result.map((order: any, index: number) => (
                                 <tr
                                     key={index}
-                                    className={`text-sm text-gray-900 cursor-pointer border-b border-gray-700 hover:bg-gray-300`}
+                                    className={`text-sm text-gray-900  border-b border-gray-700 hover:bg-gray-300`}
                                 // onClick={() => handleOrderSelect(index)}
                                 >
                                     <td className="p-4">{new Date(order.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</td>

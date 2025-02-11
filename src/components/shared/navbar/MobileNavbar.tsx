@@ -9,7 +9,7 @@ import Image from "next/image";
 
 // import { FaRegHeart } from "react-icons/fa";
 // import { GoBell } from "react-icons/go";
-import { useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import demoprofile from "@/assets/images/avatar.jpg";
 // import jwt, { JwtPayload } from "jsonwebtoken";
 import { useDispatch, useSelector } from "react-redux";
@@ -27,7 +27,27 @@ export function MobileNavbar() {
   const notificationRef = useRef<HTMLDivElement>(null);
   const handleOpenNotificationBar = () => {
     setIsOpen(!isOpen);
+ 
+  }
+
+ 
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+
+    // Close the profile dropdown if clicking outside
+    if (notificationRef.current && !notificationRef.current.contains(target)) {
+      showFileBtn(false);
+    }
   };
+
+      useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
+
+  
 
   // console.log('my token is', decodedToken);
 
@@ -119,24 +139,27 @@ export function MobileNavbar() {
                 >
                   <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
                 </button>
-
-                <div ref={notificationRef}>
+              
+               
+                <div ref={notificationRef} className="w-[40px] h-[40px]" >
                   <Image
                     src={demoimg}
                     width={40}
                     height={40}
                     alt="profile"
-                    className="rounded-full cursor-pointer hover:opacity-90 transition-all"
+                    className="rounded-full w-full h-full cursor-pointer hover:opacity-90 transition-all"
                     onClick={handleClick}
                   />
                   <ul
-                    className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-14 right-0 transition-all duration-300 ${
-                      fileBtn
-                        ? "opacity-100 translate-y-0 z-[50]"
-                        : "opacity-0 translate-y-5 pointer-events-none z-[10]"
-                    }`}
+                    className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${fileBtn
+                      ? "opacity-100 translate-y-0 z-[50]"
+                      : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+                      }`}
                   >
-                    <Link href={`/user/editProfile/${user?.role}/${user?.id}`}>
+
+                    <Link
+                      href={`/user/editProfile/${user.role}/${user.id}`}
+                    >
                       <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
                         Edit Profile
                       </li>

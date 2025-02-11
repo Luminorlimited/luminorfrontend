@@ -121,7 +121,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row gap-5 items-center md:items-end mb-4 md:mb-0">
             <Image src={logo} alt="Luminor logo" height={50} width={100} />
             {/* <Logo /> */}
-            <p className="">Copyright © luminor 2024. All rights reserved</p>
+            <p className="">Copyright © luminor 2025. All rights reserved</p>
           </div>
           <div className="flex gap-5">
             <Link href="#" className="hover:underline hover:font-bold">

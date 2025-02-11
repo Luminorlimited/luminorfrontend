@@ -112,12 +112,17 @@ export function middleware(request: NextRequest) {
   const clientRoutes = [
     "/project-list/client",
     "/user/editProfile/client",
+    "/user/editProfile/client/:params*",
     "/orders",
+    "/payment-details",
   ];
   const adminRoutes = ["/dashboard", "/dashboard/:params*"];
   const professionalRoutes = [
     "/project-list/professional",
     "/user/editProfile/retireProfessional",
+    "/user/editProfile/retireProfessional/:params*",
+    "/deliver-details",
+    "/deliver-details/:params*",
   ];
 
   // If no token, allow access to public authentication pages
@@ -171,13 +176,18 @@ export const config = {
   matcher: [
     "/profile",
     "/project-list/client",
+    "/project-list/:params*",
     "/project-list/professional",
     "/user/editProfile/client",
     "/user/editProfile/retireProfessional",
+    "/user/editProfile/retireProfessional/:params*",
     "/project-list/default",
     "/dashboard",
     "/dashboard/:params*",
     "/chat",
     "/chat/:params*",
+    "/payment-details",
+    "/deliver-details",
+    "/deliver-details/:params*",
   ],
 };

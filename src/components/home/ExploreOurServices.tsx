@@ -6,6 +6,7 @@ import TechnicalSvg from '@/components/svg/TechnicalSvg';
 import HealthSvg from '@/components/svg/HealthSvg';
 import Education from '@/components/svg/Education';
 import Financial from '@/components/svg/Financial';
+import { motion } from "framer-motion"
 
 import { MdVerifiedUser } from "react-icons/md";
 import chat from "@/assets/Frame.png";
@@ -59,12 +60,26 @@ const services: Service[] = [
 ];
 
 export default function ExploreServices() {
+  const [isAnyHovered, setIsAnyHovered] = useState<number | null>(null)
 
-  const [isAnyHovered, setIsAnyHovered] = useState<number | null>(null);
   return (
-    <section className="py-[40px] md:py-[72px] lg:py-[96px]" id='about'>
+    <section className="py-[40px] md:py-[72px] lg:py-[96px]" id="about">
       <div className="container h-full flex flex-col justify-center">
-        <div className="space-y-5 mb-20">
+        <motion.div
+          className="space-y-5 mb-20"
+          initial={{
+            opacity: 0,
+            x: -100,
+          }}
+          whileInView={{
+            opacity: 1,
+            x: 0,
+          }}
+          transition={{
+            duration: 0.8,
+          }}
+          viewport={{ once: true }}
+        >
           <h1 className="text-center text-xl md:text-xl lg:text-5xl text-textColor-primary font-bold leading-[100%]">
             Explore Our Services
           </h1>
@@ -74,51 +89,65 @@ export default function ExploreServices() {
               Verified Professionals
             </p>
             <p className="flex gap-2 items-center text-lg font-semibold">
-              <Image src={chat} alt="icon" width={20} height={20} />
+              <Image src={chat || "/placeholder.svg"} alt="icon" width={20} height={20} />
               500+ Consultants
             </p>
           </div>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 group md:grid-cols-3 lg:grid-cols-6 gap-2 transition-all duration-500">
           {services.map((service: any, index: number) => (
-            <div
+            <motion.div
+              key={index}
+              initial={{
+                opacity: 0,
+                x: -100,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+              }}
+              transition={{
+                duration: 0.8,
+                delay: index * 0.1, // Staggered delay
+              }}
+              viewport={{ once: true }}
               onMouseEnter={() => setIsAnyHovered(index)}
               onMouseLeave={() => setIsAnyHovered(null)}
-              key={index}
-              className={` relative cursor-pointer overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg lg:mx-0 mx-auto max-w-[214px]`}
+              className={`relative cursor-pointer overflow-hidden rounded-xl border bg-white transition-all duration-1000 hover:shadow-lg lg:mx-0 mx-auto max-w-[214px]`}
             >
-              <div className='transition-[height] hover:bg-primary duration-300 ease-in-out h-48 group-hover:h-[400px]'>
+              <div className="transition-[height] hover:bg-primary duration-300 ease-in-out h-48 group-hover:h-[400px]">
                 <div className="absolute top-0 left-0">
                   <Image
                     className="transition-opacity duration-500 group-hover:opacity-100"
                     width={136}
                     height={131}
-                    src={shape2}
+                    src={shape2 || "/placeholder.svg"}
                     alt="exploreshape"
                   />
                 </div>
-                <div className="px-3 pt-3  text-black transition-all duration-500  hover:text-white z-[30]">
-                  <div className={`rounded-full w-12 h-12 mb-5  ${isAnyHovered === index ? "text-white" : 'text-black'}`}>
+                <div className="px-3 pt-3 text-black transition-all duration-500 hover:text-white z-[30]">
+                  <div
+                    className={`rounded-full w-12 h-12 mb-5 ${isAnyHovered === index ? "text-white" : "text-black"}`}
+                  >
                     {service.icon}
                   </div>
-                  <h3 className={`text-lg font-semibold text-black ${isAnyHovered === index ? "text-white" : 'text-black'} `}>
+                  <h3 className={`text-lg font-semibold ${isAnyHovered === index ? "text-white" : "text-black"}`}>
                     {service.title}
                   </h3>
-                  <div className="overflow-hidden  mt-2">
-                    <p className={`text-sm font-normal hidden group-hover:block leading-relaxed  ${isAnyHovered === index ? "text-white" : "text-black"}`}>
+                  <div className="overflow-hidden mt-2">
+                    <p
+                      className={`text-sm font-normal hidden group-hover:block leading-relaxed ${isAnyHovered === index ? "text-white" : "text-black"}`}
+                    >
                       {service.description}
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-
-
-
       </div>
     </section>
-  );
+  )
 }

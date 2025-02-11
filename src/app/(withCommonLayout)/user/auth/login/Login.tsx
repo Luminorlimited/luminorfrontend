@@ -14,7 +14,7 @@ import Link from "next/link";
 // import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { toast } from "sonner";
-// import { signIn } from "next-auth/react"
+import { motion } from "framer-motion";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -106,86 +106,110 @@ export default function Login() {
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-6">
               <div className="space-y-6">
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-lg font-medium text-[#1A1A1A] mb-2"
-                  >
-                    Enter Email address
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Email address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-lg font-medium text-[#1A1A1A] mb-2"
-                  >
-                    Enter your Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      required
-                      className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute inset-y-0 right-4 flex items-center text-gray-500"
-                    >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-
-                  <div className="flex items-center space-x-2 pt-3">
-                    <label
-                      htmlFor="pass"
-                      className="text-sm flex gap-2 cursor-pointer items-center text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      <Checkbox
-                        id="pass"
-                        className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
-                      />
-                      Remember this device
-                    </label>
-                  </div>
-                </div>
+                <label
+                  htmlFor="email"
+                  className="block text-lg font-medium text-[#1A1A1A] mb-2"
+                >
+                  Enter Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
 
-              <button
-                type="submit"
-                className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium hover:shadow-lg transition-colors hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${
-                  isLoading
-                    ? "text-white bg-[#181522] "
-                    : "text-white bg-primary "
-                }`}
-                disabled={isLoading}
-              >
-                {isLoading ? "Logging in..." : "Log in"}
-              </button>
+              <div className="mx-auto min-h-screen flex justify-center items-center">
+                <div className=" lg:flex gap-[188px]  items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+                  <motion.div
+                    initial={{
+                      opacity: 0,
+                      x: -100,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    transition={{
+                      duration: 0.8,
+                    }}
+                    className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]"
+                  >
+                    <div className="text-center">
+                      <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
+                        Welcome to Luminor!
+                      </h1>
+                      <p className="text-[#666666] text-xl">
+                        Please Enter your details
+                      </p>
+                    </div>
+                  </motion.div>
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="block text-lg font-medium text-[#1A1A1A] mb-2"
+                    >
+                      Enter your Password
+                    </label>
+                    <div className="relative">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="absolute inset-y-0 right-4 flex items-center text-gray-500"
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
 
-              {/* <div className="flex items-center gap-2 justify-center">
+                    <div className="flex items-center space-x-2 pt-3">
+                      <label
+                        htmlFor="pass"
+                        className="text-sm flex gap-2 cursor-pointer items-center text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        <Checkbox
+                          id="pass"
+                          className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
+                        />
+                        Remember this device
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium hover:shadow-lg transition-colors hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${
+                    isLoading
+                      ? "text-white bg-[#181522] "
+                      : "text-white bg-primary "
+                  }`}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Logging in..." : "Log in"}
+                </button>
+
+                {/* <div className="flex items-center gap-2 justify-center">
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                                 <span className="text-[16px] font-medium text-[#1D1F2C]">Or</span>
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                             </div> */}
 
-              {/* <div className="grid gap-4">
+                {/* <div className="grid gap-4">
                                 <Button variant="outline" className="w-full py-[23px] rounded-[10px] text-lg">
                                     <svg
                                         className="mr-2  "
@@ -227,12 +251,26 @@ export default function Login() {
                                 </Button>
                             </div> */}
 
-              {/* <div className="flex items-center gap-2 justify-center">
+                {/* <div className="flex items-center gap-2 justify-center">
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                                 <span className="text-[16px] font-medium text-[#1D1F2C]">Or</span>
                                 <div className="h-[1px]  w-[85px]  bg-[#1D1F2C]" />
                             </div> */}
 
+                <div className="text-center text-lg flex mx-auto justify-center gap-2">
+                  Don&apos;t have an account?
+                  <Link
+                    href="/usertype"
+                    className="flex items-center gap-2 text-primary font-semibold hover:underline"
+                  >
+                    Create Account <FaArrowRightLong />
+                  </Link>
+                </div>
+              </div>
+              <div className="relative  lg:block  hidden w-[650px]  ">
+                <ImageCarousel />
+                {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
+              </div>
               <div className="text-center text-lg flex mx-auto justify-center gap-2">
                 Don&apos;t have an account?
                 <Link
@@ -244,10 +282,24 @@ export default function Login() {
               </div>
             </form>
           </div>
-          <div className="relative  lg:block  hidden w-[650px]  ">
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: 100,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+            }}
+            transition={{
+              duration: 0.8,
+            }}
+            className="relative  lg:block  hidden w-[650px]  "
+          >
             <ImageCarousel />
             {/* <Image src={loginimg} width={650} height={932} alt="titl" className="z-10" /> */}
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

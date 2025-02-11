@@ -11,9 +11,9 @@ import { Separator } from "@/components/ui/separator"
 import Image from 'next/image'
 // import { useSelector } from "react-redux"
 // import { RootState } from "@/redux/store";
-import { useGetProfileQuery } from "@/redux/Api/userApi"
-import { useUpdateAdminMutation } from "@/redux/Api/dashboard/userapi"
+import { useGetAdminProfileQuery, useUpdateAdminMutation, useUpdateProfileImgMutation } from "@/redux/Api/dashboard/userapi"
 import { AvatarFallback } from "@radix-ui/react-avatar"
+import ProfileSkeleton from "./skeleton/ProfileSkeleton"
 
 
 interface AdminProfile {
@@ -29,8 +29,9 @@ interface AdminProfile {
 }
 
 export default function Profile() {
-    const { data: getProfile } = useGetProfileQuery(undefined)
+    const { data: getProfile, isLoading } = useGetAdminProfileQuery(undefined)
     const [updateProfile] = useUpdateAdminMutation()
+    const [updateProfileImage] = useUpdateProfileImgMutation()
 
     const [profile, setProfile] = useState<AdminProfile | null>(null)
     const [isEditing, setIsEditing] = useState(false)
@@ -58,6 +59,7 @@ export default function Profile() {
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
+        console.log("my file ", file);
         if (file) {
             setNewProfileImage(file)
         }
@@ -67,15 +69,28 @@ export default function Profile() {
         e.preventDefault()
         if (!profile) return
 
-        const formData = new FormData()
-        formData.append("firstName", profile.name.firstName)
-        formData.append("lastName", profile.name.lastName)
-        if (newProfileImage) {
-            formData.append("profileImage", newProfileImage)
-        }
-
         try {
-            await updateProfile(formData).unwrap()
+            // Update profile data
+
+            if (newProfileImage) {
+                const formData = new FormData()
+                formData.append("profileUrl", newProfileImage)
+                await updateProfileImage(formData).unwrap()
+            }
+
+            await updateProfile({
+                // profileUrl: profile.profileUrl,
+                name: {
+                    firstName: profile.name.firstName,
+                    lastName: profile.name.lastName,
+                },
+            }).unwrap()
+
+            
+
+            // Update profile image if a new one was selected
+            
+
             setIsEditing(false)
             setNewProfileImage(null)
         } catch (error) {
@@ -83,10 +98,15 @@ export default function Profile() {
         }
     }
 
-    if (!profile) return null
+    if (!profile) return <ProfileSkeleton />
+
+    if (isLoading) {
+        return <ProfileSkeleton />
+    } 
 
     return (
         <div className="container mx-auto p-6 bg-bg_secondary min-h-[80vh]">
+            {/* <ProfileSkeleton/> */}
             <div className="max-w-6xl mx-auto rounded-lg shadow-lg overflow-hidden">
                 <div className="md:flex rounded-[10px] overflow-hidden">
                     {/* Left column - Avatar and basic info */}
@@ -218,5 +238,4 @@ export default function Profile() {
         </div>
     )
 }
-
 
