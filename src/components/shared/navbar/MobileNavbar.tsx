@@ -51,6 +51,8 @@ export function MobileNavbar() {
 
   const demoimg = profileData?.data?.profileUrl || demoprofile;
 
+  const menus = navbarLinks(user?.role as string);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -62,7 +64,7 @@ export function MobileNavbar() {
         <div className="grid gap-4 py-4">
           {/* Navbar Links */}
           <ul className="flex flex-col gap-4 w-full">
-            {navbarLinks?.map((item) =>
+            {menus?.map((item) =>
               item?.subMenus ? (
                 <li key={item.id} className="w-full">
                   <button

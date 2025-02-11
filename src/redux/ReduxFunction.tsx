@@ -60,6 +60,7 @@ export const adminAuthSlice = createSlice({
     logOut: (state) => {
       Cookies.remove("token");
       localStorage.removeItem("email");
+      localStorage.removeItem("persist:auth");
       state.user = null;
       state.token = null;
       state.client = null;

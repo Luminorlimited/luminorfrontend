@@ -71,6 +71,8 @@ const Navbar = () => {
     }
   };
 
+  const menus = navbarLinks(user?.role as string);
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -127,7 +129,7 @@ const Navbar = () => {
       {/* Navbar Links */}
       <div className="lg:flex md:flex hidden items-center gap-6">
         <ul className="flex items-center gap-6">
-          {navbarLinks.map((item) =>
+          {menus.map((item) =>
             item?.subMenus ? (
               <li key={item.id}>
                 <DropdownMenu>

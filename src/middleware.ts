@@ -127,7 +127,6 @@ export function middleware(request: NextRequest) {
     // Decode token to extract user role
     const userInfo = jwtDecode<{ role?: string }>(token);
 
-    console.log(userInfo);
     const role = userInfo?.role;
 
     if (!role) {
