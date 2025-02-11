@@ -14,7 +14,7 @@ import {
   useClientListQuery,
   useLazyClientFilterListQuery,
   useLazyLocationFilterQuery,
-  useLazyProfessionalListQuery,
+  useLazyProfessionalFilterListQuery,
   useProfessionalFilterListQuery,
 } from "@/redux/Api/projectApi";
 import { RootState } from "@/redux/store";
@@ -34,7 +34,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
   // const dispatch = useDispatch();
 
   const [clientLazyData] = useLazyClientFilterListQuery();
-  const [professionalLazyData] = useLazyProfessionalListQuery();
+  const [professionalLazyData] = useLazyProfessionalFilterListQuery();
 
   const { data: clientData } = useClientListQuery({});
   const { data: professionalData } =
@@ -58,7 +58,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
           ) {
             const response = await fetchLocationData(locationFilters).unwrap();
             if (Array.isArray(response?.data)) {
-              setFilteredData(response.data);
+              setFilteredData([...response.data]);
             }
           } else {
             const response = await professionalLazyData(
@@ -66,7 +66,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
             ).unwrap();
 
             if (Array.isArray(response?.data)) {
-              setFilteredData(response.data);
+              setFilteredData([...response.data]);
             }
           }
         }

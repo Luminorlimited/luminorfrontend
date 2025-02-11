@@ -155,5 +155,6 @@ export const {
   useLazyProfessionalListQuery,
   useClientFilterListQuery,
   useProfessionalFilterListQuery,
+  useLazyProfessionalFilterListQuery,
   useLazyLocationFilterQuery,
 } = projectApi;
