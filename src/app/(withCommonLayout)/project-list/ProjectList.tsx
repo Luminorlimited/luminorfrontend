@@ -8,8 +8,8 @@ import Pagination from "@/components/common/pagination/Pagination";
 import projectImgFallback from "@/assets/images/package.png"; // Fallback project image
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
-import { setclientFilter } from "@/redux/ReduxFunction";
+import { useSelector } from "react-redux";
+// import { setclientFilter } from "@/redux/ReduxFunction";
 import {
   useClientListQuery,
   useLazyClientFilterListQuery,
@@ -31,7 +31,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
   const [fetchLocationData] = useLazyLocationFilterQuery(); // Get location data from API
   const route = usePathname();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [clientLazyData] = useLazyClientFilterListQuery();
   const [professionalLazyData] = useLazyProfessionalListQuery();
@@ -91,15 +91,15 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
   const professionalServicesToShow = filteredData;
 
-  useEffect(() => {
-    if (
-      !FilteredData.industry.length &&
-      !FilteredData.timeline.length &&
-      !FilteredData.skillType.length
-    ) {
-      dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
-    }
-  }, [FilteredData, dispatch]);
+  // useEffect(() => {
+  //   if (
+  //     !FilteredData.industry.length &&
+  //     !FilteredData.timeline.length &&
+  //     !FilteredData.skillType.length
+  //   ) {
+  //     dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
+  //   }
+  // }, [FilteredData, dispatch]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
