@@ -170,6 +170,7 @@ export default function Client() {
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
   );
+  console.log("my client profile url is", profileData?.data?.profileUrl);
   const [loading, setLoading] = useState(false);
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
@@ -239,7 +240,7 @@ export default function Client() {
         alert("Please select a valid image file.");
         return;
       }
-      setSelectedImage(file);
+      setSelectedImage(file); // Set the file directly
     }
   };
 
@@ -324,16 +325,11 @@ export default function Client() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div
-        className="bg-cover bg-center h-[324px] relative"
-        style={{
-          backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})`,
-        }}
-      />
+      <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})` }} />
 
       <button
         type="button"
-        className="cog-button absolute top-[350px] right-4"
+        className="cog-button absolute top-[350px] right-4 cursor-pointer z-[10000]"
         onClick={() => {
           const fileInput = document.getElementById(
             "coverPhotoInput"
@@ -367,6 +363,7 @@ export default function Client() {
                 <Image
                   src={imageSrc}
                   alt="profile-img"
+                  {...register("profileUrl")}
                   onChange={(e) =>
                     setValue("profileUrl", (e.target as HTMLInputElement).value)
                   }
@@ -383,8 +380,8 @@ export default function Client() {
                 />
                 {/* Cog button to trigger file input */}
                 <button
-                  type="button"
                   className="cog-button absolute bottom-5 right-0"
+                  type="button"
                   onClick={() => {
                     const fileInput = document.getElementById(
                       "fileInput"
@@ -742,11 +739,10 @@ export default function Client() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className={` py-5 px-7 rounded-[50px] my-14 ${
-                    loading
-                      ? "bg-gray-500 text-white"
-                      : "bg-primary text-white "
-                  }`}
+                  className={` py-5 px-7 rounded-[50px] my-14 ${loading
+                    ? "bg-gray-500 text-white"
+                    : "bg-primary text-white "
+                    }`}
                 >
                   {loading ? "Saving..." : "Save Information"}
                 </button>

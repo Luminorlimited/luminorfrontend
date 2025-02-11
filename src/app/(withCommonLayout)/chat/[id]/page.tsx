@@ -454,7 +454,8 @@ const Page: React.FC = () => {
  
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
+    
   }
   return (
     <section>
@@ -596,7 +597,7 @@ const Page: React.FC = () => {
                 >
                   Current Offers
                   {offerNotification > 0 && (
-                    <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
+                    <span className="absolute p-2 top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center">
                       {offerNotification}
                     </span>
                   )}
@@ -637,7 +638,7 @@ const Page: React.FC = () => {
             <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
               <div className="flex flex-col overflow-y-auto  h-full">
                 {isFetching ? (
-                  <div>loading....................</div>
+                  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
                 ) : (
                   <ChatWindow
                     handleOpenModal={handleOpenModal}

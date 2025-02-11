@@ -85,13 +85,13 @@ export default function Professional() {
     profileData || {}
   );
 
-    useEffect(() => {
-        if (profileData) {
-            setProfileData(profileData)
-            setValue("firstName", profileData?.retireProfessional?.name?.firstName || "");
-            setValue("lastName", profileData?.retireProfessional?.name?.lastName || "");
-        }
-    }, [profileData, setValue])
+  useEffect(() => {
+    if (profileData) {
+      setProfileData(profileData)
+      setValue("firstName", profileData?.retireProfessional?.name?.firstName || "");
+      setValue("lastName", profileData?.retireProfessional?.name?.lastName || "");
+    }
+  }, [profileData, setValue])
 
   const handleChange = (key: string, value: any) => {
     setProfileData((prevData: ProfileData) => {
@@ -133,7 +133,6 @@ export default function Professional() {
         formData.append(Key, value as string);
       }
     });
-    console.log("My profile url is", selectedImage);
 
     formData.append("name[firstName]", data.firstName);
     formData.append("name[lastName]", data.lastName);
@@ -233,69 +232,69 @@ export default function Professional() {
     return avatar.src;
   }, [selectedImage]);
 
-    useMemo(() => {
-        if (selectedImage instanceof File) {
-            const url = URL.createObjectURL(selectedImage);
-            return () => URL.revokeObjectURL(url); 
+  useMemo(() => {
+    if (selectedImage instanceof File) {
+      const url = URL.createObjectURL(selectedImage);
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [selectedImage]);
+
+  const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
+
+  const handleCoverPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append('coverPhoto', file);
+
+        // Ensure the mutation correctly handles FormData
+        const response = await updateCoverPhoto(formData).unwrap();
+
+        if (response) {
+          toast.success("Cover photo updated successfully");
+
+          // Update the background image
+          const newCoverPhotoUrl = URL.createObjectURL(file);
+          document.querySelector('.bg-cover')?.setAttribute('style', `background-image: url(${newCoverPhotoUrl})`);
         }
-    }, [selectedImage]);
-
-    const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
-
-    const handleCoverPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            try {
-                const formData = new FormData();
-                formData.append('coverPhoto', file);
-
-                // Ensure the mutation correctly handles FormData
-                const response = await updateCoverPhoto(formData).unwrap();
-
-                if (response) {
-                    toast.success("Cover photo updated successfully");
-
-                    // Update the background image
-                    const newCoverPhotoUrl = URL.createObjectURL(file);
-                    document.querySelector('.bg-cover')?.setAttribute('style', `background-image: url(${newCoverPhotoUrl})`);
-                }
-            } catch (error) {
-                console.error("Error updating cover photo:", error);
-                toast.error("Failed to update cover photo");
-            }
-        }
-    };
-    console.log("cover url", profileData?.data?.coverUrl);
+      } catch (error) {
+        console.error("Error updating cover photo:", error);
+        toast.error("Failed to update cover photo");
+      }
+    }
+  };
+  console.log("cover url", profileData?.data?.coverUrl);
 
 
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
 
-            {/* Header with gradient */}
-            <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})` }}/>
+      {/* Header with gradient */}
+      <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})` }} />
 
-            <button
-                type="button"
-                className="cog-button absolute top-[350px] right-4"
-                onClick={() => {
-                    const fileInput = document.getElementById("coverPhotoInput") as HTMLInputElement | null;
-                    if (fileInput) {
-                        fileInput.click();
-                    }
-                }}
-            >
-                <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
-                    <PiNotePencilBold className="cog-icon text-lg text-white " />
-                </div>
-            </button>
-            <input
-                type="file"
-                accept="image/*"
-                id="coverPhotoInput"
-                className="hidden"
-                onChange={handleCoverPhotoChange}
-            />
+      <button
+        type="button"
+        className="cog-button absolute top-[350px] right-4 z-[10000]"
+        onClick={() => {
+          const fileInput = document.getElementById("coverPhotoInput") as HTMLInputElement | null;
+          if (fileInput) {
+            fileInput.click();
+          }
+        }}
+      >
+        <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
+          <PiNotePencilBold className="cog-icon text-lg text-white " />
+        </div>
+      </button>
+      <input
+        type="file"
+        accept="image/*"
+        id="coverPhotoInput"
+        className="hidden"
+        onChange={handleCoverPhotoChange}
+      />
 
 
       {/* Main Content */}
@@ -552,11 +551,10 @@ export default function Professional() {
                 <p>Project Based Pricing</p>
               </div>
               <div
-                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${
-                  isDragging
-                    ? "border-gray-400 rounded-xl bg-gray-50"
-                    : "border-gray-200"
-                } transition-colors duration-200`}
+                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${isDragging
+                  ? "border-gray-400 rounded-xl bg-gray-50"
+                  : "border-gray-200"
+                  } transition-colors duration-200`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -598,16 +596,16 @@ export default function Professional() {
                 />
               </div>
 
-                            <div className="flex justify-center">
-                                <button className={` py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-white" : "bg-primary text-white "}`}>
-                                    {loading ? "Saving..." : "Save Information"}
-                                </button>
-                            </div>
+              <div className="flex justify-center">
+                <button className={` py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-white" : "bg-primary text-white "}`}>
+                  {loading ? "Saving..." : "Save Information"}
+                </button>
+              </div>
 
-                        </div>
-                    </form>
-                </div>
-            </main>
+            </div>
+          </form>
         </div>
-    );
+      </main>
+    </div>
+  );
 }
