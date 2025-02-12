@@ -205,13 +205,13 @@ const Navbar = () => {
             {/* <Link href="/chat">
               <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
             </Link> */}
-            <div ref={notificationRef} className="w-[40px] h-[40px]" >
+            <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer" >
               <Image
                 src={demoimg}
                 width={40}
                 height={40}
                 alt="profile"
-                className="rounded-full w-full h-full cursor-pointer hover:opacity-90 transition-all"
+                className="rounded-full cursor-pointer w-full h-full  hover:opacity-90 transition-all"
                 onClick={handleClick}
               />
               <ul

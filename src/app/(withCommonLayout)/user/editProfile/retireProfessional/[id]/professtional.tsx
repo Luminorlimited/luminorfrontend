@@ -50,9 +50,7 @@ const servicesData = [
   },
 ];
 
-interface ProfileData {
-  [key: string]: any; // Use a more specific type if you know the data shape
-}
+
 export default function Professional() {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -71,6 +69,11 @@ export default function Professional() {
     setIsDragging(false);
     // Handle file drop here
   };
+  const removeFile = () => {
+    setWorkSample("");
+    setValue("workSample", null);
+  };
+
 
   const { register, handleSubmit, setValue, watch } = useForm();
   const [loading, setLoading] = useState(false);
@@ -122,36 +125,8 @@ export default function Professional() {
 
   const userIdValue = userId.id;
 
-  //   const watchSelectedService = watch("selectedService");
   const { data: profileData } = useGetProfileQuery(userIdValue);
-  const [myProfileData, setProfileData] = useState<ProfileData>(
-    profileData || {}
-  );
 
-  useEffect(() => {
-    if (profileData) {
-      setProfileData(profileData)
-      setValue("firstName", profileData?.retireProfessional?.name?.firstName || "");
-      setValue("lastName", profileData?.retireProfessional?.name?.lastName || "");
-    }
-  }, [profileData, setValue])
-
-  const handleChange = (key: string, value: any) => {
-    setProfileData((prevData: ProfileData) => {
-      const newData = structuredClone(prevData); // Deep clone the object (modern way)
-
-      const keys = key.split(".");
-      let temp: any = newData;
-
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!temp[keys[i]]) temp[keys[i]] = {};
-        temp = temp[keys[i]];
-      }
-
-      temp[keys[keys.length - 1]] = value;
-      return newData;
-    });
-  };
   const [workSample, setWorkSample] = useState<string | File>(
     profileData?.data?.workSample
   );
@@ -164,6 +139,7 @@ export default function Professional() {
     setLoading(true);
     data.longitude = parseFloat(longitude);
     data.latitude = parseFloat(latitude);
+    
     if (!data || typeof data !== "object") {
       console.error("Invalid form data");
       toast.error("Invalid form data");
@@ -193,20 +169,18 @@ export default function Professional() {
     console.log("My Form data", formData);
 
     try {
-      if (data.location) {
-        const geocodeResult = await geocodeLocation(data.location);
-
+      if (location) {
+        const geocodeResult = await geocodeLocation(location);
         if (geocodeResult) {
           const locationData = {
-            type: "point",
-            coordinates: [geocodeResult.latitude, geocodeResult.longitude],
+            type: "Point",
+            coordinates: [geocodeResult.longitude, geocodeResult.latitude],
           };
           formData.append("location", JSON.stringify(locationData));
-          console.log("My location data is", locationData);
         }
-      } else {
-        console.warn("Location is undefined or empty.");
       }
+
+    
 
       const res = await editprofessionalProfile({
         id: userIdValue,
@@ -228,32 +202,31 @@ export default function Professional() {
     }
   };
 
-  const geocodeLocation = async (location: string) => {
+  const geocodeLocation = async (location :any) => {
     if (!location) return null;
-
     try {
       const apiKey = "AIzaSyD3oE6zpQw1EFzWBrCuhPdAeqedjp46tNA";
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-          location
-        )}&key=${apiKey}`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${apiKey}`
       );
       const data = await response.json();
 
       if (data.status === "OK" && data.results.length > 0) {
         const { lat, lng } = data.results[0].geometry.location;
+        setLatitude(lat);
+        setLongitude(lng);
         return { latitude: lat, longitude: lng };
       } else {
-        console.error("Geocoding failed:", data.status);
         toast.error("Unable to fetch location coordinates.");
         return null;
       }
     } catch (error) {
-      console.error("Geocoding error:", error);
+      console.log("location error is", error);
       toast.error("Failed to fetch location coordinates.");
       return null;
     }
   };
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -309,7 +282,7 @@ export default function Professional() {
       }
     }
   };
-  console.log("cover url", profileData?.data?.coverUrl);
+  // console.log("cover url", profileData?.data?.coverUrl);
 
 
   return (
@@ -390,8 +363,8 @@ export default function Professional() {
               </div>
 
               <h1 className="text-2xl font-semibold mt-4">
-                {myProfileData?.data?.retireProfessional?.name?.firstName}{" "}
-                {myProfileData?.data?.retireProfessional?.name?.lastName}
+                {profileData?.data?.retireProfessional?.name?.firstName}{" "}
+                {profileData?.data?.retireProfessional?.name?.lastName}
               </h1>
               <p className="text-gray-600">
                 {" "}
@@ -410,16 +383,9 @@ export default function Professional() {
                     id="fname"
                     {...register("firstName")}
                     placeholder="John"
-                    defaultValue={
-                      myProfileData?.data?.retireProfessional?.name?.firstName
-                    }
+                    defaultValue={profileData?.data?.retireProfessional?.name?.firstName}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                    onChange={(e) =>
-                      handleChange(
-                        "data.retireProfessional.name.firstName",
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => setValue("firstName", e.target.value)}
                     required
                   />
                 </div>
@@ -432,15 +398,12 @@ export default function Professional() {
                     {...register("lastName")}
                     placeholder="Watson"
                     defaultValue={
-                      myProfileData?.data?.retireProfessional?.name?.lastName
+                      profileData?.data?.retireProfessional?.name?.lastName
                     }
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                    onChange={(e) =>
-                      handleChange(
-                        "data.retireProfessional.name.lastName",
-                        e.target.value
-                      )
-                    }
+
+                    onChange={(e) => setValue("lastName", e.target.value)}
+
                     required
                   />
                 </div>
@@ -636,7 +599,7 @@ export default function Professional() {
                     const file = e.target.files?.[0];
                     if (file) {
                       setWorkSample(file); // Update file state
-                      setValue("workSample", file); // Update React Hook Form value
+                      setValue("workSample", file); 
                       console.log("File selected:", file);
                     }
                   }}
@@ -648,13 +611,19 @@ export default function Professional() {
                     <p className="text-sm text-gray-700">Selected file: {workSample instanceof File ? workSample.name : ''}</p>
                     {workSample instanceof File && workSample.type.startsWith("image/") && (
                       <Image
-                        width={250}
-                        height={300}
-                        src={workSample instanceof File ? URL.createObjectURL(workSample) : ""}
+                        src={URL.createObjectURL(workSample)}
                         alt="Preview"
+                        width={250}
+                        height={250}
                         className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
                       />
                     )}
+                    <button
+                      onClick={removeFile}
+                      className="mt-2 px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+                    >
+                      Remove File
+                    </button>
                   </div>
                 )}
               </div>

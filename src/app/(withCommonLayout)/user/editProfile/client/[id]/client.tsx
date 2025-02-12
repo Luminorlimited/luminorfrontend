@@ -60,9 +60,7 @@ const minGap = 0;
 const minPrice = 1;
 const maxPrice = 400;
 
-interface ProfileData {
-  [key: string]: any; // Use a more specific type if you know the data shape
-}
+
 
 export default function Client() {
   interface DecodedToken {
@@ -87,33 +85,10 @@ export default function Client() {
   const [editclientProfile] = useEditclientprofileMutation();
 
   const { data: profileData } = useGetProfileQuery(userIdValue);
-  const [myProfileData, setProfileData] = useState<ProfileData>(
-    profileData || {}
-  );
 
-  useEffect(() => {
-    // Update local state when profileData is fetched
-    if (profileData) {
-      setProfileData(profileData);
-    }
-  }, [profileData]);
 
-  const handleChange = (key: string, value: any) => {
-    setProfileData((prevData: ProfileData) => {
-      const newData = structuredClone(prevData); // Deep clone the object (modern way)
 
-      const keys = key.split(".");
-      let temp: any = newData;
 
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!temp[keys[i]]) temp[keys[i]] = {};
-        temp = temp[keys[i]];
-      }
-
-      temp[keys[keys.length - 1]] = value;
-      return newData;
-    });
-  };
 
   const [budgetMinValue, setBudgetMinValue] = useState(
     profileData?.data?.budgetRange?.min || minPrice
@@ -414,12 +389,11 @@ export default function Client() {
                   <input
                     id="fname"
                     defaultValue={
-                      myProfileData?.data?.client?.name?.firstName || ""
+                      profileData?.data?.client?.name?.firstName || ""
                     }
                     {...register("firstName")}
-                    onChange={(e) =>
-                      handleChange("data.client.name.firstName", e.target.value)
-                    }
+                    onChange={(e) => setValue("firstName", e.target.value)}
+
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     placeholder="first name"
                   />
@@ -431,13 +405,12 @@ export default function Client() {
                   <input
                     id="lname"
                     defaultValue={
-                      myProfileData?.data?.client?.name?.lastName || ""
+                      profileData?.data?.client?.name?.lastName || ""
                     }
                     {...register("lastName")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                    onChange={(e) =>
-                      handleChange("data.client.name.lastName", e.target.value)
-                    }
+                    onChange={(e) => setValue("lastName", e.target.value)}
+
                     placeholder="last name"
                   />
                 </div>
@@ -500,7 +473,7 @@ export default function Client() {
                 </label>
                 <input
                   id="loc"
-                  {...register("loc")}
+                  {...register("location")}
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                   placeholder="USA"
                 />

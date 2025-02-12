@@ -13,10 +13,20 @@ import mainlogo from '@/assets/images/mainlogo.png'
 
 export default function Education({ register, handleNext, setValue, handleBack }: any) {
   const [isDragging, setIsDragging] = useState(false);
+  const [workSample, setWorkSample] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
+  };
+
+  const removeFile = () => {
+    setWorkSample(null);
+    setPreviewUrl(null);
+    setValue("workSample", null);
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
@@ -31,8 +41,11 @@ export default function Education({ register, handleNext, setValue, handleBack }
 
 
 
+
+
   const [tags, setTags] = useState<string[]>([]); // State to store tags
-  const [inputValue, setInputValue] = useState(""); // State for input value
+  const [inputValue, setInputValue] = useState("");
+
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim()) {
@@ -103,9 +116,9 @@ export default function Education({ register, handleNext, setValue, handleBack }
               Educational Background <span className="text-red-500">*</span>
             </Label>
             <select
-                id="edu"
-                {...register("edubackground")}
-                required
+              id="edu"
+              {...register("edubackground")}
+              required
               className="h-12 rounded-xl border-[#E5E7EB] w-full px-3 border"
               defaultValue={''}
             >
@@ -145,27 +158,27 @@ export default function Education({ register, handleNext, setValue, handleBack }
           <div className="flex flex-wrap items-center gap-2 p-2 border rounded-xl border-[#E5E7EB]">
             {/* Render Tags */}
             {tags.map((tag, index) => (
-                <div
-                    key={index}
-                    className="flex items-center bg-blue-800 text-white px-3 py-1 rounded-[12px]"
+              <div
+                key={index}
+                className="flex items-center bg-blue-800 text-white px-3 py-1 rounded-[12px]"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => removeTag(tag)}
+                  className="ml-2 text-red-500 hover:text-red-700"
                 >
-                  {tag}
-                  <button
-                      type="button"
-                      onClick={() => removeTag(tag)}
-                      className="ml-2 text-red-500 hover:text-red-700"
-                  >
-                    ×
-                  </button>
-                </div>
+                  ×
+                </button>
+              </div>
             ))}
             {/* Input Field */}
             <input
-                id="techskill"
-                placeholder="Enter skills and press Enter"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
+              id="techskill"
+              placeholder="Enter skills and press Enter"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="h-10 border-none outline-none flex-grow"
             />
           </div>
@@ -205,7 +218,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
               </h3>
               <p className="mt-1 text-sm text-gray-500">Upload or drag and drop</p>
               <p className="mt-1 text-sm text-gray-500">
-                PDF (Preferred), Docx, Doc, RTF, Txt
+                Img (Preferred), jpeg, jpg, png
               </p>
             </div>
 
@@ -218,11 +231,17 @@ export default function Education({ register, handleNext, setValue, handleBack }
           <input
             type="file"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            accept=".pdf,.docx,.doc,.rtf,.txt"
-            {...register("file", { required: true })} // Add validation rules
+            accept=".png,.jpeg,.jpg"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
+                // Create a preview URL
+                const filePreviewUrl = URL.createObjectURL(file);
+
+                // Update states
+                setWorkSample(file);
+                setPreviewUrl(filePreviewUrl);
+
                 // Extract necessary file properties
                 const fileName = file.name;
                 const filePath = file.webkitRelativePath || file.name; // Fallback to name if relative path is unavailable
@@ -234,13 +253,34 @@ export default function Education({ register, handleNext, setValue, handleBack }
                 } else {
                   console.log("File Selected:", { fileName, filePath, fileType });
 
-                  // Process the file (e.g., update state or form data)
-                  // Example: Save file details in state
+                  // Update form data
                   setValue("workSample", { fileName, filePath, fileType });
                 }
               }
             }}
+
+
           />
+        </div>
+        <div>
+          {workSample && previewUrl && (
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-700">Selected file: {workSample.name}</p>
+              <Image
+                src={previewUrl}
+                width={150}
+                height={100}
+                alt="Preview"
+                className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
+              />
+              <button
+                onClick={removeFile}
+                className="mt-2 px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
+              >
+                Remove File
+              </button>
+            </div>
+          )}
         </div>
 
       </div>
@@ -260,7 +300,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
           Next
         </Button>
       </div>
-    
+
     </div>
 
   );
