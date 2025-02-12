@@ -26,6 +26,10 @@ export default function ProfessionalForm() {
   const [createProfessional] = useProfessionalUserMutation();
 
   // const router = useRouter();
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
+
   const handleSubmitProfessionalForm = async (data?: any) => {
     const formData = new FormData();
 
@@ -39,6 +43,31 @@ export default function ProfessionalForm() {
     formData.append("phoneNumber", data.phone);
     formData.append("role", "retireProfessional");
     formData.append("password", data.password);
+
+
+
+    const validatePassword = () => {
+      const newErrors: { password?: string; confirmPassword?: string } = {};
+
+      if (!data.password) {
+        newErrors.password = "Password is required.";
+      } else if (!/(?=.*[A-Z])(?=.*\d).{8,}/.test(data.password)) {
+        newErrors.password =
+          "Password must include at least 8 characters, one uppercase letter, and one number.";
+      }
+
+      if (!confirmPassword) {
+        newErrors.confirmPassword = "Confirm Password is required.";
+      } else if (data.password !== confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match.";
+      }
+
+      setErrors(newErrors);
+
+      // Return true if no errors
+      return Object.keys(newErrors).length === 0;
+    };
+
 
     if (data.file && data.file[0]) {
       formData.append("cvOrCoverLetter", data.file[0]);
@@ -85,29 +114,32 @@ export default function ProfessionalForm() {
     setLoading(true);
 
     try {
-      const res: any = await createProfessional(formData);
-      if (res?.success) {
-        dispatch(
-          setUser({
-            user: {
-              id: data.id || "", // Ensure id has a fallback
-              name: data.name || "", // Fallback for optional name
-              email: data.email || "", // Fallback for email
-              role: data.role || "", // Default role as 'user'
-              photoUrl: data.photoUrl || "", // Optional fallback for photoUrl
-            },
-            token: data.accessToken || null, // Fallback for token
-          })
-        );
-
-        console.log("Form submitted successfully:", res.data);
-        toast.success("Form submitted successfully!");
-        setStep(5);
-        // router.push("/user/auth/login");
-      } else {
-        console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
-        toast.error("Something went wrong.");
-        setLoading(false);
+      if (validatePassword()) {
+        const res: any = await createProfessional(formData);
+        if (res?.data) {
+          dispatch(
+            setUser({
+              user: {
+                id: data.id || "", // Ensure id has a fallback
+                name: data.name || "", // Fallback for optional name
+                email: data.email || "", // Fallback for email
+                role: data.role || "", // Default role as 'user'
+                photoUrl: data.photoUrl || "", // Optional fallback for photoUrl
+              },
+              token: data.accessToken || null, // Fallback for token
+            })
+          );
+  
+          console.log("Form submitted successfully:", res.data);
+          toast.success("Form submitted successfully!");
+          setStep(5);
+          // router.push("/user/auth/login");
+        } else {
+          console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
+          toast.error("Something went wrong.");
+          setLoading(false);
+        }
+        
       }
     } catch (error) {
       console.error("An error occurred:", error);
@@ -184,8 +216,11 @@ export default function ProfessionalForm() {
               {step === 4 && (
                 <Password
                   register={register}
+                  confirmPassword={confirmPassword}
                   handleBack={() => setStep(3)}
                   loading={loading}
+                  errors={errors}
+                  setConfirmPassword={setConfirmPassword}
                   handleNext={() => setStep(5)}
                 />
               )}
