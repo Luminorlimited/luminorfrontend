@@ -6,16 +6,16 @@ import { Filters, MobileSidebar, Sidebar } from "../sidebar";
 
 const ClientService = () => {
   const [filters, setFilters] = useState<Filters>({
-    industry: [],
-    timeline: [],
-    skillType: [],
-    projectMin: 1,
-    projectMax: 90,
-    minBudget: 0,
-    maxBudget: 90,
+    industry: undefined,
+    timeline: undefined,
+    skillType: undefined,
+    projectMin: undefined,
+    projectMax: undefined,
+    minBudget: undefined,
+    maxBudget: undefined,
   });
-    
-  
+
+
 
   return (
     <div className="bg-slate-50">

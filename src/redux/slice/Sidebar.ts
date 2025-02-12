@@ -2,13 +2,13 @@ import { Filters } from "@/app/(withCommonLayout)/project-list/sidebar";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: Filters = {
-  industry: [],
-  timeline: [],
-  skillType: [],
-  projectMin: 1,
-  projectMax: 90,
-  minBudget: 500,
-  maxBudget: 10000,
+  industry: undefined,
+  timeline: undefined,
+  skillType: undefined,
+  projectMin: undefined,
+  projectMax: undefined,
+  minBudget: undefined,
+  maxBudget: undefined,
 };
 
 const filtersSlice = createSlice({

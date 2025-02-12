@@ -20,15 +20,16 @@ export function middleware(request: NextRequest) {
   ];
 
   const clientRoutes = [
-    "/project-list/client",
+    "/project-list/retireProfessional",
     "/user/editProfile/client",
     "/user/editProfile/client/:params*",
     "/orders",
     "/payment-details",
   ];
-  const adminRoutes = ["/dashboard", "/dashboard/:params*", "/dashboard/offers", "/dashboard/orders", "/dashboard/profile", "/dashboard/users", "/dashboard/users/:params*", ];
+  const adminRoutes = ["/dashboard", "/dashboard/:params*", "/dashboard/offers", "/dashboard/orders", "/dashboard/profile", "/dashboard/users", "/dashboard/users/:params*",];
+  
   const professionalRoutes = [
-    "/project-list/professional",
+    "/project-list/client",
     "/user/editProfile/retireProfessional",
     "/user/editProfile/retireProfessional/:params*",
     "/deliver-details",

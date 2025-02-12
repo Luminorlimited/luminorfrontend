@@ -68,11 +68,11 @@ const projectApi = baseApi.injectEndpoints({
         industry,
         timeline,
         skillType,
-      }: {
-        industry: string[];
-        timeline: string[];
-        skillType: string[];
-      }) => {
+        maxBudget,
+        minBudget,
+        projectMax,
+        projectMin,
+      }: Filters) => {
         const queryParams = [];
 
         // Format arrays manually as strings with double quotes
@@ -90,6 +90,18 @@ const projectApi = baseApi.injectEndpoints({
           queryParams.push(
             `skillType=[${skillType.map((item: any) => `"${item}"`).join(",")}]`
           );
+        }
+        if (projectMin) {
+          queryParams.push(`projectMin=${projectMin}`);
+        }
+        if (projectMax) {
+          queryParams.push(`projectMax=${projectMax}`);
+        }
+        if (maxBudget) {
+          queryParams.push(`maxBudget=${maxBudget}`);
+        }
+        if (minBudget) {
+          queryParams.push(`minBudget=${minBudget}`);
         }
 
         const queryString = queryParams.join("&");

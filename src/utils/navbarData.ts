@@ -32,9 +32,7 @@ export const navbarLinks = (role: string): navbarDataTypes[] => {
       id: 3,
       title: "Services",
       link: `${
-        role === "client" || role === "retireProfessional"
-          ? `/project-list/${role}`
-          : "/user/auth/login"
+        role === "client" ? `/project-list/retireProfessional` : role === "retireProfessional" ? `/project-list/client` : "/user/auth/login"
       }`,
       icon: ChevronDown,
     },

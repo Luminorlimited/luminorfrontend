@@ -21,13 +21,13 @@ import Swal from "sweetalert2";
 import { setLocation } from "@/redux/slice/locationSlice";
 
 export type Filters = {
-  industry: string[];
-  timeline: string[];
-  skillType: string[];
-  projectMin: number;
-  projectMax: number;
-  minBudget: number;
-  maxBudget: number;
+  industry?: string[];
+  timeline?: string[];
+  skillType?: string[];
+  projectMin?: number;
+  projectMax?: number;
+  minBudget?: number;
+  maxBudget?: number;
 };
 
 export function Sidebar({
@@ -420,7 +420,7 @@ export function Sidebar({
         )}
       </div>
 
-      {pathName === "/project-list/retireProfessional" ? (
+      {pathName === "/project-list/client" ? (
         <div className="grid grid-rows-2 gap-6 bg-white p-4 shadow-md rounded-[15px]">
           <div>
             <label className="block text-lg mb-4 font-medium">
