@@ -596,6 +596,7 @@ export default function Professional() {
                 <CheckBox />
                 <p>Project Based Pricing</p>
               </div>
+
               <div
                 className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${isDragging
                   ? "border-gray-400 rounded-xl bg-gray-50"
@@ -618,7 +619,7 @@ export default function Professional() {
                       Upload or drag and drop
                     </p>
                     <p className="mt-1 text-sm text-gray-500">
-                      PDF (Preferred), Docx, Doc, RTF, Txt
+                      Img (Preferred), jpeg, jpg, png
                     </p>
                   </div>
 
@@ -641,7 +642,22 @@ export default function Professional() {
                   }}
                 />
               </div>
-
+              <div>
+                {workSample && (
+                  <div className="mt-4 text-center">
+                    <p className="text-sm text-gray-700">Selected file: {workSample instanceof File ? workSample.name : ''}</p>
+                    {workSample instanceof File && workSample.type.startsWith("image/") && (
+                      <Image
+                        width={250}
+                        height={300}
+                        src={workSample instanceof File ? URL.createObjectURL(workSample) : ""}
+                        alt="Preview"
+                        className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
               <div className="flex justify-center">
                 <button className={` py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-white" : "bg-primary text-white "}`}>
                   {loading ? "Saving..." : "Save Information"}
