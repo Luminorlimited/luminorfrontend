@@ -129,7 +129,7 @@ export default function ClientForm() {
               <SuccessPage />
             )}
             <Stepper currentStep={step} setStep={setStep} />
-            {isLoading && <p>Loading...</p>}
+            {/* {isLoading && <p>Loading...</p>} */}
           </div>
         </div>
       </form>

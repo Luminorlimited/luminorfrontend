@@ -76,6 +76,49 @@ export default function Professional() {
   const [loading, setLoading] = useState(false);
   const [editprofessionalProfile] = useEditprofessionalprofileMutation();
   const userId = useParams();
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [location, setLocation] = useState("");
+
+
+  useEffect(() => {
+    let autocomplete: google.maps.places.Autocomplete;
+
+    const initAutocomplete = () => {
+      const input = document.getElementById("search-input") as HTMLInputElement;
+      if (input) {
+        autocomplete = new google.maps.places.Autocomplete(input);
+
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+
+          if (!place.geometry || !place.geometry.location) {
+            alert(`No details available for input: '${place.name}'`);
+            return;
+          }
+
+          setLatitude(place.geometry.location.lat().toString());
+          setLongitude(place.geometry.location.lng().toString());
+          setLocation(place.formatted_address || ""); // Store selected location
+
+          console.log("Selected Location:", place.formatted_address);
+          console.log("Latitude:", place.geometry.location.lat());
+          console.log("Longitude:", place.geometry.location.lng());
+        });
+      }
+    };
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
+    script.async = true;
+    script.onload = initAutocomplete;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
 
   const userIdValue = userId.id;
 
@@ -119,6 +162,8 @@ export default function Professional() {
 
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
+    data.longitude = parseFloat(longitude);
+    data.latitude = parseFloat(latitude);
     if (!data || typeof data !== "object") {
       console.error("Invalid form data");
       toast.error("Invalid form data");
@@ -432,17 +477,18 @@ export default function Professional() {
               </div>
 
               <div>
-                <label className="block text-sm mb-2" htmlFor="loc">
+                <label className="block text-sm mb-2" htmlFor="search-input">
                   Location *
                 </label>
                 <input
-                  id="loc"
-                  {...register("location")}
+                  id="search-input"
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                  onChange={(e) => setValue("location", e.target.value)}
-                  placeholder="USA"
+                  value={location} // Show selected location
+                  onChange={(e) => setLocation(e.target.value)} // Update state when user types
+                  placeholder="Search for a location..."
                 />
               </div>
+
 
               <div>
                 <label className="block text-sm mb-2" htmlFor="problemArea">
