@@ -109,7 +109,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     setCurrentPage(pageNumber);
   };
   // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-  //   console.log("My test is", currentItems);
+  console.log("My test is", currentItems);
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
@@ -119,6 +119,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
               key={index}
               className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
             >
+
               <div className="relative w-full">
                 <div className="overflow-hidden rounded-[10px]">
                   <Image
@@ -140,7 +141,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 <div className="mb-3 flex items-center gap-3">
                   <h2>Preference: </h2>
                   <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
-                    {data?.expertise || "Not Specified"}
+                    {data?.projectPreference || "Not Specified"}
                   </span>
                 </div>
 
@@ -149,15 +150,15 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                     <div className="h-15 w-10 overflow-hidden rounded-full">
                       <Image
                         src={data?.profileUrl || demoimg} //demo Image
-                        alt={data?.userDetails?.name?.firstName || "Client"}
+                        alt={data?.client?.name?.firstName || "Client"}
                         width={40}
                         height={40}
                         className="object-cover"
                       />
                     </div>
                     <span className="text-sm font-medium text-gray-900">
-                      {data.userDetails?.name?.firstName || "Unknown"}{" "}
-                      {data.userDetails?.name?.lastName || ""}
+                      {data.client?.name?.firstName || "Unknown"}{" "}
+                      {data.client?.name?.lastName || ""}
                     </span>
                   </div>
 
@@ -175,17 +176,17 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   {data.preferedProjects || "Untitled Projects"}
                 </h3>
 
-                <div className="">
-                  {/* <div className="text-xl">
-                                        <span className="text-gray-500">Budget: </span>
-                                        <span className="font-medium text-gray-900">
-                                            ${data.hourlyRate || "N/A"}
-                                        </span>
-                                    </div> */}
+                <div className="flex justify-between">
+                  <div className="text-xl">
+                    <span className="text-gray-500">Budget: </span>
+                    <span className="font-medium text-gray-900">
+                      ${data?.budgetRange?.max || "N/A"}
+                    </span>
+                  </div>
 
                   <Link
-                    className="rounded-[12px] w-full block text-center  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
-                    href={`/chat/${data?.userDetails?._id}`}
+                    className="rounded-[12px]  text-center  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
+                    href={`/chat/${data?.client?._id}`}
                   >
                     Connect Now
                   </Link>
@@ -200,6 +201,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
               key={index}
               className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
             >
+
               <div className="relative w-full">
                 <div className="overflow-hidden rounded-[10px]">
                   <Image

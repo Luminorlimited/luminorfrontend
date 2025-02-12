@@ -14,7 +14,6 @@ const FeaturedProject: React.FC = () => {
     const route = usePathname();
     const clientData = useClientListQuery(undefined);
     const professionalData = useProfessionalListQuery(undefined);
-    // console.log("my clientData is", clientData);
     // console.log("my professionalData is", professionalData);
 
     const handleToggleShowAll = () => {
@@ -23,6 +22,8 @@ const FeaturedProject: React.FC = () => {
 
     const renderProjects = (data: any[], isClient: boolean) => {
         const projectsToShow = showAll ? data : data.slice(0, 3);
+        console.log("my clientData is", projectsToShow);
+
         return projectsToShow.map((data: any, index: number) => (
             <div
                 key={index}
@@ -49,7 +50,7 @@ const FeaturedProject: React.FC = () => {
                     <div className="mb-3 flex items-center gap-3">
                         <h2>Preferences: </h2>
                         <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
-                            {isClient ? data.projectPreference?.[0] : data?.expertise || "Not Specified"}
+                            {isClient ? data?.servicePreference : data?.preferedProjects || "Not Specified"}
                         </span>
                     </div>
                     <div className="mb-2 flex items-center justify-between">

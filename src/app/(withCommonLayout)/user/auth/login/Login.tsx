@@ -39,7 +39,8 @@ export default function Login() {
         toast.success("Check your email for verification");
         router.push("/user/verification");
       } else {
-        toast.error(res?.data?.message || "Wrong email or password");
+        // console.log();
+        toast.error(res?.error?.data?.message );
       }
     } catch (error) {
       toast.error("Login Failed");

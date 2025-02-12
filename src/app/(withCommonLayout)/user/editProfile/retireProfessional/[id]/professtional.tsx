@@ -523,7 +523,8 @@ export default function Professional() {
                   defaultValue={profileData?.data?.availability || ""}
                 >
                   <option>Availability</option>
-                  <option value="US">United States</option>
+                  <option value={10}>Short Term(1-29)</option>
+                  <option value={31}>Long Term(30-...)</option>
                 </select>
               </div>
               <div>
