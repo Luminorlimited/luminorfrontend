@@ -103,11 +103,6 @@ export default function ProfessionalForm() {
       formData.append("technicalSkill[0]", data.skills); // Handle single string as an array
     }
 
-    // Ensure industry is appended
-    // if (Array.isArray(data.industry)) {
-    //   data.industry.forEach((ind: string, index: number) => formData.append(`industry[${index}]`, ind));
-    // } else if (data.industry) {
-    // }
     formData.append(`industry`, data.industry);
 
     formData.append("businessType", data.businessType);

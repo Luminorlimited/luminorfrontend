@@ -24,6 +24,11 @@ export default function ClientForm() {
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
   const dispatch = useDispatch();
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
+
+
+  
 
   const handleSubmitForm = async (data: any) => {
     const clientData = {
@@ -40,30 +45,55 @@ export default function ClientForm() {
       role: 'client',
       linkedinProfile: data.linkedIn,
     };
+    const validatePassword = () => {
+      const newErrors: { password?: string; confirmPassword?: string } = {};
+
+      if (!data.password) {
+        newErrors.password = "Password is required.";
+      } else if (!/(?=.*[A-Z])(?=.*\d).{8,}/.test(data.password)) {
+        newErrors.password =
+          "Password must include at least 8 characters, one uppercase letter, and one number.";
+      }
+
+      if (!confirmPassword) {
+        newErrors.confirmPassword = "Confirm Password is required.";
+      } else if (data.password !== confirmPassword) {
+        newErrors.confirmPassword = "Passwords do not match.";
+      }
+
+      setErrors(newErrors);
+
+      // Return true if no errors
+      return Object.keys(newErrors).length === 0;
+    };
+    
+
 
     try {
-      const res: any = await createClient(clientData);
-      if (res?.data) {
-        toast.success("Successfully Created your Account")
+      if (validatePassword()) {
+        const res: any = await createClient(clientData);
+        if (res?.data) {
+          toast.success("Successfully Created your Account")
 
-        dispatch(
-          setUser({
-            user: {
-              id: data.id || "",
-              name: data.name || "",
-              email: data.email || "",
-              role: data.role || "",
-              photoUrl: data.photoUrl || "",
-            },
-            token: data.accessToken || null,
-          })
-        );
+          dispatch(
+            setUser({
+              user: {
+                id: data.id || "",
+                name: data.name || "",
+                email: data.email || "",
+                role: data.role || "",
+                photoUrl: data.photoUrl || "",
+              },
+              token: data.accessToken || null,
+            })
+          );
 
 
-        setStep(4)
-      } else {
+          setStep(4)
+        } else {
 
-        toast.error(res?.error?.data?.message)
+          toast.error(res?.error?.data?.message)
+        }
       }
     } catch (err) {
       console.error("An error occurred:", err);
@@ -123,6 +153,9 @@ export default function ClientForm() {
                 handleBack={handleBack}
                 isLoading={isLoading}
                 handleNext={handleNext}
+                errors={errors}
+                setConfirmPassword={setConfirmPassword}
+                confirmPassword={confirmPassword}
               />
             )}
             {step === 4 && (

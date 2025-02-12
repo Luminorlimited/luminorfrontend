@@ -8,42 +8,16 @@ import mainlogo from '@/assets/images/mainlogo.png'
 import {  FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 
-export default function Password({ register, handleBack, isLoading }: any) {
+export default function Password({ register, handleBack, isLoading, errors, confirmPassword, setConfirmPassword }: any) {
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [confirmshowPassword, setConfirmShowPassword] = useState(false);
 
 
-  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
 
-  const validatePassword = () => {
-    const newErrors: { password?: string; confirmPassword?: string } = {};
+ 
 
-    if (!password) {
-      newErrors.password = "Password is required.";
-    } else if (!/(?=.*[A-Z])(?=.*\d).{8,}/.test(password)) {
-      newErrors.password =
-        "Password must include at least 8 characters, one uppercase letter, and one number.";
-    }
 
-    if (!confirmPassword) {
-      newErrors.confirmPassword = "Confirm Password is required.";
-    } else if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
-    }
-
-    setErrors(newErrors);
-
-    // Return true if no errors
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = () => {
-    if (validatePassword()) {
-      console.log("Form submitted successfully", { password, confirmPassword });
-    }
-  };
   
   
 
@@ -174,11 +148,10 @@ export default function Password({ register, handleBack, isLoading }: any) {
           Back
         </Button>
         <Button
-          onClick={handleSubmit}
+          type="submit"
           disabled={isLoading} // Disable button during loading
 
           className={`w-28 h-12 bg-primary rounded-[10px] text-white ${isLoading ? "bg-gray-400 cursor-not-allowed" : "hover:bg-[#5B32C2]"}`}
-          type="submit"
         >
           {isLoading ? "Loading..." : "Done"}
         </Button>
