@@ -103,6 +103,8 @@ export default function Client() {
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
   console.log("my old location is", location)
+
+
   useEffect(() => {
     if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
       const fetchLocation = async () => {
@@ -121,7 +123,7 @@ export default function Client() {
 
       fetchLocation();
     }
-  }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]); 
+  }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]);
 
   useEffect(() => {
     let autocomplete: google.maps.places.Autocomplete;
@@ -265,7 +267,7 @@ export default function Client() {
 
     try {
 
-     
+
 
 
       console.log("profile data is", data);
