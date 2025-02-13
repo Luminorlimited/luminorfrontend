@@ -73,59 +73,82 @@ export default function Professional() {
     setWorkSample("");
     setValue("workSample", null);
   };
+  const userId = useParams();
+
+  const userIdValue = userId.id;
+
+  const { data: profileData } = useGetProfileQuery(userIdValue);
 
 
   const { register, handleSubmit, setValue, watch } = useForm();
   const [loading, setLoading] = useState(false);
   const [editprofessionalProfile] = useEditprofessionalprofileMutation();
-  const userId = useParams();
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+   const [latitude, setLatitude] = useState(0);
+   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
-
-
-  useEffect(() => {
-    let autocomplete: google.maps.places.Autocomplete;
-
-    const initAutocomplete = () => {
-      const input = document.getElementById("search-input") as HTMLInputElement;
-      if (input) {
-        autocomplete = new google.maps.places.Autocomplete(input);
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-
-          if (!place.geometry || !place.geometry.location) {
-            alert(`No details available for input: '${place.name}'`);
-            return;
+  
+    useEffect(() => {
+      if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
+        const fetchLocation = async () => {
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
+            );
+            const data = await response.json();
+            if (data?.display_name) {
+              setLocation(data.display_name); // Set location from API response
+            }
+          } catch (error) {
+            console.error("Error fetching location:", error);
           }
-
-          setLatitude(place.geometry.location.lat().toString());
-          setLongitude(place.geometry.location.lng().toString());
-          setLocation(place.formatted_address || ""); // Store selected location
-
-          console.log("Selected Location:", place.formatted_address);
-          console.log("Latitude:", place.geometry.location.lat());
-          console.log("Longitude:", place.geometry.location.lng());
-        });
+        };
+  
+        fetchLocation();
       }
-    };
+    }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]); 
+  
+ 
+ 
+   useEffect(() => {
+     let autocomplete: google.maps.places.Autocomplete;
+ 
+     const initAutocomplete = () => {
+       const input = document.getElementById("search-input") as HTMLInputElement;
+       if (input) {
+         autocomplete = new google.maps.places.Autocomplete(input);
+ 
+         autocomplete.addListener("place_changed", () => {
+           const place = autocomplete.getPlace();
+ 
+           if (!place.geometry || !place.geometry.location) {
+             alert(`No details available for input: '${place.name}'`);
+             return;
+           }
+ 
+           setLatitude(place.geometry.location.lat());
+           setLongitude(place.geometry.location.lng());
+           setLocation(place.formatted_address || ""); // Store selected location
+ 
+           console.log("Selected Location:", place.formatted_address);
+           console.log("Latitude:", place.geometry.location.lat());
+           console.log("Longitude:", place.geometry.location.lng());
+         });
+       }
+     };
+ 
+     const script = document.createElement("script");
+     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
+     script.async = true;
+     script.onload = initAutocomplete;
+     document.body.appendChild(script);
+ 
+     return () => {
+       document.body.removeChild(script);
+     };
+   }, []);
+ 
 
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
-    script.async = true;
-    script.onload = initAutocomplete;
-    document.body.appendChild(script);
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
-
-
-  const userIdValue = userId.id;
-
-  const { data: profileData } = useGetProfileQuery(userIdValue);
 
   const [workSample, setWorkSample] = useState<string | File>(
     profileData?.data?.workSample
@@ -137,8 +160,7 @@ export default function Professional() {
 
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
-    data.longitude = parseFloat(longitude);
-    data.latitude = parseFloat(latitude);
+   
     
     if (!data || typeof data !== "object") {
       console.error("Invalid form data");
@@ -157,6 +179,9 @@ export default function Professional() {
 
     formData.append("name[firstName]", data.firstName);
     formData.append("name[lastName]", data.lastName);
+    formData.append("location[type]", "Point");
+    formData.append("location[coordinates][0]", longitude.toString());
+    formData.append("location[coordinates][1]", latitude.toString());
 
     if (selectedImage instanceof File) {
       formData.append("profileUrl", selectedImage);
@@ -169,17 +194,7 @@ export default function Professional() {
     console.log("My Form data", formData);
 
     try {
-      if (location) {
-        const geocodeResult = await geocodeLocation(location);
-        if (geocodeResult) {
-          const locationData = {
-            type: "Point",
-            coordinates: [geocodeResult.longitude, geocodeResult.latitude],
-          };
-          formData.append("location", JSON.stringify(locationData));
-        }
-      }
-
+     
     
 
       const res = await editprofessionalProfile({
@@ -202,30 +217,6 @@ export default function Professional() {
     }
   };
 
-  const geocodeLocation = async (location :any) => {
-    if (!location) return null;
-    try {
-      const apiKey = "AIzaSyD3oE6zpQw1EFzWBrCuhPdAeqedjp46tNA";
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(location)}&key=${apiKey}`
-      );
-      const data = await response.json();
-
-      if (data.status === "OK" && data.results.length > 0) {
-        const { lat, lng } = data.results[0].geometry.location;
-        setLatitude(lat);
-        setLongitude(lng);
-        return { latitude: lat, longitude: lng };
-      } else {
-        toast.error("Unable to fetch location coordinates.");
-        return null;
-      }
-    } catch (error) {
-      console.log("location error is", error);
-      toast.error("Failed to fetch location coordinates.");
-      return null;
-    }
-  };
 
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

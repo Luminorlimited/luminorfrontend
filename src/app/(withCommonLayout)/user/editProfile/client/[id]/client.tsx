@@ -85,11 +85,6 @@ export default function Client() {
   const [editclientProfile] = useEditclientprofileMutation();
 
   const { data: profileData } = useGetProfileQuery(userIdValue);
-
-
-
-
-
   const [budgetMinValue, setBudgetMinValue] = useState(
     profileData?.data?.budgetRange?.min || minPrice
   );
@@ -102,6 +97,76 @@ export default function Client() {
   const [durationMaxValue, setDurationMaxValue] = useState(
     profileData?.data?.projectDurationRange?.max || maxPrice
   );
+
+
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [location, setLocation] = useState("");
+  console.log("my old location is", location)
+  useEffect(() => {
+    if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
+      const fetchLocation = async () => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
+          );
+          const data = await response.json();
+          if (data?.display_name) {
+            setLocation(data.display_name); // Set location from API response
+          }
+        } catch (error) {
+          console.error("Error fetching location:", error);
+        }
+      };
+
+      fetchLocation();
+    }
+  }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]); 
+
+  useEffect(() => {
+    let autocomplete: google.maps.places.Autocomplete;
+
+    const initAutocomplete = () => {
+      const input = document.getElementById("search-input") as HTMLInputElement;
+      if (input) {
+        autocomplete = new google.maps.places.Autocomplete(input);
+
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+
+          if (!place.geometry || !place.geometry.location) {
+            alert(`No details available for input: '${place.name}'`);
+            return;
+          }
+
+          setLatitude(place.geometry.location.lat());
+          setLongitude(place.geometry.location.lng());
+          setLocation(place.formatted_address || ""); // Store selected location
+
+          console.log("Selected Location:", place.formatted_address);
+          console.log("Latitude:", place.geometry.location.lat());
+          console.log("Longitude:", place.geometry.location.lng());
+        });
+      }
+    };
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
+    script.async = true;
+    script.onload = initAutocomplete;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+
+
+
+
+
+
 
   const handleMinChange = useCallback(
     (setter: React.Dispatch<React.SetStateAction<number>>, maxValue: number) =>
@@ -147,8 +212,12 @@ export default function Client() {
   );
   console.log("my client profile url is", profileData?.data?.profileUrl);
   const [loading, setLoading] = useState(false);
+
+
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
+    // data.latitude = latitude
+    // data.longitude = longitude
     data.minBudget = budgetMinValue;
     data.maxBudget = budgetMaxValue;
     data.minDuration = durationMinValue;
@@ -167,6 +236,9 @@ export default function Client() {
     // Append structured fields
     formData.append("name[firstName]", data.firstName);
     formData.append("name[lastName]", data.lastName);
+    formData.append("location[type]", "Point");
+    formData.append("location[coordinates][0]", longitude.toString());
+    formData.append("location[coordinates][1]", latitude.toString());
     formData.append("projectDurationRange[max]", String(data.maxDuration));
     formData.append("projectDurationRange[min]", String(data.minDuration));
     formData.append("budgetRange[min]", String(data.minBudget));
@@ -192,8 +264,14 @@ export default function Client() {
     }
 
     try {
+
+     
+
+
+      console.log("profile data is", data);
+
       const res = await editclientProfile({ id: userIdValue, data: formData });
-      if ("data" in res) {
+      if (res) {
         toast.success("Profile Updated Successfully");
         console.log("Profile update response:", res.data);
       } else {
@@ -206,6 +284,7 @@ export default function Client() {
       setLoading(false);
     }
   };
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -468,16 +547,18 @@ export default function Client() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm mb-2" htmlFor="loc">
+                <label className="block text-sm mb-2" htmlFor="search-input">
                   Location *
                 </label>
                 <input
-                  id="loc"
-                  {...register("location")}
+                  id="search-input"
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                  placeholder="USA"
+                  value={location} // Show selected location
+                  onChange={(e) => setLocation(e.target.value)} // Update state when user types
+                  placeholder="Search for a location..."
                 />
               </div>
+
               <div>
                 <label className="block text-sm mb-2" htmlFor="problemArea">
                   Problem areas or Skills needed

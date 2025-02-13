@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useLoginUserMutation } from "@/redux/Api/userApi";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import Cookies from 'js-cookie';
+import { useAdminloginUserMutation } from "@/redux/Api/userApi";
 
 
 export default function AdminLogin() {
@@ -17,7 +17,7 @@ export default function AdminLogin() {
 
     const router = useRouter()
  
-    const [loginUser] = useLoginUserMutation();
+    const [loginUser] = useAdminloginUserMutation();
 
     const dispatch = useDispatch();
 
@@ -29,7 +29,7 @@ export default function AdminLogin() {
             // const accessToken = res.data.data.accessToken;
 
             if (res?.data?.success) {
-                console.log("My response is", res?.data?.data?.accessToken);
+                console.log("My response is", res);
 
                 dispatch(
                     setUser({

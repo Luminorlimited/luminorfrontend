@@ -6,12 +6,27 @@ import Swal from "sweetalert2"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useDeleteUserMutation, useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboard/userapi"
+import { useDeleteUserMutation, useGetClientQuery, useGetProfessionalQuery, useUpdateStatusMutation } from "@/redux/Api/dashboard/userapi"
 import logo from '@/assets/images/avatar.jpg'
 import Image from "next/image"
 
 export default function Users() {
     const { data: getClient, isLoading: clientLoading } = useGetClientQuery(undefined)
+    const [updateUserStatus] = useUpdateStatusMutation({})
+
+    const handleStatusChange = async (id: string, status: boolean) => {
+        try {
+            await updateUserStatus({
+                id,
+                data: { status },
+            }).unwrap()
+            // Optionally handle success (e.g., show a toast notification)
+        } catch (error) {
+            // Handle error (e.g., show an error message)
+            console.error("Failed to update status:", error)
+        }
+    }
+
     const { data: getProfessional, isLoading: professionalLoading } = useGetProfessionalQuery(undefined)
     console.log("my client is ", getClient);
     console.log("my getProfessional is ", getProfessional);
@@ -74,6 +89,7 @@ export default function Users() {
                     <TableHead>Image</TableHead>
                     <TableHead>{userType === "client" ? "Description" : "Bio"}</TableHead>
                     <TableHead>Rating</TableHead>
+                    <TableHead>Activate User</TableHead>
                     {userType === "retireProfessional" && <TableHead>OnBoarding</TableHead>}
                     <TableHead className="text-right">Action</TableHead>
                 </TableRow>
@@ -101,6 +117,18 @@ export default function Users() {
                             </TableCell>
                             <TableCell>{user?.[userType === "client" ? "description" : "bio"] || "N/A"}</TableCell>
                             <TableCell>{user?.averageRating || 0}</TableCell>
+                            <TableCell>
+                                <select
+                                    value={user?.client?.isActivated?.toString() || user?.retireProfessional?.isActivated?.toString()  }
+                                    onChange={(e) =>
+                                        handleStatusChange(user?.client?._id || user?.retireProfessional?._id || "", e.target.value === "true")
+                                    }
+                                    className={`border rounded p-2 ${user?.client?.isActivated === true || user?.retireProfessional?.isActivated === true ? "text-green-700" : "text-red-700"}`}
+                                >
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                            </TableCell>
                             {userType === "retireProfessional" && (
                                 <TableCell
                                     className={`font-medium ${user?.retireProfessional?.stripe?.isOnboardingSucess ? "text-green-800" : "text-red-800"}`}

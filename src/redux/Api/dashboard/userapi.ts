@@ -76,10 +76,18 @@ const userApi = baseApi.injectEndpoints({
             }),
             providesTags: ['dashboard'],
         }),
+        updateStatus: build.mutation({
+            query: ({id, data}) => ({
+                url: `/auth/update-status/${id}`,
+                method: 'PATCH',
+                body: data
+            }),
+            invalidatesTags: ['dashboard'],
+        }),
 
        
        
     }),
 });
 
-export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery, useDeleteUserMutation, useUpdateAdminMutation, useUpdateProfileImgMutation , useGetAdminProfileQuery} = userApi;
+export const {useGetClientQuery, useGetProfessionalQuery, useGetSingleUserQuery, useTotalUserQuery, useGetTotalOfferQuery, useDeleteUserMutation, useUpdateAdminMutation, useUpdateProfileImgMutation , useGetAdminProfileQuery, useUpdateStatusMutation} = userApi;

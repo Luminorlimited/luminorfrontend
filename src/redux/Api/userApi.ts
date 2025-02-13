@@ -27,6 +27,17 @@ const userApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['User']
         }),
+        adminloginUser: build.mutation({
+            query: (data: any) => {
+                // console.log(data)
+                return {
+                    url: '/auth/signIn',
+                    method: 'POST',
+                    body: data
+                }
+            },
+            invalidatesTags: ['User']
+        }),
         verifyUser: build.mutation({
             query: (data: any) => {
                 console.log(data)
@@ -108,4 +119,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation, useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation } = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation, useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation, useAdminloginUserMutation } = userApi

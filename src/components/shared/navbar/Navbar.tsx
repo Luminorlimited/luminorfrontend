@@ -117,7 +117,6 @@ const Navbar = () => {
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
-      {/* Logo */}
       <span className="lg:w-auto">
         <Logo />
       </span>
