@@ -26,7 +26,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
     // const token = useDecodedToken()
 
 
-    console.log("My requirement data is", requirementdata);
+    // console.log("My requirement data is", requirementdata);
 
     const [offerPayment, { isLoading }] = useOfferpaymentMutation({});
 
@@ -77,8 +77,8 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
 
         }
-        // console.log(amount, "check amount")
-        console.log(requirementdata.clientRequirement, "check client requirement")
+        // // console.log(amount, "check amount")
+        // console.log(requirementdata.clientRequirement, "check client requirement")
         formData.append("data", JSON.stringify(data));
         if (requirementdata?.clientRequirement && requirementdata.clientRequirement.length > 0) {
             requirementdata.clientRequirement.forEach((upload: { file: File }, index: number) => {
@@ -111,7 +111,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
         }
     };
 
-    console.log("my get single offer is", getSingleOffer?.data);
+    // console.log("my get single offer is", getSingleOffer?.data);
 
 
     return (

@@ -7,7 +7,7 @@ const userApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
         updateCoverPhoto: build.mutation({
             query: (formData: any) => {
-                console.log(formData)
+                // console.log(formData)
                 return {
                     url: '/auth/update-cover-photo',
                     method: 'PATCH',
@@ -18,7 +18,7 @@ const userApi = baseApi.injectEndpoints({
         }),
         loginUser: build.mutation({
             query: (data: any) => {
-                console.log(data)
+                // console.log(data)
                 return {
                     url: '/auth/signIn',
                     method: 'POST',
@@ -29,7 +29,7 @@ const userApi = baseApi.injectEndpoints({
         }),
         adminloginUser: build.mutation({
             query: (data: any) => {
-                // console.log(data)
+                // // console.log(data)
                 return {
                     url: '/auth/signIn',
                     method: 'POST',
@@ -40,7 +40,7 @@ const userApi = baseApi.injectEndpoints({
         }),
         verifyUser: build.mutation({
             query: (data: any) => {
-                console.log(data)
+                // console.log(data)
                 return {
                     url: '/auth/otp-enter',
                     method: 'POST',
@@ -52,7 +52,7 @@ const userApi = baseApi.injectEndpoints({
 
         clientUser: build.mutation<ClientData, any>({
             query: (data) => {
-                console.log(data)
+                // console.log(data)
                 return {
                     url: '/client/signUp',
                     method: 'POST',
@@ -64,7 +64,7 @@ const userApi = baseApi.injectEndpoints({
 
         professionalUser: build.mutation<IProfessional, any>({
             query: (data) => {
-                console.log(data)
+                // console.log(data)
                 return {
                     url: '/retireProfessional/signUp',
                     method: 'POST',
@@ -75,7 +75,7 @@ const userApi = baseApi.injectEndpoints({
         }),
         editclientprofile: build.mutation({
             query: ({ id, data }) => {
-                console.log(id)
+                // console.log(id)
                 return {
                     url: `/client/profile/${id}`,
                     method: 'PATCH',

@@ -8,17 +8,17 @@ import React from "react";
 const Page: React.FC = () => {
 
   const { data: orderList, isLoading } = useTransactionListQuery(undefined);
-  
+
   if (isLoading) {
     <p>Please wait....</p>
   }
-  
+
   return (
-    <div className="p-4">
+    <div className="p-4 container">
       <h1 className="text-2xl font-bold mb-6">My Orders</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {
-         orderList?.data && orderList?.data.map((order: any) => (
+        {orderList?.data?.length > 0 ?
+          orderList?.data && orderList?.data.map((order: any) => (
             <Link
               key={order.transaction.orderId}
               href={`/deliver-details/${order.transaction.orderId}`}
@@ -39,9 +39,9 @@ const Page: React.FC = () => {
               </div>
             </Link>
           ))
-        }
-        
-          
+          : (<p className='flex col-span-3 items-center justify-center py-28 text-center'>No Order Found.</p>)}
+
+
       </div>
     </div>
   );

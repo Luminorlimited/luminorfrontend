@@ -34,8 +34,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
   const route = usePathname();
   // const dispatch = useDispatch();
 
-  const [clientLazyData] = useLazyClientFilterListQuery();
-  const [professionalLazyData] = useLazyProfessionalFilterListQuery();
+  const [clientLazyData, { isLoading: loading }] = useLazyClientFilterListQuery();
+  const [professionalLazyData, { isLoading: loading2 }] = useLazyProfessionalFilterListQuery();
 
   const { data: clientData } = useClientListQuery({});
   const { data: professionalData } =
@@ -74,7 +74,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     fetchFilteredData();
 
     // No need for a cleanup function here as fetchFilteredData doesn't return any cleanup logic
-  }, [route, sidebarFilters, locationFilters]);
+  }, [route, sidebarFilters, locationFilters, clientLazyData, fetchLocationData, professionalLazyData]);
 
   // Ensure correct data is assigned
   const servicesToShow = filteredData;
@@ -109,9 +109,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     setCurrentPage(pageNumber);
   };
   // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-  console.log("My test is", currentItems);
+  // console.log("My test is", currentItems);
   return (
     <div>
+      {loading || loading2 ? <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " /> : null}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
         {route === "/project-list/client"
           ? currentItems?.map((data: any, index: number) => (
@@ -132,9 +133,9 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 </div>
 
                 <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
-                                    <BiTime className="h-4 w-4" />
+                  <BiTime className="h-4 w-4" />
                   <span className="text-xs">{data?.projectDurationRange?.max} days | Duration</span>
-                                </div>
+                </div>
               </div>
 
               <div className="p-5">
@@ -176,7 +177,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   {data?.description || "Untitled Projects"}
                 </h3>
 
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <div className="text-xl">
                     <span className="text-gray-500">Budget: </span>
                     <span className="font-medium text-gray-900">
@@ -279,11 +280,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
           ))}
       </div>
 
-      <Pagination
+      {filteredData?.length > 0 ? <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
-      />
+      /> :
+        <p>No results.</p>
+      }
     </div>
   );
 };

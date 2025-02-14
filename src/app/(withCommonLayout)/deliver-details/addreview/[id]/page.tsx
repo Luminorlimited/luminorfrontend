@@ -28,41 +28,50 @@ export default function FeedbackForm() {
     const [clientReview] = useProfessionalAddReviewMutation()
     const [professionalReview] = useClientReviewMutation()
 
-    
+
 
     const maxLength = 700;
     const feedbackValue = watch('feedback');
     const ratingValue = watch('rating');
     const userId = useParams()
     const id = userId?.id
-    console.log("my id is", userId);
+    // console.log("my id is", userId);
     // const router = useRouter()
     const router = useRouter()
     const handleHome = () => {
         router.push('/')
     }
     const onSubmit = async (data: any) => {
-        console.log("My data is", data);
+        // console.log("My data is", data);
         if (!data.feedback.trim() || data.rating <= 0) {
             alert("Please provide both feedback and a rating.");
             return;
         }
 
         try {
-            let res;
+
             if (token?.role === "client") {
-                res = await professionalReview({ id, data });
-            } else {
-                res = await clientReview({ id, data });
-            }
+                const res = await professionalReview({ id, data });
+                if (res?.data) {
+                    toast.success("Thanks for review!!!");
+                    reset();
+                    router.push('/')
 
-            if (res?.data) {
-                toast.success("Thanks for review!!!");
-                reset();
-                router.push('/')
-
+                } else {
+                    toast.error("You are unauthorized.");
+                }
             } else {
-                toast.error("You are unauthorized.");
+                const res = await clientReview({ id, data });
+
+
+                if (res?.data) {
+                    toast.success("Thanks for review!!!");
+                    reset();
+                    router.push('/')
+
+                } else {
+                    toast.error("You are unauthorized.");
+                }
             }
         } catch (error) {
             console.error("Error submitting review:", error);

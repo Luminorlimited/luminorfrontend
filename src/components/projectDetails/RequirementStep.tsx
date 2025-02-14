@@ -35,7 +35,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
     });
 
     // Field array setup for client requirements (file uploads)
-    const {  append: appendFile } = useFieldArray({
+    const { append: appendFile } = useFieldArray({
         control,
         name: "clientRequirement",
     });
@@ -45,7 +45,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
     const watchCaptions = watch("captions");
 
     // Local state to track selected images
-    const [selectedImages, setSelectedImages] = useState<File[]>([]);
+    const [, setSelectedImages] = useState<File[]>([]);
 
     // Handler for image file input change
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +57,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
             alert("Please select only valid image files.");
             return;
         }
-        console.log(validImages);
+        // console.log(validImages);
         // Set selected images in state and append them to the form
         setSelectedImages(validImages);
         validImages.forEach((file) =>
@@ -82,8 +82,8 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
 
     // Form submission handler
     const onSubmit = (data: FormData) => {
-        console.log("Submitted Data:", data);
-        console.log(selectedImages, "check sselected image from onsubmit formdata")
+        // console.log("Submitted Data:", data);
+        // console.log(selectedImages, "check sselected image from onsubmit formdata")
         const formData = new FormData();
 
         formData.append("captions", (JSON.stringify(data.captions)));

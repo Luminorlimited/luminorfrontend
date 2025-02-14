@@ -16,11 +16,11 @@ interface Step {
 
 export default function ProjectDetails() {
     const offerId = useParams()
-    // console.log('my offer', offerId);
+    // // console.log('my offer', offerId);
     const { data: getSingleOffer } = useGetSingleOfferQuery(offerId.id)
-    // console.log(getSingleOffer?.data?.orderAgreementPDF);
+    // // console.log(getSingleOffer?.data?.orderAgreementPDF);
 
-    console.log(getSingleOffer)
+    // console.log(getSingleOffer)
     const handleDownloadPdf = () => {
         const pdfUrl = getSingleOffer?.data?.offer?.orderAgreementPDF; // Fetch the PDF URL
         if (pdfUrl) {
@@ -50,7 +50,7 @@ export default function ProjectDetails() {
         }
     };
 
-    console.log(steps);
+    // console.log(steps);
 
     const goToPreviousStep = () => {
         if (currentStepId > 1) {

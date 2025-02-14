@@ -16,7 +16,7 @@ export default function AdminLogin() {
     const [loading, setLoading] = useState(false)
 
     const router = useRouter()
- 
+
     const [loginUser] = useAdminloginUserMutation();
 
     const dispatch = useDispatch();
@@ -29,33 +29,33 @@ export default function AdminLogin() {
             // const accessToken = res.data.data.accessToken;
 
             if (res?.data?.success) {
-                console.log("My response is", res);
+                // console.log("My response is", res);
 
                 dispatch(
                     setUser({
                         user: {
-                            email:  res?.data?.data?.isUserExist?.email || "",
+                            email: res?.data?.data?.isUserExist?.email || "",
                             role: res?.data?.data?.isUserExist?.role || "",
                             id: res?.data?.data?.isUserExist?._id || "",
                         },
                         token: res.data.data.accessToken,
                     })
                 );
-                
-                localStorage.setItem("token", res?.data?.data?.accessToken )
+
+                localStorage.setItem("token", res?.data?.data?.accessToken)
                 Cookies.set('token', res?.data?.data?.accessToken, {
-                          expires: 7, 
-                          secure: true, 
-                          sameSite: 'Strict', 
-                          path: '/', 
-                        });
+                    expires: 7,
+                    secure: true,
+                    sameSite: 'Strict',
+                    path: '/',
+                });
                 toast.success("Login successfully");
                 router.push('/dashboard');
             } else {
                 toast.error("Invalid email or password. Please try again.");
             }
 
-            console.log("Form Data as JSON:", formData);
+            // console.log("Form Data as JSON:", formData);
         } catch (e) {
             console.error("Error:", e);
             toast.error("An error occurred during login.");

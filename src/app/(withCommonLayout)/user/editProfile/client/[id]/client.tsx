@@ -106,7 +106,7 @@ export default function Client() {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
-  console.log("my old location is", location)
+  // console.log("my old location is", location)
 
 
   useEffect(() => {
@@ -131,12 +131,12 @@ export default function Client() {
   }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]);
 
   useEffect(() => {
-    let autocomplete: google.maps.places.Autocomplete;
+
 
     const initAutocomplete = () => {
       const input = document.getElementById("search-input") as HTMLInputElement;
       if (input) {
-        autocomplete = new google.maps.places.Autocomplete(input);
+        const autocomplete: google.maps.places.Autocomplete = new google.maps.places.Autocomplete(input);
 
         autocomplete.addListener("place_changed", () => {
           const place = autocomplete.getPlace();
@@ -150,9 +150,9 @@ export default function Client() {
           setLongitude(place.geometry.location.lng());
           setLocation(place.formatted_address || ""); // Store selected location
 
-          console.log("Selected Location:", place.formatted_address);
-          console.log("Latitude:", place.geometry.location.lat());
-          console.log("Longitude:", place.geometry.location.lng());
+          // console.log("Selected Location:", place.formatted_address);
+          // console.log("Latitude:", place.geometry.location.lat());
+          // console.log("Longitude:", place.geometry.location.lng());
         });
       }
     };
@@ -199,7 +199,7 @@ export default function Client() {
       },
     []
   );
-  // console.log(localStorage.token)
+  // // console.log(localStorage.token)
   const handleMaxChange = useCallback(
     (setter: React.Dispatch<React.SetStateAction<number>>, minValue: number) =>
       (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,7 +233,7 @@ export default function Client() {
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
   );
-  console.log("my client profile url is", profileData?.data?.profileUrl);
+  // console.log("my client profile url is", profileData?.data?.profileUrl);
   const [loading, setLoading] = useState(false);
 
 
@@ -269,7 +269,7 @@ export default function Client() {
 
 
 
-    // console.log(data?.firstName, data?.lastName); return
+    // // console.log(data?.firstName, data?.lastName); return
 
     // Append project preferences array
     if (Array.isArray(data.projectPreference)) {
@@ -295,12 +295,12 @@ export default function Client() {
 
 
 
-      console.log("profile data is", data);
+      // console.log("profile data is", data);
 
       const res = await editclientProfile({ id: userIdValue, data: formData });
       if (res) {
         toast.success("Profile Updated Successfully");
-        console.log("Profile update response:", res.data);
+        // console.log("Profile update response:", res.data);
       } else {
         throw new Error("Failed to update profile");
       }
@@ -348,9 +348,9 @@ export default function Client() {
     if (file) {
       setSelectProject(file);
 
-      console.log("File selected:", file.name);
+      // console.log("File selected:", file.name);
     } else {
-      console.log("No file selected");
+      // console.log("No file selected");
     }
   };
 
@@ -368,7 +368,7 @@ export default function Client() {
 
   // Use useEffect to log state changes
   useEffect(() => {
-    console.log("selectProject state updated:", selectProject);
+    // console.log("selectProject state updated:", selectProject);
   }, [selectProject]);
 
   const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
@@ -630,7 +630,7 @@ export default function Client() {
                         onClick={() => {
                           // Update form state with the selected service
                           setValue("servicePreference", service.title);
-                          console.log(`Selected service: ${service.title}`);
+                          // console.log(`Selected service: ${service.title}`);
                         }}
                         className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all`}
                       >

@@ -34,6 +34,14 @@ const projectApi = baseApi.injectEndpoints({
             providesTags: ['message'],
         }),
 
+        sendOnboardingUrl: build.mutation({
+            query: () => ({
+                url: `/stripe/generate-onboarding-url`,
+                method: 'POST'
+            }),
+            invalidatesTags: ['message'],
+        }),
+
         imageSend: build.mutation({
             query: (data) => ({
                 url: `/messages/file-upload`,
@@ -46,4 +54,4 @@ const projectApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation } = projectApi;
+export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation, useSendOnboardingUrlMutation } = projectApi;

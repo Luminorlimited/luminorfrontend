@@ -9,8 +9,8 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const SearchBox = () => {
-  const [isOpen, setIsOpen] = useState("");
-  console.log(isOpen)
+  const [, setIsOpen] = useState("");
+  // console.log(isOpen)
   const router = useRouter()
   const user = useSelector((state: RootState) => state.Auth.user);
 
@@ -25,7 +25,7 @@ const SearchBox = () => {
       : user.role === "retireProfessional"
         ? "/project-list/client"
         : "/user/auth/login"
-        }`)
+      }`)
   };
   return (
     <div className="relative ">

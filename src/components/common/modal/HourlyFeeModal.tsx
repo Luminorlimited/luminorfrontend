@@ -65,7 +65,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                         <input
                             {...register("hourlyFee.pricePerHour", { required: true })}
                             id="price"
-                            type="text" // Change to text to ensure value is a string
+                            type="number" // Change to text to ensure value is a string
                             placeholder="500 max"
                             className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                         />

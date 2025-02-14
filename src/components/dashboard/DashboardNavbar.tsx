@@ -7,10 +7,10 @@ import { useGetAdminProfileQuery } from "@/redux/Api/dashboard/userapi";
 export default function DashboardNav() {
 
     const pathName = usePathname()
-    console.log('pathname is', pathName);
+    // console.log('pathname is', pathName);
     const { data: getProfile } = useGetAdminProfileQuery(undefined)
 
-    console.log("My get profile is", getProfile);
+    // console.log("My get profile is", getProfile);
 
     return (
         <div>

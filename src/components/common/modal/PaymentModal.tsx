@@ -57,7 +57,7 @@ export function PaymentModal({
         setSelectedOption(optionId);
         setValue("agreementType", optionId);
         setagreementType(optionId);
-        console.log(`Selected payment option in PaymentModal: ${optionId}`);
+        // console.log(`Selected payment option in PaymentModal: ${optionId}`);
     };
 
     const handleNext = () => {

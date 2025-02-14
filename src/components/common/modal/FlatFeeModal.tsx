@@ -74,7 +74,7 @@ export function FlatFeeModal({ register }: FlatFeeModalProps) {
                         </span>
                         <input
                             id="price"
-                            type="text" // Change to text to ensure value is a string
+                            type="number" // Change to text to ensure value is a string
                             {...register("flatFee.price", { required: true })}
                             placeholder="10,000 max"
                             className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"

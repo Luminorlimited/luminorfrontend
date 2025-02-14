@@ -31,7 +31,7 @@ const TransactionMetrics = () => {
                         </div>
                     ) : (
                         <div className="flex flex-col gap-1">
-                            <div className="text-3xl font-bold">{lasttransaction?.data?.amount}</div>
+                            <div className="text-3xl font-bold">{lasttransaction?.data?.amount?.toFixed(2)}</div>
                             <p className="text-xs text-zinc-500">Last 24 hour transaction</p>
                             <div className="mt-4 space-y-2">
                                 <div className="flex justify-between text-xs">
@@ -64,7 +64,7 @@ const TransactionMetrics = () => {
                         {isTotalRevenueLoading ? (
                             <Skeleton className="h-8 w-24 bg-gray-300 rounded" />
                         ) : (
-                            <div className="text-3xl font-bold">{totalRevenue?.data?.totalRevenue}</div>
+                            <div className="text-3xl font-bold">{totalRevenue?.data?.totalRevenue?.toFixed(2)}</div>
                         )}
                         <div className="mt-4 space-y-2">
                             <div className="flex justify-between text-xs">

@@ -83,8 +83,8 @@ export default function Professional() {
   const { register, handleSubmit, setValue, watch, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const [editprofessionalProfile] = useEditprofessionalprofileMutation();
-   const [latitude, setLatitude] = useState(0);
-   const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const handleClose = () => {
@@ -97,28 +97,28 @@ export default function Professional() {
       setShowAlert(true)
     }
   }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess])
-  
-    useEffect(() => {
-      if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
-        const fetchLocation = async () => {
-          try {
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
-            );
-            const data = await response.json();
-            if (data?.display_name) {
-              setLocation(data.display_name); // Set location from API response
-            }
-          } catch (error) {
-            console.error("Error fetching location:", error);
+
+  useEffect(() => {
+    if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
+      const fetchLocation = async () => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
+          );
+          const data = await response.json();
+          if (data?.display_name) {
+            setLocation(data.display_name); // Set location from API response
           }
-        };
-  
-        fetchLocation();
-      }
+        } catch (error) {
+          console.error("Error fetching location:", error);
+        }
+      };
+
+      fetchLocation();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]); 
-  
+  }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]);
+
   useEffect(() => {
     if (profileData) {
       reset({
@@ -137,46 +137,46 @@ export default function Professional() {
       });
     }
   }, [profileData, reset]);
- 
-  
-   useEffect(() => {
-     let autocomplete: google.maps.places.Autocomplete;
- 
-     const initAutocomplete = () => {
-       const input = document.getElementById("search-input") as HTMLInputElement;
-       if (input) {
-         autocomplete = new google.maps.places.Autocomplete(input);
- 
-         autocomplete.addListener("place_changed", () => {
-           const place = autocomplete.getPlace();
- 
-           if (!place.geometry || !place.geometry.location) {
-             alert(`No details available for input: '${place.name}'`);
-             return;
-           }
- 
-           setLatitude(place.geometry.location.lat());
-           setLongitude(place.geometry.location.lng());
-           setLocation(place.formatted_address || ""); // Store selected location
- 
-           console.log("Selected Location:", place.formatted_address);
-           console.log("Latitude:", place.geometry.location.lat());
-           console.log("Longitude:", place.geometry.location.lng());
-         });
-       }
-     };
- 
-     const script = document.createElement("script");
-     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
-     script.async = true;
-     script.onload = initAutocomplete;
-     document.body.appendChild(script);
- 
-     return () => {
-       document.body.removeChild(script);
-     };
-   }, []);
- 
+
+
+  useEffect(() => {
+    let autocomplete: google.maps.places.Autocomplete;
+
+    const initAutocomplete = () => {
+      const input = document.getElementById("search-input") as HTMLInputElement;
+      if (input) {
+        autocomplete = new google.maps.places.Autocomplete(input);
+
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+
+          if (!place.geometry || !place.geometry.location) {
+            alert(`No details available for input: '${place.name}'`);
+            return;
+          }
+
+          setLatitude(place.geometry.location.lat());
+          setLongitude(place.geometry.location.lng());
+          setLocation(place.formatted_address || ""); // Store selected location
+
+          // console.log("Selected Location:", place.formatted_address);
+          // console.log("Latitude:", place.geometry.location.lat());
+          // console.log("Longitude:", place.geometry.location.lng());
+        });
+      }
+    };
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
+    script.async = true;
+    script.onload = initAutocomplete;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
 
 
 
@@ -190,15 +190,15 @@ export default function Professional() {
 
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
-   
-    
+
+
     if (!data || typeof data !== "object") {
       console.error("Invalid form data");
       toast.error("Invalid form data");
       return;
     }
 
-    console.log("Form Data:", data);
+    // console.log("Form Data:", data);
 
     const formData = new FormData();
     Object.entries(data).forEach(([Key, value]) => {
@@ -218,14 +218,14 @@ export default function Professional() {
     }
     if (workSample instanceof File) {
       formData.append("workSample", workSample);
-      console.log("Work Sample file added:", workSample);
+      // console.log("Work Sample file added:", workSample);
     }
 
-    console.log("My Form data", formData);
+    // console.log("My Form data", formData);
 
     try {
-     
-    
+
+
 
       const res = await editprofessionalProfile({
         id: userIdValue,
@@ -236,7 +236,7 @@ export default function Professional() {
       } else {
         toast.success("Profile Updated Successfully");
 
-        console.log("My response is", formData);
+        // console.log("My response is", formData);
       }
       // reset();
     } catch (error: any) {
@@ -268,8 +268,12 @@ export default function Professional() {
     if (typeof selectedImage === "string" && selectedImage.length) {
       return selectedImage;
     }
+    if (profileData?.data?.profileUrl) {
+      return profileData.data.profileUrl; // Use latest profile URL
+    }
     return avatar.src;
-  }, [selectedImage]);
+  }, [selectedImage, profileData?.data?.profileUrl]); // Watch for profileData updates
+
 
   useMemo(() => {
     if (selectedImage instanceof File) {
@@ -303,8 +307,9 @@ export default function Professional() {
       }
     }
   };
-  // console.log("cover url", profileData?.data?.coverUrl);
+  // // console.log("cover url", profileData?.data?.coverUrl);
 
+  // console.log(profileData?.data);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -401,7 +406,7 @@ export default function Professional() {
               </h1>
               <p className="text-gray-600">
                 {" "}
-                I am {profileData?.data?.expertise || "an expert"}
+                {(profileData?.data?.expertise != "null") && `I am ${profileData?.data?.expertise}`}
               </p>
             </div>
 
@@ -533,7 +538,7 @@ export default function Professional() {
                         onClick={() => {
                           // Update form state with the selected service
                           setValue("expertise", service.title);
-                          console.log(`Selected service: ${service.title}`);
+                          // console.log(`Selected service: ${service.title}`);
                         }}
                         className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all`}
                       >
@@ -556,10 +561,10 @@ export default function Professional() {
                   defaultValue={profileData?.data?.availability ?? ""}
                 >
                   <option disabled>Availability</option>
-                  <option value={20} selected={profileData?.data?.availability < 30}>
+                  <option value={20}>
                     Short Term (1-29)
                   </option>
-                  <option value={31} selected={profileData?.data?.availability >= 30}>
+                  <option value={31}>
                     Long Term (30-...)
                   </option>
                 </select>
@@ -638,8 +643,8 @@ export default function Professional() {
                     const file = e.target.files?.[0];
                     if (file) {
                       setWorkSample(file); // Update file state
-                      setValue("workSample", file); 
-                      console.log("File selected:", file);
+                      setValue("workSample", file);
+                      // console.log("File selected:", file);
                     }
                   }}
                 />

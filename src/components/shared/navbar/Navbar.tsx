@@ -22,7 +22,7 @@ import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
 import Cookies from "js-cookie";
-// import { io } from "socket.io-client";
+import { FaRegMessage } from "react-icons/fa6";
 // import { useDecodedToken } from "@/components/common/DecodeToken";
 import { RootState } from "@/redux/store";
 
@@ -44,7 +44,7 @@ const Navbar = () => {
 
   const demoimg = profileData?.data?.profileUrl || demoprofile;
 
-  console.log(user)
+  // console.log(user)
 
   const handleLogOut = () => {
     dispatch(logOut());
@@ -84,10 +84,10 @@ const Navbar = () => {
   //   const mysocket = io("ws://localhost:5001");
 
   //   mysocket.on("connect", () => {
-  //     console.log("Connected to the server.");
+  //     // console.log("Connected to the server.");
 
   //     mysocket.on("privateMessage", (notification) => {
-  //       console.log("Notification received:", notification);
+  //       // console.log("Notification received:", notification);
 
   //       setNotifications((prevNotifications) => [
   //         ...prevNotifications,
@@ -106,8 +106,8 @@ const Navbar = () => {
   // }, []);
 
   // const handleNotificationClick = (id: number) => {
-  //   console.log(`Notification ${id} clicked`);
- 
+  //   // console.log(`Notification ${id} clicked`);
+
   // };
 
 
@@ -154,52 +154,9 @@ const Navbar = () => {
         {/* User Section */}
         {user ? (
           <div className="flex gap-3 items-center relative" ref={dropdownRef}>
-            {/* <div className="relative">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="focus:outline-none">
-                    <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-80 bg-white rounded-md shadow-lg border border-gray-200">
-                  <div className="py-2">
-                    <h3 className="text-lg font-semibold px-4 py-2 border-b">
-                      Notifications
-                    </h3>
-                    {notifications.length > 0 ? (
-                      notifications.map((notification) => (
-                        <DropdownMenuItem
-                          key={notification.id}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                          onClick={() =>
-                            handleNotificationClick(notification.id)
-                          }
-                        >
-                          <p className="text-sm text-gray-800">
-                            {notification.message}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {notification.time}
-                          </p>
-                        </DropdownMenuItem>
-                      ))
-                    ) : (
-                      <p className="text-sm text-gray-500 px-4 py-2">
-                        No new notifications
-                      </p>
-                    )}
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div> */}
-            {/* Notification */}
 
-            {/* <Link href={`/project-list/${decodedToken.role}`}>
-              <FaRegHeart className="cursor-pointer text-[24px] hover:text-primary" />
-            </Link> */}
-            {/* <Link href="/chat">
-              <BiMessage className="cursor-pointer text-[24px] hover:text-primary" />
-            </Link> */}
+            <Link title="Chat" href={'/chat'} className="cursor-pointer transition-colors group hover:fill-primary border rounded-full p-2 hover:border-primary mr-2"> <FaRegMessage className="group-hover:fill-primary" /></Link>
+
             <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer" >
               <Image
                 src={demoimg}
@@ -210,11 +167,10 @@ const Navbar = () => {
                 onClick={handleClick}
               />
               <ul
-                className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${
-                  fileBtn
-                    ? "opacity-100 translate-y-0 z-[50]"
-                    : "opacity-0 translate-y-5 pointer-events-none z-[10]"
-                }`}
+                className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${fileBtn
+                  ? "opacity-100 translate-y-0 z-[50]"
+                  : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+                  }`}
               >
 
                 <Link

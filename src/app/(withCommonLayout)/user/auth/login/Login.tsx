@@ -32,15 +32,15 @@ export default function Login() {
     try {
       setIsLoading(true); // Set loading state to true
       const res: any = await LogInUser(data);
-      console.log("Login Response:", res);
+      // console.log("Login Response:", res);
 
       if (res?.data?.success) {
         localStorage.setItem("email", email);
         toast.success("Check your email for verification");
         router.push("/user/verification");
       } else {
-        // console.log();
-        toast.error(res?.error?.data?.message );
+        // // console.log();
+        toast.error(res?.error?.data?.message);
       }
     } catch (error) {
       toast.error("Login Failed");
@@ -56,11 +56,11 @@ export default function Login() {
   //            callbackUrl: "/"
   //         })
   //         if (res) {
-  //             console.log('login succssfully');
+  //             // console.log('login succssfully');
 
   //         }
   //     } catch (e) {
-  //         console.log('error login', e);
+  //         // console.log('error login', e);
 
   //     }
   // }
@@ -192,9 +192,9 @@ export default function Login() {
 
             </form>
           </div>
-            <div className="relative  lg:block  hidden w-[650px]  ">
-              <ImageCarousel />
-            </div>
+          <div className="relative  lg:block  hidden w-[650px]  ">
+            <ImageCarousel />
+          </div>
         </div>
 
 

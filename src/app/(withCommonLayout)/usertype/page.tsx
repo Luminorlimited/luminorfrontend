@@ -6,7 +6,6 @@ import Logo from "@/utils/Logo";
 import shape from "@/assets/shapes/shape-2.png";
 import Image from "next/image";
 import usertypeshape from '@/assets/shapes/usertypeshape.png'
-import { motion } from "framer-motion";
 
 export default function Signup() {
   return (
@@ -41,18 +40,8 @@ export default function Signup() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto mb-8">
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: -100,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                duration: 0.8,
-              }}
+            <div
+             
               className="relative h-auto p-6 bg-white text-textColor-secondary hover:text-white hover:bg-primary transition-all rounded-xl border shadow-md cursor-pointer group">
               {/* Decorative Background Shape */}
               <Image
@@ -74,23 +63,13 @@ export default function Signup() {
                   for a Client
                 </p>
               </Link>
-            </motion.div>
+            </div>
 
 
 
 
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: 100,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                duration: 0.8,
-              }}
+            <div
+              
               className="h-auto p-6 bg-white text-textColor-secondary hover:text-white hover:bg-primary transition-all rounded-xl border relative cursor-pointer">
               <Image
                 src={shape}
@@ -106,7 +85,7 @@ export default function Signup() {
                   Professional
                 </p>
               </Link>
-            </motion.div>
+            </div>
 
           </div>
 

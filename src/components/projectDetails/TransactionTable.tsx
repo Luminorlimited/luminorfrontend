@@ -45,7 +45,7 @@ export default function TransactionTable() {
     //             : String(bValue).localeCompare(String(aValue))
     //     })
     const { data: transactionList } = useTransactionListQuery(undefined)
-    console.log('my transaction list ', transactionList);
+    // console.log('my transaction list ', transactionList);
 
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -65,15 +65,15 @@ export default function TransactionTable() {
     // const offerId = useParams().id
 
 
-    // console.log('My transaction list', transactionList);
+    // // console.log('My transaction list', transactionList);
 
 
-    // console.log('my order', transactionList?.data[3]?.project?.orderAgreementPDF);
+    // // console.log('my order', transactionList?.data[3]?.project?.orderAgreementPDF);
     const handleDownloadPdf = () => {
         const pdfUrl = transactionList?.data?.project?.orderAgreementPDF; // Fetch the PDF URL
         if (pdfUrl) {
             const encodedUrl = encodeURI(pdfUrl); // Encode URL to handle special characters
-            console.log(encodedUrl); // Log the URL to check if it's correct
+            // console.log(encodedUrl); // Log the URL to check if it's correct
             window.open(encodedUrl, '_blank');
         } else {
             toast.error("PDF file not available");

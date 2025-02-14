@@ -124,17 +124,17 @@ export default function ProfessionalForm() {
               token: data.accessToken || null, // Fallback for token
             })
           );
-  
-          console.log("Form submitted successfully:", res.data);
+
+          // console.log("Form submitted successfully:", res.data);
           toast.success("Form submitted successfully!");
           setStep(5);
           // router.push("/user/auth/login");
         } else {
-          console.log("FormData content:", Array.from(formData.entries())); // Log FormData content
+          // console.log("FormData content:", res?.error?.data?.message); // Log FormData content
           toast.error("Something went wrong.");
           setLoading(false);
         }
-        
+
       }
     } catch (error) {
       console.error("An error occurred:", error);

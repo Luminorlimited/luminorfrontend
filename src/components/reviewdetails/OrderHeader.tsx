@@ -1,6 +1,6 @@
-export default function OrderHeader({ getSingleOrder }: { getSingleOrder: any}) {
+export default function OrderHeader({ getSingleOrder }: { getSingleOrder: any }) {
 
-    // console.log('My order details is', getSingleOrder.data.retireProfessional[0].name.firstName);
+    // // console.log('My order details is', getSingleOrder.data.retireProfessional[0].name.firstName);
     return (
         // <div className="bg-indigo-50 p-6 rounded-lg">
         //     <h1 className="text-gray-900 text-xl font-semibold mb-2">

@@ -28,7 +28,7 @@ export default function PaymentPieChart() {
     const { data: getTransaction, isLoading } = useTotalTransactionQuery(undefined)
 
 
-    console.log("get transction", getTransaction);
+    // console.log("get transction", getTransaction);
 
     const getStatusColor = (status: string) => {
         const statusColors: Record<string, string> = {

@@ -251,7 +251,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
                 if (!fileName || !filePath || !fileType) {
                   console.error("Missing required file properties");
                 } else {
-                  console.log("File Selected:", { fileName, filePath, fileType });
+                  // console.log("File Selected:", { fileName, filePath, fileType });
 
                   // Update form data
                   setValue("workSample", { fileName, filePath, fileType });

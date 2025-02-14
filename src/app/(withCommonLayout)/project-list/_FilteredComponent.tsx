@@ -16,7 +16,7 @@ export default function FilteredComponent({
   // useEffect(() => {
   //     dispatch(initializeFilteredData());
   // }, [dispatch]);
-  const [filters, setFilters] = useState<Filters>({
+  const [, setFilters] = useState<Filters>({
     industry: [],
     timeline: [],
     skillType: [],
@@ -25,7 +25,7 @@ export default function FilteredComponent({
     minBudget: 0,
     maxBudget: 90,
   });
-  console.log(filters);
+  // console.log(filters);
   return (
     <div className="bg-slate-50">
       <div className="container mx-auto">

@@ -82,7 +82,7 @@ export default function OrderStatistics() {
                         {isTotalRevenueLoading ? (
                             <Skeleton className="h-8 w-32 bg-gray-300 rounded" />
                         ) : (
-                            <div className="text-2xl font-bold">{totalRevenue?.data?.totalRevenue}</div>
+                            <div className="text-2xl font-bold">{totalRevenue?.data?.totalRevenue?.toFixed(2)}</div>
                         )}
                         <div className="flex items-center text-xs text-zinc-400">
                             {isTotalRevenueLoading ? (

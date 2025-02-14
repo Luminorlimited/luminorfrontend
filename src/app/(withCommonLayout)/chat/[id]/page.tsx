@@ -4,7 +4,6 @@ import Image from "next/image";
 import ChatWindow, { Message } from "@/app/(withCommonLayout)/chat/ChatWindow";
 import Button from "@/components/common/Button";
 import { AiOutlinePaperClip } from "react-icons/ai";
-import { BiSearch } from "react-icons/bi";
 import { FaRegSmile } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
@@ -15,7 +14,7 @@ import EmojiPicker from "emoji-picker-react";
 import { IoMdMenu } from "react-icons/io";
 import { Video, FileText, Images } from "lucide-react";
 import io, { Socket } from "socket.io-client";
-import demoimg from "@/assets/images/demoimg.png";
+import demoimg from "@/assets/images/msgavatar2.png";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
@@ -25,6 +24,7 @@ import {
   useGetMessageQuery,
   useGetuserQuery,
   useImageSendMutation,
+  useSendOnboardingUrlMutation,
 } from "@/redux/Api/messageApi";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
 import { useDecodedToken } from "@/components/common/DecodeToken";
@@ -38,19 +38,19 @@ const Page: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  
+
   const [fileBtn, showFileBtn] = useState(false);
   const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
   const { data: getProfile } = useGetProfileQuery({})
-  // console.log("getprofile is", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
+  // // console.log("getprofile is", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
   const user1 = useSelector((state: RootState) => state.Auth.user?.id);
 
-  const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
+  const [, setProfileUrl] = useState<string>(demoimg.src);
   const id = useParams();
   const { data: getToUser } = useGetuserQuery(id.id);
-  console.log(id.id, "check id");
+  // console.log(id.id, "check id");
 
   const user2 = useMemo(() => {
     return (
@@ -65,8 +65,8 @@ const Page: React.FC = () => {
     isFetching,
   } = useGetMessageQuery({ user1, user2: id.id }, { skip: !id.id });
 
-  // console.log(oldMessages, "check old messages");
-  // console.log(oldSingleMessages, "check old single messages");
+  // // console.log(oldMessages, "check old messages");
+  // // console.log(oldSingleMessages, "check old single messages");
   const { data: getConversation } = useGetConversationQuery(undefined, {
     skip: !id.id,
   });
@@ -83,11 +83,8 @@ const Page: React.FC = () => {
 
   // const [offerNotification, setOfferNotification] = useState(0);
 
-  // console.log('My Receive Mail is:', getConversation)
-  const [isLoading, setIsLoading] = useState(true);
-
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  console.log(selectedImages);
+  // console.log(selectedImages);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []
   );
@@ -103,8 +100,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     if (token?.id) {
-      // console.log("Offer notification useEffect triggered");
-      // console.log(getoffer?.data?.data);
+     
       setOfferNotification(getoffer?.data?.data?.count);
     }
   }, [token?.id, getoffer]);
@@ -117,7 +113,7 @@ const Page: React.FC = () => {
       socketRef.current = mysocket;
 
       mysocket.on("connect", () => {
-        console.log("Connected to socket.io.");
+        // console.log("Connected to socket.io.");
         setIsSocketReady(true);
         mysocket.emit("register", JSON.stringify({ id: token?.id }));
         mysocket.emit(
@@ -127,24 +123,23 @@ const Page: React.FC = () => {
       });
 
       mysocket.on("conversation-list", (data) => {
-        // console.log("Received conversation list:", data);
-        console.log(data, "check data from useeffet convirsation list");
+        // // console.log("Received conversation list:", data);
+        // console.log(data, "check data from useeffet convirsation list");
 
         setUsers(data);
-        setIsLoading(false);
       });
       mysocket.on("sendOffer", (data) => {
-        // console.log("Received conversation list:", data);
-        console.log(data, "check data from useeffet sendOffer");
-        console.log(data.offer, "heck data from useeffet sendOffer");
+        // // console.log("Received conversation list:", data);
+        // console.log(data, "check data from useeffet sendOffer");
+        // console.log(data.offer, "heck data from useeffet sendOffer");
         setOfferNotification(data?.offer?.count);
         setLatestOffer(data?.offer);
       });
       mysocket.on("privateMessage", (data) => {
-        console.log("Received private message:", data);
+        // console.log("Received private message:", data);
         const { message, fromUserId } = data;
-        console.log(getToUser, "check get to user");
-        console.log(fromUserId, "check from email");
+        // console.log(getToUser, "check get to user");
+        // console.log(fromUserId, "check from email");
 
         if (
           message &&
@@ -161,11 +156,11 @@ const Page: React.FC = () => {
       });
 
       mysocket.on("createZoomMeeting", (data) => {
-        // console.log("Received Zoom meeting data:", data);
+        // // console.log("Received Zoom meeting data:", data);
         const { from, populateMessage } = data;
-        console.log(populateMessage, from, "check zoom saved message");
+        // console.log(populateMessage, from, "check zoom saved message");
         if (populateMessage?.meetingLink) {
-          console.log(from, "check from create meeting");
+          // console.log(from, "check from create meeting");
           window.open(populateMessage?.meetingLink, "_blank");
           const loggedInUserId =
             getToUser?.data?.[
@@ -187,7 +182,8 @@ const Page: React.FC = () => {
       });
 
       mysocket.on("zoomMeetingError", (err) => {
-        console.log("Zoom meeting error:", err);
+        // console.log("Zoom meeting error:", err);
+        if(err)
         toast.error("Failed to create Zoom meeting. Please try again.");
       });
     }
@@ -258,16 +254,16 @@ const Page: React.FC = () => {
     const updatedUsers = users.map((u: any) =>
       u.id === id ? { ...u, unseenMessageCount: 0 } : u
     );
-    console.log(updatedUsers, "check updatedusers");
+    // console.log(updatedUsers, "check updatedusers");
     setUsers(updatedUsers);
     router.push(`/chat/${id}`);
     // refetch();
 
     if (socketRef.current) {
-      console.log("Sending userInChat event with:", {
-        userEmail: token?.email,
-        chattingWith: email,
-      });
+      // console.log("Sending userInChat event with:", {
+      // userEmail: token?.email,
+      //   chattingWith: email,
+      // });
 
       socketRef.current.emit(
         "userInChat",
@@ -307,7 +303,7 @@ const Page: React.FC = () => {
       const res = await fileUpload(formData)
       if (res) {
         setFileLink(res?.data?.data)
-        console.log("my response is", res);
+        // console.log("my response is", res);
         // const message: any = {
         //   toUserId: id.id,
         //   message: messages.trim() || null,
@@ -318,12 +314,13 @@ const Page: React.FC = () => {
 
       }
     } catch (e) {
-      console.log(e, "error");
+      // console.log(e, "error");
+      if (e) toast.error("Something went wrong!.")
     }
 
 
 
-    console.log(messages, "check messages for file 1")
+    // console.log(messages, "check messages for file 1")
     if (messages.trim()) {
       const message: any = {
         toUserId: id.id,
@@ -333,7 +330,7 @@ const Page: React.FC = () => {
       };
 
 
-      console.log(messages, "check messages for file2")
+      // console.log(messages, "check messages for file2")
 
       socketRef.current.emit("privateMessage", JSON.stringify(message));
 
@@ -347,7 +344,7 @@ const Page: React.FC = () => {
       };
 
       setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
-      console.log(inbox, "check messages from send message handler");
+      // console.log(inbox, "check messages from send message handler");
 
       let currentUser = users.find((user) => user.email === user2);
 
@@ -391,7 +388,7 @@ const Page: React.FC = () => {
     };
 
     socketRef.current.emit("createZoomMeeting", JSON.stringify(callInfo));
-    console.log(callInfo, "check zoom link");
+    // console.log(callInfo, "check zoom link");
   };
   const handleFileClick = (type: string) => {
     const input = document.getElementById("fileInput") as HTMLInputElement;
@@ -424,18 +421,25 @@ const Page: React.FC = () => {
     setIsModalOpen((e) => !e);
   };
 
-  const handleProjectModal = () => {
+  const [sendOnboardingUrl] = useSendOnboardingUrlMutation()
+  const handleProjectModal = async () => {
+    // try {
     if (getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
+
       if (isButtonDisabled) return;
       setIsButtonDisabled(true);
       setProjectModal((prevState) => !prevState);
       setTimeout(() => {
         setIsButtonDisabled(false);
       });
-      
+
     } else {
-      toast.error("Please add your stripe account. Check your mail.")
+      await sendOnboardingUrl({})
+      toast.error("Please  Check your mail and verify your stripe account.")
     }
+    // } catch (e) {
+
+    // }
   };
 
   // const handleshowMessage = (user: {
@@ -454,19 +458,19 @@ const Page: React.FC = () => {
   //     "userInChat",
   //     JSON.stringify({ userEmail: token?.email, chattingWith: user2 })
   //   );
-  //   // console.log("handle show message");
+  //   // // console.log("handle show message");
 
   //   setProfileUrl(profileUrl || demoimg.src);
 
   //   setInbox(oldMessages?.data?.messages);
-  //   // console.log(filteredMessages, "chekc message list")
+  //   // // console.log(filteredMessages, "chekc message list")
   // };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
     const validImages = files.filter((file) => file.type.startsWith("image/"));
-    console.log("my file is ", files);
+    // console.log("my file is ", files);
     // Alert for invalid files
     if (validImages.length !== files.length) {
       alert("Please select only valid image files.");
@@ -509,10 +513,10 @@ const Page: React.FC = () => {
 
 
 
-  if (isLoading) {
-    return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
+  // if (isLoading) {
+  //   return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
 
-  }
+  // }
   return (
     <section>
       <div className="container mx-auto pt-[20px]">
@@ -538,14 +542,7 @@ const Page: React.FC = () => {
         >
           <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
             <div className="p-4">
-              <div className="flex items-center border rounded-[12px] px-3 py-4">
-                <BiSearch className="text-gray-500 text-lg" />
-                <input
-                  type="text"
-                  placeholder="Search message..."
-                  className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
-                />
-              </div>
+
               <AllUsers
                 handleshowMessage={handleshowMessage}
                 getConversation={{ data: users }}
@@ -568,14 +565,7 @@ const Page: React.FC = () => {
             }`}
         >
           <div className="p-4">
-            <div className="flex items-center border  rounded-[12px] px-3 py-4">
-              <BiSearch className="text-gray-500 text-lg" />
-              <input
-                type="text"
-                placeholder="Search message..."
-                className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
-              />
-            </div>
+
             <AllUsers
               handleshowMessage={handleshowMessage}
               getConversation={{ data: users }}
@@ -588,13 +578,15 @@ const Page: React.FC = () => {
           <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
             {getToUser?.data && (
               <div className="flex items-center">
-                <Image
-                  src={getToUser?.data?.profileUrl || demoimg}
-                  alt="Jane Cooper"
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
+                <div className="w-[40px] h-[40px]">
+                  <Image
+                    src={getToUser?.data?.profileUrl || demoimg}
+                    alt="Jane Cooper"
+                    width={40}
+                    height={40}
+                    className="rounded-full w-full h-full"
+                  />
+             </div>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-gray-900">
                     {getToUser?.data.client?.name?.firstName ||
@@ -602,9 +594,9 @@ const Page: React.FC = () => {
                     {getToUser?.data.client?.name?.lastName ||
                       getToUser?.data?.retireProfessional?.name?.lastName}
                   </h3>
-                  <p className="text-xs text-gray-500">
+                  {/* <p className="text-xs text-gray-500">
                     Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
-                  </p>
+                  </p> */}
                 </div>
               </div>
             )}
@@ -700,7 +692,7 @@ const Page: React.FC = () => {
                     handleOpenModal={handleOpenModal}
                     messages={inbox}
                     currentUser={user1 ?? ""}
-                    profileUrl={profileUrl}
+                      profileUrl={getToUser?.data?.profileUrl}
                     colorScheme={{
                       senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
                       receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",

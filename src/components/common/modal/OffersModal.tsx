@@ -53,10 +53,10 @@ const OffersModal: React.FC<OffersModalProps> = ({
 }) => {
     // const [oldOffer, setOldOffer] = useState
     const { data: getoffer, isLoading } = useGetOfferQuery(user1);
-    // console.log("My email", user1);
-    // console.log("My offer", getoffer);
+    // // console.log("My email", user1);
+    // // console.log("My offer", getoffer);
 
-    // console.log("user 2", user1);
+    // // console.log("user 2", user1);
 
     // const [socket, setSocket] = useState<any>(null);
     // const token = useDecodedToken()
@@ -65,7 +65,7 @@ const OffersModal: React.FC<OffersModalProps> = ({
     const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
     const onOfferClick = (offer: Offer) => {
-       
+
         setSelectedOffer(offer);
     };
     useEffect(() => {
@@ -74,10 +74,10 @@ const OffersModal: React.FC<OffersModalProps> = ({
         }
     }, [getoffer]);
 
-    console.log(getoffer?.data?.data?.count, "chekc offer");
+    // console.log(getoffer?.data?.data?.count, "chekc offer");
     const offers = getoffer?.data?.data?.offersWithUserInfo || [];
 
-    console.log(latestOffer, "check from offer modal");
+    // console.log(latestOffer, "check from offer modal");
     const isLatestOfferIncluded = latestOffer
         ? offers.some((offer: Offer) => offer._id === latestOffer._id)
         : true;

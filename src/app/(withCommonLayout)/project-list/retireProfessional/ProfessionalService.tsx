@@ -16,7 +16,7 @@ const ClientService = () => {
     maxBudget: undefined,
   });
 
-  console.log(filters);
+  // console.log(filters);
 
   return (
     <div className="bg-slate-50">

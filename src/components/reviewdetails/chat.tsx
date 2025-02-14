@@ -33,7 +33,7 @@ const messages: Message[] = [
             {
                 name: "img",
                 size: '12mb',
-                preview: offer 
+                preview: offer
             }
         ]
     },
@@ -69,10 +69,10 @@ const messages: Message[] = [
 
 export default function Chat() {
 
-    const [inputMessage, setInputMessage] = useState('');
-    console.log(inputMessage);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const emojiPickerRef = useRef<HTMLDivElement>(null);
+    const [, setInputMessage] = useState('');
+    // console.log(inputMessage);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
 
     const handleEmojiClick = (emojiObject: any) => {
         setInputMessage((prevInput) => prevInput + emojiObject.emoji);
@@ -84,16 +84,16 @@ export default function Chat() {
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-          if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
-            setShowEmojiPicker(false);
-          }
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+                setShowEmojiPicker(false);
+            }
         };
-    
+
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
-          document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
-      }, []);
+    }, []);
     return (
         <div className="bg-[#FAFAFA] rounded-lg shadow-sm rounded-b-[18px] max-w-lg mx-auto md:max-w-3xl">
             {/* Header */}
@@ -147,12 +147,12 @@ export default function Chat() {
                                                 href={message.attachments[0].preview}
                                                 download="attachment.jpg"
                                             > */}
-                                                <Image
-                                                    src={message.attachments[0].preview}
-                                                    width={200}
-                                                    height={117}
-                                                    alt="attachment"
-                                                />
+                                            <Image
+                                                src={message.attachments[0].preview}
+                                                width={200}
+                                                height={117}
+                                                alt="attachment"
+                                            />
                                             {/* </a> */}
                                         </div>
                                     )
@@ -181,11 +181,11 @@ export default function Chat() {
                     <FaRegSmile className="w-5 h-5 text-black" />
                 </button>
                 {/* <FaRegSmile onClick={toggleEmojiPicker} className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" /> */}
-                            {showEmojiPicker && (
-                              <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
-                                <EmojiPicker onEmojiClick={handleEmojiClick} />
-                              </div>
-                            )}
+                {showEmojiPicker && (
+                    <div ref={emojiPickerRef} className="absolute bottom-16 right-0">
+                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                    </div>
+                )}
                 <button className="p-2 bg-white rounded-full">
                     <IoVideocamOutline className="w-5 h-5 text-black" />
                 </button>

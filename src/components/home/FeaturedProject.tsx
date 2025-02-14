@@ -17,14 +17,14 @@ const FeaturedProject: React.FC = () => {
     const clientData = useClientListQuery(undefined);
     const professionalData = useProfessionalListQuery(undefined);
     const userRole = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
-console.log("client is", clientData);
+    // console.log("client is", clientData);
     const handleToggleShowAll = () => {
         setShowAll(!showAll);
     };
 
     const renderProjects = (data: any[], isClient: boolean) => {
         const projectsToShow = showAll ? data : data.slice(0, 3);
-        console.log("my clientData is", isClient);
+        // console.log("my clientData is", isClient);
 
         return projectsToShow.map((data: any, index: number) => (
             <div

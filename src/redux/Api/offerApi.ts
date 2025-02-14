@@ -3,10 +3,10 @@ import baseApi from "./baseApi"
 
 const offerApi = baseApi.injectEndpoints({
     endpoints: (build) => ({
-      
+
         getOffer: build.query({
             query: (userId) => {
-                console.log(userId)
+                // console.log(userId)
                 return {
                     url: `/offer/professional/${userId}`,
                     method: 'GET',
@@ -16,7 +16,7 @@ const offerApi = baseApi.injectEndpoints({
         }),
         getSingleOffer: build.query({
             query: (offerId) => {
-                console.log(offerId)
+                // console.log(offerId)
                 return {
                     url: `/offer/${offerId}`,
                     method: 'GET',
@@ -26,7 +26,7 @@ const offerApi = baseApi.injectEndpoints({
         }),
         deleteOffer: build.mutation({
             query: (offerId) => {
-                console.log(offerId)
+                // console.log(offerId)
                 return {
                     url: `/offer/delete/${offerId}`,
                     method: 'DELETE',
