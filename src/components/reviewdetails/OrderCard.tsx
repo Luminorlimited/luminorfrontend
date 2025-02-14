@@ -64,12 +64,9 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                 console.log('this is console', id);
                 const res = await deliverOrder(id);
                 console.log("my response is",);
-                if (res?.data?.statusCode) {
-
-                    // console.log("my response is", res?.data?.statusCode);
-
+                if (res) {
                     toast.success("Order delivered successfully");
-                    router.push(`/deliver-details/addreview/${getSingleOrder?.data?.client[0]._id}`)
+                    router.push(`/deliver-details/addreview/${getSingleOrder?.data?.result?.orderFrom}`)
                     console.log("Order delivered:", res);
                 }
             } else {

@@ -13,6 +13,8 @@ import { useDecodedToken } from '@/components/common/DecodeToken';
 // import OrderCard from '@/components/reviewdetails/OrderCard';
 
 
+
+
 export default function FeedbackForm() {
     const { handleSubmit, control, reset, setValue, watch } = useForm({
         defaultValues: {
@@ -26,7 +28,7 @@ export default function FeedbackForm() {
     const [clientReview] = useProfessionalAddReviewMutation()
     const [professionalReview] = useClientReviewMutation()
 
-   
+    
 
     const maxLength = 700;
     const feedbackValue = watch('feedback');
@@ -36,6 +38,9 @@ export default function FeedbackForm() {
     console.log("my id is", userId);
     // const router = useRouter()
     const router = useRouter()
+    const handleHome = () => {
+        router.push('/')
+    }
     const onSubmit = async (data: any) => {
         console.log("My data is", data);
         if (!data.feedback.trim() || data.rating <= 0) {
@@ -113,7 +118,7 @@ export default function FeedbackForm() {
                         </div>
                     </div>
                     <div className='flex gap-3 justify-end'>
-                        <Button className='bg-gray-500 rounded-[25px]' onClick={() => reset()}>Skip</Button>
+                        <Button className='bg-gray-500 rounded-[25px]' onClick={handleHome}>Skip</Button>
                         <Button className='rounded-[25px]' onClick={handleSubmit(onSubmit)}>Submit</Button>
                     </div>
                 </div>

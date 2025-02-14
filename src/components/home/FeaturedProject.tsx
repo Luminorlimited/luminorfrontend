@@ -57,13 +57,13 @@ const FeaturedProject: React.FC = () => {
                     </div>
                     <div className="mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <div className="h-15 w-10 overflow-hidden rounded-full">
+                            <div className="h-[40px] w-[40px] overflow-hidden rounded-full">
                                 <Image
                                     src={data?.profileUrl || profileImgFallback}
                                     alt={isClient ? data.client?.name?.firstName : data?.userDetails?.name?.firstName || "Client"}
                                     width={40}
                                     height={40}
-                                    className="object-cover"
+                                    className="object-cover w-full h-full"
                                 />
                             </div>
                             <span className="text-sm font-medium text-gray-900">
