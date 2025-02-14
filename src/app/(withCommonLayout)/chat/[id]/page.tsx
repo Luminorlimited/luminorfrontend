@@ -308,13 +308,13 @@ const Page: React.FC = () => {
       if (res) {
         setFileLink(res?.data?.data)
         console.log("my response is", res);
-        const message: any = {
-          toUserId: id.id,
-          message: messages.trim() || null,
-          fromUserId: token?.id,
-          media: fileLink,
-        };
-        socketRef.current.emit("privateMessage", JSON.stringify(message));
+        // const message: any = {
+        //   toUserId: id.id,
+        //   message: messages.trim() || null,
+        //   fromUserId: token?.id,
+        //   media: fileLink,
+        // };
+        // socketRef.current.emit("privateMessage", JSON.stringify(message));
 
       }
     } catch (e) {
