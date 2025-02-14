@@ -241,50 +241,40 @@ export function Sidebar({
 
   const pathName = usePathname();
 
-  // const industry = ["tech", "marketing", "finance"]
-
-  // add query params to the url
-
-  // const { data: filterData } = useClientFilterListQuery({ industry: [], timeline: [], skillType: [] });
-  // const { data: professionalfilterData } = useProfessionalFilterListQuery({ industry: [], timeline: [], skillType: [] });
-
-  // console.log("filterData", professionalfilterData);
-  // setclientFilter(filterData)
-
-  // const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   const industryOptions = [
-    { label: "EDUCATION", value: "EDUCATION" },
-    { label: "ECOMMERCE", value: "ECOMMERCE" },
-    { label: "REAL_ESTATE", value: "REAL_ESTATE" },
-    { label: "ENTERTAINMENT", value: "ENTERTAINMENT" },
-    { label: "TRAVEL", value: "TRAVEL" },
-    { label: "AUTOMOTIVE", value: "AUTOMOTIVE" },
-    { label: "MANUFACTURING", value: "MANUFACTURING" },
-    { label: "FOOD", value: "FOOD" },
-    { label: "FASHION", value: "FASHION" },
+    { label: "Education", value: "EDUCATION" },
+    { label: "Ecommerce", value: "ECOMMERCE" },
+    { label: "Real State", value: "REAL_ESTATE" },
+    { label: "Entertainment", value: "ENTERTAINMENT" },
+    { label: "Travel", value: "TRAVEL" },
+    { label: "Automotive", value: "AUTOMOTIVE" },
+    { label: "Manufacturing", value: "MANUFACTURING" },
+    { label: "Food", value: "FOOD" },
+    { label: "Fashion", value: "FASHION" },
+    { label: "Other", value: "Other" },
   ];
 
   const timelineOptions = [
-    { label: "Short Term", value: "Short Term" },
+    { label: "Short Term", value: "shortTerm" },
     { label: "Long Term", value: "Long Term" },
   ];
 
   const skillTypeOptions = [
     {
       label: "Business consultancy and management",
-      value: "Business consultancy and management",
+      value: "BUSINESS_CONSULTENCY_AND_MANAGEMENT",
     },
-    { label: "Engineering services", value: "Engineering services" },
-    { label: "Technical services", value: "Technical services" },
+    { label: "Engineering services", value: "ENGINEERING_SERVICE" },
+    { label: "Technical services", value: "TECHNICAL_SERVICES" },
     {
       label: "Healthcare and medical consultancy",
-      value: "Healthcare and medical consultancy",
+      value: "HEALTHCARE_AND_MEDICAL_CONSULTENCY",
     },
-    { label: "Education and training", value: "Education and training" },
+    { label: "Education and training", value: "EDUCATIONAL_AND_TRAINING" },
     {
       label: "Legal and financial services",
-      value: "Legal and financial services",
+      value: "LEGAL_AND_FINANCIAL_SERVICES",
     },
   ];
 

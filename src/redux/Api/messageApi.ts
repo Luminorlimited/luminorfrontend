@@ -34,8 +34,16 @@ const projectApi = baseApi.injectEndpoints({
             providesTags: ['message'],
         }),
 
+        imageSend: build.mutation({
+            query: (data) => ({
+                url: `/messages/file-upload`,
+                method: "POST",
+                body: data
+            })
+        })
+
 
     }),
 });
 
-export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery } = projectApi;
+export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation } = projectApi;

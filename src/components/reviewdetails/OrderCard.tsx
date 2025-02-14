@@ -145,7 +145,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                         <div>
                             <h3 className="text-lg text-gray-600">Order no</h3>
                         </div>
-                        <div className="text-lg text-gray-900 font-medium text-right">
+                        <div className="lg:text-lg text-sm text-gray-900 font-medium text-right truncate">
                             #{getSingleOrder?.data?.result?._id}
                         </div>
                     </div>

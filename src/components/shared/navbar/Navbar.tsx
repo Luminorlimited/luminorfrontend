@@ -14,23 +14,23 @@ import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
+  // DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GoBell } from "react-icons/go";
+// import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import demoprofile from "@/assets/images/avatar.jpg";
 import Cookies from "js-cookie";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 // import { useDecodedToken } from "@/components/common/DecodeToken";
 import { RootState } from "@/redux/store";
 
-interface Notification {
-  id: number;
-  message: string;
-  time: string;
-}
+// interface Notification {
+//   id: number;
+//   message: string;
+//   time: string;
+// }
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -56,7 +56,7 @@ const Navbar = () => {
   const [fileBtn, showFileBtn] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement | null>(null);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  // const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const handleClick = () => {
     showFileBtn((prev) => !prev);
@@ -80,39 +80,35 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // Establish socket connection
-    const mysocket = io("ws://localhost:5001");
+  // useEffect(() => {
+  //   const mysocket = io("ws://localhost:5001");
 
-    // Listen for notification events from the server
-    mysocket.on("connect", () => {
-      console.log("Connected to the server.");
+  //   mysocket.on("connect", () => {
+  //     console.log("Connected to the server.");
 
-      mysocket.on("privateMessage", (notification) => {
-        console.log("Notification received:", notification);
+  //     mysocket.on("privateMessage", (notification) => {
+  //       console.log("Notification received:", notification);
 
-        // Update state with the new notification
-        setNotifications((prevNotifications) => [
-          ...prevNotifications,
-          {
-            id: Date.now(), // Use a unique ID for each notification
-            message: notification.message,
-            time: new Date().toLocaleTimeString(), // Add timestamp
-          },
-        ]);
-      });
-    });
+  //       setNotifications((prevNotifications) => [
+  //         ...prevNotifications,
+  //         {
+  //           id: Date.now(), // Use a unique ID for each notification
+  //           message: notification.message,
+  //           time: new Date().toLocaleTimeString(), // Add timestamp
+  //         },
+  //       ]);
+  //     });
+  //   });
 
-    // Cleanup on component unmount
-    return () => {
-      mysocket.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     mysocket.disconnect();
+  //   };
+  // }, []);
 
-  const handleNotificationClick = (id: number) => {
-    console.log(`Notification ${id} clicked`);
-    // Implement additional logic if needed, like marking as read
-  };
+  // const handleNotificationClick = (id: number) => {
+  //   console.log(`Notification ${id} clicked`);
+ 
+  // };
 
 
   return (
@@ -158,7 +154,7 @@ const Navbar = () => {
         {/* User Section */}
         {user ? (
           <div className="flex gap-3 items-center relative" ref={dropdownRef}>
-            <div className="relative">
+            {/* <div className="relative">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="focus:outline-none">
@@ -195,7 +191,7 @@ const Navbar = () => {
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
+            </div> */}
             {/* Notification */}
 
             {/* <Link href={`/project-list/${decodedToken.role}`}>

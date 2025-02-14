@@ -61,6 +61,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 
   const token = useDecodedToken();
   const { data: profileData } = useGetProfileQuery(token?.id);
+  
+
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
@@ -85,8 +87,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
             className={`p-3 ${isSender
-                ? "rounded-l-[10px] rounded-b-[10px]"
-                : "rounded-r-[10px] rounded-b-[10px]"
+              ? "rounded-l-[10px] rounded-b-[10px]"
+              : "rounded-r-[10px] rounded-b-[10px]"
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
               }`}
           >

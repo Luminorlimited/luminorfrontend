@@ -59,17 +59,21 @@ const servicesData = [
 const minGap = 0;
 const minPrice = 1;
 const maxPrice = 400;
+interface DecodedToken {
+  id: string;
+  email: string;
+  role: string;
+}
 
 
 
 export default function Client() {
-  interface DecodedToken {
-    id: string;
-    email: string;
-    role: string;
-  }
+
+  const { register, handleSubmit, setValue, watch, reset } = useForm();
 
   const token = useSelector((state: RootState) => state.Auth.token);
+
+  const { id: userIdValue } = useParams();
 
   // Decode the token
   try {
@@ -80,7 +84,7 @@ export default function Client() {
     console.error("Invalid token:", error);
   }
 
-  const { id: userIdValue } = useParams();
+
 
   const [editclientProfile] = useEditclientprofileMutation();
 
@@ -123,6 +127,7 @@ export default function Client() {
 
       fetchLocation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]);
 
   useEffect(() => {
@@ -165,6 +170,22 @@ export default function Client() {
 
 
 
+  useEffect(() => {
+    if (profileData) {
+      reset({
+        firstName: profileData.data.client.name.firstName,
+        lastName: profileData.data.client.name.lastName,
+        companyName: profileData.data.companyName,
+        companyWebsite: profileData.data.companyWebsite,
+        phoneNumber: profileData.data.phoneNumber,
+        problemAreas: profileData.data.problemAreas,
+        description: profileData.data.description,
+        servicePreference: profileData.data.servicePreference,
+        projectListing: profileData.data.projectListing,
+        projectPreference: profileData.data.projectPreference,
+      });
+    }
+  }, [profileData, reset]);
 
 
 
@@ -207,7 +228,7 @@ export default function Client() {
     [durationMinValue, durationMaxValue, getProgressStyle]
   );
 
-  const { register, handleSubmit, setValue, watch } = useForm();
+
 
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
@@ -245,6 +266,10 @@ export default function Client() {
     formData.append("projectDurationRange[min]", String(data.minDuration));
     formData.append("budgetRange[min]", String(data.minBudget));
     formData.append("budgetRange[max]", String(data.maxBudget));
+
+
+
+    // console.log(data?.firstName, data?.lastName); return
 
     // Append project preferences array
     if (Array.isArray(data.projectPreference)) {
@@ -799,6 +824,7 @@ export default function Client() {
                     ? "bg-gray-500 text-white"
                     : "bg-primary text-white "
                     }`}
+                  disabled={loading}
                 >
                   {loading ? "Saving..." : "Save Information"}
                 </button>

@@ -80,12 +80,23 @@ export default function Professional() {
   const { data: profileData } = useGetProfileQuery(userIdValue);
 
 
-  const { register, handleSubmit, setValue, watch } = useForm();
+  const { register, handleSubmit, setValue, watch, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const [editprofessionalProfile] = useEditprofessionalprofileMutation();
    const [latitude, setLatitude] = useState(0);
    const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const handleClose = () => {
+    setShowAlert((prev) => !prev);
+  };
+  useEffect(() => {
+    if (profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
+      setShowAlert(false)
+    } else {
+      setShowAlert(true)
+    }
+  }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess])
   
     useEffect(() => {
       if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
@@ -105,10 +116,29 @@ export default function Professional() {
   
         fetchLocation();
       }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]); 
   
+  useEffect(() => {
+    if (profileData) {
+      reset({
+        firstName: profileData.data.retireProfessional.name.firstName,
+        lastName: profileData.data.retireProfessional.name.lastName,
+        phone: profileData.data.phoneNumber,
+        email: profileData.data.retireProfessional.email,
+        bio: profileData.data.bio,
+        description: profileData.data.description,
+        expertise: profileData.data.expertise,
+        availability: profileData.data.availability,
+        preferedProjects: profileData.data.preferedProjects,
+        hourlyRate: profileData.data.hourlyRate,
+        workSample: profileData.data.workSample,
+        profileUrl: profileData.data.profileUrl,
+      });
+    }
+  }, [profileData, reset]);
  
- 
+  
    useEffect(() => {
      let autocomplete: google.maps.places.Autocomplete;
  
@@ -279,6 +309,18 @@ export default function Professional() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
+      {showAlert && (
+        <div className="bg-yellow-100 border border-yellow-400 text-bg_primary px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Hii {profileData?.data?.retireProfessional?.name?.firstName}!!! </strong>
+          <span className="block sm:inline">Please add your stripe account. Check your mail</span>
+          <span onClick={handleClose} className="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg className="fill-current h-6 w-6 text-yellow-800" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <title>Close</title>
+              <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+            </svg>
+          </span>
+        </div>
+      )}
 
       {/* Header with gradient */}
       <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})` }} />
@@ -625,7 +667,7 @@ export default function Professional() {
                 )}
               </div>
               <div className="flex justify-center">
-                <button className={` py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-white" : "bg-primary text-white "}`}>
+                <button disabled={loading} className={` py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-white" : "bg-primary text-white "}`}>
                   {loading ? "Saving..." : "Save Information"}
                 </button>
               </div>

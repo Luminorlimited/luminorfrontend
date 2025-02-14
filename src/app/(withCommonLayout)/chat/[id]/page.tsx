@@ -24,11 +24,13 @@ import {
   useGetConversationQuery,
   useGetMessageQuery,
   useGetuserQuery,
+  useImageSendMutation,
 } from "@/redux/Api/messageApi";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
 import { useDecodedToken } from "@/components/common/DecodeToken";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useGetProfileQuery } from "@/redux/Api/userApi";
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -36,11 +38,13 @@ const Page: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProjectModal, setProjectModal] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  
   const [fileBtn, showFileBtn] = useState(false);
   const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
-  // const [socket, setSocket] = useState<any>(null);
+  const { data: getProfile } = useGetProfileQuery({})
+  // console.log("getprofile is", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
   const user1 = useSelector((state: RootState) => state.Auth.user?.id);
 
   const [profileUrl, setProfileUrl] = useState<string>(demoimg.src);
@@ -66,6 +70,7 @@ const Page: React.FC = () => {
   const { data: getConversation } = useGetConversationQuery(undefined, {
     skip: !id.id,
   });
+  const [fileUpload] = useImageSendMutation({})
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
@@ -95,7 +100,7 @@ const Page: React.FC = () => {
     }
   }, [getoffer?.data?.data?.offersWithUserInfo?.count, id, refetch]);
 
- 
+
   useEffect(() => {
     if (token?.id) {
       // console.log("Offer notification useEffect triggered");
@@ -224,7 +229,7 @@ const Page: React.FC = () => {
   }, []);
 
 
-  
+
   useEffect(() => {
     const handleClickOutside = (event: any) => {
       if (showSidebar && !event.target.closest(".sidebar")) {
@@ -275,25 +280,60 @@ const Page: React.FC = () => {
     setProfileUrl(profileUrl || demoimg.src);
     setInbox(oldMessages?.data?.messages);
   };
-  const onSendMessage = (e: any) => {
+
+  const [fileLink, setFileLink] = useState("")
+
+  const onSendMessage = async (e: any) => {
     e.preventDefault();
     if (!messages.trim()) {
       alert("Please enter a message or select an image.");
       return;
     }
 
+
     if (!socketRef.current) {
       toast.error("Socket connection not established.");
       return;
     }
 
+    try {
+
+      const formData = new FormData()
+      if (selectedImages) {
+        selectedImages.forEach((file) => {
+          formData.append("file", file);
+        });
+      }
+      const res = await fileUpload(formData)
+      if (res) {
+        setFileLink(res?.data?.data)
+        console.log("my response is", res);
+        const message: any = {
+          toUserId: id.id,
+          message: messages.trim() || null,
+          fromUserId: token?.id,
+          media: fileLink,
+        };
+        socketRef.current.emit("privateMessage", JSON.stringify(message));
+
+      }
+    } catch (e) {
+      console.log(e, "error");
+    }
+
+
+
+    console.log(messages, "check messages for file 1")
     if (messages.trim()) {
       const message: any = {
         toUserId: id.id,
         message: messages.trim() || null,
         fromUserId: token?.id,
-        media: selectedBase64Images,
+        media: fileLink,
       };
+
+
+      console.log(messages, "check messages for file2")
 
       socketRef.current.emit("privateMessage", JSON.stringify(message));
 
@@ -317,8 +357,8 @@ const Page: React.FC = () => {
             ? getToUser?.data?.retireProfessional?.email
             : getToUser?.data?.client?.email,
           name: `${getToUser?.data?.retireProfessional
-              ? getToUser.data.retireProfessional.name.firstName
-              : getToUser?.data?.client?.name.firstName
+            ? getToUser.data.retireProfessional.name.firstName
+            : getToUser?.data?.client?.name.firstName
             } ${getToUser?.data?.retireProfessional
               ? getToUser.data.retireProfessional.name.lastName
               : getToUser?.data?.client?.name.lastName
@@ -385,12 +425,17 @@ const Page: React.FC = () => {
   };
 
   const handleProjectModal = () => {
-    if (isButtonDisabled) return;
-    setIsButtonDisabled(true);
-    setProjectModal((prevState) => !prevState);
-    setTimeout(() => {
-      setIsButtonDisabled(false);
-    });
+    if (getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
+      if (isButtonDisabled) return;
+      setIsButtonDisabled(true);
+      setProjectModal((prevState) => !prevState);
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      });
+      
+    } else {
+      toast.error("Please add your stripe account. Check your mail.")
+    }
   };
 
   // const handleshowMessage = (user: {
@@ -419,8 +464,9 @@ const Page: React.FC = () => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    const validImages = files.filter((file) => file.type.startsWith("image/"));
 
+    const validImages = files.filter((file) => file.type.startsWith("image/"));
+    console.log("my file is ", files);
     // Alert for invalid files
     if (validImages.length !== files.length) {
       alert("Please select only valid image files.");
@@ -461,11 +507,11 @@ const Page: React.FC = () => {
     setShowSidebar(!showSidebar);
   };
 
- 
+
 
   if (isLoading) {
-    return  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
-    
+    return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
+
   }
   return (
     <section>
@@ -614,9 +660,9 @@ const Page: React.FC = () => {
                   {/* <span className="absolute top-0 right-0 bg-red-500 text-white text-sm rounded-full w-3 h-3 flex items-center justify-center"> {offerNotifications}</span> */}
                 </button>
                 {isModalOpen && (
-                  <OffersModal 
-                    onClose={handleOpenModal} 
-                    user1={user1 as string} 
+                  <OffersModal
+                    onClose={handleOpenModal}
+                    user1={user1 as string}
                     offerNotification={offerNotification}
                     setOfferNotification={setOfferNotification}
                     latestOffer={latestOffer}
@@ -669,8 +715,8 @@ const Page: React.FC = () => {
           <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
             <div
               className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-5 pointer-events-none"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-5 pointer-events-none"
                 }`}
             >
               <button

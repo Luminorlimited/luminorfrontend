@@ -5,16 +5,18 @@ import Image from "next/image";
 import { BiTime } from "react-icons/bi";
 import profileImgFallback from '@/assets/images/profilepix.jpg';
 import projectImgFallback from '@/assets/images/package.png';
-import { usePathname } from 'next/navigation';
+// import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useClientListQuery, useProfessionalListQuery } from '@/redux/Api/projectApi';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const FeaturedProject: React.FC = () => {
     const [showAll, setShowAll] = useState(false);
-    const route = usePathname();
+    // const route = usePathname();
     const clientData = useClientListQuery(undefined);
     const professionalData = useProfessionalListQuery(undefined);
-    // console.log("my professionalData is", professionalData);
+    const userRole = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
 
     const handleToggleShowAll = () => {
         setShowAll(!showAll);
@@ -22,7 +24,7 @@ const FeaturedProject: React.FC = () => {
 
     const renderProjects = (data: any[], isClient: boolean) => {
         const projectsToShow = showAll ? data : data.slice(0, 3);
-        console.log("my clientData is", projectsToShow);
+        console.log("my clientData is", isClient);
 
         return projectsToShow.map((data: any, index: number) => (
             <div
@@ -97,7 +99,7 @@ const FeaturedProject: React.FC = () => {
     return (
         <div>
             <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 justify-center mb-8">
-                {route === '/project-list/client' ? renderProjects(professionalData?.data?.data || [], false) : renderProjects(clientData?.data?.data || [], true)}
+                {userRole === 'client' ? renderProjects(professionalData?.data?.data || [], false) : renderProjects(clientData?.data?.data || [], true)}
             </div>
             <div className="text-center">
                 <button
