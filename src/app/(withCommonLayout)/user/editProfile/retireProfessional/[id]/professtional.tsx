@@ -507,16 +507,21 @@ export default function Professional() {
 
               <div>
                 <select
-                  {...register("abailability")}
-                  id="countries"
-                  onChange={(e) => setValue("abailability", e.target.value)}
+                  {...register("availability")}
+                  id="availability"
+                  onChange={(e) => setValue("availability", e.target.value)}
                   className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2"
-                  defaultValue={profileData?.data?.availability || ""}
+                  defaultValue={profileData?.data?.availability ?? ""}
                 >
-                  <option>Availability</option>
-                  <option value={10}>Short Term(1-29)</option>
-                  <option value={31}>Long Term(30-...)</option>
+                  <option disabled>Availability</option>
+                  <option value={20} selected={profileData?.data?.availability < 30}>
+                    Short Term (1-29)
+                  </option>
+                  <option value={31} selected={profileData?.data?.availability >= 30}>
+                    Long Term (30-...)
+                  </option>
                 </select>
+
               </div>
               <div>
                 <label className="block text-sm mb-2" htmlFor="prefProject">

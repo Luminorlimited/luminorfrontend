@@ -1,20 +1,35 @@
 "use client";
-import Dropdown from "@/components/dropdown/Dropdown";
+// import Dropdown from "@/components/dropdown/Dropdown";
 import MyForm from "@/components/myForm/MyForm";
 import MyInput from "@/components/myForm/MyInput";
+import { RootState } from "@/redux/store";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const SearchBox = () => {
   const [isOpen, setIsOpen] = useState("");
   console.log(isOpen)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const router = useRouter()
+  const user = useSelector((state: RootState) => state.Auth.user);
+
   const handleSearch = (data: any) => {
     console.log(data);
+    if (!user) {
+      router.push("/user/auth/login");
+      return;
+    }
+    router.push(`${user.role === "client"
+      ? "/project-list/retireProfessional"
+      : user.role === "retireProfessional"
+        ? "/project-list/client"
+        : "/user/auth/login"
+        }`)
   };
   return (
     <div className="relative ">
-      <div className="p-1 border bg-white  border-gradieant rounded-full overflow-hidden  shadow-sm ">
+      <div className="p-1 border bg-white  border-gradieant rounded-full overflow-hidden  shadow-sm max-w-[550px]">
         <MyForm
           onSubmit={handleSearch}
           className="flex justify-between items-center "
@@ -27,13 +42,13 @@ const SearchBox = () => {
             name="search"
             type="text"
           />
-          <div className="border-l px-6 flex gap-6 items-center justify-between flex-1 ">
+          {/* <div className="border-l px-6 flex gap-6 items-center justify-between flex-1 ">
             <Dropdown
               className="w-[130px] focus:ring-offset-0 focus:ring-0 border-0 text-textColor-secondary "
               defaultValue={"consultant"}
               options={[{ label: "Consultant", value: "consultant" }]}
             />
-          </div>
+          </div> */}
           <button
             type="submit"
             className="btn-primary text-white hover:text-white px-[16px] sm:px-[20px] py-[8px] text-sm sm:text-base font-medium rounded-full lg:flex items-center gap-[4px] sm:gap-[6px]"

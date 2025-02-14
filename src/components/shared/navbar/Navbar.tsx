@@ -1,7 +1,7 @@
 import Logo from "@/utils/Logo";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
-// import SearchBox from "./SearchBox";
+import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
 // import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
@@ -122,9 +122,9 @@ const Navbar = () => {
       </span>
 
       {/* Search Box */}
-      {/* <div className="hidden lg:block max-[820px]:hidden">
+      <div className="hidden lg:block max-[820px]:hidden">
         <SearchBox />
-      </div> */}
+      </div>
 
       {/* Navbar Links */}
       <div className="lg:flex md:flex hidden items-center gap-6">

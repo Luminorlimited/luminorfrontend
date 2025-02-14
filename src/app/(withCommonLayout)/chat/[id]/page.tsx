@@ -10,7 +10,7 @@ import { FiSend } from "react-icons/fi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
-import { MdOutlineKeyboardVoice } from "react-icons/md";
+// import { MdOutlineKeyboardVoice } from "react-icons/md";
 import EmojiPicker from "emoji-picker-react";
 import { IoMdMenu } from "react-icons/io";
 import { Video, FileText, Images } from "lucide-react";
@@ -749,7 +749,7 @@ const Page: React.FC = () => {
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}
-            <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" />
+            {/* <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" /> */}
             <button
               onClick={handleCreateZoomMeeting}
               className="text-xl hover:shadow-md bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1"

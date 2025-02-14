@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-import demoimg from '@/assets/images/demoimg.png';
+import demoimg from '@/assets/images/msgavatar2.png';
 // import avatar1 from "@/assets/images/msgavatar1.png";
 
 // import { useParams } from 'next/navigation';
@@ -59,7 +59,7 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                     id: userId,
                     email: user?.email,
                     firstName: firstName || "Unknown",
-                    lastName: lastName || "",
+                    lastName: lastName || "User",
                     name: user?.name,
                     profileUrl: user?.profileUrl || null,
                   })}
