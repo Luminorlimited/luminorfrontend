@@ -1,5 +1,3 @@
-
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode"; // Ensure proper import for jwtDecode
@@ -26,8 +24,16 @@ export function middleware(request: NextRequest) {
     "/orders",
     "/payment-details",
   ];
-  const adminRoutes = ["/dashboard", "/dashboard/:params*", "/dashboard/offers", "/dashboard/orders", "/dashboard/profile", "/dashboard/users", "/dashboard/users/:params*",];
-  
+  const adminRoutes = [
+    "/dashboard",
+    "/dashboard/:params*",
+    "/dashboard/offers",
+    "/dashboard/orders",
+    "/dashboard/profile",
+    "/dashboard/users",
+    "/dashboard/users/:params*",
+  ];
+
   const professionalRoutes = [
     "/project-list/client",
     "/user/editProfile/retireProfessional",
@@ -64,15 +70,11 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(loginRoute);
     }
 
-    // Role-based route handling
     if (adminRoutes.includes(pathname) && role !== "admin") {
       return NextResponse.redirect(loginRoute);
     }
 
-    if (
-      professionalRoutes.includes(pathname) &&
-      role !== "retireProfessional"
-    ) {
+    if (professionalRoutes.includes(pathname) && role !== "retireProfessional") {
       return NextResponse.redirect(loginRoute);
     }
 

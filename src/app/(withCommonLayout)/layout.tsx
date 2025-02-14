@@ -42,7 +42,7 @@ useEffect(() => {
 
 }, [getprofile?.data?.client?.isActivated, getprofile?.data?.retireProfessional?.isActivated])
 const user = useSelector((state: RootState) => state.Auth.user?.role)
-// console.log("my role is", user);
+  console.log("my role is", getprofile);
 
 return (
   <div>

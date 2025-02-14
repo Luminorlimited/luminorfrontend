@@ -11,10 +11,8 @@ import ImageCarousel from "./ImageCarousel/ImageCarousel";
 import { useLoginUserMutation } from "@/redux/Api/userApi";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-// import { Button } from "@/components/ui/button"
 import { FaArrowRightLong } from "react-icons/fa6";
 import { toast } from "sonner";
-// import { motion } from "framer-motion";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -26,13 +24,12 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission
-    const data = { email, password }; // Gather email and password
+    e.preventDefault(); 
+    const data = { email, password }; 
 
     try {
       setIsLoading(true); // Set loading state to true
       const res: any = await LogInUser(data);
-      // console.log("Login Response:", res);
 
       if (res?.data?.success) {
         localStorage.setItem("email", email);
@@ -40,7 +37,7 @@ export default function Login() {
         router.push("/user/verification");
       } else {
         // // console.log();
-        toast.error(res?.error?.data?.message);
+        toast.error(`${res?.error?.data?.message}. Please Login`);
       }
     } catch (error) {
       toast.error("Login Failed");
@@ -49,21 +46,6 @@ export default function Login() {
       setIsLoading(false); // Reset loading state
     }
   };
-
-  // const handlegooglelogin = async () => {
-  //     try {
-  //         const res = await signIn("google", {
-  //            callbackUrl: "/"
-  //         })
-  //         if (res) {
-  //             // console.log('login succssfully');
-
-  //         }
-  //     } catch (e) {
-  //         // console.log('error login', e);
-
-  //     }
-  // }
 
   return (
     <div className="  relative">

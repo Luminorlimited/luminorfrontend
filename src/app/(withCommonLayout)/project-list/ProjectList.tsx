@@ -122,13 +122,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
             >
 
               <div className="relative w-full">
-                <div className="overflow-hidden rounded-[10px]">
+                <div className="overflow-hidden rounded-[10px] max-w-[500px] h-[218px]">
                   <Image
                     src={data?.coverUrl || projectImgFallback}
                     alt="Consulting service"
                     width={500}
                     height={218}
-                    className="object-cover hover:scale-105 transition-all"
+                    className="object-cover hover:scale-105 w-full h-full transition-all"
                   />
                 </div>
 
