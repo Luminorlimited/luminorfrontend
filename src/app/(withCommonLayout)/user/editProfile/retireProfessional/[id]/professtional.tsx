@@ -13,43 +13,52 @@ import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import avatar from '@/assets/images/avatar.jpg';
-import { useEditprofessionalprofileMutation, useGetProfileQuery, useUpdateCoverPhotoMutation } from "@/redux/Api/userApi";
-import bgCover from '@/assets/images/profilebanner.png'
+import avatar from "@/assets/images/avatar.jpg";
+import {
+  useEditprofessionalprofileMutation,
+  useGetProfileQuery,
+  useUpdateCoverPhotoMutation,
+} from "@/redux/Api/userApi";
+import bgCover from "@/assets/images/profilebanner.png";
 
 const servicesData = [
   {
     icon: <BusinesSvg />,
     title: "Business consultancy and management",
     description: "Business consultancy and management",
+    backendValue: "BUSINESS_CONSULTENCY_AND_MANAGEMENT",
   },
   {
     icon: <SettingSvg />,
     title: "Engineering services",
     description: "Engineering services",
+    backendValue: "ENGINEERING_SERVICE",
   },
   {
     icon: <TechnicalSvg />,
     title: "Technical services",
     description: "Technical services",
+    backendValue: "TECHNICAL_SERVICES",
   },
   {
     icon: <HealthSvg />,
     title: "Healthcare and medical consultancy",
     description: "Healthcare and medical consultancy",
+    backendValue: "HEALTHCARE_AND_MEDICAL_CONSULTENCY",
   },
   {
     icon: <Education />,
     title: "Education and training",
     description: "Education and training",
+    backendValue: "EDUCATIONAL_AND_TRAINING",
   },
   {
     icon: <Financial />,
     title: "Legal and financial services",
     description: "Legal and financial services",
+    backendValue: "LEGAL_AND_FINANCIAL_SERVICES",
   },
 ];
-
 
 export default function Professional() {
   const [isDragging, setIsDragging] = useState(false);
@@ -79,7 +88,6 @@ export default function Professional() {
 
   const { data: profileData } = useGetProfileQuery(userIdValue);
 
-
   const { register, handleSubmit, setValue, watch, reset } = useForm();
   const [loading, setLoading] = useState(false);
   const [editprofessionalProfile] = useEditprofessionalprofileMutation();
@@ -92,14 +100,17 @@ export default function Professional() {
   };
   useEffect(() => {
     if (profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
-      setShowAlert(false)
+      setShowAlert(false);
     } else {
-      setShowAlert(true)
+      setShowAlert(true);
     }
-  }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess])
+  }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess]);
 
   useEffect(() => {
-    if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
+    if (
+      profileData?.data?.location?.coordinates[1] &&
+      profileData?.data?.location?.coordinates[0]
+    ) {
       const fetchLocation = async () => {
         try {
           const response = await fetch(
@@ -117,7 +128,12 @@ export default function Professional() {
       fetchLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]);
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    profileData?.data?.location?.coordinates[1],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    profileData?.data?.location?.coordinates[0],
+  ]);
 
   useEffect(() => {
     if (profileData) {
@@ -137,7 +153,6 @@ export default function Professional() {
       });
     }
   }, [profileData, reset]);
-
 
   useEffect(() => {
     let autocomplete: google.maps.places.Autocomplete;
@@ -177,9 +192,6 @@ export default function Professional() {
     };
   }, []);
 
-
-
-
   const [workSample, setWorkSample] = useState<string | File>(
     profileData?.data?.workSample
   );
@@ -190,7 +202,6 @@ export default function Professional() {
 
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
-
 
     if (!data || typeof data !== "object") {
       console.error("Invalid form data");
@@ -224,9 +235,6 @@ export default function Professional() {
     // console.log("My Form data", formData);
 
     try {
-
-
-
       const res = await editprofessionalProfile({
         id: userIdValue,
         data: formData,
@@ -246,8 +254,6 @@ export default function Professional() {
       setLoading(false);
     }
   };
-
-
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -274,7 +280,6 @@ export default function Professional() {
     return avatar.src;
   }, [selectedImage, profileData?.data?.profileUrl]); // Watch for profileData updates
 
-
   useMemo(() => {
     if (selectedImage instanceof File) {
       const url = URL.createObjectURL(selectedImage);
@@ -284,12 +289,14 @@ export default function Professional() {
 
   const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
 
-  const handleCoverPhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverPhotoChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
         const formData = new FormData();
-        formData.append('coverPhoto', file);
+        formData.append("coverPhoto", file);
 
         // Ensure the mutation correctly handles FormData
         const response = await updateCoverPhoto(formData).unwrap();
@@ -299,7 +306,12 @@ export default function Professional() {
 
           // Update the background image
           const newCoverPhotoUrl = URL.createObjectURL(file);
-          document.querySelector('.bg-cover')?.setAttribute('style', `background-image: url(${newCoverPhotoUrl})`);
+          document
+            .querySelector(".bg-cover")
+            ?.setAttribute(
+              "style",
+              `background-image: url(${newCoverPhotoUrl})`
+            );
         }
       } catch (error) {
         console.error("Error updating cover photo:", error);
@@ -315,11 +327,26 @@ export default function Professional() {
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
       {showAlert && (
-        <div className="bg-yellow-100 border border-yellow-400 text-bg_primary px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Hii {profileData?.data?.retireProfessional?.name?.firstName}!!! </strong>
-          <span className="block sm:inline">Please add your stripe account. Check your mail</span>
-          <span onClick={handleClose} className="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <svg className="fill-current h-6 w-6 text-yellow-800" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <div
+          className="bg-yellow-100 border border-yellow-400 text-bg_primary px-4 py-3 rounded relative"
+          role="alert"
+        >
+          <strong className="font-bold">
+            Hii {profileData?.data?.retireProfessional?.name?.firstName}!!!{" "}
+          </strong>
+          <span className="block sm:inline">
+            Please add your stripe account. Check your mail
+          </span>
+          <span
+            onClick={handleClose}
+            className="absolute top-0 bottom-0 right-0 px-4 py-3"
+          >
+            <svg
+              className="fill-current h-6 w-6 text-yellow-800"
+              role="button"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
               <title>Close</title>
               <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
             </svg>
@@ -328,13 +355,20 @@ export default function Professional() {
       )}
 
       {/* Header with gradient */}
-      <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})` }} />
+      <div
+        className="bg-cover bg-center h-[324px] relative"
+        style={{
+          backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})`,
+        }}
+      />
 
       <button
         type="button"
         className="cog-button absolute top-[350px] right-4 z-[10000]"
         onClick={() => {
-          const fileInput = document.getElementById("coverPhotoInput") as HTMLInputElement | null;
+          const fileInput = document.getElementById(
+            "coverPhotoInput"
+          ) as HTMLInputElement | null;
           if (fileInput) {
             fileInput.click();
           }
@@ -351,7 +385,6 @@ export default function Professional() {
         className="hidden"
         onChange={handleCoverPhotoChange}
       />
-
 
       {/* Main Content */}
       <main className="flex-1 -mt-24">
@@ -406,7 +439,8 @@ export default function Professional() {
               </h1>
               <p className="text-gray-600">
                 {" "}
-                {(profileData?.data?.expertise != "null") && `I am ${profileData?.data?.expertise}`}
+                {profileData?.data?.expertise != "null" &&
+                  `I am ${profileData?.data?.expertise}`}
               </p>
             </div>
 
@@ -421,7 +455,9 @@ export default function Professional() {
                     id="fname"
                     {...register("firstName")}
                     placeholder="John"
-                    defaultValue={profileData?.data?.retireProfessional?.name?.firstName}
+                    defaultValue={
+                      profileData?.data?.retireProfessional?.name?.firstName
+                    }
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     onChange={(e) => setValue("firstName", e.target.value)}
                     required
@@ -439,9 +475,7 @@ export default function Professional() {
                       profileData?.data?.retireProfessional?.name?.lastName
                     }
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-
                     onChange={(e) => setValue("lastName", e.target.value)}
-
                     required
                   />
                 </div>
@@ -490,7 +524,6 @@ export default function Professional() {
                 />
               </div>
 
-
               <div>
                 <label className="block text-sm mb-2" htmlFor="problemArea">
                   Bio (Under 30 word)
@@ -525,7 +558,7 @@ export default function Professional() {
                   {servicesData.map((service, index) => {
                     // Determine if the service is selected
                     const isSelected =
-                      watch("expertise") === service.title ||
+                      watch("expertise") === service.backendValue ||
                       profileData?.data?.expertise === service.title;
 
                     const selectedClass = isSelected
@@ -537,7 +570,7 @@ export default function Professional() {
                         key={index}
                         onClick={() => {
                           // Update form state with the selected service
-                          setValue("expertise", service.title);
+                          setValue("expertise", service.backendValue);
                           // console.log(`Selected service: ${service.title}`);
                         }}
                         className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all`}
@@ -561,14 +594,9 @@ export default function Professional() {
                   defaultValue={profileData?.data?.availability ?? ""}
                 >
                   <option disabled>Availability</option>
-                  <option value={20}>
-                    Short Term (1-29)
-                  </option>
-                  <option value={31}>
-                    Long Term (30-...)
-                  </option>
+                  <option value={20}>Short Term (1-29)</option>
+                  <option value={31}>Long Term (30-...)</option>
                 </select>
-
               </div>
               <div>
                 <label className="block text-sm mb-2" htmlFor="prefProject">
@@ -605,10 +633,11 @@ export default function Professional() {
               </div>
 
               <div
-                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${isDragging
-                  ? "border-gray-400 rounded-xl bg-gray-50"
-                  : "border-gray-200"
-                  } transition-colors duration-200`}
+                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${
+                  isDragging
+                    ? "border-gray-400 rounded-xl bg-gray-50"
+                    : "border-gray-200"
+                } transition-colors duration-200`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -652,16 +681,20 @@ export default function Professional() {
               <div>
                 {workSample && (
                   <div className="mt-4 text-center">
-                    <p className="text-sm text-gray-700">Selected file: {workSample instanceof File ? workSample.name : ''}</p>
-                    {workSample instanceof File && workSample.type.startsWith("image/") && (
-                      <Image
-                        src={URL.createObjectURL(workSample)}
-                        alt="Preview"
-                        width={250}
-                        height={250}
-                        className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
-                      />
-                    )}
+                    <p className="text-sm text-gray-700">
+                      Selected file:{" "}
+                      {workSample instanceof File ? workSample.name : ""}
+                    </p>
+                    {workSample instanceof File &&
+                      workSample.type.startsWith("image/") && (
+                        <Image
+                          src={URL.createObjectURL(workSample)}
+                          alt="Preview"
+                          width={250}
+                          height={250}
+                          className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
+                        />
+                      )}
                     <button
                       onClick={removeFile}
                       className="mt-2 px-3 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
@@ -672,11 +705,17 @@ export default function Professional() {
                 )}
               </div>
               <div className="flex justify-center">
-                <button disabled={loading} className={` py-5 px-7 rounded-[50px] my-14 ${loading ? "bg-gray-500 text-white" : "bg-primary text-white "}`}>
+                <button
+                  disabled={loading}
+                  className={` py-5 px-7 rounded-[50px] my-14 ${
+                    loading
+                      ? "bg-gray-500 text-white"
+                      : "bg-primary text-white "
+                  }`}
+                >
                   {loading ? "Saving..." : "Save Information"}
                 </button>
               </div>
-
             </div>
           </form>
         </div>
