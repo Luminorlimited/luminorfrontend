@@ -5,19 +5,14 @@ import { navbarLinks } from "@/utils/navbarData";
 import { ChevronDown, Text } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-// import { BiMessage } from "react-icons/bi";
-
-// import { FaRegHeart } from "react-icons/fa";
-// import { GoBell } from "react-icons/go";
-import {  useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import demoprofile from "@/assets/images/avatar.jpg";
-// import jwt, { JwtPayload } from "jsonwebtoken";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
-import { GoBell } from "react-icons/go";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import { RootState } from "@/redux/store";
+import { FaRegMessage } from "react-icons/fa6";
 
 export function MobileNavbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,12 +20,7 @@ export function MobileNavbar() {
 
   const router = useRouter();
   const notificationRef = useRef<HTMLDivElement>(null);
-  const handleOpenNotificationBar = () => {
-    setIsOpen(!isOpen);
- 
-  }
 
- 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as Node;
 
@@ -40,16 +30,16 @@ export function MobileNavbar() {
     }
   };
 
-      useEffect(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-          document.removeEventListener('mousedown', handleClickOutside);
-        };
-      }, []);
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
-  
 
-  // console.log('my token is', decodedToken);
+
+  // // console.log('my token is', decodedToken);
 
   const handleLogOut = () => {
     dispatch(logOut());
@@ -133,14 +123,10 @@ export function MobileNavbar() {
           <div className="flex items-center flex-wrap gap-4">
             {user && user?.id ? (
               <div className="flex gap-3 items-center relative">
-                <button
-                  onClick={handleOpenNotificationBar}
-                  className="focus:outline-none"
-                >
-                  <GoBell className="cursor-pointer text-[24px] hover:text-primary" />
-                </button>
-              
-               
+                <Link title="Chat" href={'/chat'} className="cursor-pointer transition-colors group hover:fill-primary border rounded-full p-2 hover:border-primary mr-2"> <FaRegMessage className="group-hover:fill-primary" /></Link>
+
+
+
                 <div ref={notificationRef} className="w-[40px] h-[40px]" >
                   <Image
                     src={demoimg}

@@ -31,9 +31,9 @@ const ProjectModal: React.FC<projectModalProps> = ({
     user1,
     user2,
 }) => {
-    console.log(user1, "check user1 from offer modal ");
+    // console.log(user1, "check user1 from offer modal ");
 
-    console.log(user2, "check user 2 from offer modal");
+    // console.log(user2, "check user 2 from offer modal");
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [open, setOpen] = useState(true);
@@ -63,23 +63,20 @@ const ProjectModal: React.FC<projectModalProps> = ({
     };
 
     useEffect(() => {
-        const mysocket = io("wss://test.api.dancefluencers.com");
-        console.log(mysocket);
+        const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL);
+        // console.log(mysocket);
 
         mysocket.on("connect", () => {
-            console.log("Connected to special socket.io.");
+            // console.log("Connected to special socket.io.");
             setSocket(mysocket);
             mysocket.emit("register", JSON.stringify({ id: user1 }));
         });
     }, [user1]);
 
-    const onSubmit = (data: any) => {
-        console.log("Final Form Values:", data);
+    const onSubmit = async (data: any) => {
+        // console.log("Final Form Values:", data);
 
-        // Safely stringify data
-        // console.log(data, "check data");
-        // console.log(user1, "user 1");
-        // console.log(user2, "user 2");
+
         try {
             const myOffer = {
                 fromEmail: user1,
@@ -89,9 +86,10 @@ const ProjectModal: React.FC<projectModalProps> = ({
                 clientEmail: user2,
             };
 
-            console.log("My offer is", JSON.stringify(myOffer));
-            socket.emit("sendOffer", JSON.stringify(myOffer));
-            toast.success("Offer Sent successfully....");
+            // console.log("My offer is", JSON.stringify(myOffer));
+            const res = await socket.emit("sendOffer", JSON.stringify(myOffer))
+            if (res)
+                toast.success("Offer Sent successfully....");
         } catch (error) {
             console.error("Error stringifying data:", error);
             toast.error("Something went wrong");
@@ -235,10 +233,10 @@ const ProjectModal: React.FC<projectModalProps> = ({
                                 <div key={stepNumber} className="flex items-center">
                                     <div
                                         className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium ${stepNumber < step
-                                                ? "bg-[#6938EF] text-white"
-                                                : stepNumber === step
-                                                    ? "border-2 border-[#6938EF] text-[#6938EF]"
-                                                    : "border-2 border-gray-200 text-gray-400"
+                                            ? "bg-[#6938EF] text-white"
+                                            : stepNumber === step
+                                                ? "border-2 border-[#6938EF] text-[#6938EF]"
+                                                : "border-2 border-gray-200 text-gray-400"
                                             }`}
                                     >
                                         {stepNumber < step ? "✓" : stepNumber}

@@ -34,11 +34,11 @@ export default function Page() {
 
       const res = await setVerify(data).unwrap();
 
-      console.log(res);
+      // console.log(res);
       if (res) {
         toast.success("Verification Complete");
 
-        // console.log('my stripe', getProfile)
+        // // console.log('my stripe', getProfile)
 
         const accessToken = res.data.accessToken;
         const user = res?.data?.user;
@@ -62,7 +62,7 @@ export default function Page() {
           path: "/",
         });
 
-        console.log("My profile is ", profileData);
+        // console.log("My profile is ", profileData);
 
         if (
           profileData?.data?.retireProfessional?.stripe.isOnboardingSucess ===

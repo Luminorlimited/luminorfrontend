@@ -17,14 +17,14 @@ const FeaturedProject: React.FC = () => {
     const clientData = useClientListQuery(undefined);
     const professionalData = useProfessionalListQuery(undefined);
     const userRole = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
-
+    // console.log("client is", clientData);
     const handleToggleShowAll = () => {
         setShowAll(!showAll);
     };
 
     const renderProjects = (data: any[], isClient: boolean) => {
         const projectsToShow = showAll ? data : data.slice(0, 3);
-        console.log("my clientData is", isClient);
+        // console.log("my clientData is", isClient);
 
         return projectsToShow.map((data: any, index: number) => (
             <div
@@ -32,15 +32,16 @@ const FeaturedProject: React.FC = () => {
                 className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
             >
                 <div className="relative w-full">
-                    <div className="overflow-hidden rounded-[10px]">
+                    <div className="overflow-hidden rounded-[10px] max-w-[500px] h-[218px]">
                         <Image
-                            src={projectImgFallback}
+                            src={data?.workSample || data?.coverUrl || projectImgFallback}
                             alt="Consulting service"
                             width={500}
                             height={218}
-                            className="object-cover hover:scale-105 transition-all"
+                            className="object-cover hover:scale-105 w-full h-full transition-all"
                         />
                     </div>
+
                     {isClient && (
                         <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                             <BiTime className="h-4 w-4" />
@@ -89,7 +90,7 @@ const FeaturedProject: React.FC = () => {
                                 </span>
                             </div>
                         )}
-                        <Link className='rounded-[12px] w-full block text-center px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all duration-200' href={`/chat/${isClient ? data._id : data?.userDetails?._id}`}>Connect Now</Link>
+                        <Link className='rounded-[12px] w-full block text-center px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all duration-200' href={`/chat/${isClient ? data?.client?._id : data?.userDetails?._id}`}>Connect Now</Link>
                     </div>
                 </div>
             </div>

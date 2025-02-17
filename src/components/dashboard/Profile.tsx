@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { User, Mail,  Briefcase, Calendar, Edit2, Check, X } from "lucide-react"
+import { User, Mail, Briefcase, Calendar, Edit2, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -59,7 +59,7 @@ export default function Profile() {
 
     const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        console.log("my file ", file);
+        // console.log("my file ", file);
         if (file) {
             setNewProfileImage(file)
         }
@@ -86,10 +86,10 @@ export default function Profile() {
                 },
             }).unwrap()
 
-            
+
 
             // Update profile image if a new one was selected
-            
+
 
             setIsEditing(false)
             setNewProfileImage(null)
@@ -102,7 +102,7 @@ export default function Profile() {
 
     if (isLoading) {
         return <ProfileSkeleton />
-    } 
+    }
 
     return (
         <div className="container mx-auto p-6 bg-bg_secondary min-h-[80vh]">

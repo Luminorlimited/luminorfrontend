@@ -9,7 +9,6 @@ import avatar2 from "@/assets/images/msgavatar2.png";
 import Image from "next/image";
 import Link from "next/link";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
-import { useDecodedToken } from "@/components/common/DecodeToken";
 
 export interface userInfo {
   _id: string;
@@ -56,12 +55,12 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   profileUrl,
 }) => {
   const isSender = message?.sender._id == currentUser;
-  // console.log(message.sender, "from chat window message");
-  // console.log(currentUser, "from chat window current user");
+  // // console.log(message.sender, "from chat window message");
+  // // console.log(currentUser, "from chat window current user");
 
-  const token = useDecodedToken();
-  const { data: profileData } = useGetProfileQuery(token?.id);
-  
+  // const token = useDecodedToken();
+  const { data: profileData } = useGetProfileQuery(undefined)
+console.log("profile url", profileData?.data?.profileUrl);
 
 
   return (

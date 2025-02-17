@@ -74,7 +74,7 @@ export default function HowItWorks() {
                 {/* Right Arrow */}
                 <Image
                   className="absolute top-[-16px] left-[-39px] lg:block hidden lg:w-[340px] md:w-[50px]"
-                  src={rightarrow || "/placeholder.svg"}
+                  src={rightarrow}
                   width={340}
                   height={2}
                   alt="rightarrow"
@@ -84,7 +84,7 @@ export default function HowItWorks() {
                 {/* Left Arrow */}
                 <Image
                   className="absolute top-[-10px] right-[-30px] lg:block hidden lg:w-[346px] md:w-[50px]"
-                  src={leftarrow || "/placeholder.svg"}
+                  src={leftarrow}
                   width={348}
                   height={2}
                   alt="leftarrow"

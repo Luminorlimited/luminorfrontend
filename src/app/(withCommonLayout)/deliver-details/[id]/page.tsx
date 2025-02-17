@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 export default function Page() {
     const orderId = useParams()
     const { data: getSingleOrder } = useGetSingleOrderQuery(orderId.id)
-    // console.log('My order details is', getSingleOrder);
+    // // console.log('My order details is', getSingleOrder);
     return (
         <div className="max-w-[1300px] mx-auto p-6 space-y-6">
             <div className="lg:flex lg:flex-row flex-col gap-8 w-full">

@@ -83,7 +83,7 @@ export default function ExploreServices() {
           <h1 className="text-center text-xl md:text-xl lg:text-5xl text-textColor-primary font-bold leading-[100%]">
             Explore Our Services
           </h1>
-          <div className="flex items-center justify-center gap-12 text-center w-full lg:w-[50%] mx-auto text-lg font-normal leading-[160%]">
+          <div className="flex lg:flex-row flex-col items-center justify-center gap-12 text-center w-full lg:w-[50%] mx-auto text-lg font-normal leading-[160%]">
             <p className="flex gap-2 items-center text-lg font-semibold">
               <MdVerifiedUser className="w-5 h-5" />
               Verified Professionals

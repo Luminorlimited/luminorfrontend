@@ -13,10 +13,10 @@ import { useYearlyTransactionQuery } from "@/redux/Api/dashboard/ordersApi";
 
 
 export default function PayementBarChart() {
-    
+
     const { data: yearlyTransaction } = useYearlyTransactionQuery(undefined)
-    console.log("my yearly transaction is", yearlyTransaction?.data?.yearlyIncome);
-    const processedData = yearlyTransaction?.data?.yearlyIncome.map((item:any, index:number, arr:any) => {
+    // console.log("my yearly transaction is", yearlyTransaction?.data?.yearlyIncome);
+    const processedData = yearlyTransaction?.data?.yearlyIncome.map((item: any, index: number, arr: any) => {
         const prevValue = index > 0 ? arr[index - 1].totalIncome : item.totalIncome;
         return {
             ...item,
@@ -24,12 +24,12 @@ export default function PayementBarChart() {
         };
     });
 
-    
+
     return (
         <div className="bg-bg_secondary p-6 rounded-[15px] w-full max-w-full overflow-x-auto">
             <div className="flex justify-between items-center mb-6 min-w-[600px]">
                 <h2 className="text-xl text-black">Statistics</h2>
-               
+
             </div>
 
             <div className="h-[350px] w-full min-w-[600px]">

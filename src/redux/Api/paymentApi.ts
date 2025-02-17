@@ -6,7 +6,7 @@ const paymentApi = baseApi.injectEndpoints({
 
         offerpayment: build.mutation({
             query: (data) => {
-                // console.log(userId)
+                // // console.log(userId)
                 return {
                     url: `/stripe/create-payment-intent`,
                     method: 'POST',
@@ -18,7 +18,7 @@ const paymentApi = baseApi.injectEndpoints({
         }),
         transactionList: build.query({
             query: () => {
-                // console.log(userId)
+                // // console.log(userId)
                 return {
                     url: `/order/professional-order`,
                     method: 'GET',

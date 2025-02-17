@@ -28,8 +28,8 @@ export default function Users() {
     }
 
     const { data: getProfessional, isLoading: professionalLoading } = useGetProfessionalQuery(undefined)
-    console.log("my client is ", getClient);
-    console.log("my getProfessional is ", getProfessional);
+    // console.log("my client is ", getClient);
+    // console.log("my getProfessional is ", getProfessional);
 
     const [clients, setClients] = useState(getClient?.data)
     const [professionals, setProfessionals] = useState(getProfessional?.data)
@@ -51,7 +51,7 @@ export default function Users() {
 
     const [deleteUser] = useDeleteUserMutation()
     const handleDelete = (id: number) => {
-        console.log("my deleted data is ", id);
+        // console.log("my deleted data is ", id);
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -113,13 +113,13 @@ export default function Users() {
                                 </Link>
                             </TableCell>
                             <TableCell>
-                                <Image width={50} height={50} src={user.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" />
+                                <Image width={50} height={50} src={user?.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" />
                             </TableCell>
                             <TableCell>{user?.[userType === "client" ? "description" : "bio"] || "N/A"}</TableCell>
                             <TableCell>{user?.averageRating || 0}</TableCell>
                             <TableCell>
                                 <select
-                                    value={user?.client?.isActivated?.toString() || user?.retireProfessional?.isActivated?.toString()  }
+                                    value={user?.client?.isActivated?.toString() || user?.retireProfessional?.isActivated?.toString()}
                                     onChange={(e) =>
                                         handleStatusChange(user?.client?._id || user?.retireProfessional?._id || "", e.target.value === "true")
                                     }

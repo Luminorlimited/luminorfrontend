@@ -1,5 +1,5 @@
 import React from "react";
-import {Plus} from "lucide-react";
+import { Plus } from "lucide-react";
 
 interface Milestone {
     name: string;
@@ -20,7 +20,7 @@ export function MilestoneList({ milestones, setStep }: MilestoneListProps) {
     const totalDays = milestones?.reduce((sum, m) => sum + parseInt(m.revisions), 0);
     const totalPrice = milestones?.reduce((sum, m) => sum + parseInt(m.price), 0);
 
-    // console.log(milestones);
+    // // console.log(milestones);
     return (
         <div className="space-y-6">
             <div className="space-y-1">
@@ -50,13 +50,13 @@ export function MilestoneList({ milestones, setStep }: MilestoneListProps) {
 
                 <div className="flex items-center justify-between pt-2">
                     <div>
-                    <button
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-900 transition-colors" onClick={() => setStep(5)}>
-                        <span>Add a milestone</span>
-                        <div className="bg-white p-1 rounded-full">
-                            <Plus className="h-4 w-4"/>
-                        </div>
-                    </button>
+                        <button
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-900 transition-colors" onClick={() => setStep(5)}>
+                            <span>Add a milestone</span>
+                            <div className="bg-white p-1 rounded-full">
+                                <Plus className="h-4 w-4" />
+                            </div>
+                        </button>
 
                     </div>
 

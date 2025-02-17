@@ -128,7 +128,7 @@ export function Sidebar({
     [dispatch, durationMinValue, setFilters]
   );
 
-  const [permissionStatus, setPermissionStatus] = useState<string | null>(null);
+  const [, setPermissionStatus] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (typeof navigator !== "undefined" && navigator.permissions) {
@@ -157,7 +157,7 @@ export function Sidebar({
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        console.log("Location allowed:", position.coords);
+        // console.log("Location allowed:", position.coords);
         setCurrentLocation({
           long: position?.coords?.longitude,
           lat: position?.coords?.latitude,
@@ -177,7 +177,7 @@ export function Sidebar({
     );
   }, [dispatch]);
 
-  console.log(permissionStatus, "hello");
+  // console.log(permissionStatus, "hello");
 
   const getDurationProgressStyle = useCallback(() => {
     const left = ((durationMinValue - minDay) / (maxDay - minDay)) * 100;
@@ -228,7 +228,7 @@ export function Sidebar({
     ]
   );
 
-  console.log(currentLocation);
+  // console.log(currentLocation);
 
   const getLocationProgressStyle = useCallback(() => {
     const left = ((locMinLoc - minLoc) / (maxLoc - minLoc)) * 100;

@@ -88,18 +88,18 @@ export default function AllOrders() {
     // };
 
     const { data: getAllOrders, isLoading } = useTotalOrderQuery(undefined)
-    console.log("get all orders", getAllOrders?.data?.result);
+    // console.log("get all orders", getAllOrders?.data?.result);
 
-     if (isLoading) {
-         return <SkeletonOrderList />
-        }
+    if (isLoading) {
+        return <SkeletonOrderList />
+    }
 
     return (
         <div className=" bg-bg_secondary px-2 rounded-[12px] min-h-[80vh]">
             <div>
                 <div className="mb-6 flex items-center justify-between p-5">
                     <h1 className="text-2xl font-medium text-black">All Order list</h1>
-                   
+
                 </div>
 
                 <div className="rounded-lg overflow-x-auto min-h-[50vh]">

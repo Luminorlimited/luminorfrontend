@@ -1,16 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import demoimg from '@/assets/images/msgavatar2.png';
-// import avatar1 from "@/assets/images/msgavatar1.png";
-
-// import { useParams } from 'next/navigation';
+import { BiSearch } from 'react-icons/bi';
 
 interface AllUsersProps {
   handleshowMessage: (user: any) => void;
-  // getUser: User | null; // Replace `any` with proper type
   getConversation: any;
-  // messageNotifications: any;
 }
 
 function formatTimeAgo(timestamp: string) {
@@ -24,16 +20,29 @@ function formatTimeAgo(timestamp: string) {
   const diffHours = Math.floor(diffMinutes / 60);
   if (diffHours < 24) return `${diffHours}h ago`;
 
-  // Show exact time after 24 hours
   return messageTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
 export default function AllUsers({ handleshowMessage, getConversation }: AllUsersProps) {
-  // console.log('my last Message is', getConversation);
-  // const [messageNotifications, setMessageNotifications] = useState()
+  const [searchInput, setSearchInput] = useState('');
+
+  const filteredUsers = getConversation?.data?.filter((user: any) => {
+    const fullName = user?.name?.toLowerCase();
+    return fullName?.includes(searchInput.toLowerCase());
+  });
 
   return (
     <div>
+      <div className="flex items-center border rounded-[12px] px-3 py-4">
+        <BiSearch className="text-gray-500 text-lg" />
+        <input
+          type="text"
+          placeholder="Search message..."
+          className="bg-transparent w-full ml-2 text-gray-700 focus:outline-none"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+      </div>
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">
         <div className="flex gap-6 p-4">
           <h2 className="text-lg font-semibold">All</h2>
@@ -41,18 +50,17 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
         </div>
         <div>
           <ul className="divide-y">
-            {getConversation?.data?.map((user: any, index: number) => {
+            {filteredUsers?.map((user: any, index: number) => {
               let firstName = user?.firstName;
               let lastName = user?.lastName;
 
-              // If firstName and lastName are not directly available, extract them from the name
               if (!firstName && !lastName && user?.name) {
                 const nameParts = user.name.split(" ");
                 firstName = nameParts[0];
                 lastName = nameParts.slice(1).join(" ");
               }
-              const userId = user?.id
-              // console.log("my user id ", getConversation);
+              const userId = user?.id;
+
               return (
                 <li
                   onClick={() => handleshowMessage({
@@ -63,7 +71,7 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                     name: user?.name,
                     profileUrl: user?.profileUrl || null,
                   })}
-                  className={`flex border-none items-center p-4 cursor-pointer rounded-[12px] hover:bg-[#F2FAFF] focus:bg-[#F2FAFF] $`}
+                  className="flex border-none items-center p-4 cursor-pointer rounded-[12px] hover:bg-[#F2FAFF] focus:bg-[#F2FAFF]"
                   key={index}
                 >
                   <div className="relative">
@@ -74,12 +82,10 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                       height={48}
                       className="w-12 h-12 rounded-full mr-4"
                     />
-                    {
-                      user?.isOnline === true ? <span className="flex absolute right-3 bottom-1 border-white border-4 w-4 h-4 bg-[#111827] rounded-full"></span> : ""
-                    }
-
+                    {user?.isOnline && (
+                      <span className="flex absolute right-3 bottom-1 border-white border-4 w-4 h-4 bg-[#111827] rounded-full"></span>
+                    )}
                   </div>
-
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
                       <h3 className="text-sm font-semibold" key={index}>
@@ -87,40 +93,24 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
                           ? `${user?.firstName} ${user?.lastName}`
                           : user?.name || "Unknown User"}
                       </h3>
-
-
                       <span className="text-xs text-gray-500">
                         {user.lastMessageTimestamp && (
                           <p className='text-[12px] text-gray-700'>
                             {formatTimeAgo(user.lastMessageTimestamp)}
                           </p>
                         )}
-                        <p>{ }</p>
-
-
                         {user?.unseenMessageCount > 0 && (
                           <span className="bg-red-500 p-1 text-white text-sm rounded-full w-5 h-5 flex items-center justify-center">
                             {user?.unseenMessageCount}
                           </span>
-
                         )}
                       </span>
-
                     </div>
                     <p className='text-[12px] text-gray-700'>{user.lastMessage}</p>
-                    {/* <div className="flex justify-between items-center">
-                      <h3 className="text-sm">mahi</h3>
-                      <span className="text-xs text-white font-semibold bg-[#E03137] px-[10px] py-[2px] rounded-xl">
-                        2
-                      </span>
-                    </div> */}
                   </div>
                 </li>
-
-              )
-            }
-
-            )}
+              );
+            })}
           </ul>
         </div>
       </div>

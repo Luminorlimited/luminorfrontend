@@ -1,6 +1,6 @@
 'use client'
 
-import {  FormEvent } from 'react'
+import { FormEvent } from 'react'
 import Button from '@/components/common/Button'
 import Link from 'next/link'
 import CheckBox from '@/components/common/checkbox/CheckBox'
@@ -26,13 +26,13 @@ export default function Page() {
     // const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     //     e.preventDefault()
     //     // Handle form submission
-    //     console.log('Form submitted')
+    //     // console.log('Form submitted')
     //     router.push('/deliver-details')
     // }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Prevent default form submission
-        console.log('Form submitted'); // Debugging
+        // console.log('Form submitted'); // Debugging
         router.push('/deliver-details'); // Navigate to the payment page
     };
 
@@ -51,7 +51,7 @@ export default function Page() {
                         </div>
                         <h1 className="text-[32px] font-semibold">Payment Details for Retired Professionals</h1>
                         <p className="mt-1 text-lg text-[#4A4C56]">
-                            Please fill in your bank details below to receive payments once <br/> your project is completed.
+                            Please fill in your bank details below to receive payments once <br /> your project is completed.
                         </p>
                     </div>
 
@@ -164,7 +164,7 @@ export default function Page() {
                             </div>
 
                             {/* <Link href={'/payment-details'}> */}
-                            <Button type='submit'  className='w-full'>Submit & Save Payment Detais</Button>
+                            <Button type='submit' className='w-full'>Submit & Save Payment Detais</Button>
                             {/* </Link>  */}
                         </div>
                     </form>

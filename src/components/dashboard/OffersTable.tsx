@@ -16,7 +16,7 @@ export default function OffersTable() {
 
     const { data: totalOffer, isLoading } = useGetTotalOfferQuery(undefined)
 
-    console.log("total Offer", totalOffer)
+    // console.log("total Offer", totalOffer)
 
 
 
@@ -24,7 +24,7 @@ export default function OffersTable() {
 
 
     if (isLoading) {
-        return <SkeletonOfferList/>
+        return <SkeletonOfferList />
     }
 
     return (

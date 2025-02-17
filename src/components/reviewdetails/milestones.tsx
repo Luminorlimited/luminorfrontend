@@ -44,7 +44,7 @@
 
 export default function Milestones({ getSingleOrder }: { getSingleOrder: any }) {
     const getOffer = getSingleOrder?.data?.result?.project
-    console.log("My offer", getOffer);
+    // console.log("My offer", getOffer);
     return (
         <div className="p-6 rounded-[10px] my-6 bg-[#FAFAFA]">
             <h2 className="text-xl font-semibold mb-4">{getOffer?.flatFee ? "Flat Fee" : getOffer?.hourlyFee ? "Hourly Fee" : "Milestone"}</h2>

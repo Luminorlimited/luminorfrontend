@@ -9,10 +9,10 @@ import { useRouter } from "next/navigation";
 // import { useRouter } from "next/navigation";
 
 export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
-    console.log('my get single order is', getSingleOrder);
+    // console.log('my get single order is', getSingleOrder);
 
     const initdata = getSingleOrder?.data?.result?.project
-    // console.log(initdata);
+    // // console.log(initdata);
 
     const deliveryday = initdata?.flatFee
         ? initdata.flatFee.delivery
@@ -44,14 +44,14 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
 
     // const orderId = useParams()
     const id = getSingleOrder?.data?.result?._id
-    console.log('my order id', id);
-
     // console.log('my order id', id);
+
+    // // console.log('my order id', id);
     // const { data: deliverOrder } = useDeliverOrderMutation(id)
     const [deliverOrder, { isLoading }] = useDeliverOrderMutation({})
     const router = useRouter()
 
-    // console.log("my order id", getSingleOrder?.data?.client[0]._id);
+    // // console.log("my order id", getSingleOrder?.data?.client[0]._id);
     const handleDeliver = async () => {
         // if (!id) {
         //     toast.error("Order ID is missing!");
@@ -61,13 +61,13 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
         try {
 
             if (id) {
-                console.log('this is console', id);
+                // console.log('this is console', id);
                 const res = await deliverOrder(id);
-                console.log("my response is",);
+                // console.log("my response is",);
                 if (res) {
                     toast.success("Order delivered successfully");
                     router.push(`/deliver-details/addreview/${getSingleOrder?.data?.result?.orderFrom}`)
-                    console.log("Order delivered:", res);
+                    // console.log("Order delivered:", res);
                 }
             } else {
                 toast.error("Failed to deliver order");
