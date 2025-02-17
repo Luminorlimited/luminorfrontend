@@ -23,7 +23,7 @@ import {
   useGetConversationQuery,
   useGetMessageQuery,
   useGetuserQuery,
-  useImageSendMutation,
+  // useImageSendMutation,
   useSendOnboardingUrlMutation,
 } from "@/redux/Api/messageApi";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
@@ -71,7 +71,7 @@ const Page: React.FC = () => {
     skip: !id.id,
   });
   console.log(getConversation,"check convirsation",id.id)
-  const [fileUpload] = useImageSendMutation({})
+  // const [fileUpload] = useImageSendMutation({})
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
@@ -84,7 +84,7 @@ const Page: React.FC = () => {
 
   // const [offerNotification, setOfferNotification] = useState(0);
 
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [, setSelectedImages] = useState<File[]>([]);
   // console.log(selectedImages);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []
@@ -281,7 +281,7 @@ const Page: React.FC = () => {
     setInbox(oldMessages?.data?.messages);
   };
 
-  const [fileLink, setFileLink] = useState("")
+  // const [fileLink, setFileLink] = useState("")
 
   const onSendMessage = async (e: any) => {
     e.preventDefault();

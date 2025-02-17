@@ -21,7 +21,7 @@ import {
   useGetProfileQuery,
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
-import bgCover from "@/assets/images/profilebanner.png";
+// import bgCover from "@/assets/images/profilebanner.png";
 
 const servicesData = [
   {
@@ -407,7 +407,7 @@ console.log("image url", imageUrl);
 
       <button
         type="button"
-        className="cog-button absolute top-[350px] right-4 cursor-pointer z-[10000]"
+        className="cog-button absolute top-[410px] right-4 cursor-pointer z-[10000]"
         onClick={() => {
           const fileInput = document.getElementById(
             "coverPhotoInput"
