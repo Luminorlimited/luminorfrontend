@@ -28,31 +28,37 @@ const servicesData = [
     icon: <BusinesSvg />,
     title: "Business consultancy and management",
     description: "Business consultancy and management",
+    backendValue: "BUSINESS_CONSULTENCY_AND_MANAGEMENT",
   },
   {
     icon: <SettingSvg />,
     title: "Engineering services",
     description: "Engineering services",
+    backendValue: "ENGINEERING_SERVICE",
   },
   {
     icon: <TechnicalSvg />,
     title: "Technical services",
     description: "Technical services",
+    backendValue: "TECHNICAL_SERVICES",
   },
   {
     icon: <HealthSvg />,
     title: "Healthcare and medical consultancy",
     description: "Healthcare and medical consultancy",
+    backendValue: "HEALTHCARE_AND_MEDICAL_CONSULTENCY",
   },
   {
     icon: <Education />,
     title: "Education and training",
     description: "Education and training",
+    backendValue: "EDUCATIONAL_AND_TRAINING",
   },
   {
     icon: <Financial />,
     title: "Legal and financial services",
     description: "Legal and financial services",
+    backendValue: "LEGAL_AND_FINANCIAL_SERVICES",
   },
 ];
 
@@ -65,10 +71,7 @@ interface DecodedToken {
   role: string;
 }
 
-
-
 export default function Client() {
-
   const { register, handleSubmit, setValue, watch, reset } = useForm();
 
   const token = useSelector((state: RootState) => state.Auth.token);
@@ -83,8 +86,6 @@ export default function Client() {
   } catch (error) {
     console.error("Invalid token:", error);
   }
-
-
 
   const [editclientProfile] = useEditclientprofileMutation();
 
@@ -102,15 +103,16 @@ export default function Client() {
     profileData?.data?.projectDurationRange?.max || maxPrice
   );
 
-
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
   // console.log("my old location is", location)
 
-
   useEffect(() => {
-    if (profileData?.data?.location?.coordinates[1] && profileData?.data?.location?.coordinates[0]) {
+    if (
+      profileData?.data?.location?.coordinates[1] &&
+      profileData?.data?.location?.coordinates[0]
+    ) {
       const fetchLocation = async () => {
         try {
           const response = await fetch(
@@ -128,15 +130,19 @@ export default function Client() {
       fetchLocation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileData?.data?.location?.coordinates[1], profileData?.data?.location?.coordinates[0]]);
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    profileData?.data?.location?.coordinates[1],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    profileData?.data?.location?.coordinates[0],
+  ]);
 
   useEffect(() => {
-
-
     const initAutocomplete = () => {
       const input = document.getElementById("search-input") as HTMLInputElement;
       if (input) {
-        const autocomplete: google.maps.places.Autocomplete = new google.maps.places.Autocomplete(input);
+        const autocomplete: google.maps.places.Autocomplete =
+          new google.maps.places.Autocomplete(input);
 
         autocomplete.addListener("place_changed", () => {
           const place = autocomplete.getPlace();
@@ -168,8 +174,6 @@ export default function Client() {
     };
   }, []);
 
-
-
   useEffect(() => {
     if (profileData) {
       reset({
@@ -186,10 +190,6 @@ export default function Client() {
       });
     }
   }, [profileData, reset]);
-
-
-
-
 
   const handleMinChange = useCallback(
     (setter: React.Dispatch<React.SetStateAction<number>>, maxValue: number) =>
@@ -228,14 +228,11 @@ export default function Client() {
     [durationMinValue, durationMaxValue, getProgressStyle]
   );
 
-
-
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
   );
   // console.log("my client profile url is", profileData?.data?.profileUrl);
   const [loading, setLoading] = useState(false);
-
 
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
@@ -244,7 +241,7 @@ export default function Client() {
     data.minBudget = budgetMinValue;
     data.maxBudget = budgetMaxValue;
     data.minDuration = durationMinValue;
-    data.maxDuration = durationMinValue;
+    data.maxDuration = durationMaxValue;
     data.projectPreference = inputs;
 
     const formData = new FormData();
@@ -266,8 +263,6 @@ export default function Client() {
     formData.append("projectDurationRange[min]", String(data.minDuration));
     formData.append("budgetRange[min]", String(data.minBudget));
     formData.append("budgetRange[max]", String(data.maxBudget));
-
-
 
     // // console.log(data?.firstName, data?.lastName); return
 
@@ -291,10 +286,6 @@ export default function Client() {
     }
 
     try {
-
-
-
-
       // console.log("profile data is", data);
 
       const res = await editclientProfile({ id: userIdValue, data: formData });
@@ -311,7 +302,6 @@ export default function Client() {
       setLoading(false);
     }
   };
-
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -406,7 +396,12 @@ export default function Client() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="bg-cover bg-center h-[324px] relative" style={{ backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})` }} />
+      <div
+        className="bg-cover bg-center h-[324px] relative"
+        style={{
+          backgroundImage: `url(${profileData?.data?.coverUrl || bgCover})`,
+        }}
+      />
 
       <button
         type="button"
@@ -499,7 +494,6 @@ export default function Client() {
                     }
                     {...register("firstName")}
                     onChange={(e) => setValue("firstName", e.target.value)}
-
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     placeholder="first name"
                   />
@@ -516,7 +510,6 @@ export default function Client() {
                     {...register("lastName")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     onChange={(e) => setValue("lastName", e.target.value)}
-
                     placeholder="last name"
                   />
                 </div>
@@ -617,7 +610,7 @@ export default function Client() {
                   {servicesData.map((service, index) => {
                     // Determine if the service is selected
                     const isSelected =
-                      watch("servicePreference") === service.title ||
+                      watch("servicePreference") === service.backendValue ||
                       profileData?.data?.servicePreference === service.title;
 
                     const selectedClass = isSelected
@@ -629,7 +622,7 @@ export default function Client() {
                         key={index}
                         onClick={() => {
                           // Update form state with the selected service
-                          setValue("servicePreference", service.title);
+                          setValue("servicePreference", service.backendValue);
                           // console.log(`Selected service: ${service.title}`);
                         }}
                         className={`flex flex-col shadow-md items-center gap-2 px-[13px] py-[13px] rounded-[12px] ${selectedClass} cursor-pointer transition-all`}
@@ -820,10 +813,11 @@ export default function Client() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className={` py-5 px-7 rounded-[50px] my-14 ${loading
-                    ? "bg-gray-500 text-white"
-                    : "bg-primary text-white "
-                    }`}
+                  className={` py-5 px-7 rounded-[50px] my-14 ${
+                    loading
+                      ? "bg-gray-500 text-white"
+                      : "bg-primary text-white "
+                  }`}
                   disabled={loading}
                 >
                   {loading ? "Saving..." : "Save Information"}

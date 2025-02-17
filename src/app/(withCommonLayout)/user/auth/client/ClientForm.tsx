@@ -15,7 +15,6 @@ import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/ReduxFunction";
 import { toast } from "sonner";
 
-
 export default function ClientForm() {
   const [step, setStep] = useState(1);
   const { register, handleSubmit, setValue, getValues } = useForm();
@@ -25,10 +24,10 @@ export default function ClientForm() {
   const handleBack = () => setStep((prev) => prev - 1);
   const dispatch = useDispatch();
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
-
-
-  
+  const [errors, setErrors] = useState<{
+    password?: string;
+    confirmPassword?: string;
+  }>({});
 
   const handleSubmitForm = async (data: any) => {
     const clientData = {
@@ -42,7 +41,8 @@ export default function ClientForm() {
       phoneNumber: data.phone,
       businessType: data.businessType,
       jobTitle: data.jobTitle,
-      role: 'client',
+      companyName: data.companyName,
+      role: "client",
       linkedinProfile: data.linkedIn,
     };
     const validatePassword = () => {
@@ -66,14 +66,12 @@ export default function ClientForm() {
       // Return true if no errors
       return Object.keys(newErrors).length === 0;
     };
-    
-
 
     try {
       if (validatePassword()) {
         const res: any = await createClient(clientData);
         if (res?.data) {
-          toast.success("Successfully Created your Account")
+          toast.success("Successfully Created your Account");
 
           dispatch(
             setUser({
@@ -88,11 +86,9 @@ export default function ClientForm() {
             })
           );
 
-
-          setStep(4)
+          setStep(4);
         } else {
-
-          toast.error(res?.error?.data?.message)
+          toast.error(res?.error?.data?.message);
         }
       }
     } catch (err) {
@@ -158,9 +154,7 @@ export default function ClientForm() {
                 confirmPassword={confirmPassword}
               />
             )}
-            {step === 4 && (
-              <SuccessPage />
-            )}
+            {step === 4 && <SuccessPage />}
             <Stepper currentStep={step} setStep={setStep} />
             {/* {isLoading && <p>Loading...</p>} */}
           </div>
