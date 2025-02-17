@@ -80,7 +80,7 @@ const Page: React.FC = () => {
         if (!token?.email) return;
 
         if (!socketRef.current) {
-            const mysocket = io("ws://localhost:5001");
+            const mysocket = io(process.env.SOCKET_URL);
             socketRef.current = mysocket;
 
             mysocket.on("connect", () => {

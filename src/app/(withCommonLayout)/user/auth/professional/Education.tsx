@@ -191,7 +191,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="linkedin">LinkedIn Profile (Optional)</Label>
+          <Label htmlFor="linkedin">LinkedIn Profile (Optional, Provide valid Linkedin url)</Label>
           <Input
             id="linkedin"
             {...register("linkedIn")}

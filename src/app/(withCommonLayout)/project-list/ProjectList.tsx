@@ -109,7 +109,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     setCurrentPage(pageNumber);
   };
   // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-  // console.log("My test is", currentItems);
+  console.log("My test is", currentItems);
   return (
     <div>
       {loading || loading2 ? <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " /> : null}
@@ -206,11 +206,11 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
               <div className="relative w-full">
                 <div className="overflow-hidden rounded-[10px]">
                   <Image
-                    src={data?.coverUrl || projectImgFallback}
+                    src={data?.coverUrl || data?.workSample || projectImgFallback}
                     alt="Consulting service"
                     width={500}
                     height={218}
-                    className="object-cover hover:scale-105 transition-all"
+                    className="h-[218px] w-full object-cover hover:scale-105 transition-all"
                   />
                 </div>
 
@@ -232,13 +232,13 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <div className="h-15 w-10 overflow-hidden rounded-full">
+                    <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
                       <Image
                         src={data?.profileUrl || demoimg}
                         alt={data?.userDetails?.name?.firstName || "Client"}
                         width={40}
                         height={40}
-                        className="object-cover"
+                        className="object-cover w-full h-full"
                       />
                     </div>
                     <span className="text-sm font-medium text-gray-900">
@@ -270,7 +270,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   </div>
                   <Link
                     className="rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
-                    href={`/chat/${data._id}`}
+                    href={`/chat/${data?.userDetails?._id}`}
                   >
                     Connect Now
                   </Link>

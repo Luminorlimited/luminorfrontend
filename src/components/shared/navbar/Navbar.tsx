@@ -38,9 +38,7 @@ const Navbar = () => {
 
   const user = useSelector((state: RootState) => state.Auth.user);
 
-  const { data: profileData } = useGetProfileQuery(user?.id || "", {
-    skip: !user?.token,
-  });
+  const { data: profileData } = useGetProfileQuery(undefined);
 
   const demoimg = profileData?.data?.profileUrl || demoprofile;
 
@@ -51,6 +49,12 @@ const Navbar = () => {
     Cookies.remove("token");
     router.push("/");
   };
+  console.log("my profile is", profileData);
+  useEffect(() => {
+    if (profileData?.data?.client?.isDeleted) {
+      handleLogOut();
+    }
+  }, [profileData])
 
   // State for dropdown menu visibility
   const [fileBtn, showFileBtn] = useState<boolean>(false);
@@ -80,35 +84,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const mysocket = io("ws://localhost:5001");
-
-  //   mysocket.on("connect", () => {
-  //     // console.log("Connected to the server.");
-
-  //     mysocket.on("privateMessage", (notification) => {
-  //       // console.log("Notification received:", notification);
-
-  //       setNotifications((prevNotifications) => [
-  //         ...prevNotifications,
-  //         {
-  //           id: Date.now(), // Use a unique ID for each notification
-  //           message: notification.message,
-  //           time: new Date().toLocaleTimeString(), // Add timestamp
-  //         },
-  //       ]);
-  //     });
-  //   });
-
-  //   return () => {
-  //     mysocket.disconnect();
-  //   };
-  // }, []);
-
-  // const handleNotificationClick = (id: number) => {
-  //   // console.log(`Notification ${id} clicked`);
-
-  // };
 
 
   return (

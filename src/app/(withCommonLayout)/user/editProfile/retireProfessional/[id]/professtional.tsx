@@ -20,6 +20,7 @@ import {
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
 import bgCover from "@/assets/images/profilebanner.png";
+import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
 
 const servicesData = [
   {
@@ -322,7 +323,26 @@ export default function Professional() {
   // // console.log("cover url", profileData?.data?.coverUrl);
 
   // console.log(profileData?.data);
+  const [sendOnboardingUrl] = useSendOnboardingUrlMutation()
+  const [buttonText, setButtonText] = useState("Send onboarding URL");
+  const [isDisabled, setIsDisabled] = useState(false);
+  const handleOnboarding = async () => {
+    setIsDisabled(true); // Disable button while processing
+    try {
+      const res = await sendOnboardingUrl({});
+      if (res) {
+        toast.success("Please check your mail");
+        setButtonText("Onboarding URL Sent ✅");
+      } else {
+        toast.error("Email sending failed");
+        setIsDisabled(false); // Re-enable button on failure
+      }
+    } catch (er:any) {
 
+      toast.error("message sending failed", er);
+      setIsDisabled(false);
+    }
+  };
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
@@ -335,7 +355,14 @@ export default function Professional() {
             Hii {profileData?.data?.retireProfessional?.name?.firstName}!!!{" "}
           </strong>
           <span className="block sm:inline">
-            Please add your stripe account. Check your mail
+            Please add your stripe account. Check your mail {" "}
+            <button
+              className="text-primary font-bold hover:text-black disabled:opacity-50"
+              onClick={handleOnboarding}
+              disabled={isDisabled}
+            >
+              {buttonText}
+            </button>
           </span>
           <span
             onClick={handleClose}

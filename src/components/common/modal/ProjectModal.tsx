@@ -63,7 +63,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
     };
 
     useEffect(() => {
-        const mysocket = io("ws://localhost:5001");
+        const mysocket = io(process.env.SOCKET_URL);
         // console.log(mysocket);
 
         mysocket.on("connect", () => {

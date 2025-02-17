@@ -32,15 +32,16 @@ const FeaturedProject: React.FC = () => {
                 className="overflow-hidden rounded-[10px] bg-white shadow-md hover:shadow-lg hover:cursor-pointer transition-all"
             >
                 <div className="relative w-full">
-                    <div className="overflow-hidden rounded-[10px]">
+                    <div className="overflow-hidden rounded-[10px] max-w-[500px] h-[218px]">
                         <Image
-                            src={projectImgFallback}
+                            src={data?.workSample || data?.coverUrl || projectImgFallback}
                             alt="Consulting service"
                             width={500}
                             height={218}
-                            className="object-cover hover:scale-105 transition-all"
+                            className="object-cover hover:scale-105 w-full h-full transition-all"
                         />
                     </div>
+
                     {isClient && (
                         <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                             <BiTime className="h-4 w-4" />

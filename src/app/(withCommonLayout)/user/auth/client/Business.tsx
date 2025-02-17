@@ -85,7 +85,7 @@ export default function Business({ register, handleNext, handleBack, getValues }
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="linkedin">LinkedIn Profile (Optional)</Label>
+          <Label htmlFor="linkedin">LinkedIn Profile (Optional, Provide valid Linkedin url)</Label>
           <Input
             id="linkedin"
             {...register("linkedIn")}

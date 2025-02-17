@@ -55,7 +55,7 @@ return (
           Hi {getprofile?.data?.client?.name?.firstName || getprofile?.data?.retireProfessional?.name?.firstName}!!!
         </strong>
         <span className="block sm:inline">
-          Your account is currently under review and your status will be updated soon.
+          Your account is currently under review and your status will be updated soon. Please wait 3-5 days.
         </span>
         <span onClick={handleClose} className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
           <svg

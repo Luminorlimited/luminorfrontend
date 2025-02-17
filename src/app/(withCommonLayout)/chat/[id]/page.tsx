@@ -100,7 +100,7 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     if (token?.id) {
-     
+
       setOfferNotification(getoffer?.data?.data?.count);
     }
   }, [token?.id, getoffer]);
@@ -109,7 +109,7 @@ const Page: React.FC = () => {
     if (!token?.email) return;
 
     if (!socketRef.current) {
-      const mysocket = io("ws://localhost:5001");
+      const mysocket = io(process.env.SOCKET_URL);
       socketRef.current = mysocket;
 
       mysocket.on("connect", () => {
@@ -183,8 +183,8 @@ const Page: React.FC = () => {
 
       mysocket.on("zoomMeetingError", (err) => {
         // console.log("Zoom meeting error:", err);
-        if(err)
-        toast.error("Failed to create Zoom meeting. Please try again.");
+        if (err)
+          toast.error("Failed to create Zoom meeting. Please try again.");
       });
     }
 
@@ -586,7 +586,7 @@ const Page: React.FC = () => {
                     height={40}
                     className="rounded-full w-full h-full"
                   />
-             </div>
+                </div>
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-gray-900">
                     {getToUser?.data.client?.name?.firstName ||
@@ -692,7 +692,7 @@ const Page: React.FC = () => {
                     handleOpenModal={handleOpenModal}
                     messages={inbox}
                     currentUser={user1 ?? ""}
-                      profileUrl={getToUser?.data?.profileUrl}
+                    profileUrl={getToUser?.data?.profileUrl}
                     colorScheme={{
                       senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
                       receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
