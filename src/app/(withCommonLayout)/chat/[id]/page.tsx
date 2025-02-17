@@ -296,30 +296,30 @@ const Page: React.FC = () => {
       return;
     }
 
-    try {
+    // try {
 
-      const formData = new FormData()
-      if (selectedImages) {
-        selectedImages.forEach((file) => {
-          formData.append("file", file);
-        });
-      }
-      const res = await fileUpload(formData)
-      if (res) {
-        setFileLink(res?.data?.data)
-        console.log("my response is", res);
-        const message: any = {
-          toUserId: id.id,
-          message: messages.trim() || null,
-          fromUserId: token?.id,
-          media: fileLink,
-        };
-        socketRef.current.emit("privateMessage", JSON.stringify(message));
+    //   const formData = new FormData()
+    //   if (selectedImages) {
+    //     selectedImages.forEach((file) => {
+    //       formData.append("file", file);
+    //     });
+    //   }
+    //   const res = await fileUpload(formData)
+    //   if (res) {
+    //     setFileLink(res?.data?.data)
+    //     console.log("my response is", res);
+    //     const message: any = {
+    //       toUserId: id.id,
+    //       message: messages.trim() || null,
+    //       fromUserId: token?.id,
+    //       media: fileLink,
+    //     };
+    //     socketRef.current.emit("privateMessage", JSON.stringify(message));
 
-      }
-    } catch (e) {
-      console.log(e, "error");
-    }
+    //   }
+    // } catch (e) {
+    //   console.log(e, "error");
+    // }
 
 
 
@@ -329,7 +329,7 @@ const Page: React.FC = () => {
         toUserId: id.id,
         message: messages.trim() || null,
         fromUserId: token?.id,
-        media: fileLink,
+        media: null,
       };
 
 
@@ -345,6 +345,8 @@ const Page: React.FC = () => {
         recipient: { _id: id.id },
         createdAt: new Date().toISOString(),
       };
+
+      console.log(temporaryMessage,"check temporary message")
 
       setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
       console.log(inbox, "check messages from send message handler");
