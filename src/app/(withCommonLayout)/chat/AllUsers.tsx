@@ -31,6 +31,8 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
     return fullName?.includes(searchInput.toLowerCase());
   });
 
+  console.log("get conversation", getConversation);
+
   return (
     <div>
       <div className="flex items-center border rounded-[12px] px-3 py-4">
