@@ -49,7 +49,7 @@ const Navbar = () => {
     Cookies.remove("token");
     router.push("/");
   };
-  console.log("my profile is", profileData);
+  // console.log("my profile is", profileData);
   useEffect(() => {
     if (profileData?.data?.client?.isDeleted) {
       handleLogOut();
