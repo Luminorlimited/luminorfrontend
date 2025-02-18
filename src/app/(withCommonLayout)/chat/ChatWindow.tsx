@@ -60,7 +60,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 
   // const token = useDecodedToken();
   const { data: profileData } = useGetProfileQuery(undefined)
-console.log("profile url", profileData?.data?.profileUrl);
+// console.log("profile url", profileData?.data?.profileUrl);
 
 
   return (

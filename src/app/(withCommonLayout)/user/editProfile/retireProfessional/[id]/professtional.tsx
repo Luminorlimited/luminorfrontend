@@ -97,6 +97,7 @@ export default function Professional() {
   const [location, setLocation] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [imageUrl, setImageUrl] = useState<any>(null)
+
   const handleClose = () => {
     setShowAlert((prev) => !prev);
   };
@@ -108,35 +109,72 @@ export default function Professional() {
     }
   }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess]);
 
-  useEffect(() => {
-    if (
-      profileData?.data?.location?.coordinates[1] &&
-      profileData?.data?.location?.coordinates[0]
-    ) {
-      const fetchLocation = async () => {
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
-          );
-          const data = await response.json();
-          if (data?.display_name) {
-            setLocation(data.display_name); // Set location from API response
-          }
-        } catch (error) {
-          console.error("Error fetching location:", error);
-        }
-      };
+   useEffect(() => {
+     if (
+       profileData?.data?.location?.coordinates[1] &&
+       profileData?.data?.location?.coordinates[0]
+     ) {
+       const fetchLocation = async () => {
+         try {
+           const response = await fetch(
+             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
+           );
+           const data = await response.json();
+           if (data?.display_name) {
+             setLocation(data.display_name); // Set location from API response
+           }
+         } catch (error) {
+           console.error("Error fetching location:", error);
+         }
+       };
+ 
+       fetchLocation();
+     }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     profileData?.data?.location?.coordinates[1],
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     profileData?.data?.location?.coordinates[0],
+   ]);
+ 
+ 
+   useEffect(() => {
+     let autocomplete: google.maps.places.Autocomplete;
+ 
+     const initAutocomplete = () => {
+       const input = document.getElementById("search-input") as HTMLInputElement;
+       console.log("input is", input);
+       if (input) {
+         autocomplete = new google.maps.places.Autocomplete(input);
+ 
+         autocomplete.addListener("place_changed", () => {
+           const place = autocomplete.getPlace();
+ 
+           if (!place.geometry || !place.geometry.location) {
+             alert(`No details available for input: '${place.name}'`);
+             return;
+           }
+ 
+           setLatitude(place.geometry.location.lat());
+           setLongitude(place.geometry.location.lng());
+           setLocation(place.formatted_address || "");
+         });
+       }
+     };
+ 
+     const script = document.createElement("script");
+     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
+     script.async = true;
+     script.onload = initAutocomplete;
+     document.body.appendChild(script);
+ 
+     return () => {
+       document.body.removeChild(script);
+     };
+   }, []);
+  
 
-      fetchLocation();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    profileData?.data?.location?.coordinates[1],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    profileData?.data?.location?.coordinates[0],
-  ]);
-  console.log(profileData?.data?.coverUrl, "check ciover ")
   useEffect(() => {
     if (profileData) {
       reset({
@@ -156,40 +194,7 @@ export default function Professional() {
     }
   }, [profileData, reset]);
 
-  useEffect(() => {
-    let autocomplete: google.maps.places.Autocomplete;
-
-    const initAutocomplete = () => {
-      const input = document.getElementById("search-input") as HTMLInputElement;
-      console.log("input is", input);
-      if (input) {
-        autocomplete = new google.maps.places.Autocomplete(input);
-
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
-
-          if (!place.geometry || !place.geometry.location) {
-            alert(`No details available for input: '${place.name}'`);
-            return;
-          }
-
-          setLatitude(place.geometry.location.lat());
-          setLongitude(place.geometry.location.lng());
-          setLocation(place.formatted_address || "");
-        });
-      }
-    };
-
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
-    script.async = true;
-    script.onload = initAutocomplete;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+ 
 
   const [workSample, setWorkSample] = useState<string | File>(
     profileData?.data?.workSample

@@ -92,8 +92,12 @@ const ProjectModal: React.FC<projectModalProps> = ({
             });
 
             // Listen for error response
-            socket.on("sendOfferError", (errorMessage: string) => {
-                toast.error(errorMessage || "Something went wrong");
+            socket.on("sendOfferError", (errorMessage: any) => {
+                const errorText = typeof errorMessage === "string"
+                    ? errorMessage
+                    : errorMessage?.message || "Something went wrong";
+
+                toast.error(errorText);
             });
 
         } catch (error) {
@@ -103,6 +107,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
 
         onClose();
     };
+
 
 
     return (

@@ -138,12 +138,15 @@ export default function Client() {
     profileData?.data?.location?.coordinates[0],
   ]);
 
+
   useEffect(() => {
+    let autocomplete: google.maps.places.Autocomplete;
+
     const initAutocomplete = () => {
       const input = document.getElementById("search-input") as HTMLInputElement;
+      console.log("input is", input);
       if (input) {
-        const autocomplete: google.maps.places.Autocomplete =
-          new google.maps.places.Autocomplete(input);
+        autocomplete = new google.maps.places.Autocomplete(input);
 
         autocomplete.addListener("place_changed", () => {
           const place = autocomplete.getPlace();
@@ -155,11 +158,7 @@ export default function Client() {
 
           setLatitude(place.geometry.location.lat());
           setLongitude(place.geometry.location.lng());
-          setLocation(place.formatted_address || ""); // Store selected location
-
-          // console.log("Selected Location:", place.formatted_address);
-          // console.log("Latitude:", place.geometry.location.lat());
-          // console.log("Longitude:", place.geometry.location.lng());
+          setLocation(place.formatted_address || "");
         });
       }
     };

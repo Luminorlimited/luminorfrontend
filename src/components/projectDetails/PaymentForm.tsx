@@ -97,9 +97,9 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
             const response = await offerPayment((formData));
 
             if (response.data) {
-                alert('Payment Successful!');
+                // alert('Payment Successful!');
                 toast.success('Payment Successful!');
-                router.push(`/deliver-details/addreview/${getSingleOffer?.data?.offer?.professionalEmail}`)
+                router.push(`/deliver-details/addreview/${getSingleOffer?.data?.offer?.professionalEmail?._id}`)
 
             } else {
                 console.error('Payment failed:', response.error);
@@ -111,7 +111,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
         }
     };
 
-    // console.log("my get single offer is", getSingleOffer?.data);
+    console.log("my get single offer is", getSingleOffer?.data);
 
 
     return (
@@ -361,7 +361,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                             </div>
 
 
-                            <button onClick={() => document.getElementById('paymentForm')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))} className={`w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium  rounded-[8px]  items-center gap-2 ${isLoading ? "bg-slate-500 text-black" : "bg-primary text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"}`} disabled={isLoading}>
+                            <button onClick={() => document.getElementById('paymentForm')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))} className={`w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium  rounded-[8px]  items-center gap-2 ${isLoading ? "bg-slate-500 text-white" : "bg-primary text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"}`} disabled={isLoading}>
                                 {isLoading ? 'Processing...' : 'Confirm & Pay'} <FaArrowRightLong />
                             </button>
 

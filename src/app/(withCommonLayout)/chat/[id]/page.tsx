@@ -70,7 +70,7 @@ const Page: React.FC = () => {
   const { data: getConversation } = useGetConversationQuery(undefined, {
     skip: !id.id,
   });
-  console.log(getConversation,"check convirsation",id.id)
+  // console.log(getConversation,"check convirsation",id.id)
   // const [fileUpload] = useImageSendMutation({})
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
