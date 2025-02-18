@@ -347,7 +347,7 @@ export default function Professional() {
     }
   };
   if (isLoading) {
-    return <div>Loading....</div>
+    return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
   }
   return (
     <div className="min-h-screen flex flex-col">

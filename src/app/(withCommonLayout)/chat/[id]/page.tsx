@@ -80,11 +80,7 @@ const Page: React.FC = () => {
   const socketRef = useRef<Socket | null>(null);
   const [isSocketReady, setIsSocketReady] = useState(false);
   const { data: getoffer, refetch: offerRefetch } = useGetOfferQuery(token?.id);
-  // const [messageNotifications, setmessageNotifications] = useState(0);
-
-  // const [offerNotification, setOfferNotification] = useState(0);
-
-  const [, setSelectedImages] = useState<File[]>([]);
+const [, setSelectedImages] = useState<File[]>([]);
   // console.log(selectedImages);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []

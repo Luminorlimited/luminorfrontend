@@ -90,7 +90,7 @@ export default function Client() {
 
   const [editclientProfile] = useEditclientprofileMutation();
 
-  const { data: profileData } = useGetProfileQuery(undefined);
+  const { data: profileData, isLoading } = useGetProfileQuery(undefined);
   const [budgetMinValue, setBudgetMinValue] = useState(
     profileData?.data?.budgetRange?.min || minPrice
   );
@@ -396,6 +396,10 @@ export default function Client() {
       }
     }
   };
+
+  if (isLoading) {
+    return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
