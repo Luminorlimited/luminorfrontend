@@ -48,7 +48,7 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
       <div className="w-full max-w-md mx-auto bg-white rounded-lg">
         <div className="flex gap-6 p-4">
           <h2 className="text-lg font-semibold">All</h2>
-          <h2 className="text-lg font-semibold">Unread (10)</h2>
+          <h2 className="text-lg font-semibold">Unread </h2>
         </div>
         <div>
           <ul className="divide-y">
