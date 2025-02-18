@@ -77,7 +77,7 @@ export default function Client() {
   const token = useSelector((state: RootState) => state.Auth.token);
 
   const { id: userIdValue } = useParams();
-  const [imageUrl,setImageUrl]=useState<any>(null)
+  const [imageUrl, setImageUrl] = useState<any>(null)
 
   // Decode the token
   try {
@@ -361,7 +361,7 @@ export default function Client() {
   useEffect(() => {
     // console.log("selectProject state updated:", selectProject);
   }, [selectProject]);
-console.log("image url", imageUrl);
+  console.log("image url", imageUrl);
   const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
 
   const handleCoverPhotoChange = async (
@@ -400,10 +400,10 @@ console.log("image url", imageUrl);
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="bg-cover bg-center h-[324px] relative w-screen">
-           <Image className="w-full h-full" src={imageUrl || profileData?.data?.coverUrl} width={1300} height={200} alt="jfe"/>
-     
-           </div>
+      <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] xl:h-[400px] bg-cover bg-center">
+        <Image className="w-full h-full object-cover" src={imageUrl || profileData?.data?.coverUrl} width={1300} height={200} alt="cover image" />
+
+      </div>
 
       <button
         type="button"
@@ -815,11 +815,10 @@ console.log("image url", imageUrl);
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className={` py-5 px-7 rounded-[50px] my-14 ${
-                    loading
+                  className={` py-5 px-7 rounded-[50px] my-14 ${loading
                       ? "bg-gray-500 text-white"
                       : "bg-primary text-white "
-                  }`}
+                    }`}
                   disabled={loading}
                 >
                   {loading ? "Saving..." : "Save Information"}

@@ -74,9 +74,6 @@ const ProjectModal: React.FC<projectModalProps> = ({
     }, [user1]);
 
     const onSubmit = async (data: any) => {
-        // console.log("Final Form Values:", data);
-
-
         try {
             const myOffer = {
                 fromEmail: user1,
@@ -86,10 +83,19 @@ const ProjectModal: React.FC<projectModalProps> = ({
                 clientEmail: user2,
             };
 
-            // console.log("My offer is", JSON.stringify(myOffer));
-            const res = await socket.emit("sendOffer", JSON.stringify(myOffer))
-            if (res)
-                toast.success("Offer Sent successfully....");
+            // Emit the event
+            socket.emit("sendOffer", JSON.stringify(myOffer));
+
+            // Listen for success response
+            socket.on("sendOfferSuccess", () => {
+                toast.success("Offer sent successfully!");
+            });
+
+            // Listen for error response
+            socket.on("sendOfferError", (errorMessage: string) => {
+                toast.error(errorMessage || "Something went wrong");
+            });
+
         } catch (error) {
             console.error("Error stringifying data:", error);
             toast.error("Something went wrong");
@@ -97,6 +103,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
 
         onClose();
     };
+
 
     return (
         <div

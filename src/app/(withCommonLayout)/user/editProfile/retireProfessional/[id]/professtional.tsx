@@ -87,7 +87,7 @@ export default function Professional() {
 
   const userIdValue = userId.id;
 
-  const { data: profileData,isLoading } = useGetProfileQuery(undefined);
+  const { data: profileData, isLoading } = useGetProfileQuery(undefined);
 
   const { register, handleSubmit, setValue, watch, reset } = useForm();
   const [loading, setLoading] = useState(false);
@@ -96,7 +96,7 @@ export default function Professional() {
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [imageUrl,setImageUrl]=useState<any>(null)
+  const [imageUrl, setImageUrl] = useState<any>(null)
   const handleClose = () => {
     setShowAlert((prev) => !prev);
   };
@@ -136,7 +136,7 @@ export default function Professional() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     profileData?.data?.location?.coordinates[0],
   ]);
-  console.log(profileData?.data?.coverUrl,"check ciover ")
+  console.log(profileData?.data?.coverUrl, "check ciover ")
   useEffect(() => {
     if (profileData) {
       reset({
@@ -175,7 +175,7 @@ export default function Professional() {
 
           setLatitude(place.geometry.location.lat());
           setLongitude(place.geometry.location.lng());
-          setLocation(place.formatted_address || ""); 
+          setLocation(place.formatted_address || "");
         });
       }
     };
@@ -335,13 +335,13 @@ export default function Professional() {
         toast.error("Email sending failed");
         setIsDisabled(false); // Re-enable button on failure
       }
-    } catch (er:any) {
+    } catch (er: any) {
 
       toast.error("message sending failed", er);
       setIsDisabled(false);
     }
   };
-  if(isLoading){
+  if (isLoading) {
     return <div>Loading....</div>
   }
   return (
@@ -389,10 +389,16 @@ export default function Professional() {
           backgroundImage: `url(${profileData?.data?.coverUrl})`,
         }}
       /> */}
-      <div className="bg-cover bg-center h-[324px] relative w-screen">
-      <Image className="w-full h-full" src={imageUrl || profileData?.data?.coverUrl} width={1300} height={200} alt="jfe"/>
-
+      <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] xl:h-[400px] bg-cover bg-center">
+        <Image
+          className="w-full h-full object-cover"
+          src={imageUrl || profileData?.data?.coverUrl }
+          width={1200}
+          height={400}
+          alt="cover image"
+        />
       </div>
+
 
       <button
         type="button"
@@ -665,11 +671,10 @@ export default function Professional() {
               </div>
 
               <div
-                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${
-                  isDragging
+                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${isDragging
                     ? "border-gray-400 rounded-xl bg-gray-50"
                     : "border-gray-200"
-                } transition-colors duration-200`}
+                  } transition-colors duration-200`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -739,11 +744,10 @@ export default function Professional() {
               <div className="flex justify-center">
                 <button
                   disabled={loading}
-                  className={` py-5 px-7 rounded-[50px] my-14 ${
-                    loading
+                  className={` py-5 px-7 rounded-[50px] my-14 ${loading
                       ? "bg-gray-500 text-white"
                       : "bg-primary text-white "
-                  }`}
+                    }`}
                 >
                   {loading ? "Saving..." : "Save Information"}
                 </button>
