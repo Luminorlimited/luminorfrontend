@@ -131,7 +131,8 @@ export default function ProfessionalForm() {
           // router.push("/user/auth/login");
         } else {
           // console.log("FormData content:", res?.error?.data?.message); // Log FormData content
-          toast.error(res?.message);
+          toast.error(res?.error?.data?.message);
+          console.log();
           setLoading(false);
         }
 
