@@ -4,6 +4,8 @@ import { store } from "@/redux/store";
 
 const public_url = process.env.NEXT_PUBLIC_BACKEND_VERCEL_URL
 
+console.log("public url", public_url)
+
 export const baseApi = createApi({
     reducerPath: 'baseApi', // The key for this API in the Redux store
     baseQuery: fetchBaseQuery({
