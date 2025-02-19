@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CheckCheck } from "lucide-react";
 import avatar1 from "@/assets/images/msgavatar1.png";
 import avatar2 from "@/assets/images/msgavatar2.png";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 
@@ -21,6 +21,7 @@ export interface Message {
   id?: number;
   message?: string;
   meetingLink?: string;
+  media?: string | StaticImageData;
   sender: userInfo; // Determines if the message is sent or received
   createdAt?: string;
   toEmail?: string;
@@ -55,14 +56,11 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   profileUrl,
 }) => {
   const isSender = message?.sender._id == currentUser;
-  // // console.log(message.sender, "from chat window message");
-  // // console.log(currentUser, "from chat window current user");
 
-  // const token = useDecodedToken();
   const { data: profileData } = useGetProfileQuery(undefined)
-// console.log("profile url", profileData?.data?.profileUrl);
 
 
+  console.log("My image", message)
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
       <div
@@ -91,20 +89,29 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
               }`}
           >
-            {message?.message?.startsWith("https://") ? (
-              <Link
-                href={message?.message}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 cursor-pointer hover:underline"
-              >
-                {message?.message.length > 25
-                  ? `${message?.message.substring(0, 25)}...`
-                  : message?.message}
-              </Link>
-            ) : (
-              <span>{message?.message}</span>
-            )}
+            {message?.media ? (
+              <Image
+                src={message.media}
+                alt="Media"
+                width={250}
+                height={250}
+                className={`mt-2 max-w-full h-auto rounded-lg border border-gray-300 ${isSender ? `bg-${colorScheme.senderBg} p-3 rounded-[9px]` : `bg-${colorScheme.receiverBg} p-3 rounded-[9px]`}`}
+              />
+            )
+              : message?.message?.startsWith("https://") ? (
+                <Link
+                  href={message?.message}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 cursor-pointer hover:underline"
+                >
+                  {message?.message.length > 25
+                    ? `${message?.message.substring(0, 25)}...`
+                    : message?.message}
+                </Link>
+              ) : (
+                <span>{message?.message}</span>
+              )}
           </div>
 
           <div

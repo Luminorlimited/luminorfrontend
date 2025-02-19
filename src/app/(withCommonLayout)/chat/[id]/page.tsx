@@ -23,6 +23,7 @@ import {
   useGetConversationQuery,
   useGetMessageQuery,
   useGetuserQuery,
+  useImageSendMutation,
   // useImageSendMutation,
   useSendOnboardingUrlMutation,
 } from "@/redux/Api/messageApi";
@@ -71,7 +72,7 @@ const Page: React.FC = () => {
     skip: !id.id,
   });
   // console.log(getConversation,"check convirsation",id.id)
-  // const [fileUpload] = useImageSendMutation({})
+  const [fileUpload] = useImageSendMutation({})
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
@@ -80,7 +81,7 @@ const Page: React.FC = () => {
   const socketRef = useRef<Socket | null>(null);
   const [isSocketReady, setIsSocketReady] = useState(false);
   const { data: getoffer, refetch: offerRefetch } = useGetOfferQuery(token?.id);
-const [, setSelectedImages] = useState<File[]>([]);
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   // console.log(selectedImages);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []
@@ -107,11 +108,9 @@ const [, setSelectedImages] = useState<File[]>([]);
 
     if (!socketRef.current) {
       const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL);
-      console.log(process.env.NEXT_PUBLIC_SOCKET_URL,"check socket url")
       socketRef.current = mysocket;
 
       mysocket.on("connect", () => {
-        // console.log("Connected to socket.io.");
         setIsSocketReady(true);
         mysocket.emit("register", JSON.stringify({ id: token?.id }));
         mysocket.emit(
@@ -123,23 +122,17 @@ const [, setSelectedImages] = useState<File[]>([]);
       mysocket.on("conversation-list", (data) => {
 
         console.log( data,"convirsation list")
-        // // console.log("Received conversation list:", data);
-        // console.log(data, "check data from useeffet convirsation list");
-
+       
         setUsers(data);
       });
       mysocket.on("sendOffer", (data) => {
-        // // console.log("Received conversation list:", data);
-        // console.log(data, "check data from useeffet sendOffer");
-        // console.log(data.offer, "heck data from useeffet sendOffer");
+      
         setOfferNotification(data?.offer?.count);
         setLatestOffer(data?.offer);
       });
       mysocket.on("privateMessage", (data) => {
-        // console.log("Received private message:", data);
+       
         const { message, fromUserId } = data;
-        // console.log(getToUser, "check get to user");
-        // console.log(fromUserId, "check from email");
 
         if (
           message &&
@@ -152,15 +145,11 @@ const [, setSelectedImages] = useState<File[]>([]);
           setInbox((prevInbox) => [...prevInbox, message]);
         }
 
-        // setInbox((prevInbox) => [...prevInbox, message]);
       });
 
       mysocket.on("createZoomMeeting", (data) => {
-        // // console.log("Received Zoom meeting data:", data);
         const { from, populateMessage } = data;
-        // console.log(populateMessage, from, "check zoom saved message");
         if (populateMessage?.meetingLink) {
-          // console.log(from, "check from create meeting");
           window.open(populateMessage?.meetingLink, "_blank");
           const loggedInUserId =
             getToUser?.data?.[
@@ -277,106 +266,99 @@ const [, setSelectedImages] = useState<File[]>([]);
     setInbox(oldMessages?.data?.messages);
   };
 
-  // const [fileLink, setFileLink] = useState("")
 
   const onSendMessage = async (e: any) => {
     e.preventDefault();
-    if (!messages.trim()) {
+    if (!messages.trim() && !selectedImages.length) {
       alert("Please enter a message or select an image.");
       return;
     }
-
 
     if (!socketRef.current) {
       toast.error("Socket connection not established.");
       return;
     }
 
-    // try {
+    try {
+      let uploadedFileLink = "";
 
-    //   const formData = new FormData()
-    //   if (selectedImages) {
-    //     selectedImages.forEach((file) => {
-    //       formData.append("file", file);
-    //     });
-    //   }
-    //   const res = await fileUpload(formData)
-    //   if (res) {
-    //     setFileLink(res?.data?.data)
-    //     console.log("my response is", res);
-    //     const message: any = {
-    //       toUserId: id.id,
-    //       message: messages.trim() || null,
-    //       fromUserId: token?.id,
-    //       media: fileLink,
-    //     };
-    //     socketRef.current.emit("privateMessage", JSON.stringify(message));
+      if (selectedImages.length > 0) {
+        const formData = new FormData();
+        selectedImages.forEach((file) => {
+          formData.append("file", file);
+        });
 
-    //   }
-    // } catch (e) {
-    //   console.log(e, "error");
-    // }
-
-
-
-    // console.log(messages, "check messages for file 1")
-    if (messages.trim()) {
-      const message: any = {
-        toUserId: id.id,
-        message: messages.trim() || null,
-        fromUserId: token?.id,
-        media: null,
-      };
-
-
-      // console.log(messages, "check messages for file2")
-
-      socketRef.current.emit("privateMessage", JSON.stringify(message));
-
-      const temporaryMessage: any = {
-        id: Date.now(), // Ensure a unique ID for temporary messages
-        message: messages.trim() || null,
-        meetingLink: "",
-        sender: { _id: token?.id },
-        recipient: { _id: id.id },
-        createdAt: new Date().toISOString(),
-      };
-
-      console.log(temporaryMessage,"check temporary message")
-
-      setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
-      // console.log(inbox, "check messages from send message handler");
-
-      let currentUser = users.find((user) => user.email === user2);
-
-      if (!currentUser) {
-        currentUser = {
-          email: getToUser?.data?.retireProfessional
-            ? getToUser?.data?.retireProfessional?.email
-            : getToUser?.data?.client?.email,
-          name: `${getToUser?.data?.retireProfessional
-            ? getToUser.data.retireProfessional.name.firstName
-            : getToUser?.data?.client?.name.firstName
-            } ${getToUser?.data?.retireProfessional
-              ? getToUser.data.retireProfessional.name.lastName
-              : getToUser?.data?.client?.name.lastName
-            }`,
-          profileUrl: getToUser?.data?.retireProfessional
-            ? getToUser?.data?.retireProfessional?.profileUrl
-            : getToUser?.data?.client?.profileUrl,
-        };
+        const res = await fileUpload(formData);
+        if (res && res.data?.data) {
+          uploadedFileLink = res.data.data; // Store the uploaded file link
+          console.log("Uploaded file link:", uploadedFileLink);
+        }
       }
 
-      currentUser.lastMessage = messages.trim();
-      currentUser.lastMessageTimestamp = new Date().toISOString();
+      // Ensure we send both message and media if available
+      if (messages.trim() || uploadedFileLink) {
+        const message: any = {
+          toUserId: id.id,
+          message: messages.trim() || null,
+          fromUserId: token?.id,
+          media: uploadedFileLink || null, // Now correctly sending media
+        };
 
-      setUsers([currentUser, ...users.filter((user) => user.email !== user2)]);
+        console.log("Sending message:", message);
 
-      setMessages("");
-      setSelectedImages([]);
-      setSelectedBase64Images([]);
+        socketRef.current.emit("privateMessage", JSON.stringify(message)); // Ensure message includes media
+
+        // Create temporary message
+        const temporaryMessage: any = {
+          id: Date.now(),
+          message: messages.trim() || null,
+          meetingLink: "",
+          media: uploadedFileLink, // Media is now included
+          sender: { _id: token?.id },
+          recipient: { _id: id.id },
+          createdAt: new Date().toISOString(),
+        };
+
+        console.log("Temporary message:", temporaryMessage);
+
+        setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
+
+        let currentUser = users.find((user) => user.email === user2);
+        if (!currentUser) {
+          currentUser = {
+            email: getToUser?.data?.retireProfessional
+              ? getToUser?.data?.retireProfessional?.email
+              : getToUser?.data?.client?.email,
+            name: `${getToUser?.data?.retireProfessional
+              ? getToUser.data.retireProfessional.name.firstName
+              : getToUser?.data?.client?.name.firstName
+              } ${getToUser?.data?.retireProfessional
+                ? getToUser.data.retireProfessional.name.lastName
+                : getToUser?.data?.client?.name.lastName
+              }`,
+            profileUrl: getToUser?.data?.retireProfessional
+              ? getToUser?.data?.retireProfessional?.profileUrl
+              : getToUser?.data?.client?.profileUrl,
+          };
+        }
+
+        currentUser.lastMessage = messages.trim() || "📷 Image"; // Update last message display
+        currentUser.lastMessageTimestamp = new Date().toISOString();
+
+        setUsers([currentUser, ...users.filter((user) => user.email !== user2)]);
+
+        // Reset input fields
+        setMessages("");
+        setSelectedImages([]);
+        setSelectedBase64Images([]);
+      }
+    } catch (e) {
+      console.log(e, "error");
     }
   };
+
+
+
   const handleCreateZoomMeeting = () => {
     if (!socketRef.current) {
       toast.error("Socket connection not established.");
@@ -443,29 +425,7 @@ const [, setSelectedImages] = useState<File[]>([]);
     // }
   };
 
-  // const handleshowMessage = (user: {
-  //   id: string;
-  //   email: string;
-  //   firstName: string;
-  //   lastName: string;
-  //   profileUrl: string | null;
-  // }) => {
-  //   refetch();
-  //   const { id, profileUrl } = user;
 
-  //   router.push(`/chat/${id}`);
-
-  //   socket.emit(
-  //     "userInChat",
-  //     JSON.stringify({ userEmail: token?.email, chattingWith: user2 })
-  //   );
-  //   // // console.log("handle show message");
-
-  //   setProfileUrl(profileUrl || demoimg.src);
-
-  //   setInbox(oldMessages?.data?.messages);
-  //   // // console.log(filteredMessages, "chekc message list")
-  // };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
