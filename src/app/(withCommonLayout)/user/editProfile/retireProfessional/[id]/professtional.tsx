@@ -291,7 +291,7 @@ export default function Professional() {
     }
   }, [selectedImage]);
 
-  const [updateCoverPhoto] = useUpdateCoverPhotoMutation();
+  const [updateCoverPhoto,{isLoading: coverPhotoLoading}] = useUpdateCoverPhotoMutation();
   const handleCoverPhotoChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -310,16 +310,11 @@ export default function Professional() {
           // Update the background image
           const newCoverPhotoUrl = URL.createObjectURL(file);
           setImageUrl(newCoverPhotoUrl)
-          // document
-          //   .querySelector(".bg-cover")
-          //   ?.setAttribute(
-          //     "style",
-          //     `background-image: url(${newCoverPhotoUrl})`
-          //   );
+     
         }
       } catch (error) {
         console.error("Error updating cover photo:", error);
-        toast.error("Failed to update cover photo");
+        toast.error("Image is too large. Please upload a smaller image");
       }
     }
   };
@@ -395,13 +390,27 @@ export default function Professional() {
         }}
       /> */}
       <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] xl:h-[400px] bg-cover bg-center">
-        <Image
+        {/* <Image
           className="w-full h-full object-cover"
           src={imageUrl || profileData?.data?.coverUrl }
           width={1200}
           height={400}
           alt="cover image"
-        />
+        /> */}
+
+        {coverPhotoLoading ? (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            <span className="text-gray-500">Loading...</span>
+          </div>
+        ) : (
+          <Image
+            className="w-full h-full object-cover"
+            src={imageUrl || profileData?.data?.coverUrl}
+            width={1200}
+            height={400}
+            alt="cover image"
+          />
+        )}
       </div>
 
 

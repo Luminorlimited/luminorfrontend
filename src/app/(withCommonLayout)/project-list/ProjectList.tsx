@@ -109,7 +109,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     setCurrentPage(pageNumber);
   };
   // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-  // console.log("My test is", currentItems);
+  console.log("My test is", currentItems);
   return (
     <div>
       {loading || loading2 ? <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " /> : null}
@@ -134,7 +134,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
                 <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                   <BiTime className="h-4 w-4" />
-                  <span className="text-xs">{data?.projectDurationRange?.max} days | Duration</span>
+                  <span className="text-xs">{data?.projectDurationRange?.max || "0"} days | Duration</span>
                 </div>
               </div>
 
@@ -142,7 +142,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 <div className="mb-3 flex items-center gap-3">
                   <h2>Preference: </h2>
                   <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
-                    {data?.servicePreference || "Not Specified"}
+                    {data?.projectPreference?.[0] || "Not Specified"}
                   </span>
                 </div>
 
@@ -186,6 +186,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   </div>
 
                   <Link
+                    title="Chat with client"
                     className="rounded-[12px]  text-center  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
                     href={`/chat/${data?.client?._id}`}
                   >
@@ -217,7 +218,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                   <BiTime className="h-4 w-4" />
                   <span className="text-xs">
-                    {data?.projectDurationRange?.max} days | Duration
+                    {data?.projectDurationRange?.max || 0} days | Duration
                   </span>
                 </div>
               </div>
@@ -226,7 +227,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 <div className="mb-3 flex items-center gap-3">
                   <h2>Preferences: </h2>
                   <span className="rounded-[15px] bg-[#74C5FF33] px-3 py-1 text-xs font-normal text-black">
-                    {data.projectPreference?.[0] || "Not Specified"}
+                    {data?.preferedProjects || "Not Specified"}
                   </span>
                 </div>
 
@@ -269,6 +270,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                     </span>
                   </div>
                   <Link
+                    title="Chat with Retire Professional"
                     className="rounded-[12px]  px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all   duration-200"
                     href={`/chat/${data?.userDetails?._id}`}
                   >
