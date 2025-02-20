@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode"; // Ensure proper import for jwtDecode
 
 export function middleware(request: NextRequest) {
   const loginRoute = new URL("/user/auth/login", request.url); // Define the login route
+  const AdminloginRoute = new URL("/admin/login", request.url); // Define the login route
   const pathname = request.nextUrl.pathname;
 
   // Get token from cookies
@@ -44,10 +45,13 @@ export function middleware(request: NextRequest) {
 
   // If no token, allow access to public authentication pages
   if (!token) {
-    if (restrictedForAuthenticated.includes(pathname)) {
-      return NextResponse.next();
+    if (adminRoutes.includes(pathname)) {
+      return NextResponse.redirect(AdminloginRoute);
     }
-    return NextResponse.redirect(loginRoute); // Redirect to login if trying to access protected routes
+    if (clientRoutes.includes(pathname) || professionalRoutes.includes(pathname)) {
+      return NextResponse.redirect(loginRoute);
+    }
+    return NextResponse.next();
   }
 
   try {
@@ -71,7 +75,7 @@ export function middleware(request: NextRequest) {
     }
 
     if (adminRoutes.includes(pathname) && role !== "admin") {
-      return NextResponse.redirect(loginRoute);
+      return NextResponse.redirect(AdminloginRoute);
     }
 
     if (professionalRoutes.includes(pathname) && role !== "retireProfessional") {
