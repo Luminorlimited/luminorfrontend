@@ -32,6 +32,7 @@ import { useDecodedToken } from "@/components/common/DecodeToken";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
+import { setLoading } from "@/redux/ReduxFunction";
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -44,7 +45,7 @@ const Page: React.FC = () => {
   const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
-  const { data: getProfile } = useGetProfileQuery({})
+  const { data: getProfile } = useGetProfileQuery({});
   // // console.log("getprofile is", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
   const user1 = useSelector((state: RootState) => state.Auth.user?.id);
 
@@ -72,7 +73,7 @@ const Page: React.FC = () => {
     skip: !id.id,
   });
   // console.log(getConversation,"check convirsation",id.id)
-  const [fileUpload] = useImageSendMutation({})
+  const [fileUpload] = useImageSendMutation({});
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const [users, setUsers] = useState<any[]>(getConversation?.data || []);
@@ -82,7 +83,8 @@ const Page: React.FC = () => {
   const [isSocketReady, setIsSocketReady] = useState(false);
   const { data: getoffer, refetch: offerRefetch } = useGetOfferQuery(token?.id);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  console.log("my user is", users);
+
+  // console.log("my user is", users);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []
   );
@@ -95,10 +97,8 @@ const Page: React.FC = () => {
     }
   }, [getoffer?.data?.data?.offersWithUserInfo?.count, id, refetch]);
 
-
   useEffect(() => {
     if (token?.id) {
-
       setOfferNotification(getoffer?.data?.data?.count);
     }
   }, [token?.id, getoffer]);
@@ -120,18 +120,15 @@ const Page: React.FC = () => {
       });
 
       mysocket.on("conversation-list", (data) => {
+        // console.log(data, "convirsation list");
 
-        console.log( data,"convirsation list")
-       
         setUsers(data);
       });
       mysocket.on("sendOffer", (data) => {
-      
         setOfferNotification(data?.offer?.count);
         setLatestOffer(data?.offer);
       });
       mysocket.on("privateMessage", (data) => {
-       
         const { message, fromUserId } = data;
 
         if (
@@ -144,9 +141,22 @@ const Page: React.FC = () => {
         ) {
           setInbox((prevInbox) => [...prevInbox, message]);
         }
-
       });
+      mysocket.on("image-pass", (data) => {
+        const { message, fromUserId } = data;
+        console.log(message, "from listinging image-pass");
 
+        if (
+          message &&
+          getToUser?.data?.[
+            getToUser?.data?.retireProfessional
+              ? "retireProfessional"
+              : "client"
+          ]?._id === fromUserId
+        ) {
+          setInbox((prevInbox) => [...prevInbox, message]);
+        }
+      });
       mysocket.on("createZoomMeeting", (data) => {
         const { from, populateMessage } = data;
         if (populateMessage?.meetingLink) {
@@ -181,6 +191,7 @@ const Page: React.FC = () => {
       if (socketRef.current) {
         socketRef.current.off("connect");
         socketRef.current.off("conversation-list");
+        socketRef.current.off("image-pass");
         socketRef.current.off("privateMessage");
         socketRef.current.off("createZoomMeeting");
         socketRef.current.off("zoomMeetingError");
@@ -195,7 +206,6 @@ const Page: React.FC = () => {
       setInbox(oldMessages?.data?.messages);
     }
   }, [oldMessages, id.id]);
-
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -212,8 +222,6 @@ const Page: React.FC = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
@@ -249,7 +257,6 @@ const Page: React.FC = () => {
     // refetch();
 
     if (socketRef.current) {
-    
       socketRef.current.emit(
         "userInChat",
         JSON.stringify({ userEmail: token?.email, chattingWith: email })
@@ -261,7 +268,6 @@ const Page: React.FC = () => {
     setProfileUrl(profileUrl || demoimg.src);
     setInbox(oldMessages?.data?.messages);
   };
-
 
   const onSendMessage = async (e: any) => {
     e.preventDefault();
@@ -277,27 +283,75 @@ const Page: React.FC = () => {
 
     try {
       let uploadedFileLink = "";
-
+      let tempImageMessage: any = null;
       if (selectedImages.length > 0) {
+        setLoading(true);
         const formData = new FormData();
-        selectedImages.forEach((file) => {
-          formData.append("file", file);
-        });
+        selectedImages.forEach((file) => formData.append("file", file));
 
         const res = await fileUpload(formData);
         if (res && res.data?.data) {
-          uploadedFileLink = res.data.data; // Store the uploaded file link
-          console.log("Uploaded file link:", uploadedFileLink);
-        }
-      }
+          uploadedFileLink = res.data.data;
 
-      // Ensure we send both message and media if available
-      if (messages.trim() || uploadedFileLink) {
+          // Emit the uploaded image via socket
+          const imageData = {
+            toUserId: id.id,
+            media: uploadedFileLink,
+
+            fromUserId: token?.id,
+          };
+
+          socketRef.current.emit("image-pass", JSON.stringify(imageData));
+        }
+        tempImageMessage = {
+          id: Date.now(),
+          media: uploadedFileLink,
+          // Indicating loading state
+          sender: { _id: token?.id },
+          recipient: { _id: id.id },
+          createdAt: new Date().toISOString(),
+          // Custom flag for frontend
+        };
+
+        setInbox((prevInbox) => [...prevInbox, tempImageMessage]);
+        let currentUser = users.find((user) => user.email === user2);
+        if (!currentUser) {
+          currentUser = {
+            email: getToUser?.data?.retireProfessional
+              ? getToUser?.data?.retireProfessional?.email
+              : getToUser?.data?.client?.email,
+            name: `${
+              getToUser?.data?.retireProfessional
+                ? getToUser.data.retireProfessional.name.firstName
+                : getToUser?.data?.client?.name.firstName
+            } ${
+              getToUser?.data?.retireProfessional
+                ? getToUser.data.retireProfessional.name.lastName
+                : getToUser?.data?.client?.name.lastName
+            }`,
+            profileUrl: getToUser?.data?.retireProfessional
+              ? getToUser?.data?.retireProfessional?.profileUrl
+              : getToUser?.data?.client?.profileUrl,
+          };
+        }
+
+        currentUser.lastMessage = messages.trim() || "📷 Image"; // Update last message display
+        currentUser.lastMessageTimestamp = new Date().toISOString();
+
+        setUsers([
+          currentUser,
+          ...users.filter((user) => user.email !== user2),
+        ]);
+
+        // Reset input fields
+
+        setSelectedImages([]);
+        return;
+      } else if (messages.trim()) {
         const message: any = {
           toUserId: id.id,
-          message: messages.trim() || null,
+          message: messages.trim(),
           fromUserId: token?.id,
-          media: selectedBase64Images, // Now correctly sending media
         };
 
         console.log("Sending message:", message);
@@ -325,13 +379,15 @@ const Page: React.FC = () => {
             email: getToUser?.data?.retireProfessional
               ? getToUser?.data?.retireProfessional?.email
               : getToUser?.data?.client?.email,
-            name: `${getToUser?.data?.retireProfessional
-              ? getToUser.data.retireProfessional.name.firstName
-              : getToUser?.data?.client?.name.firstName
-              } ${getToUser?.data?.retireProfessional
+            name: `${
+              getToUser?.data?.retireProfessional
+                ? getToUser.data.retireProfessional.name.firstName
+                : getToUser?.data?.client?.name.firstName
+            } ${
+              getToUser?.data?.retireProfessional
                 ? getToUser.data.retireProfessional.name.lastName
                 : getToUser?.data?.client?.name.lastName
-              }`,
+            }`,
             profileUrl: getToUser?.data?.retireProfessional
               ? getToUser?.data?.retireProfessional?.profileUrl
               : getToUser?.data?.client?.profileUrl,
@@ -341,19 +397,18 @@ const Page: React.FC = () => {
         currentUser.lastMessage = messages.trim() || "📷 Image"; // Update last message display
         currentUser.lastMessageTimestamp = new Date().toISOString();
 
-        setUsers([currentUser, ...users.filter((user) => user.email !== user2)]);
+        setUsers([
+          currentUser,
+          ...users.filter((user) => user.email !== user2),
+        ]);
 
         // Reset input fields
         setMessages("");
-        setSelectedImages([]);
-        setSelectedBase64Images([]);
       }
     } catch (e) {
       console.log(e, "error");
     }
   };
-
-
 
   const handleCreateZoomMeeting = () => {
     if (!socketRef.current) {
@@ -400,28 +455,24 @@ const Page: React.FC = () => {
     setIsModalOpen((e) => !e);
   };
 
-  const [sendOnboardingUrl] = useSendOnboardingUrlMutation()
+  const [sendOnboardingUrl] = useSendOnboardingUrlMutation();
   const handleProjectModal = async () => {
     // try {
     if (getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
-
       if (isButtonDisabled) return;
       setIsButtonDisabled(true);
       setProjectModal((prevState) => !prevState);
       setTimeout(() => {
         setIsButtonDisabled(false);
       });
-
     } else {
-      await sendOnboardingUrl({})
-      toast.error("Please  Check your mail and verify your stripe account.")
+      await sendOnboardingUrl({});
+      toast.error("Please  Check your mail and verify your stripe account.");
     }
     // } catch (e) {
 
     // }
   };
-
-
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -468,8 +519,6 @@ const Page: React.FC = () => {
     setShowSidebar(!showSidebar);
   };
 
-
-
   // if (isLoading) {
   //   return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
 
@@ -494,12 +543,12 @@ const Page: React.FC = () => {
 
         {/* Sidebar with Overlay */}
         <div
-          className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? "translate-x-0" : "-translate-x-full"
-            }`}
+          className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${
+            showSidebar ? "translate-x-0" : "-translate-x-full"
+          }`}
         >
           <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
             <div className="p-4">
-
               <AllUsers
                 handleshowMessage={handleshowMessage}
                 getConversation={{ data: users }}
@@ -518,15 +567,15 @@ const Page: React.FC = () => {
       </div>
       <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
         <div
-          className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
-            }`}
+          className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${
+            showSidebar ? "hidden" : "block"
+          }`}
         >
           <div className="p-4">
-
             <AllUsers
               handleshowMessage={handleshowMessage}
               getConversation={{ data: users }}
-            // messageNotifications={messageNotifications}
+              // messageNotifications={messageNotifications}
             />
           </div>
         </div>
@@ -629,7 +678,7 @@ const Page: React.FC = () => {
                   <ProjectModal
                     onClose={handleProjectModal}
                     user1={user1 ?? ""}
-                    user2={typeof id.id === 'string' ? id.id : ''}
+                    user2={typeof id.id === "string" ? id.id : ""}
                   />
                 )}
                 <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
@@ -663,10 +712,11 @@ const Page: React.FC = () => {
 
           <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
             <div
-              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-5 pointer-events-none"
-                }`}
+              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${
+                fileBtn
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-5 pointer-events-none"
+              }`}
             >
               <button
                 onClick={() => handleFileClick("document")}
