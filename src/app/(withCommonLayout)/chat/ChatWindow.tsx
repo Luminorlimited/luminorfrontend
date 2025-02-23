@@ -60,7 +60,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   const { data: profileData } = useGetProfileQuery(undefined)
 
 
-  console.log("My image", message)
+  // console.log("My image", message)
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
       <div

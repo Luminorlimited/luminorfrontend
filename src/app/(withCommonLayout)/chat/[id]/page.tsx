@@ -82,7 +82,7 @@ const Page: React.FC = () => {
   const [isSocketReady, setIsSocketReady] = useState(false);
   const { data: getoffer, refetch: offerRefetch } = useGetOfferQuery(token?.id);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  // console.log(selectedImages);
+  console.log("my user is", users);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []
   );
@@ -297,7 +297,7 @@ const Page: React.FC = () => {
           toUserId: id.id,
           message: messages.trim() || null,
           fromUserId: token?.id,
-          media:  null, // Now correctly sending media
+          media: selectedBase64Images, // Now correctly sending media
         };
 
         console.log("Sending message:", message);
@@ -309,7 +309,7 @@ const Page: React.FC = () => {
           id: Date.now(),
           message: messages.trim() || null,
           meetingLink: "",
-          media: "",
+          // media: "",
           sender: { _id: token?.id },
           recipient: { _id: id.id },
           createdAt: new Date().toISOString(),
