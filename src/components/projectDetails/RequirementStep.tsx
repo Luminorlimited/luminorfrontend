@@ -60,11 +60,19 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
         // console.log(validImages);
         // Set selected images in state and append them to the form
         setSelectedImages(validImages);
-        validImages.forEach((file) =>
+        validImages.forEach((file) => {
+            const preview = URL.createObjectURL(file)
             appendFile({
                 file,
+                preview
             })
+        }
         );
+    };
+
+    const removeImage = (index: number) => {
+        setSelectedImages((prevImages) => prevImages.filter((_, i) => i !== index));
+        setValue("clientRequirement", watchFileUploads.filter((_, i) => i !== index));
     };
 
     // Function to add a new empty caption
@@ -82,8 +90,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
 
     // Form submission handler
     const onSubmit = (data: FormData) => {
-        // console.log("Submitted Data:", data);
-        // console.log(selectedImages, "check sselected image from onsubmit formdata")
+
         const formData = new FormData();
 
         formData.append("captions", (JSON.stringify(data.captions)));
@@ -117,7 +124,7 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
 
                     {/* Display Uploaded Images */}
                     {watchFileUploads.map((upload, index) => (
-                        <div key={index} className="space-y-2">
+                        <div key={index} className="space-y-2 relative">
                             {upload.preview && (
                                 <Image
                                     src={upload.preview}
@@ -127,6 +134,13 @@ const RequirementsStep: React.FC<StepsProps> = ({ goToPreviousStep, goToNextStep
                                     className="mt-2 max-w-full h-auto max-h-40 object-contain"
                                 />
                             )}
+                            <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
+                            >
+                                Remove
+                            </button>
                         </div>
                     ))}
                 </div>
