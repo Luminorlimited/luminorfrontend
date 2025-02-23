@@ -382,22 +382,9 @@ export default function Professional() {
         </div>
       )}
 
-      {/* Header with gradient */}
-      {/* <div
-        className=""
-        style={{
-          backgroundImage: `url(${profileData?.data?.coverUrl})`,
-        }}
-      /> */}
-      <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] xl:h-[400px] bg-cover bg-center">
-        {/* <Image
-          className="w-full h-full object-cover"
-          src={imageUrl || profileData?.data?.coverUrl }
-          width={1200}
-          height={400}
-          alt="cover image"
-        /> */}
-
+     
+      <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] bg-cover bg-center">
+ 
         {coverPhotoLoading ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
             <span className="text-gray-500">Loading...</span>
@@ -408,7 +395,7 @@ export default function Professional() {
             src={imageUrl || profileData?.data?.coverUrl}
             width={1200}
             height={400}
-            alt="cover image"
+            alt="cover-image "
           />
         )}
       </div>

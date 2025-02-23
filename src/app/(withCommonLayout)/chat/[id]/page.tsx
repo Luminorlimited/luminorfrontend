@@ -249,11 +249,7 @@ const Page: React.FC = () => {
     // refetch();
 
     if (socketRef.current) {
-      // console.log("Sending userInChat event with:", {
-      // userEmail: token?.email,
-      //   chattingWith: email,
-      // });
-
+    
       socketRef.current.emit(
         "userInChat",
         JSON.stringify({ userEmail: token?.email, chattingWith: email })
@@ -301,7 +297,7 @@ const Page: React.FC = () => {
           toUserId: id.id,
           message: messages.trim() || null,
           fromUserId: token?.id,
-          media: uploadedFileLink || null, // Now correctly sending media
+          media:  null, // Now correctly sending media
         };
 
         console.log("Sending message:", message);
@@ -313,7 +309,7 @@ const Page: React.FC = () => {
           id: Date.now(),
           message: messages.trim() || null,
           meetingLink: "",
-          media: uploadedFileLink, // Media is now included
+          media: "",
           sender: { _id: token?.id },
           recipient: { _id: id.id },
           createdAt: new Date().toISOString(),

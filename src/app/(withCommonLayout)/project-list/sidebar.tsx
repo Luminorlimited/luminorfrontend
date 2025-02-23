@@ -314,7 +314,8 @@ export function Sidebar({
   };
 
   return (
-    <div className="my-4 w-full max-w-md space-y-4 p-4 font-sans border rounded-[15px] lg:overflow-auto overflow-y-scroll">
+  <div className="my-4 w-full max-w-md space-y-4 p-4 font-sans border rounded-[15px] lg:overflow-auto overflow-y-scroll h-full">
+
       <div className="rounded-2xl border bg-white shadow-sm">
         <button
           onClick={() => toggleSection("industry")}

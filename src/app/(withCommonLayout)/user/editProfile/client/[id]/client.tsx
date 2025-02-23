@@ -403,7 +403,7 @@ export default function Client() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] xl:h-[400px] bg-cover bg-center">
+      <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px]  bg-cover bg-center">
         {iscoverPhotoLoading ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
             <span className="text-gray-500">Loading...</span>

@@ -81,15 +81,6 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
 
   const professionalServicesToShow = filteredData;
 
-  // useEffect(() => {
-  //   if (
-  //     !FilteredData.industry.length &&
-  //     !FilteredData.timeline.length &&
-  //     !FilteredData.skillType.length
-  //   ) {
-  //     dispatch(setclientFilter({ industry: [], timeline: [], skillType: [] }));
-  //   }
-  // }, [FilteredData, dispatch]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
