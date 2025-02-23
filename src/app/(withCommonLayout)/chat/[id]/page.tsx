@@ -82,7 +82,6 @@ const Page: React.FC = () => {
   const [isSocketReady, setIsSocketReady] = useState(false);
   const { data: getoffer, refetch: offerRefetch } = useGetOfferQuery(token?.id);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
-  console.log("my user is", users);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []
   );
