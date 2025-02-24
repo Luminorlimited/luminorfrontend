@@ -113,7 +113,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
         <div className="flex  lg:flex-row md:flex-row flex-col gap-4">
           <div className="space-y-2 w-full">
             <Label htmlFor="edu">
-              Educational Background <span className="text-red-500">*</span>
+              Educational Background 
             </Label>
             <select
               id="edu"
@@ -153,7 +153,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
         </div>
         <div className="space-y-2">
           <Label htmlFor="techskill">
-            Technical and soft skills<span className="text-red-500">*</span>
+            Technical and soft skills
           </Label>
           <div className="flex flex-wrap items-center gap-2 p-2 border rounded-xl border-[#E5E7EB]">
             {/* Render Tags */}
