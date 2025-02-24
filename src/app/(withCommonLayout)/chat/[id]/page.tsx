@@ -25,13 +25,13 @@ import {
   useGetuserQuery,
   useImageSendMutation,
   // useImageSendMutation,
-  useSendOnboardingUrlMutation,
+  // useSendOnboardingUrlMutation,
 } from "@/redux/Api/messageApi";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
 import { useDecodedToken } from "@/components/common/DecodeToken";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useGetProfileQuery } from "@/redux/Api/userApi";
+// import { useGetProfileQuery } from "@/redux/Api/userApi";
 import { setLoading } from "@/redux/ReduxFunction";
 
 const Page: React.FC = () => {
@@ -45,14 +45,14 @@ const Page: React.FC = () => {
   const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
-  const { data: getProfile } = useGetProfileQuery({});
+  // const { data: getProfile } = useGetProfileQuery({});
   // // console.log("getprofile is", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
   const user1 = useSelector((state: RootState) => state.Auth.user?.id);
 
   const [, setProfileUrl] = useState<string>(demoimg.src);
   const id = useParams();
   const { data: getToUser } = useGetuserQuery(id.id);
-  console.log(getToUser, "check id");
+  // console.log(getToUser, "check id");
 
   const user2 = useMemo(() => {
     return (
@@ -458,20 +458,20 @@ const Page: React.FC = () => {
     setIsModalOpen((e) => !e);
   };
 
-  const [sendOnboardingUrl] = useSendOnboardingUrlMutation();
+  // const [sendOnboardingUrl] = useSendOnboardingUrlMutation();
   const handleProjectModal = async () => {
     // try {
-    if (getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
+    // if (getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
       if (isButtonDisabled) return;
       setIsButtonDisabled(true);
       setProjectModal((prevState) => !prevState);
       setTimeout(() => {
         setIsButtonDisabled(false);
       });
-    } else {
-      await sendOnboardingUrl({});
-      toast.error("Please  Check your mail and verify your stripe account.");
-    }
+    // } else {
+    //   await sendOnboardingUrl({});
+    //   toast.error("Please  Check your mail and verify your stripe account.");
+    // }
     // } catch (e) {
 
     // }

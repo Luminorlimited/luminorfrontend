@@ -8,6 +8,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useClientReviewMutation, useProfessionalAddReviewMutation } from '@/redux/Api/reviewApi';
 import { useDecodedToken } from '@/components/common/DecodeToken';
+import { useGetSingleUserQuery } from '@/redux/Api/dashboard/userapi';
 // import { useRouter } from 'next/navigation';
 
 // import OrderCard from '@/components/reviewdetails/OrderCard';
@@ -23,20 +24,19 @@ export default function FeedbackForm() {
             // user: '',
         },
     });
+    const userId = useParams()
+    const id = userId?.id
 
     const token = useDecodedToken()
     const [clientReview] = useProfessionalAddReviewMutation()
     const [professionalReview] = useClientReviewMutation()
+    const {data:getProfileById}= useGetSingleUserQuery(id)
 
-
-
+console.log("my profile is ", getProfileById);
     const maxLength = 700;
     const feedbackValue = watch('feedback');
     const ratingValue = watch('rating');
-    const userId = useParams()
-    const id = userId?.id
-    // console.log("my id is", userId);
-    // const router = useRouter()
+ 
     const router = useRouter()
     const handleHome = () => {
         router.push('/')
@@ -87,7 +87,7 @@ export default function FeedbackForm() {
 
                 {/* Title */}
                 <h2 className="text-[24px] font-semibold text-gray-900 max-w-3xl">
-                    Share your experience with the community, how was John Watson as a Consultant
+                    Share your experience with the community, how <b>{getProfileById?.data?.retireProfessional?.name?.firstName || getProfileById?.data?.client?.name?.firstName}</b> was  as a Consultant
                 </h2>
 
                 {/* Star Rating */}
