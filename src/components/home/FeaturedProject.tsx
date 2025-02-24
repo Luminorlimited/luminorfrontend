@@ -3,9 +3,8 @@
 import React, { useState } from 'react';
 import Image from "next/image";
 import { BiTime } from "react-icons/bi";
-import profileImgFallback from '@/assets/images/profilepix.jpg';
+import profileImgFallback from '@/assets/images/msgavatar2.png';
 import projectImgFallback from '@/assets/images/package.png';
-// import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useClientListQuery, useProfessionalListQuery } from '@/redux/Api/projectApi';
 import { useSelector } from 'react-redux';
@@ -24,7 +23,7 @@ const FeaturedProject: React.FC = () => {
 
     const renderProjects = (data: any[], isClient: boolean) => {
         const projectsToShow = showAll ? data : data.slice(0, 3);
-        // console.log("my clientData is", isClient);
+        console.log("my clientData is", data);
 
         return projectsToShow.map((data: any, index: number) => (
             <div
@@ -60,8 +59,8 @@ const FeaturedProject: React.FC = () => {
                         <div className="flex items-center gap-2">
                             <div className="h-[40px] w-[40px] overflow-hidden rounded-full">
                                 <Image
-                                    src={data?.profileUrl || profileImgFallback}
-                                    alt={isClient ? data.client?.name?.firstName : data?.userDetails?.name?.firstName || "Client"}
+                                    src={data?.profileUrl && data.profileUrl !== "null" ? data.profileUrl : profileImgFallback.src}
+                                    alt={"clientprofessionalimg"}
                                     width={40}
                                     height={40}
                                     className="object-cover w-full h-full"

@@ -226,7 +226,8 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   <div className="flex items-center gap-2">
                     <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
                       <Image
-                        src={data?.profileUrl || demoimg}
+                        src={data?.profileUrl && data.profileUrl !== "null" ? data.profileUrl : demoimg}
+                        // src={data?.profileUrl || demoimg}
                         alt={data?.userDetails?.name?.firstName || "Client"}
                         width={40}
                         height={40}

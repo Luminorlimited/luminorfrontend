@@ -52,7 +52,7 @@ const Page: React.FC = () => {
   const [, setProfileUrl] = useState<string>(demoimg.src);
   const id = useParams();
   const { data: getToUser } = useGetuserQuery(id.id);
-  // console.log(id.id, "check id");
+  console.log(getToUser, "check id");
 
   const user2 = useMemo(() => {
     return (
@@ -120,7 +120,7 @@ const Page: React.FC = () => {
       });
 
       mysocket.on("conversation-list", (data) => {
-        // console.log(data, "convirsation list");
+        console.log(data, "convirsation list");
 
         setUsers(data);
       });
@@ -251,7 +251,7 @@ const Page: React.FC = () => {
     const updatedUsers = users.map((u: any) =>
       u.id === id ? { ...u, unseenMessageCount: 0 } : u
     );
-    // console.log(updatedUsers, "check updatedusers");
+    console.log(users, "check updatedusers");
     setUsers(updatedUsers);
     router.push(`/chat/${id}`);
     // refetch();
@@ -317,9 +317,9 @@ const Page: React.FC = () => {
         let currentUser = users.find((user) => user.email === user2);
         if (!currentUser) {
           currentUser = {
-            email: getToUser?.data?.retireProfessional
-              ? getToUser?.data?.retireProfessional?.email
-              : getToUser?.data?.client?.email,
+            id: getToUser?.data?.retireProfessional
+              ? getToUser?.data?.retireProfessional?._id
+              : getToUser?.data?.client?._id,
             name: `${
               getToUser?.data?.retireProfessional
                 ? getToUser.data.retireProfessional.name.firstName
@@ -337,7 +337,6 @@ const Page: React.FC = () => {
 
         currentUser.lastMessage = messages.trim() || "📷 Image"; // Update last message display
         currentUser.lastMessageTimestamp = new Date().toISOString();
-
         setUsers([
           currentUser,
           ...users.filter((user) => user.email !== user2),
@@ -363,7 +362,6 @@ const Page: React.FC = () => {
           id: Date.now(),
           message: messages.trim() || null,
           meetingLink: "",
-          // media: "",
           sender: { _id: token?.id },
           recipient: { _id: id.id },
           createdAt: new Date().toISOString(),
@@ -374,8 +372,12 @@ const Page: React.FC = () => {
         setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
 
         let currentUser = users.find((user) => user.email === user2);
+        console.log("current user", currentUser);
         if (!currentUser) {
           currentUser = {
+            id: getToUser?.data?.retireProfessional
+              ? getToUser?.data?.retireProfessional?._id
+              : getToUser?.data?.client?._id,
             email: getToUser?.data?.retireProfessional
               ? getToUser?.data?.retireProfessional?.email
               : getToUser?.data?.client?.email,
@@ -404,6 +406,7 @@ const Page: React.FC = () => {
 
         // Reset input fields
         setMessages("");
+        setSelectedImages([])
       }
     } catch (e) {
       console.log(e, "error");
@@ -519,10 +522,7 @@ const Page: React.FC = () => {
     setShowSidebar(!showSidebar);
   };
 
-  // if (isLoading) {
-  //   return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
 
-  // }
   return (
     <section>
       <div className="container mx-auto pt-[20px]">

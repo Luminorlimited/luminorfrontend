@@ -55,8 +55,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   colorScheme,
   profileUrl,
 }) => {
-  console.log(message, "message from chatWindow");
-  console.log(message.media, "check media file from chat window");
+  // console.log(message, "message from chatWindow");
+  // console.log(message.media, "check media file from chat window");
   const isSender = message?.sender._id == currentUser;
 
   const { data: profileData } = useGetProfileQuery(undefined);
@@ -93,19 +93,21 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               isSender ? colorScheme.senderBg : colorScheme.receiverBg
             }`}
           >
-            {message?.media ? (
-              <Image
-                src={message?.media}
-                alt="Media"
-                width={250}
-                height={250}
-                className={`mt-2 max-w-full h-auto rounded-lg border border-gray-300 ${
-                  isSender
-                    ? `bg-${colorScheme.senderBg} p-3 rounded-[9px]`
-                    : `bg-${colorScheme.receiverBg} p-3 rounded-[9px]`
-                }`}
-              />
-            ) : message?.message?.startsWith("https://") ? (
+            {
+              message?.media && message?.media && (
+                <Image
+                  src={message?.media}
+                  alt="Media"
+                  width={250}
+                  height={250}
+                  className={`mt-2 max-w-full h-auto rounded-lg border border-gray-300 ${isSender
+                      ? `bg-${colorScheme.senderBg} p-3 rounded-[9px]`
+                      : `bg-${colorScheme.receiverBg} p-3 rounded-[9px]`
+                    }`}
+                />
+              )
+            }
+            {message?.message?.startsWith("https://") ? (
               <Link
                 href={message?.message}
                 target="_blank"
