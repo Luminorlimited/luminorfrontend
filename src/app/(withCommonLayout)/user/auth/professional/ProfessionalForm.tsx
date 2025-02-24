@@ -19,7 +19,7 @@ import { toast } from "sonner";
 
 export default function ProfessionalForm() {
   const [step, setStep] = useState(1);
-  const { register, handleSubmit, setValue, getValues } = useForm();
+  const { register, handleSubmit, setValue, getValues, control } = useForm();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
@@ -188,7 +188,7 @@ export default function ProfessionalForm() {
                   register={register}
                   handleNext={() => setStep(2)}
                   getValues={getValues}
-                  setValue={setValue}
+                  control={control}
                 />
               )}
               {step === 2 && (

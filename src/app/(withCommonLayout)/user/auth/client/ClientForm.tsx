@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 export default function ClientForm() {
   const [step, setStep] = useState(1);
-  const { register, handleSubmit, setValue, getValues } = useForm();
+  const { register, handleSubmit, setValue, getValues, control } = useForm();
   const [createClient, { isLoading }] = useClientUserMutation();
 
   const handleNext = () => setStep((prev) => prev + 1);
@@ -128,6 +128,7 @@ export default function ClientForm() {
           <div className="max-w-[870px] w-full px-4 py-8 md:px-6 flex-shrink-0">
             {step === 1 && (
               <Signup
+                control={control}
                 register={register}
                 handleNext={handleNext}
                 getValues={getValues}

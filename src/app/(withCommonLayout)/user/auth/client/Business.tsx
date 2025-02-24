@@ -50,7 +50,7 @@ export default function Business({ register, handleNext, handleBack, getValues }
         <div className="flex lg:flex-row flex-col md:flex-row gap-4">
           <div className="space-y-2 w-full">
             <Label htmlFor="business-type">
-              Business type <span className="text-red-500">*</span>
+              Business type 
             </Label>
             <Input
               id="business-type"
@@ -73,7 +73,7 @@ export default function Business({ register, handleNext, handleBack, getValues }
 
         <div className="space-y-2">
           <Label htmlFor="job-title">
-            Job Title <span className="text-red-500">*</span>
+            Job Title 
           </Label>
           <Input
             id="job-title"
