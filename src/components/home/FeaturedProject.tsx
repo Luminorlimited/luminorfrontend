@@ -23,7 +23,7 @@ const FeaturedProject: React.FC = () => {
 
     const renderProjects = (data: any[], isClient: boolean) => {
         const projectsToShow = showAll ? data : data.slice(0, 3);
-        console.log("my clientData is", data);
+        // console.log("my clientData is", data);
 
         return projectsToShow.map((data: any, index: number) => (
             <div

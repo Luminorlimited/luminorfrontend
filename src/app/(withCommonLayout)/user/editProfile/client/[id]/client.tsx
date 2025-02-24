@@ -367,7 +367,7 @@ export default function Client() {
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
-    console.log("my file", file);
+    // console.log("my file", file);
     if (file) {
       try {
         const formData = new FormData();

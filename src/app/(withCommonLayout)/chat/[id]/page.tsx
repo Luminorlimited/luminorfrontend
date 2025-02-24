@@ -251,7 +251,7 @@ const Page: React.FC = () => {
     const updatedUsers = users.map((u: any) =>
       u.id === id ? { ...u, unseenMessageCount: 0 } : u
     );
-    console.log(users, "check updatedusers");
+    // console.log(users, "check updatedusers");
     setUsers(updatedUsers);
     router.push(`/chat/${id}`);
     // refetch();
@@ -353,7 +353,7 @@ const Page: React.FC = () => {
           fromUserId: token?.id,
         };
 
-        console.log("Sending message:", message);
+        // console.log("Sending message:", message);
 
         socketRef.current.emit("privateMessage", JSON.stringify(message)); // Ensure message includes media
 
@@ -366,13 +366,13 @@ const Page: React.FC = () => {
           recipient: { _id: id.id },
           createdAt: new Date().toISOString(),
         };
-
-        console.log("Temporary message:", temporaryMessage);
+// 
+        // console.log("Temporary message:", temporaryMessage);
 
         setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
 
         let currentUser = users.find((user) => user.email === user2);
-        console.log("current user", currentUser);
+        // console.log("current user", currentUser);
         if (!currentUser) {
           currentUser = {
             id: getToUser?.data?.retireProfessional
