@@ -73,7 +73,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           <Image
             src={
               isSender
-                ? profileData?.data?.profileUrl || avatar1
+                ? profileData?.data?.profileUrl && profileData?.data?.profileUrl !== "null" ? profileData?.data?.profileUrl : avatar1
                 : profileUrl || avatar2
             }
             alt={isSender ? "Sender Avatar" : "Recipient Avatar"}

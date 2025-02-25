@@ -9,6 +9,7 @@ import BusinesSvg from "@/components/svg/BusinesSvg";
 import SettingSvg from "@/components/svg/Settings";
 import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
 import { useParams } from "next/navigation";
@@ -21,6 +22,14 @@ import {
 } from "@/redux/Api/userApi";
 // import bgCover from "@/assets/images/profilebanner.png";
 import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
+import { SelectGroup } from "@radix-ui/react-select";
+
+const timeSlots = ["Morning", "Afternoon", "Evening"];
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+type Schedule = {
+  [key: string]: string;
+};
 
 const servicesData = [
   {
@@ -109,71 +118,71 @@ export default function Professional() {
     }
   }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess]);
 
-   useEffect(() => {
-     if (
-       profileData?.data?.location?.coordinates[1] &&
-       profileData?.data?.location?.coordinates[0]
-     ) {
-       const fetchLocation = async () => {
-         try {
-           const response = await fetch(
-             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
-           );
-           const data = await response.json();
-           if (data?.display_name) {
-             setLocation(data.display_name); // Set location from API response
-           }
-         } catch (error) {
-           console.error("Error fetching location:", error);
-         }
-       };
- 
-       fetchLocation();
-     }
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-     profileData?.data?.location?.coordinates[1],
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-     profileData?.data?.location?.coordinates[0],
-   ]);
- 
- 
-   useEffect(() => {
-     let autocomplete: google.maps.places.Autocomplete;
- 
-     const initAutocomplete = () => {
-       const input = document.getElementById("search-input") as HTMLInputElement;
-       console.log("input is", input);
-       if (input) {
-         autocomplete = new google.maps.places.Autocomplete(input);
- 
-         autocomplete.addListener("place_changed", () => {
-           const place = autocomplete.getPlace();
- 
-           if (!place.geometry || !place.geometry.location) {
-             alert(`No details available for input: '${place.name}'`);
-             return;
-           }
- 
-           setLatitude(place.geometry.location.lat());
-           setLongitude(place.geometry.location.lng());
-           setLocation(place.formatted_address || "");
-         });
-       }
-     };
- 
-     const script = document.createElement("script");
-     script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
-     script.async = true;
-     script.onload = initAutocomplete;
-     document.body.appendChild(script);
- 
-     return () => {
-       document.body.removeChild(script);
-     };
-   }, []);
-  
+  useEffect(() => {
+    if (
+      profileData?.data?.location?.coordinates[1] &&
+      profileData?.data?.location?.coordinates[0]
+    ) {
+      const fetchLocation = async () => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
+          );
+          const data = await response.json();
+          if (data?.display_name) {
+            setLocation(data.display_name); // Set location from API response
+          }
+        } catch (error) {
+          console.error("Error fetching location:", error);
+        }
+      };
+
+      fetchLocation();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    profileData?.data?.location?.coordinates[1],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    profileData?.data?.location?.coordinates[0],
+  ]);
+
+
+  useEffect(() => {
+    let autocomplete: google.maps.places.Autocomplete;
+
+    const initAutocomplete = () => {
+      const input = document.getElementById("search-input") as HTMLInputElement;
+      console.log("input is", input);
+      if (input) {
+        autocomplete = new google.maps.places.Autocomplete(input);
+
+        autocomplete.addListener("place_changed", () => {
+          const place = autocomplete.getPlace();
+
+          if (!place.geometry || !place.geometry.location) {
+            alert(`No details available for input: '${place.name}'`);
+            return;
+          }
+
+          setLatitude(place.geometry.location.lat());
+          setLongitude(place.geometry.location.lng());
+          setLocation(place.formatted_address || "");
+        });
+      }
+    };
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
+    script.async = true;
+    script.onload = initAutocomplete;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
 
   useEffect(() => {
     if (profileData) {
@@ -194,7 +203,7 @@ export default function Professional() {
     }
   }, [profileData, reset]);
 
- 
+
 
   const [workSample, setWorkSample] = useState<string | File>(
     profileData?.data?.workSample
@@ -278,7 +287,7 @@ export default function Professional() {
     if (typeof selectedImage === "string" && selectedImage.length) {
       return selectedImage;
     }
-    if (profileData?.data?.profileUrl) {
+    if (profileData?.data?.profileUrl && profileData?.data?.profileUrl !== "null") {
       return profileData.data.profileUrl; // Use latest profile URL
     }
     return avatar.src;
@@ -291,7 +300,7 @@ export default function Professional() {
     }
   }, [selectedImage]);
 
-  const [updateCoverPhoto,{isLoading: coverPhotoLoading}] = useUpdateCoverPhotoMutation();
+  const [updateCoverPhoto, { isLoading: coverPhotoLoading }] = useUpdateCoverPhotoMutation();
   const handleCoverPhotoChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -310,7 +319,7 @@ export default function Professional() {
           // Update the background image
           const newCoverPhotoUrl = URL.createObjectURL(file);
           setImageUrl(newCoverPhotoUrl)
-     
+
         }
       } catch (error) {
         console.error("Error updating cover photo:", error);
@@ -340,6 +349,12 @@ export default function Professional() {
       toast.error("message sending failed", er);
       setIsDisabled(false);
     }
+  };
+
+  const [, setSchedule] = useState<Schedule>({});
+
+  const handleSelectChange = (day: string, slot: string) => {
+    setSchedule((prev) => ({ ...prev, [day]: slot }));
   };
   if (isLoading) {
     return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
@@ -382,9 +397,9 @@ export default function Professional() {
         </div>
       )}
 
-     
+
       <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] bg-cover bg-center">
- 
+
         {coverPhotoLoading ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
             <span className="text-gray-500">Loading...</span>
@@ -392,7 +407,7 @@ export default function Professional() {
         ) : (
           <Image
             className="w-full h-full object-cover"
-            src={imageUrl || profileData?.data?.coverUrl}
+            src={profileData?.data?.coverUrl ? profileData?.data?.coverUrl : imageUrl}
             width={1200}
             height={400}
             alt="cover-image "
@@ -478,8 +493,8 @@ export default function Professional() {
               </h1>
               <p className="text-gray-600">
                 {" "}
-                {profileData?.data?.expertise != "null" &&
-                  `I am ${profileData?.data?.expertise}`}
+                {profileData?.data?.bio != "null" &&
+                  `I am ${profileData?.data?.bio}`}
               </p>
             </div>
 
@@ -625,18 +640,66 @@ export default function Professional() {
               </div>
 
               <div>
+                <label htmlFor="duration">Duration</label>
                 <select
-                  {...register("availability")}
-                  id="availability"
-                  onChange={(e) => setValue("availability", e.target.value)}
+                  {...register("duration")}
+                  id="duration"
+                  onChange={(e) => setValue("duration", e.target.value)}
                   className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2"
                   defaultValue={profileData?.data?.availability ?? ""}
                 >
-                  <option disabled>Availability</option>
+                  <option value="" selected>Availability</option>
                   <option value={20}>Short Term (1-29)</option>
                   <option value={31}>Long Term (30-...)</option>
                 </select>
               </div>
+
+              <div>
+                {/* <h2 className=" font-semibold ">Availability</h2> */}
+                <label htmlFor="duration text-lg pb-4">Availability</label>
+
+                <div className="p-4 w-full  mx-auto">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse border border-gray-300">
+                      <thead>
+                        <tr>
+                          <th className="border border-gray-300 p-2 text-left">Day</th>
+                          <th className="border border-gray-300 p-2">Time Slot</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {days.map((day) => (
+                          <tr key={day}>
+                            <td className="border border-gray-300 p-2 font-bold">{day}</td>
+                            <td className="border border-gray-300 p-2 text-center flex items-center justify-center">
+                              <Select onValueChange={(value) => handleSelectChange(day, value)}>
+                                <SelectTrigger className="w-[150px]">
+                                  <SelectValue placeholder="Select" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {/* <SelectItem value="">Select</SelectItem> */}
+                                  <SelectGroup>
+                                    {/* <SelectLabel className="text-center">Select</SelectLabel> */}
+                                    <SelectItem value="Full-time">Full-time</SelectItem>
+
+                                    {timeSlots.map((slot) => (
+                                      <SelectItem key={slot} value={slot}>{slot}</SelectItem>
+                                    ))}
+
+
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+
               <div>
                 <label className="block text-sm mb-2" htmlFor="prefProject">
                   Preferred Projects*
@@ -673,8 +736,8 @@ export default function Professional() {
 
               <div
                 className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${isDragging
-                    ? "border-gray-400 rounded-xl bg-gray-50"
-                    : "border-gray-200"
+                  ? "border-gray-400 rounded-xl bg-gray-50"
+                  : "border-gray-200"
                   } transition-colors duration-200`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -746,8 +809,8 @@ export default function Professional() {
                 <button
                   disabled={loading}
                   className={` py-5 px-7 rounded-[50px] my-14 ${loading
-                      ? "bg-gray-500 text-white"
-                      : "bg-primary text-white "
+                    ? "bg-gray-500 text-white"
+                    : "bg-primary text-white "
                     }`}
                 >
                   {loading ? "Saving..." : "Save Information"}

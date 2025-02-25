@@ -40,8 +40,10 @@ const Navbar = () => {
 
   const { data: profileData } = useGetProfileQuery(undefined);
 
-  const demoimg = profileData?.data?.profileUrl || demoprofile;
-
+  const demoimg =
+    !profileData?.data?.profileUrl || profileData?.data?.profileUrl === "null"
+      ? demoprofile
+      : profileData?.data?.profileUrl;
   // console.log(user)
 
   const handleLogOut = () => {
