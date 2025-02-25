@@ -90,7 +90,7 @@ export default function Users() {
                     <TableHead>{userType === "client" ? "Description" : "Bio"}</TableHead>
                     <TableHead>Rating</TableHead>
                     <TableHead>Activate User</TableHead>
-                    {userType === "retireProfessional" && <TableHead>OnBoarding</TableHead>}
+                    {/* {userType === "retireProfessional" && <TableHead>OnBoarding</TableHead>} */}
                     <TableHead className="text-right">Action</TableHead>
                 </TableRow>
             </TableHeader>
@@ -113,7 +113,7 @@ export default function Users() {
                                 </Link>
                             </TableCell>
                             <TableCell>
-                                <Image width={50} height={50} src={user?.profileUrl || logo} alt={"my-logo"} className="w-10 h-10 rounded-full" />
+                                <Image width={50} height={50} src={user?.profileUrl === "null" || user?.profileUrl == null ? logo : user?.profileUrl} alt={"my-logo"} className="w-10 h-10 rounded-full" />
                             </TableCell>
                             <TableCell>{user?.[userType === "client" ? "description" : "bio"] || "N/A"}</TableCell>
                             <TableCell>{user?.averageRating || 0}</TableCell>
@@ -129,13 +129,13 @@ export default function Users() {
                                     <option value="false">Inactive</option>
                                 </select>
                             </TableCell>
-                            {userType === "retireProfessional" && (
+                            {/* {userType === "retireProfessional" && (
                                 <TableCell
                                     className={`font-medium ${user?.retireProfessional?.stripe?.isOnboardingSucess ? "text-green-800" : "text-red-800"}`}
                                 >
                                     {user?.retireProfessional?.stripe?.isOnboardingSucess ? "Success" : "Failed"}
                                 </TableCell>
-                            )}
+                            )} */}
                             <TableCell className="text-right">
                                 <Button
                                     variant="ghost"

@@ -134,7 +134,7 @@ export default function Signup({ register, handleNext, getValues, control }: any
         </div>
         <div className="space-y-2">
           <Label htmlFor="phoneNumber">
-            Phone Number <span className="text-gray-500">*</span>
+            Phone Number 
           </Label>
           <Controller
             name="phone"

@@ -39,7 +39,6 @@ export default function Password({ register, handleBack, isLoading, errors, conf
           <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
         </div>
 
-        {/* <form className="space-y-6" onSubmit={handleSubmit}> */}
 
 
         <div className="flex flex-col gap-y-3">

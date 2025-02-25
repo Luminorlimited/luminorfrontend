@@ -21,7 +21,6 @@ export default function ProfessionalForm() {
   const [step, setStep] = useState(1);
   const { register, handleSubmit, setValue, getValues, control } = useForm();
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
 
   const [createProfessional] = useProfessionalUserMutation();
 
@@ -29,6 +28,7 @@ export default function ProfessionalForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
+  const dispatch = useDispatch();
 
   const handleSubmitProfessionalForm = async (data?: any) => {
     const formData = new FormData();
@@ -113,14 +113,15 @@ export default function ProfessionalForm() {
       if (validatePassword()) {
         const res: any = await createProfessional(formData);
         console.log("my formdata", formData);
+        console.log("my response", res);
         if (res?.data) {
           dispatch(
             setUser({
               user: {
-                id: data.id || "", // Ensure id has a fallback
+                id: res?.data?.data?.user[0]?._id || "", // Ensure id has a fallback
                 name: data.name || "", // Fallback for optional name
                 email: data.email || "", // Fallback for email
-                role: data.role || "", // Default role as 'user'
+                role: res?.data?.data?.user[0]?.role || "", // Default role as 'user'
                 photoUrl: data.photoUrl || "", // Optional fallback for photoUrl
               },
               token: data.accessToken || null, // Fallback for token
@@ -129,7 +130,7 @@ export default function ProfessionalForm() {
 
           console.log("Form submitted successfully:", res.data);
           toast.success("Form submitted successfully!");
-          // setStep(5);
+          setStep(5);
           // router.push("/user/auth/login");
         } else {
           // console.log("FormData content:", res?.error?.data?.message); // Log FormData content

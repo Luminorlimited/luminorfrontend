@@ -70,16 +70,18 @@ export default function ClientForm() {
     try {
       if (validatePassword()) {
         const res: any = await createClient(clientData);
+        console.log("my response", res);
+
         if (res?.data) {
           toast.success("Successfully Created your Account");
 
           dispatch(
             setUser({
               user: {
-                id: data.id || "",
+                id: res?.data?.data?.user[0]?._id || "",
                 name: data.name || "",
                 email: data.email || "",
-                role: data.role || "",
+                role: res?.data?.data?.user[0]?.role || "",
                 photoUrl: data.photoUrl || "",
               },
               token: data.accessToken || null,

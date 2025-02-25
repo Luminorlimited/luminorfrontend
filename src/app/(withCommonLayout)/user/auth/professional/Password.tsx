@@ -42,7 +42,7 @@ export default function Password({ register, handleBack, loading, confirmPasswor
             htmlFor="password"
             className="block text-lg font-medium text-[#1A1A1A] mb-2"
           >
-            Password *
+            Password 
           </label>
           <div className="relative">
             <input
@@ -73,7 +73,7 @@ export default function Password({ register, handleBack, loading, confirmPasswor
             htmlFor="confirm-password"
             className="block text-lg font-medium text-[#1A1A1A] mb-2"
           >
-            Confirm Password *
+            Confirm Password 
           </label>
           <div className="relative">
             <input

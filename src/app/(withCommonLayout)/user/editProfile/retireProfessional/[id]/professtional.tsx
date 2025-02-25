@@ -573,7 +573,7 @@ export default function Professional() {
                   {...register("bio")}
                   defaultValue={profileData?.data?.bio}
                   onChange={(e) => setValue("bio", e.target.value)}
-                  placeholder="I'm a healthcare and medical specialist"
+                  placeholder="Write your Bio"
                 />
               </div>
 
