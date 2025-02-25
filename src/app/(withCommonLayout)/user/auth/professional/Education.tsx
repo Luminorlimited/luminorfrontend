@@ -11,7 +11,7 @@ import mainlogo from '@/assets/images/mainlogo.png'
 
 
 
-export default function Education({ register, handleNext, setValue, handleBack }: any) {
+export default function Education({ register, handleNext, setValue, handleBack, getValues }: any) {
   const [isDragging, setIsDragging] = useState(false);
   const [workSample, setWorkSample] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -43,46 +43,34 @@ export default function Education({ register, handleNext, setValue, handleBack }
 
 
 
-  const [tags, setTags] = useState<string[]>([]); // State to store tags
-  const [inputValue, setInputValue] = useState("");
-
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && inputValue.trim()) {
-      e.preventDefault();
-      if (!tags.includes(inputValue.trim())) {
-        const updatedTags = [...tags, inputValue.trim()];
-        setTags(updatedTags); // Update state
-        setValue("skills", updatedTags); // Update form value
-      }
-      setInputValue(""); // Clear input
-    }
-  };
-
-  // Remove a skill
-  const removeTag = (tag: string) => {
-    const updatedTags = tags.filter((t) => t !== tag);
-    setTags(updatedTags); // Update state
-    setValue("skills", updatedTags); // Update form value
-  };
 
 
   const validateFields = () => {
-    const requiredFields = [
-      { field: "edubackground", label: "Educational Background" },
-      { field: "skills", label: "Technical and Soft Skills" },
-      { field: "eduqualification", label: "Educational Quality" },
-    ];
+ 
+    const values = getValues();
+    const { edubackground, technicalSkill, eduqualification } = values;
 
-    for (const { field, label } of requiredFields) {
-      const value = (document.getElementsByName(field)[0] as HTMLInputElement)?.value;
-      if (!value || (field === "skills" && tags.length === 0)) {
-        toast.error(`Please fill in the ${label} field.`)
-        return false;
-      }
+    if (!edubackground) {
+      toast.error(`Please fill  Educational Background fields.`)
+      return false; 
+    }
+    if (!technicalSkill) {
+      toast.error(`Please fill  Technical fields.`)
+      return false; 
+    }
+    if (!eduqualification) {
+      toast.error(`Please fill  Educational qualification fields.`)
+      return false; 
     }
 
+    const skills = technicalSkill
+      .split(",")
+    setValue("technicalSkill", skills);
+    console.log(skills);
+
+
     return true;
+
   };
 
   const handleNextStep = () => {
@@ -90,6 +78,7 @@ export default function Education({ register, handleNext, setValue, handleBack }
       handleNext();
     }
   };
+
 
   return (
 
@@ -108,12 +97,11 @@ export default function Education({ register, handleNext, setValue, handleBack }
 
         <p className="text-sm text-muted-foreground text-[#777980]">Empower Your Journey</p>
       </div>
-      {/* <form className="mt-8 space-y-6" onSubmit={handleFormSubmit}> */}
       <div className="pt-8 flex flex-col gap-y-3">
         <div className="flex  lg:flex-row md:flex-row flex-col gap-4">
           <div className="space-y-2 w-full">
             <Label htmlFor="edu">
-              Educational Background 
+              Educational Background
             </Label>
             <select
               id="edu"
@@ -154,41 +142,14 @@ export default function Education({ register, handleNext, setValue, handleBack }
         <div className="space-y-2">
           <Label htmlFor="techskill">
             Technical and soft skills
-          </Label>
-          <div className="flex flex-wrap items-center gap-2 p-2 border rounded-xl border-[#E5E7EB]">
-            {/* Render Tags */}
-            {tags.map((tag, index) => (
-              <div
-                key={index}
-                className="flex items-center bg-blue-800 text-white px-3 py-1 rounded-[12px]"
-              >
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => removeTag(tag)}
-                  className="ml-2 text-red-500 hover:text-red-700"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-            {/* Input Field */}
-            <input
-              id="techskill"
-              placeholder="Enter skills and press Enter"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyDown={handleKeyDown}
-              className="h-10 border-none outline-none flex-grow"
-            />
-          </div>
-
-          {/* Hidden Input to Register Skills */}
+          </Label><br />
           <input
-            type="hidden"
-            {...register("skills")} // Register skills as a form field
-            value={JSON.stringify(tags)} // Store as a stringified array
+            id="techskill"
+            placeholder="Enter skills and press Enter"
+            {...register("technicalSkill")}
+            className="h-12 rounded-xl border-[#E5E7EB] w-full border px-3"
           />
+
         </div>
         <div className="space-y-2">
           <Label htmlFor="linkedin">LinkedIn Profile (Optional, Provide valid Linkedin url)</Label>
@@ -242,18 +203,14 @@ export default function Education({ register, handleNext, setValue, handleBack }
                 setWorkSample(file);
                 setPreviewUrl(filePreviewUrl);
 
-                // Extract necessary file properties
                 const fileName = file.name;
-                const filePath = file.webkitRelativePath || file.name; // Fallback to name if relative path is unavailable
+                const filePath = file.webkitRelativePath || file.name;
                 const fileType = file.type;
 
-                // Check if required fields are present
                 if (!fileName || !filePath || !fileType) {
                   console.error("Missing required file properties");
                 } else {
-                  // console.log("File Selected:", { fileName, filePath, fileType });
 
-                  // Update form data
                   setValue("workSample", { fileName, filePath, fileType });
                 }
               }

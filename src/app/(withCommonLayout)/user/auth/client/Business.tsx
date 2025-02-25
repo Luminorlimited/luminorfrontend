@@ -14,10 +14,10 @@ export default function Business({ register, handleNext, handleBack, getValues }
     const values = getValues(); // Get all field values
     const { businessType, jobTitle } = values; // Destructure the required fields
 
-    // Check if any required field is empty
+    
     if (!businessType || !jobTitle) {
       toast.error("Please fill in all required fields.")
-      return false; // Return false if validation fails
+      return false; 
     }
 
     return true; // Return true if all fields are valid

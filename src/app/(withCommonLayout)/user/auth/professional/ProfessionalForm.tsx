@@ -93,14 +93,15 @@ export default function ProfessionalForm() {
 
     formData.append("educationalBackground", data.edubackground);
     formData.append("relevantQualification", data.eduqualification);
-
+    
+    console.log("data is", data);
     // Append technical skills as an array
-    if (Array.isArray(data.skills)) {
-      data.skills.forEach((skill: string, index: number) => {
-        formData.append(`technicalSkill[${index}]`, skill);
+    if (Array.isArray(data.technicalSkill)) {
+      data.technicalSkill.forEach((technicalSkill: string, index: number) => {
+        formData.append(`technicalSkill[${index}]`, technicalSkill);
       });
-    } else if (data.skills) {
-      formData.append("technicalSkill[0]", data.skills); // Handle single string as an array
+    } else if (data.technicalSkill) {
+      formData.append("technicalSkill[0]", data.technicalSkill);
     }
 
     formData.append(`industry`, data.industry);
@@ -111,6 +112,7 @@ export default function ProfessionalForm() {
     try {
       if (validatePassword()) {
         const res: any = await createProfessional(formData);
+        console.log("my formdata", formData);
         if (res?.data) {
           dispatch(
             setUser({
@@ -125,13 +127,13 @@ export default function ProfessionalForm() {
             })
           );
 
-          // console.log("Form submitted successfully:", res.data);
+          console.log("Form submitted successfully:", res.data);
           toast.success("Form submitted successfully!");
-          setStep(5);
+          // setStep(5);
           // router.push("/user/auth/login");
         } else {
           // console.log("FormData content:", res?.error?.data?.message); // Log FormData content
-          toast.error(res?.error?.data?.message);
+          toast.error(res?.error?.data?.errorMessages?.[0].message);
           console.log();
           setLoading(false);
         }

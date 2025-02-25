@@ -116,7 +116,7 @@ export default function Password({ register, handleBack, loading, confirmPasswor
         <div className="flex items-center space-x-2">
           <Checkbox
             id="marketing"
-              required
+              
                 className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
               />
           <label
