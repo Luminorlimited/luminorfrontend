@@ -4,7 +4,7 @@ import Image from "next/image"
 import { Star, Briefcase, Clock, DollarSign, Linkedin, FileText, Phone, Calendar, Globe } from "lucide-react"
 import { MdOutlineEmail } from "react-icons/md"
 
-import avatar from "@/assets/images/avatar.jpg"
+import avatar from "@/assets/placeholderimg.png"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { useParams } from "next/navigation"

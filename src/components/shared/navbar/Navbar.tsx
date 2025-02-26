@@ -20,17 +20,13 @@ import {
 // import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
-import demoprofile from "@/assets/images/avatar.jpg";
+import demoprofile from "@/assets/placeholderimg.png"
 import Cookies from "js-cookie";
 import { FaRegMessage } from "react-icons/fa6";
 // import { useDecodedToken } from "@/components/common/DecodeToken";
 import { RootState } from "@/redux/store";
 
-// interface Notification {
-//   id: number;
-//   message: string;
-//   time: string;
-// }
+
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -38,12 +34,12 @@ const Navbar = () => {
 
   const user = useSelector((state: RootState) => state.Auth.user);
 
-  const { data: profileData } = useGetProfileQuery(undefined);
+  const { data: profileData } = useGetProfileQuery({});
 
-  const demoimg =
-    !profileData?.data?.profileUrl || profileData?.data?.profileUrl === "null"
-      ? demoprofile
-      : profileData?.data?.profileUrl;
+  // const demoimg =
+  //   !profileData?.data?.profileUrl || profileData?.data?.profileUrl === "null"
+  //     ? demoprofile
+  //     : profileData?.data?.profileUrl;
   // console.log(user)
 
   const handleLogOut = () => {
@@ -136,7 +132,7 @@ const Navbar = () => {
 
             <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer" >
               <Image
-                src={demoimg}
+                src={profileData?.data?.profileUrl ?? demoprofile.src}
                 width={40}
                 height={40}
                 alt="profile"

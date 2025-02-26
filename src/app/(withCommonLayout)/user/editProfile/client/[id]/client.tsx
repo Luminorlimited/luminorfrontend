@@ -14,8 +14,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "next/navigation";
-import avatar from "@/assets/images/avatar.jpg";
+import avatar from "@/assets/placeholderimg.png"
 import { toast } from "sonner";
+import bgCover from "@/assets/coverimg.png"
+
 import {
   useEditclientprofileMutation,
   useGetProfileQuery,
@@ -77,7 +79,7 @@ export default function Client() {
   const token = useSelector((state: RootState) => state.Auth.token);
 
   const { id: userIdValue } = useParams();
-  const [imageUrl, setImageUrl] = useState<any>(null)
+  const [imageUrl, setImageUrl] = useState<any>(bgCover)
 
   // Decode the token
   try {

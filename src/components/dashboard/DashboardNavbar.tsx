@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import avatar from '@/assets/images/avatar.jpg'
+import avatar from '@/assets/placeholderimg.png'
 import { usePathname } from "next/navigation";
 import { useGetAdminProfileQuery } from "@/redux/Api/dashboard/userapi";
 

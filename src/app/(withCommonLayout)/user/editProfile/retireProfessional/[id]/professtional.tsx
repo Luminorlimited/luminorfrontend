@@ -9,27 +9,27 @@ import BusinesSvg from "@/components/svg/BusinesSvg";
 import SettingSvg from "@/components/svg/Settings";
 import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import avatar from "@/assets/images/avatar.jpg";
+import avatar from "@/assets/placeholderimg.png"
 import {
   useEditprofessionalprofileMutation,
   useGetProfileQuery,
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
-// import bgCover from "@/assets/images/profilebanner.png";
+import bgCover from "@/assets/coverimg.png"
 import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
-import { SelectGroup } from "@radix-ui/react-select";
+// import { SelectGroup } from "@radix-ui/react-select";
 
-const timeSlots = ["Morning", "Afternoon", "Evening"];
-const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+// const timeSlots = ["Morning", "Afternoon", "Evening"];
+// const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-type Schedule = {
-  [key: string]: string;
-};
+// type Schedule = {
+//   [key: string]: string;
+// };
 
 const servicesData = [
   {
@@ -105,7 +105,7 @@ export default function Professional() {
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const [imageUrl, setImageUrl] = useState<any>(null)
+  const [imageUrl, setImageUrl] = useState<any>(bgCover)
 
   const handleClose = () => {
     setShowAlert((prev) => !prev);
@@ -194,7 +194,7 @@ export default function Professional() {
         bio: profileData.data.bio,
         description: profileData.data.description,
         expertise: profileData.data.expertise,
-        availability: profileData.data.availability,
+        // availability: profileData.data.availability,
         preferedProjects: profileData.data.preferedProjects,
         hourlyRate: profileData.data.hourlyRate,
         workSample: profileData.data.workSample,
@@ -284,14 +284,23 @@ export default function Professional() {
     if (selectedImage instanceof File) {
       return URL.createObjectURL(selectedImage);
     }
-    if (typeof selectedImage === "string" && selectedImage.length) {
+
+    if (typeof selectedImage === "string" && selectedImage.trim().length > 0) {
       return selectedImage;
     }
-    if (profileData?.data?.profileUrl && profileData?.data?.profileUrl !== "null") {
+
+    if (
+      profileData?.data?.profileUrl &&
+      profileData.data.profileUrl !== "null" &&
+      profileData.data.profileUrl.trim().length > 0
+    ) {
       return profileData.data.profileUrl; // Use latest profile URL
     }
-    return avatar.src;
-  }, [selectedImage, profileData?.data?.profileUrl]); // Watch for profileData updates
+
+    return avatar.src; // Default avatar
+  }, [selectedImage, profileData?.data?.profileUrl]);
+
+  // Watch for profileData updates
 
   useMemo(() => {
     if (selectedImage instanceof File) {
@@ -351,11 +360,11 @@ export default function Professional() {
     }
   };
 
-  const [, setSchedule] = useState<Schedule>({});
+  // const [schedule, setSchedule] = useState<Schedule>({});
 
-  const handleSelectChange = (day: string, slot: string) => {
-    setSchedule((prev) => ({ ...prev, [day]: slot }));
-  };
+  // const handleSelectChange = (day: string, slot: string) => {
+  //   setSchedule((prev) => ({ ...prev, [day]: slot }));
+  // };
   if (isLoading) {
     return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
   }
@@ -461,6 +470,7 @@ export default function Professional() {
                   height={160}
                   className="rounded-full border-4 border-white object-cover w-40 h-40"
                 />
+
                 <input
                   type="file"
                   accept="image/*"
@@ -639,7 +649,7 @@ export default function Professional() {
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <label htmlFor="duration">Duration</label>
                 <select
                   {...register("duration")}
@@ -652,7 +662,7 @@ export default function Professional() {
                   <option value={20}>Short Term (1-29)</option>
                   <option value={31}>Long Term (30-...)</option>
                 </select>
-              </div>
+              </div> */}
 
               <div>
                 {/* <h2 className=" font-semibold ">Availability</h2> */}
@@ -667,33 +677,7 @@ export default function Professional() {
                           <th className="border border-gray-300 p-2">Time Slot</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {days.map((day) => (
-                          <tr key={day}>
-                            <td className="border border-gray-300 p-2 font-bold">{day}</td>
-                            <td className="border border-gray-300 p-2 text-center flex items-center justify-center">
-                              <Select onValueChange={(value) => handleSelectChange(day, value)}>
-                                <SelectTrigger className="w-[150px]">
-                                  <SelectValue placeholder="Select" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {/* <SelectItem value="">Select</SelectItem> */}
-                                  <SelectGroup>
-                                    {/* <SelectLabel className="text-center">Select</SelectLabel> */}
-                                    <SelectItem value="Full-time">Full-time</SelectItem>
 
-                                    {timeSlots.map((slot) => (
-                                      <SelectItem key={slot} value={slot}>{slot}</SelectItem>
-                                    ))}
-
-
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
                     </table>
                   </div>
                 </div>

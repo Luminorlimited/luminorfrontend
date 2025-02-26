@@ -242,18 +242,18 @@ export function Sidebar({
   const pathName = usePathname();
 
 
-  const industryOptions = [
-    { label: "Education", value: "EDUCATION" },
-    { label: "Ecommerce", value: "ECOMMERCE" },
-    { label: "Real State", value: "REAL_ESTATE" },
-    { label: "Entertainment", value: "ENTERTAINMENT" },
-    { label: "Travel", value: "TRAVEL" },
-    { label: "Automotive", value: "AUTOMOTIVE" },
-    { label: "Manufacturing", value: "MANUFACTURING" },
-    { label: "Food", value: "FOOD" },
-    { label: "Fashion", value: "FASHION" },
-    { label: "Other", value: "Other" },
-  ];
+  // const industryOptions = [
+  //   { label: "Education", value: "EDUCATION" },
+  //   { label: "Ecommerce", value: "ECOMMERCE" },
+  //   { label: "Real State", value: "REAL_ESTATE" },
+  //   { label: "Entertainment", value: "ENTERTAINMENT" },
+  //   { label: "Travel", value: "TRAVEL" },
+  //   { label: "Automotive", value: "AUTOMOTIVE" },
+  //   { label: "Manufacturing", value: "MANUFACTURING" },
+  //   { label: "Food", value: "FOOD" },
+  //   { label: "Fashion", value: "FASHION" },
+  //   { label: "Other", value: "Other" },
+  // ];
 
   const timelineOptions = [
     { label: "Short Term", value: "shortTerm" },
@@ -314,9 +314,9 @@ export function Sidebar({
   };
 
   return (
-  <div className="my-4 w-full max-w-md space-y-4 p-4 font-sans border rounded-[15px] lg:overflow-auto overflow-y-scroll h-full">
+    <div className="my-4 w-full max-w-md space-y-4 p-4 font-sans border rounded-[15px] lg:overflow-auto overflow-y-scroll h-full">
 
-      <div className="rounded-2xl border bg-white shadow-sm">
+      {/* <div className="rounded-2xl border bg-white shadow-sm">
         <button
           onClick={() => toggleSection("industry")}
           className="flex w-full items-center justify-between p-4 text-left"
@@ -345,7 +345,7 @@ export function Sidebar({
             ))}
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Timeline Section */}
       <div className="rounded-2xl border bg-white shadow-sm">
@@ -353,7 +353,7 @@ export function Sidebar({
           onClick={() => toggleSection("timeline")}
           className="flex w-full items-center justify-between p-4 text-left"
         >
-          <h2 className="text-lg font-semibold">Timeline</h2>
+          <h2 className="text-lg font-semibold">Duration</h2>
           {openSections.timeline ? (
             <HiChevronUp className="h-5 w-5" />
           ) : (

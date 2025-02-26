@@ -91,7 +91,8 @@ const userApi = baseApi.injectEndpoints({
                     method: 'PATCH',
                     body: data
                 }
-            }
+            },
+            invalidatesTags: ['User']
         }),
         getProfile: build.query({
             query: () => {
@@ -99,7 +100,8 @@ const userApi = baseApi.injectEndpoints({
                     url: `/auth/get-profile`,
                     method: 'GET',
                 }
-            }
+            },
+            providesTags: ['User']
         }),
         getProfileById: build.query({
             query: ({ id }) => {

@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useDeleteUserMutation, useGetClientQuery, useGetProfessionalQuery, useUpdateStatusMutation } from "@/redux/Api/dashboard/userapi"
-import logo from '@/assets/images/avatar.jpg'
+import logo from "@/assets/placeholderimg.png"
 import Image from "next/image"
 
 export default function Users() {
