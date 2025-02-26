@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
-import React, { useCallback, useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { PiNotePencilBold } from "react-icons/pi";
 import BusinesSvg from "@/components/svg/BusinesSvg";
@@ -64,7 +64,7 @@ const servicesData = [
   },
 ];
 
-const minGap = 0;
+// const minGap = 0;
 const minPrice = 1;
 const maxPrice = 400;
 interface DecodedToken {
@@ -93,18 +93,22 @@ export default function Client() {
   const [editclientProfile] = useEditclientprofileMutation();
 
   const { data: profileData, isLoading } = useGetProfileQuery(undefined);
-  const [budgetMinValue, setBudgetMinValue] = useState(
-    profileData?.data?.budgetRange?.min || minPrice
-  );
-  const [budgetMaxValue, setBudgetMaxValue] = useState(
-    profileData?.data?.budgetRange?.max || maxPrice
-  );
-  const [durationMinValue, setDurationMinValue] = useState(
-    profileData?.data?.projectDurationRange?.min || minPrice
-  );
-  const [durationMaxValue, setDurationMaxValue] = useState(
-    profileData?.data?.projectDurationRange?.max || maxPrice
-  );
+  const [budgetMinValue, setBudgetMinValue] = useState<number | null>(null);
+  const [budgetMaxValue, setBudgetMaxValue] = useState<number | null>(null);
+  const [durationMinValue, setDurationMinValue] = useState<number | null>(null);
+  const [durationMaxValue, setDurationMaxValue] = useState<number | null>(null);
+
+  // Set values when profileData is available
+  useEffect(() => {
+    if (profileData?.data?.budgetRange) {
+      setBudgetMinValue(profileData.data.budgetRange.min ?? minPrice);
+      setBudgetMaxValue(profileData.data.budgetRange.max ?? maxPrice);
+    }
+    if (profileData?.data?.projectDurationRange) {
+      setDurationMinValue(profileData.data.projectDurationRange.min ?? minPrice);
+      setDurationMaxValue(profileData.data.projectDurationRange.max ?? maxPrice);
+    }
+  }, [profileData]);
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
@@ -193,42 +197,41 @@ export default function Client() {
     }
   }, [profileData, reset]);
 
-  const handleMinChange = useCallback(
-    (setter: React.Dispatch<React.SetStateAction<number>>, maxValue: number) =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Math.min(Number(event.target.value), maxValue - minGap);
-        setter(value);
-      },
-    []
-  );
-  // // console.log(localStorage.token)
-  const handleMaxChange = useCallback(
-    (setter: React.Dispatch<React.SetStateAction<number>>, minValue: number) =>
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Math.max(Number(event.target.value), minValue + minGap);
-        setter(value);
-      },
-    []
-  );
+  // const handleMinChange = useCallback(
+  //   (setter: React.Dispatch<React.SetStateAction<number>>, maxValue: number) =>
+  //     (event: React.ChangeEvent<HTMLInputElement>) => {
+  //       const value = Math.min(Number(event.target.value), maxValue - minGap);
+  //       setter(value);
+  //     },
+  //   []
+  // );
+  // const handleMaxChange = useCallback(
+  //   (setter: React.Dispatch<React.SetStateAction<number>>, minValue: number) =>
+  //     (event: React.ChangeEvent<HTMLInputElement>) => {
+  //       const value = Math.max(Number(event.target.value), minValue + minGap);
+  //       setter(value);
+  //     },
+  //   []
+  // );
 
-  const getProgressStyle = useCallback((minValue: number, maxValue: number) => {
-    const left = ((minValue - minPrice) / (maxPrice - minPrice)) * 100;
-    const right = 100 - ((maxValue - minPrice) / (maxPrice - minPrice)) * 100;
-    return {
-      left: `${left}%`,
-      right: `${right}%`,
-    };
-  }, []);
+  // const getProgressStyle = useCallback((minValue: number, maxValue: number) => {
+  //   const left = ((minValue - minPrice) / (maxPrice - minPrice)) * 100;
+  //   const right = 100 - ((maxValue - minPrice) / (maxPrice - minPrice)) * 100;
+  //   return {
+  //     left: `${left}%`,
+  //     right: `${right}%`,
+  //   };
+  // }, []);
   const [selectProject, setSelectProject] = useState<File | null>(null);
 
-  const budgetProgressStyle = useMemo(
-    () => getProgressStyle(budgetMinValue, budgetMaxValue),
-    [budgetMinValue, budgetMaxValue, getProgressStyle]
-  );
-  const durationProgressStyle = useMemo(
-    () => getProgressStyle(durationMinValue, durationMaxValue),
-    [durationMinValue, durationMaxValue, getProgressStyle]
-  );
+  // const budgetProgressStyle = useMemo(
+  //   () => getProgressStyle(budgetMinValue, budgetMaxValue),
+  //   [budgetMinValue, budgetMaxValue, getProgressStyle]
+  // );
+  // const durationProgressStyle = useMemo(
+  //   () => getProgressStyle(durationMinValue, durationMaxValue),
+  //   [durationMinValue, durationMaxValue, getProgressStyle]
+  // );
 
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
@@ -341,8 +344,6 @@ export default function Client() {
       setSelectProject(file);
 
       // console.log("File selected:", file.name);
-    } else {
-      // console.log("No file selected");
     }
   };
 
@@ -493,12 +494,12 @@ export default function Client() {
               </div>
 
               <h1 className="text-2xl font-semibold mt-4">
-                {profileData?.data?.client?.name?.firstName}{" "}
-                {profileData?.data?.client?.name?.lastName}
+                {watch("firstName") || profileData?.data?.client?.name?.firstName}{" "}
+                {watch("lastName") || profileData?.data?.client?.name?.lastName}
               </h1>
-              <p className="text-gray-600">
+              {/* <p className="text-gray-600">
                 I&apos;m a healthcare and medical specialist
-              </p>
+              </p> */}
             </div>
             <div className="space-y-8">
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
@@ -508,9 +509,7 @@ export default function Client() {
                   </label>
                   <input
                     id="fname"
-                    defaultValue={
-                      profileData?.data?.client?.name?.firstName || ""
-                    }
+                    defaultValue={profileData?.data?.client?.name?.firstName || ""     }
                     {...register("firstName")}
                     onChange={(e) => setValue("firstName", e.target.value)}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
@@ -523,9 +522,7 @@ export default function Client() {
                   </label>
                   <input
                     id="lname"
-                    defaultValue={
-                      profileData?.data?.client?.name?.lastName || ""
-                    }
+                    defaultValue={  profileData?.data?.client?.name?.lastName || ""  }
                     {...register("lastName")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     onChange={(e) => setValue("lastName", e.target.value)}
@@ -536,7 +533,7 @@ export default function Client() {
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                 <div>
                   <label htmlFor="companyname" className="block text-sm mb-2">
-                    Company name *
+                    Company name
                   </label>
                   <input
                     {...register("companyName")}
@@ -548,7 +545,7 @@ export default function Client() {
                 </div>
                 <div>
                   <label htmlFor="companyweb" className="block text-sm mb-2">
-                    Company website *
+                    Company website
                   </label>
                   <input
                     id="companyweb"
@@ -562,7 +559,7 @@ export default function Client() {
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                 <div>
                   <label htmlFor="phn" className="block text-sm mb-2">
-                    Phone Number *
+                    Phone Number
                   </label>
                   <input
                     id="phn"
@@ -574,7 +571,7 @@ export default function Client() {
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm mb-2">
-                    Email *
+                    Email
                   </label>
                   <input
                     id="email"
@@ -587,7 +584,7 @@ export default function Client() {
               </div>
               <div>
                 <label className="block text-sm mb-2" htmlFor="search-input">
-                  Location *
+                  Location
                 </label>
                 <input
                   id="search-input"
@@ -607,7 +604,7 @@ export default function Client() {
                   {...register("problemAreas")}
                   defaultValue={profileData?.data?.problemAreas || ""}
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                  placeholder="I'm a healthcare and medical specialist"
+                  placeholder="Write your Problem areas or Skills needed"
                 />
               </div>
               <div>
@@ -657,107 +654,77 @@ export default function Client() {
               </div>
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                 <div>
-                  <label className="block text-sm mb-4">
+                  <label className="block text-md mb-4">
                     Budget Preference
                   </label>
                   <div className="w-full py-3">
-                    <div className="relative h-2 mb-8">
-                      <div className="absolute w-full h-full bg-gray-200 rounded-full" />
-                      <div
-                        className="absolute h-full bg-amber-400 rounded-full"
-                        style={budgetProgressStyle}
-                      />
-                      <input
-                        type="range"
-                        min={minPrice}
-                        max={maxPrice}
-                        defaultValue={budgetMinValue}
-                        onChange={handleMinChange(
-                          setBudgetMinValue,
-                          budgetMaxValue
-                        )}
-                        className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
-                      />
-                      <input
-                        type="range"
-                        min={minPrice}
-                        max={maxPrice}
-                        defaultValue={budgetMaxValue}
-                        onChange={handleMaxChange(
-                          setBudgetMaxValue,
-                          budgetMinValue
-                        )}
-                        className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
-                      />
-                    </div>
-                    <div className="w-full p-4 text-center border rounded-lg border-gray-200">
-                      <span>
-                        $
-                        {budgetMinValue ||
-                          profileData?.data?.budgetRange?.min ||
-                          0}
-                      </span>
-                      <span> - </span>
-                      <span>
-                        $
-                        {budgetMaxValue ||
-                          profileData?.data?.budgetRange?.max ||
-                          0}
-                      </span>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="budgetMin" className="block text-sm mb-2">
+                          Min Budget
+                        </label>
+                        <input
+                          type="number"
+                          id="budgetMin"
+                          min={minPrice}
+                          max={maxPrice}
+                          // value={budgetMinValue}
+                          value={budgetMinValue ?? ''}
+                          onChange={(e) => setBudgetMinValue(Number(e.target.value))}
+                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="budgetMax" className="block text-sm mb-2">
+                          Max Budget
+                        </label>
+                        <input
+                          type="number"
+                          id="budgetMax"
+                          min={minPrice}
+                          max={maxPrice}
+                          value={budgetMaxValue ?? ""}
+                          onChange={(e) => setBudgetMaxValue(Number(e.target.value))}
+                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm mb-4">
+                  <label className="block text-md mb-4">
                     Project Duration Range
                   </label>
                   <div className="w-full py-3">
-                    <div className="relative h-2 mb-8">
-                      <div className="absolute w-full h-full bg-gray-200 rounded-full" />
-                      <div
-                        className="absolute h-full bg-amber-400 rounded-full"
-                        style={durationProgressStyle}
-                      />
-                      <input
-                        type="range"
-                        min={minPrice}
-                        max={maxPrice}
-                        defaultValue={durationMinValue}
-                        onChange={handleMinChange(
-                          setDurationMinValue,
-                          durationMaxValue
-                        )}
-                        className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
-                      />
-                      <input
-                        type="range"
-                        min={minPrice}
-                        max={maxPrice}
-                        defaultValue={durationMaxValue}
-                        onChange={handleMaxChange(
-                          setDurationMaxValue,
-                          durationMinValue
-                        )}
-                        className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
-                      />
-                    </div>
-                    <div className="w-full p-4 text-center border rounded-lg border-gray-200">
-                      {/* <span>${durationMinValue}</span>
-                                            <span> - </span>
-                                            <span>${durationMaxValue}</span> */}
-                      <span>
-                        $
-                        {durationMinValue ||
-                          profileData?.data?.projectDurationRange.min ||
-                          0}
-                      </span>
-                      <span> - </span>
-                      <span>
-                        $
-                        {durationMaxValue ||
-                          profileData?.data?.projectDurationRange.max ||
-                          0}
-                      </span>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="durationMin" className="block text-sm mb-2">
+                          Min Duration
+                        </label>
+                        <input
+                          type="number"
+                          id="durationMin"
+                          min={minPrice}
+                          max={maxPrice}
+                          value={durationMinValue ??""}
+                          onChange={(e) => setDurationMinValue(Number(e.target.value))}
+                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="durationMax" className="block text-sm mb-2">
+                          Max Duration
+                        </label>
+                        <input
+                          type="number"
+                          id="durationMax"
+                          min={minPrice}
+                          max={maxPrice}
+                          value={durationMaxValue ?? ""}
+                          onChange={(e) => setDurationMaxValue(Number(e.target.value))}
+                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

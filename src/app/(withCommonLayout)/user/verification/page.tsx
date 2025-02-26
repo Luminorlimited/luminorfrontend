@@ -148,8 +148,12 @@ export default function Page() {
 
               <button
                 type="submit"
-                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium text-white bg-primary hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF]"
+                className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium text-white bg-primary hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${isLoading
+                  ? "text-white bg-[#181522] hover:bg-[#181522] "
+                  : "text-white bg-primary "
+                  }`}
                 disabled={isLoading}
+
               >
                 {isLoading ? "Verifying..." : "Verify"}
               </button>

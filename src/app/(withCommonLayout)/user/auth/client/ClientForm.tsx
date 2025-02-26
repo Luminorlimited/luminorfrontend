@@ -81,10 +81,10 @@ export default function ClientForm() {
                 id: res?.data?.data?.user[0]?._id || "",
                 name: data.name || "",
                 email: data.email || "",
-                role: res?.data?.data?.user[0]?.role || "",
+                role: res?.data?.data?.user[0]?.role || "client",
                 photoUrl: data.photoUrl || "",
               },
-              token: data.accessToken || null,
+              token: res?.data?.data?.accessToken,
             })
           );
 

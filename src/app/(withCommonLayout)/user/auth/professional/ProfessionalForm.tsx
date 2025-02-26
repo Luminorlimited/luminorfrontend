@@ -124,7 +124,7 @@ export default function ProfessionalForm() {
                 role: res?.data?.data?.user[0]?.role || "", // Default role as 'user'
                 photoUrl: data.photoUrl || "", // Optional fallback for photoUrl
               },
-              token: data.accessToken || null, // Fallback for token
+              token: res?.data?.data?.accessToken,
             })
           );
 

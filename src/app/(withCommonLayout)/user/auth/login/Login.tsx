@@ -19,16 +19,16 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const [LogInUser] = useLoginUserMutation();
+  const [LogInUser, {isLoading}] = useLoginUserMutation();
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); 
     const data = { email, password }; 
 
     try {
-      setIsLoading(true); // Set loading state to true
+      // setIsLoading(true); // Set loading state to true
       const res: any = await LogInUser(data);
 
       if (res?.data?.success) {
@@ -42,9 +42,7 @@ export default function Login() {
     } catch (error) {
       toast.error("Login Failed");
       console.error("Login Error:", error);
-    } finally {
-      setIsLoading(false); // Reset loading state
-    }
+    } 
   };
 
   return (
@@ -150,7 +148,7 @@ export default function Login() {
               <button
                 type="submit"
                 className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium hover:shadow-lg transition-colors hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${isLoading
-                  ? "text-white bg-[#181522] "
+                  ? "text-white bg-[#181522] hover:bg-[#181522] "
                   : "text-white bg-primary "
                   }`}
                 disabled={isLoading}

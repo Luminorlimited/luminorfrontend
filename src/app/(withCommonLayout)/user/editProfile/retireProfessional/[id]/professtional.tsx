@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { PiNotePencilBold } from "react-icons/pi";
 import { AiOutlinePlus, AiOutlineUpload } from "react-icons/ai";
 import CheckBox from "@/components/common/checkbox/CheckBox";
-import { useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import BusinesSvg from "@/components/svg/BusinesSvg";
 import SettingSvg from "@/components/svg/Settings";
 import TechnicalSvg from "@/components/svg/TechnicalSvg";
@@ -12,6 +12,7 @@ import HealthSvg from "@/components/svg/HealthSvg";
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
+
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import avatar from "@/assets/placeholderimg.png"
@@ -23,13 +24,10 @@ import {
 import bgCover from "@/assets/coverimg.png"
 import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
 // import { SelectGroup } from "@radix-ui/react-select";
+// import PhoneInput from "react-phone-input-2";
 
-// const timeSlots = ["Morning", "Afternoon", "Evening"];
-// const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-// type Schedule = {
-//   [key: string]: string;
-// };
+const timeSlots = ["Morning", "Afternoon", "Evening"];
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const servicesData = [
   {
@@ -183,7 +181,15 @@ export default function Professional() {
     };
   }, []);
 
-
+  const dayShortForm: Record<string, string> = {
+    Monday: "Mon",
+    Tuesday: "Tue",
+    Wednesday: "Wed",
+    Thursday: "Thu",
+    Friday: "Fri",
+    Saturday: "Sat",
+    Sunday: "Sun",
+  };
   useEffect(() => {
     if (profileData) {
       reset({
@@ -194,12 +200,23 @@ export default function Professional() {
         bio: profileData.data.bio,
         description: profileData.data.description,
         expertise: profileData.data.expertise,
-        // availability: profileData.data.availability,
+        duration: profileData.data.duration,
         preferedProjects: profileData.data.preferedProjects,
         hourlyRate: profileData.data.hourlyRate,
         workSample: profileData.data.workSample,
         profileUrl: profileData.data.profileUrl,
       });
+
+      if (profileData.data.availability) {
+        const availabilityObj: Record<string, string> = {};
+        profileData.data.availability.forEach((slot: { day: string; slots: string }) => {
+          const fullDay = Object.keys(dayShortForm).find(key => dayShortForm[key] === slot.day);
+          if (fullDay) {
+            availabilityObj[fullDay] = slot.slots;
+          }
+        });
+        setSelectedValues(availabilityObj);
+      }
     }
   }, [profileData, reset]);
 
@@ -231,6 +248,11 @@ export default function Professional() {
       }
     });
 
+
+    Object.entries(selectedValues).forEach(([day, slot]) => {
+      formData.append(`availability[${day}]`, slot);
+    });
+
     formData.append("name[firstName]", data.firstName);
     formData.append("name[lastName]", data.lastName);
     formData.append("location[type]", "Point");
@@ -245,13 +267,15 @@ export default function Professional() {
       // console.log("Work Sample file added:", workSample);
     }
 
-    // console.log("My Form data", formData);
+    console.log("My Form data", formData);
 
     try {
       const res = await editprofessionalProfile({
         id: userIdValue,
         data: formData,
       });
+      console.log("My Form data", formData);
+
       if (!res || typeof res !== "object") {
         throw new Error("Invalid response from the server");
       } else {
@@ -360,11 +384,16 @@ export default function Professional() {
     }
   };
 
-  // const [schedule, setSchedule] = useState<Schedule>({});
+  const [selectedValues, setSelectedValues] = useState<Record<string, string>>({});
 
-  // const handleSelectChange = (day: string, slot: string) => {
-  //   setSchedule((prev) => ({ ...prev, [day]: slot }));
-  // };
+  // Handle selection change
+  const handleSelectChange = (day: string, value: string) => {
+    setSelectedValues((prev) => ({
+      ...prev,
+      [day]: value,
+    }));
+  };
+
   if (isLoading) {
     return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
   }
@@ -497,14 +526,14 @@ export default function Professional() {
                 </button>
               </div>
 
-              <h1 className="text-2xl font-semibold mt-4">
-                {profileData?.data?.retireProfessional?.name?.firstName}{" "}
-                {profileData?.data?.retireProfessional?.name?.lastName}
-              </h1>
+                <h1 className="text-2xl font-semibold mt-4">
+                {watch("firstName") || profileData?.data?.retireProfessional?.name?.firstName}{" "}
+                {watch("lastName") || profileData?.data?.retireProfessional?.name?.lastName}
+                </h1>
               <p className="text-gray-600">
                 {" "}
-                {profileData?.data?.bio != "null" &&
-                  `I am ${profileData?.data?.bio}`}
+                {profileData?.data?.bio != "null" || profileData?.data?.bio != "" ?
+                  `I am ${profileData?.data?.bio}`: ""}
               </p>
             </div>
 
@@ -518,10 +547,8 @@ export default function Professional() {
                   <input
                     id="fname"
                     {...register("firstName")}
-                    placeholder="John"
-                    defaultValue={
-                      profileData?.data?.retireProfessional?.name?.firstName
-                    }
+                    placeholder="Write your First Name"
+                  
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     onChange={(e) => setValue("firstName", e.target.value)}
                     required
@@ -532,12 +559,10 @@ export default function Professional() {
                     Last name
                   </label>
                   <input
-                    id="fname"
+                    id="lname"
                     {...register("lastName")}
-                    placeholder="Watson"
-                    defaultValue={
-                      profileData?.data?.retireProfessional?.name?.lastName
-                    }
+                    placeholder="Write your Last Name"
+                  
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     onChange={(e) => setValue("lastName", e.target.value)}
                     required
@@ -548,8 +573,25 @@ export default function Professional() {
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                 <div>
                   <label htmlFor="phn" className="block text-sm mb-2">
-                    Phone Number *
+                    Phone Number
                   </label>
+                  {/* <Controller
+                    name="Phone Number"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <PhoneInput
+                        {...field}
+                        country={"us"}
+                        inputProps={{ id: "phoneNumber" }}
+                        containerClass="!w-full"
+                        inputClass="!w-full !h-10 !text-base !rounded-[8px] !pl-12 mt-2 hover:!border-primary focus:!border-primary border focus:!ring-0 !outline-none"
+                        buttonClass="!h-10 !rounded-l-[8px] !border-r-0 hover:!border-primary focus:!border-primary"
+                        placeholder="Phone number"
+                        onChange={(value: string) => field.onChange(value)}
+                      />
+                    )}
+                  /> */}
                   <input
                     required
                     defaultValue={profileData?.data?.phoneNumber}
@@ -557,12 +599,12 @@ export default function Professional() {
                     id="phn"
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     onChange={(e) => setValue("phone", e.target.value)}
-                    placeholder="0987654 456"
+                    placeholder="Write your Phone Number"
                   />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm mb-2">
-                    Email *
+                    Email
                   </label>
                   <input
                     defaultValue={profileData?.data?.retireProfessional?.email}
@@ -577,7 +619,7 @@ export default function Professional() {
 
               <div>
                 <label className="block text-sm mb-2" htmlFor="search-input">
-                  Location *
+                  Location
                 </label>
                 <input
                   id="search-input"
@@ -596,7 +638,7 @@ export default function Professional() {
                   id="problemArea"
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                   {...register("bio")}
-                  defaultValue={profileData?.data?.bio}
+                  // defaultValue={profileData?.data?.bio}
                   onChange={(e) => setValue("bio", e.target.value)}
                   placeholder="Write your Bio"
                 />
@@ -649,35 +691,62 @@ export default function Professional() {
                 </div>
               </div>
 
-              {/* <div>
+              <div>
                 <label htmlFor="duration">Duration</label>
                 <select
                   {...register("duration")}
                   id="duration"
                   onChange={(e) => setValue("duration", e.target.value)}
                   className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2"
-                  defaultValue={profileData?.data?.availability ?? ""}
+                  defaultValue={profileData?.data?.duration ?? ""}
                 >
-                  <option value="" selected>Availability</option>
+                  <option value="" selected>Select Duration</option>
                   <option value={20}>Short Term (1-29)</option>
                   <option value={31}>Long Term (30-...)</option>
                 </select>
-              </div> */}
+              </div>
 
               <div>
-                {/* <h2 className=" font-semibold ">Availability</h2> */}
                 <label htmlFor="duration text-lg pb-4">Availability</label>
 
-                <div className="p-4 w-full  mx-auto">
-                  <div className="overflow-x-auto">
+                <div className="p-4 w-full  mx-auto overflow-hidden">
+                  <div className="overflow-hidden overflow-x-auto">
                     <table className="w-full border-collapse border border-gray-300">
                       <thead>
                         <tr>
-                          <th className="border border-gray-300 p-2 text-left">Day</th>
-                          <th className="border border-gray-300 p-2">Time Slot</th>
+                          <th className="border border-gray-300 p-2 text-left text-sm">Time Slot</th>
+                          {days.map((day) => (
+                            <th key={day} className="border border-gray-300 p-2 text-center text-sm">{day}</th>
+                          ))}
                         </tr>
                       </thead>
 
+                      <tbody>
+                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                          <th
+                            scope="row"
+                            className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white sticky left-0 bg-white dark:bg-gray-800 z-10"
+                          >
+                            Select
+                          </th>
+                          {days.map((day) => (
+                            <td key={day} className="px-6 py-4 text-center">
+                              <select
+                                className="w-[150px] p-2 border border-gray-300 rounded-md bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                value={selectedValues[day] ?? ""}
+                                onChange={(e) => handleSelectChange(day, e.target.value)}
+                              >
+                                <option value="">Select Time</option>
+                                {timeSlots.map((slot) => (
+                                  <option key={slot} value={slot}>
+                                    {slot}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          ))}
+                        </tr>
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -686,7 +755,7 @@ export default function Professional() {
 
               <div>
                 <label className="block text-sm mb-2" htmlFor="prefProject">
-                  Preferred Projects*
+                  Preferred Projects
                 </label>
                 <input
                   {...register("preferedProjects")}
@@ -700,7 +769,7 @@ export default function Professional() {
               </div>
               <div>
                 <label className="block text-sm mb-2" htmlFor="hourlyRate">
-                  Hourly Rate (USD) *
+                  Hourly Rate (USD)
                 </label>
                 <input
                   {...register("hourlyRate")}
