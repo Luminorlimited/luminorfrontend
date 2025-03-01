@@ -11,8 +11,6 @@ import { useForm } from "react-hook-form";
 import { useClientUserMutation } from "@/redux/Api/userApi";
 import Stepper from "./Stepper";
 import SuccessPage from "./Success";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/ReduxFunction";
 import { toast } from "sonner";
 
 export default function ClientForm() {
@@ -22,7 +20,6 @@ export default function ClientForm() {
 
   const handleNext = () => setStep((prev) => prev + 1);
   const handleBack = () => setStep((prev) => prev - 1);
-  const dispatch = useDispatch();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<{
     password?: string;
@@ -75,18 +72,6 @@ export default function ClientForm() {
         if (res?.data) {
           toast.success("Successfully Created your Account");
 
-          dispatch(
-            setUser({
-              user: {
-                id: res?.data?.data?.user[0]?._id || "",
-                name: data.name || "",
-                email: data.email || "",
-                role: res?.data?.data?.user[0]?.role || "client",
-                photoUrl: data.photoUrl || "",
-              },
-              token: res?.data?.data?.accessToken,
-            })
-          );
 
           setStep(4);
         } else {
@@ -159,7 +144,7 @@ export default function ClientForm() {
             )}
             {step === 4 && <SuccessPage />}
             <Stepper currentStep={step} setStep={setStep} />
-            {/* {isLoading && <p>Loading...</p>} */}
+            
           </div>
         </div>
       </form>

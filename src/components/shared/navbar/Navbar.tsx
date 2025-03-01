@@ -37,10 +37,10 @@ const Navbar = () => {
   const { data: profileData } = useGetProfileQuery({});
 
   // const demoimg =
-  //   !profileData?.data?.profileUrl || profileData?.data?.profileUrl === "null"
-  //     ? demoprofile
+  //   !profileData?.data?.profileUrl || profileData?.data?.profileUrl === "null" || profileData?.data?.profileUrl === null
+  //     ? demoprofile.src
   //     : profileData?.data?.profileUrl;
-  // console.log(user)
+
 
   const handleLogOut = () => {
     dispatch(logOut());
@@ -82,7 +82,7 @@ const Navbar = () => {
     };
   }, []);
 
-
+  console.log("profile url", typeof (profileData?.data?.profileUrl));
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
@@ -132,7 +132,7 @@ const Navbar = () => {
 
             <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer" >
               <Image
-                src={profileData?.data?.profileUrl ?? demoprofile.src}
+                src={profileData?.data?.profileUrl ?? demoprofile.src }
                 width={40}
                 height={40}
                 alt="profile"

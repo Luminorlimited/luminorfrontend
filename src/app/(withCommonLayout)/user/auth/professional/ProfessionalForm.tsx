@@ -12,8 +12,6 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { useProfessionalUserMutation } from "@/redux/Api/userApi";
 import SuccessPage from "./Success";
-import { useDispatch } from "react-redux";
-import { setUser } from "@/redux/ReduxFunction";
 import { toast } from "sonner";
 // import { useRouter } from "next/navigation";
 
@@ -28,7 +26,6 @@ export default function ProfessionalForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [errors, setErrors] = useState<{ password?: string; confirmPassword?: string }>({});
-  const dispatch = useDispatch();
 
   const handleSubmitProfessionalForm = async (data?: any) => {
     const formData = new FormData();
@@ -115,18 +112,7 @@ export default function ProfessionalForm() {
         console.log("my formdata", formData);
         console.log("my response", res);
         if (res?.data) {
-          dispatch(
-            setUser({
-              user: {
-                id: res?.data?.data?.user[0]?._id || "", // Ensure id has a fallback
-                name: data.name || "", // Fallback for optional name
-                email: data.email || "", // Fallback for email
-                role: res?.data?.data?.user[0]?.role || "", // Default role as 'user'
-                photoUrl: data.photoUrl || "", // Optional fallback for photoUrl
-              },
-              token: res?.data?.data?.accessToken,
-            })
-          );
+         
 
           console.log("Form submitted successfully:", res.data);
           toast.success("Form submitted successfully!");
