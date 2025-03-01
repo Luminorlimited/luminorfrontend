@@ -622,7 +622,7 @@ export default function Client() {
               </div>
               <div>
                 <h3 className="text-sm mb-4">Industry / Service preferences</h3>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                <div className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-2">
                   {servicesData.map((service, index) => {
                     // Determine if the service is selected
                     const isSelected =

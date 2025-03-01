@@ -9,7 +9,6 @@ import projectImgFallback from "@/assets/images/package.png"; // Fallback projec
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useSelector } from "react-redux";
-// import { setclientFilter } from "@/redux/ReduxFunction";
 import {
   useClientListQuery,
   useLazyClientFilterListQuery,
@@ -253,6 +252,22 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 <h3 className="mb-4 text-xl font-bold text-black">
                   {data.bio || "Untitled Project"}
                 </h3>
+                <h3 className="text-[14px]">
+                  
+                  {data?.availability?.length > 0 && (
+                    <h3 className="text-[14px]">
+                      <b>Availability:</b>{" "}
+                      {data.availability.map((item:any, index:number) => (
+                        <span key={item._id}>
+                          {item.day}: {item.slots.join(", ")}
+                          {index < data.availability.length - 1 ? " | " : ""}
+                        </span>
+                      ))}
+                    </h3>
+                  )}
+
+                </h3>
+
 
                 <div className="flex items-center justify-between">
                   <div className="text-xl">
