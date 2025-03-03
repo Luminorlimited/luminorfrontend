@@ -185,8 +185,8 @@ export default function Client() {
       reset({
         firstName: profileData.data.client.name.firstName,
         lastName: profileData.data.client.name.lastName,
-        companyName: profileData.data.companyName,
-        companyWebsite: profileData.data.companyWebsite,
+        companyName: profileData.data.companyName ,
+        companyWebsite: profileData.data.companyWebsite === "null" ? "" : profileData.data.companyWebsite,
         phoneNumber: profileData.data.phoneNumber,
         problemAreas: profileData.data.problemAreas === "null" ? "" : profileData.data.problemAreas,
         description: profileData.data.description === "null" ? "" : profileData.data.description,
@@ -518,7 +518,6 @@ export default function Client() {
                   </label>
                   <input
                     id="companyweb"
-                    defaultValue={profileData?.data?.companyWebsite || ""}
                     {...register("companyWebsite")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     placeholder="www.companyname.com"
