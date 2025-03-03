@@ -188,50 +188,19 @@ export default function Client() {
         companyName: profileData.data.companyName,
         companyWebsite: profileData.data.companyWebsite,
         phoneNumber: profileData.data.phoneNumber,
-        problemAreas: profileData.data.problemAreas,
-        description: profileData.data.description,
+        problemAreas: profileData.data.problemAreas === "null" ? "" : profileData.data.problemAreas,
+        description: profileData.data.description === "null" ? "" : profileData.data.description,
         servicePreference: profileData.data.servicePreference,
-        projectListing: profileData.data.projectListing,
+        projectListing: profileData.data.projectListing === "null" ? "" : profileData.data.projectListing,
         projectPreference: profileData.data.projectPreference,
       });
     }
   }, [profileData, reset]);
 
-  // const handleMinChange = useCallback(
-  //   (setter: React.Dispatch<React.SetStateAction<number>>, maxValue: number) =>
-  //     (event: React.ChangeEvent<HTMLInputElement>) => {
-  //       const value = Math.min(Number(event.target.value), maxValue - minGap);
-  //       setter(value);
-  //     },
-  //   []
-  // );
-  // const handleMaxChange = useCallback(
-  //   (setter: React.Dispatch<React.SetStateAction<number>>, minValue: number) =>
-  //     (event: React.ChangeEvent<HTMLInputElement>) => {
-  //       const value = Math.max(Number(event.target.value), minValue + minGap);
-  //       setter(value);
-  //     },
-  //   []
-  // );
 
-  // const getProgressStyle = useCallback((minValue: number, maxValue: number) => {
-  //   const left = ((minValue - minPrice) / (maxPrice - minPrice)) * 100;
-  //   const right = 100 - ((maxValue - minPrice) / (maxPrice - minPrice)) * 100;
-  //   return {
-  //     left: `${left}%`,
-  //     right: `${right}%`,
-  //   };
-  // }, []);
   const [selectProject, setSelectProject] = useState<File | null>(null);
 
-  // const budgetProgressStyle = useMemo(
-  //   () => getProgressStyle(budgetMinValue, budgetMaxValue),
-  //   [budgetMinValue, budgetMaxValue, getProgressStyle]
-  // );
-  // const durationProgressStyle = useMemo(
-  //   () => getProgressStyle(durationMinValue, durationMaxValue),
-  //   [durationMinValue, durationMaxValue, getProgressStyle]
-  // );
+ 
 
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
@@ -511,7 +480,7 @@ export default function Client() {
                     id="fname"
                     defaultValue={profileData?.data?.client?.name?.firstName || ""     }
                     {...register("firstName")}
-                    onChange={(e) => setValue("firstName", e.target.value)}
+                    // onChange={(e) => setValue("firstName", e.target.value)}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     placeholder="first name"
                   />
@@ -525,7 +494,7 @@ export default function Client() {
                     defaultValue={  profileData?.data?.client?.name?.lastName || ""  }
                     {...register("lastName")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                    onChange={(e) => setValue("lastName", e.target.value)}
+                    // onChange={(e) => setValue("lastName", e.target.value)}
                     placeholder="last name"
                   />
                 </div>
@@ -787,9 +756,8 @@ export default function Client() {
                 </div>
 
                 <textarea
-                  defaultValue={profileData?.data?.projectListing || ""}
+                  // defaultValue={profileData?.data?.z === "null" ?  "": profileData?.data?.projectListing}
                   id="projectListing')}"
-                  {...register("projectListing")}
                   placeholder="Write your listing project"
                   {...register("projectListing")}
                   className="w-full border p-3 rounded-[10px] focus:border-primary focus:outline-none"

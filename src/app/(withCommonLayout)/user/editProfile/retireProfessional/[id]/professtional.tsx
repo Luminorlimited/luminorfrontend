@@ -197,8 +197,8 @@ export default function Professional() {
         lastName: profileData.data.retireProfessional.name.lastName,
         phone: profileData.data.phoneNumber,
         email: profileData.data.retireProfessional.email,
-        bio: profileData.data.bio,
-        description: profileData.data.description,
+        bio: profileData.data.bio === "null" ? "" : profileData.data.bio,
+        description: profileData.data.description === "null" ? "" : profileData.data.description,
         expertise: profileData.data.expertise,
         duration: profileData.data.duration,
         preferedProjects: profileData.data.preferedProjects,
@@ -247,7 +247,7 @@ export default function Professional() {
   );
 
 
-  
+
 
   // Store selected values for each day
   const [selectedValues, setSelectedValues] = useState<Record<string, string[]>>({})
@@ -597,7 +597,7 @@ export default function Professional() {
                     placeholder="Write your First Name"
 
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                    onChange={(e) => setValue("firstName", e.target.value)}
+                    // onChange={(e) => setValue("firstName", e.target.value)}
                     required
                   />
                 </div>
@@ -611,7 +611,7 @@ export default function Professional() {
                     placeholder="Write your Last Name"
 
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                    onChange={(e) => setValue("lastName", e.target.value)}
+                    // onChange={(e) => setValue("lastName", e.target.value)}
                     required
                   />
                 </div>
@@ -645,7 +645,7 @@ export default function Professional() {
                     {...register("phone")}
                     id="phn"
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                    onChange={(e) => setValue("phone", e.target.value)}
+                    // onChange={(e) => setValue("phone", e.target.value)}
                     placeholder="Write your Phone Number"
                   />
                 </div>
@@ -685,8 +685,7 @@ export default function Professional() {
                   id="problemArea"
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                   {...register("bio")}
-                  // defaultValue={profileData?.data?.bio}
-                  onChange={(e) => setValue("bio", e.target.value)}
+                  // onChange={(e) => setValue("bio", e.target.value.length > 0 ? e.target.value :  "")}
                   placeholder="Write your Bio"
                 />
               </div>
@@ -744,7 +743,7 @@ export default function Professional() {
                   {...register("duration")}
                   id="duration"
                   required
-                  onChange={(e) => setValue("duration", e.target.value)}
+                  // onChange={(e) => setValue("duration", e.target.value)}
                   className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2"
                   defaultValue={profileData?.data?.duration ?? ""}
                 >
@@ -816,7 +815,7 @@ export default function Professional() {
                   id="prefProject"
                   defaultValue={profileData?.data?.preferedProjects}
                   required
-                  onChange={(e) => setValue("preferedProjects", e.target.value)}
+                  // onChange={(e) => setValue("preferedProjects", e.target.value)}
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                   placeholder="Write your Preferred Project"
                 />
@@ -830,7 +829,7 @@ export default function Professional() {
                   id="hourlyRate"
                   type="number"
                   defaultValue={profileData?.data?.hourlyRate}
-                  onChange={(e) => setValue("hourlyRate", e.target.value)}
+                  // onChange={(e) => setValue("hourlyRate", e.target.value)}
                   className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                   placeholder="$100"
                 />
