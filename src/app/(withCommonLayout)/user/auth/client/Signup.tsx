@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,27 +7,43 @@ import mainlogo from '@/assets/images/mainlogo.png'
 import { toast } from "sonner";
 import { Controller } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { z } from "zod";
 import { useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboard/userapi";
 
-export default function Signup({ register, handleNext, getValues, control }: any) {
+export default function Signup({ register, handleNext, getValues, control, setValue, watch }: any) {
 
+  const schema = z.object({
+    firstName: z.string().nonempty("First name is required"),
+    lastName: z.string().nonempty("Last name is required"),
+    dob: z 
+      .string() 
+      .regex(/^\d{2}-\d{2}-\d{4}$/, "Invalid date format (DD-MM-YYYY)") 
+      .refine((date: any) => {
+        const [day, month, year] = date.split("-").map(Number);
+        const isValidDate = !isNaN(new Date(year, month - 1, day).getTime());
+        return isValidDate;
+      }, "Invalid date"),
+    email: z 
+      .string()
+      .nonempty("Email is required")
+      .email("Invalid email address"),
+    phone: z.string().nonempty("Phone number is required"),
+  });
+
+  // Validation function to check if all required fields are filled
   const validateFields = () => {
     const values = getValues();
-
     const { firstName, lastName, dob, email, phone } = values;
 
-    // Regular expression for validating email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Check if any required field is empty
-    if (!firstName || !lastName || !dob || !email || !phone) {
-      toast.error("Please fill in all required fields.")
-      return false;
-    }
-
-    // Validate email format
-    if (!emailRegex.test(email)) {
-      toast.error("Please enter a valid email address.")
+    try {
+      schema.parse({ firstName, lastName, dob, email, phone });
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        e.errors.forEach((error) => {
+          toast.error(error.message);
+        });
+      }
       return false;
     }
 
@@ -47,7 +62,17 @@ export default function Signup({ register, handleNext, getValues, control }: any
     allProfessionalUsers.some((user: any) => user.retireProfessional.email === email) ||
     allClientUsers.some((user: any) => user.client.email === email);
 
-  // Handle Next button click
+  const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    if (value.length > 8) value = value.slice(0, 8); // Limit to 8 characters
+
+    let formattedValue = value;
+    if (value.length > 4) formattedValue = `${value.slice(0, 2)}-${value.slice(2, 4)}-${value.slice(4)}`;
+    else if (value.length > 2) formattedValue = `${value.slice(0, 2)}-${value.slice(2)}`;
+
+    setValue("dob", formattedValue, { shouldValidate: true });
+  };
+
   const handleButtonClick = () => {
     if (validateFields()) {
       const values = getValues();
@@ -60,9 +85,6 @@ export default function Signup({ register, handleNext, getValues, control }: any
       }
     }
   };
-
-  console.log("professional", getprofessionalUser?.data?.retireProfessional);
-  console.log("client", getclientUser?.data?.client);
 
   return (
     <div>
@@ -113,8 +135,10 @@ export default function Signup({ register, handleNext, getValues, control }: any
           <Input
             id="dateOfBirth"
             {...register("dob")}
-            type="date"
-            placeholder="Date of birth"
+            type="text"
+            placeholder="DD - MM - YYYY"
+            value={watch("dob") || ""}
+            onChange={handleDateInput}
             required
             className="w-full border focus:border-0 outline-none focus:outline-none py-[21px] focus:border-primary rounded-[10px] p-3"
           />
@@ -134,7 +158,7 @@ export default function Signup({ register, handleNext, getValues, control }: any
         </div>
         <div className="space-y-2">
           <Label htmlFor="phoneNumber">
-            Phone Number 
+            Phone Number
           </Label>
           <Controller
             name="phone"

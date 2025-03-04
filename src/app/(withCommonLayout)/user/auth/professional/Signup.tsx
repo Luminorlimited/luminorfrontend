@@ -8,32 +8,43 @@ import Image from "next/image";
 import { toast } from "sonner";
 import PhoneInput from "react-phone-input-2"
 import "react-phone-input-2/lib/style.css"
+import { z } from "zod";
 import { Controller } from "react-hook-form";
 import { useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboard/userapi";
 
+export default function Signup({ register, handleNext, getValues, control, setValue, watch }: any) {
 
+  const schema = z.object({
+    firstName: z.string().nonempty("First name is required"),
+    lastName: z.string().nonempty("Last name is required"),
+    dob: z
+      .string()
+      .regex(/^\d{2}-\d{2}-\d{4}$/, "Invalid date format (DD-MM-YYYY)")
+      .refine((date: any) => {
+        const [day, month, year] = date.split("-").map(Number);
+        const isValidDate = !isNaN(new Date(year, month - 1, day).getTime());
+        return isValidDate;
+      }, "Invalid date"),
+    email: z
+      .string()
+      .nonempty("Email is required")
+      .email("Invalid email address"),
+    phone: z.string().nonempty("Phone number is required"),
+  });
 
-
-export default function Signup({ register, handleNext, getValues, control }: any) {
   // Validation function to check if all required fields are filled
   const validateFields = () => {
     const values = getValues();
     const { firstName, lastName, dob, email, phone } = values;
 
-    // Regular expression for validating email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    
-
-    // Check if any required field is empty
-    if (!firstName || !lastName || !dob || !email || !phone) {
-      toast.error("Please fill in all required fields.")
-      return false;
-    }
-
-    // Validate email format
-    if (!emailRegex.test(email)) {
-      toast.error("Please enter a valid email address.")
+    try {
+      schema.parse({ firstName, lastName, dob, email, phone });
+    } catch (e) {
+      if (e instanceof z.ZodError) {
+        e.errors.forEach((error) => {
+          toast.error(error.message);
+        });
+      }
       return false;
     }
 
@@ -51,6 +62,17 @@ export default function Signup({ register, handleNext, getValues, control }: any
     allProfessionalUsers.some((user: any) => user.retireProfessional.email === email) ||
     allClientUsers.some((user: any) => user.client.email === email);
 
+  const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    if (value.length > 8) value = value.slice(0, 8); // Limit to 8 characters
+
+    let formattedValue = value;
+    if (value.length > 4) formattedValue = `${value.slice(0, 2)}-${value.slice(2, 4)}-${value.slice(4)}`;
+    else if (value.length > 2) formattedValue = `${value.slice(0, 2)}-${value.slice(2)}`;
+
+    setValue("dob", formattedValue, { shouldValidate: true });
+  };
+
   const handleButtonClick = () => {
     if (validateFields()) {
       const values = getValues();
@@ -60,6 +82,7 @@ export default function Signup({ register, handleNext, getValues, control }: any
         toast.error("Email already exists. Please use a different email.");
       } else {
         handleNext(); // Only proceed to next step if validation passes and email doesn't exist
+        console.log("value is", values);
       }
     }
   };
@@ -112,13 +135,17 @@ export default function Signup({ register, handleNext, getValues, control }: any
           <Label htmlFor="dateOfBirth">
             Date of Birth
           </Label>
-          <Input
+
+          <input
             id="dateOfBirth"
-            {...register("dob", { required: true })}
-            type="date"
-            placeholder="Date of birth"
-            className="rounded-[8px] hover:border hover:outline-none outline-none  hover:border-primary focus:ring-0"
+            type="text"
+            placeholder="DD - MM - YYYY"
+            {...register("dob")}
+            value={watch("dob") || ""}
+            onChange={handleDateInput}
+            className="w-full rounded-md border border-gray-200 p-2 focus:outline-none focus:ring-1 focus:ring-primary"
           />
+
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">

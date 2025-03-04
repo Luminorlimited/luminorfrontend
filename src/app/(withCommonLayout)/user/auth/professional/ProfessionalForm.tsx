@@ -17,7 +17,7 @@ import { toast } from "sonner";
 
 export default function ProfessionalForm() {
   const [step, setStep] = useState(1);
-  const { register, handleSubmit, setValue, getValues, control } = useForm();
+  const { register, handleSubmit, setValue, getValues, control, watch } = useForm();
   const [loading, setLoading] = useState(false);
 
   const [createProfessional] = useProfessionalUserMutation();
@@ -178,6 +178,10 @@ export default function ProfessionalForm() {
                   handleNext={() => setStep(2)}
                   getValues={getValues}
                   control={control}
+                  setValue={setValue}
+                  watch={watch}
+
+
                 />
               )}
               {step === 2 && (

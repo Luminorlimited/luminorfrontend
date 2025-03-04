@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 export default function ClientForm() {
   const [step, setStep] = useState(1);
-  const { register, handleSubmit, setValue, getValues, control } = useForm();
+  const { register, handleSubmit, setValue, getValues, control, watch } = useForm();
   const [createClient, { isLoading }] = useClientUserMutation();
 
   const handleNext = () => setStep((prev) => prev + 1);
@@ -120,6 +120,7 @@ export default function ClientForm() {
                 handleNext={handleNext}
                 getValues={getValues}
                 setValue={setValue}
+                watch={watch}
               />
             )}
             {step === 2 && (
