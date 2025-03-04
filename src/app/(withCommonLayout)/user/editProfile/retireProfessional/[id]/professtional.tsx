@@ -748,8 +748,8 @@ export default function Professional() {
                   defaultValue={profileData?.data?.duration ?? ""}
                 >
                   <option value="" >Select Duration</option>
-                  <option value={20}>Short Term (1-29)</option>
-                  <option value={31}>Long Term (30-...)</option>
+                  <option value={20}>Short Term (1-29) days</option>
+                  <option value={31}>Long Term (30-...) days</option>
                 </select>
               </div>
 
