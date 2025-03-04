@@ -32,7 +32,7 @@ const Page: React.FC = () => {
                   Price: <strong>{order?.project?.totalPrice}</strong>
                 </p>
                 <p className="text-sm text-gray-600">
-                  Payment Status:{" "}
+                  Delivery Status:{" "}
                   <strong>{order?.transaction?.paymentStatus}</strong>
                 </p>
                 View Details

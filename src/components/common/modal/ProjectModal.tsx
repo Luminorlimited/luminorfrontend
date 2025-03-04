@@ -77,7 +77,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
         if (option === "Flat_Fee") return 3;
         if (option === "Hourly_Fee") return 3;
         if (option === "Milestone") return 4;
-        return 1;
+        return 3;
     };
 
     const onSubmit = async (data: any) => {
