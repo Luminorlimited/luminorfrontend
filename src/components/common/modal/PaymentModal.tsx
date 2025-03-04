@@ -13,6 +13,7 @@ interface AgreementType {
 
 interface PaymentModalProps {
     register: (name: string) => void;
+    setOption: (name: string) => void;
     setValue: (name: string, value: any) => void;
     getValues: (name: string) => any;
     setagreementType: (optionId: string) => void;
@@ -26,6 +27,7 @@ export function PaymentModal({
     getValues,
     setagreementType,
     handleNextStep,
+    setOption,
     setStep,// Correctly receive handleNextStep prop
 }: PaymentModalProps) {
     const [selectedOption, setSelectedOption] = React.useState<string | null>(
@@ -60,6 +62,7 @@ export function PaymentModal({
         // console.log(`Selected payment option in PaymentModal: ${optionId}`);
     };
 
+
     const handleNext = () => {
 
         if (!selectedOption) {
@@ -69,10 +72,16 @@ export function PaymentModal({
 
         if (selectedOption === "Flat_Fee") {
             handleNextStep(3);
+            setOption("Flat_Fee")
+
         } else if (selectedOption === "Hourly_Fee") {
             handleNextStep(4); // Proceed to step 4 for hourly fee
+            setOption("Hourly_Fee")
+
         } else if (selectedOption === "Milestone") {
             handleNextStep(5); // Proceed to step 5 for milestone payment
+            setOption("Milestone")
+
         }
     };
 

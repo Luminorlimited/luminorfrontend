@@ -41,7 +41,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
     const [socket, setSocket] = useState<any>(null);
     const totalSteps = 6;
     // const [finalStep, setFinalStep] = useState<any>(null);
-    const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
+    // const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [agreementType, setagreementType] = useState<string | null>(null);
     const [milestones, setMilestones] = React.useState<Milestone[] | undefined>([
@@ -72,6 +72,13 @@ const ProjectModal: React.FC<projectModalProps> = ({
             mysocket.emit("register", JSON.stringify({ id: user1 }));
         });
     }, [user1]);
+    const [option, setOption] = React.useState("")
+    const getTotalSteps = () => {
+        if (option === "Flat_Fee") return 3;
+        if (option === "Hourly_Fee") return 3;
+        if (option === "Milestone") return 4;
+        return 1;
+    };
 
     const onSubmit = async (data: any) => {
         try {
@@ -107,6 +114,8 @@ const ProjectModal: React.FC<projectModalProps> = ({
 
         onClose();
     };
+
+
 
 
 
@@ -152,7 +161,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
                                 register={register}
                                 getValues={getValues}
                                 setStep={setStep}
-                                // step={step}
+                                setOption={setOption}
                                 setagreementType={setagreementType}
                                 setValue={setValue}
                                 handleNextStep={(nextStep: number) => setStep(nextStep)} // Pass the setter directly
@@ -241,7 +250,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
 
                         {/* Step Indicator */}
                         <div className="flex items-center justify-center gap-2 pt-4">
-                            {steps.map((stepNumber) => (
+                            {Array.from({ length: getTotalSteps() }, (_, i) => i + 1).map((stepNumber) => (
                                 <div key={stepNumber} className="flex items-center">
                                     <div
                                         className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium ${stepNumber < step
@@ -253,7 +262,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
                                     >
                                         {stepNumber < step ? "✓" : stepNumber}
                                     </div>
-                                    {stepNumber < totalSteps && (
+                                    {stepNumber < getTotalSteps() && (
                                         <div
                                             className={`w-12 h-0.5 ${stepNumber < step ? "bg-[#6938EF]" : "bg-gray-200"
                                                 }`}
