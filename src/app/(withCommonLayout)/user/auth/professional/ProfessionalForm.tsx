@@ -91,7 +91,7 @@ export default function ProfessionalForm() {
     formData.append("educationalBackground", data.edubackground);
     formData.append("relevantQualification", data.eduqualification);
     
-    console.log("data is", data);
+    // console.log("data is", data);
     // Append technical skills as an array
     if (Array.isArray(data.technicalSkill)) {
       data.technicalSkill.forEach((technicalSkill: string, index: number) => {
@@ -109,19 +109,19 @@ export default function ProfessionalForm() {
     try {
       if (validatePassword()) {
         const res: any = await createProfessional(formData);
-        console.log("my formdata", formData);
-        console.log("my response", res);
+        // console.log("my formdata", formData);
+        // console.log("my response", res);
         if (res?.data) {
          
 
-          console.log("Form submitted successfully:", res.data);
+          // console.log("Form submitted successfully:", res.data);
           toast.success("Form submitted successfully!");
           setStep(5);
           // router.push("/user/auth/login");
         } else {
           // console.log("FormData content:", res?.error?.data?.message); // Log FormData content
           toast.error(res?.error?.data?.errorMessages?.[0].message);
-          console.log();
+          // console.log();
           setLoading(false);
         }
 

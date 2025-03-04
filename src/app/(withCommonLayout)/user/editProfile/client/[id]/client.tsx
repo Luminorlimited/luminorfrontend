@@ -150,7 +150,7 @@ export default function Client() {
 
     const initAutocomplete = () => {
       const input = document.getElementById("search-input") as HTMLInputElement;
-      console.log("input is", input);
+      // console.log("input is", input);
       if (input) {
         autocomplete = new google.maps.places.Autocomplete(input);
 
@@ -332,7 +332,7 @@ export default function Client() {
   useEffect(() => {
     // console.log("selectProject state updated:", selectProject);
   }, [selectProject]);
-  console.log("image url", imageUrl);
+  // console.log("image url", imageUrl);
   const [updateCoverPhoto, { isLoading: iscoverPhotoLoading }] = useUpdateCoverPhotoMutation();
 
   const handleCoverPhotoChange = async (

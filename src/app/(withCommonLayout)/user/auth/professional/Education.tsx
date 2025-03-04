@@ -66,7 +66,7 @@ export default function Education({ register, handleNext, setValue, handleBack, 
     const skills = technicalSkill
       .split(",")
     setValue("technicalSkill", skills);
-    console.log(skills);
+    // console.log(skills);
 
 
     return true;

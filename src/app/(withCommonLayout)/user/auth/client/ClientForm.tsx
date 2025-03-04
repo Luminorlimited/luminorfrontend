@@ -67,7 +67,7 @@ export default function ClientForm() {
     try {
       if (validatePassword()) {
         const res: any = await createClient(clientData);
-        console.log("my response", res);
+        // console.log("my response", res);
 
         if (res?.data) {
           toast.success("Successfully Created your Account");

@@ -120,7 +120,7 @@ const Page: React.FC = () => {
       });
 
       mysocket.on("conversation-list", (data) => {
-        console.log(data, "convirsation list");
+        // console.log(data, "convirsation list");
 
         setUsers(data);
       });
@@ -144,7 +144,7 @@ const Page: React.FC = () => {
       });
       mysocket.on("image-pass", (data) => {
         const { message, fromUserId } = data;
-        console.log(message, "from listinging image-pass");
+        // console.log(message, "from listinging image-pass");
 
         if (
           message &&

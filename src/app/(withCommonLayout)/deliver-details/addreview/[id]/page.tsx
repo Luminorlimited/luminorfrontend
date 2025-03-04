@@ -32,7 +32,7 @@ export default function FeedbackForm() {
     const [professionalReview] = useClientReviewMutation()
     const {data:getProfileById}= useGetSingleUserQuery(id)
 
-console.log("my profile is ", getProfileById);
+// console.log("my profile is ", getProfileById);
     const maxLength = 700;
     const feedbackValue = watch('feedback');
     const ratingValue = watch('rating');

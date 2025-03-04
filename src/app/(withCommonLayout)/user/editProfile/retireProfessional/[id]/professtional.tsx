@@ -301,11 +301,11 @@ export default function Professional() {
         slots: slots,
       }));
 
-    console.log("Availability Data (Before Sending):", availabilityArray);
+    // console.log("Availability Data (Before Sending):", availabilityArray);
     formData.append("availability", JSON.stringify(availabilityArray))
 
 
-    console.log("Availability data:", availabilityArray)
+    // console.log("Availability data:", availabilityArray)
 
     formData.append("name[firstName]", data.firstName);
     formData.append("name[lastName]", data.lastName);

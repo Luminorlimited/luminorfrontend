@@ -82,7 +82,7 @@ export default function Signup({ register, handleNext, getValues, control, setVa
         toast.error("Email already exists. Please use a different email.");
       } else {
         handleNext(); // Only proceed to next step if validation passes and email doesn't exist
-        console.log("value is", values);
+        // console.log("value is", values);
       }
     }
   };
