@@ -320,15 +320,13 @@ const Page: React.FC = () => {
             id: getToUser?.data?.retireProfessional
               ? getToUser?.data?.retireProfessional?._id
               : getToUser?.data?.client?._id,
-            name: `${
-              getToUser?.data?.retireProfessional
-                ? getToUser.data.retireProfessional.name.firstName
-                : getToUser?.data?.client?.name.firstName
-            } ${
-              getToUser?.data?.retireProfessional
+            name: `${getToUser?.data?.retireProfessional
+              ? getToUser.data.retireProfessional.name.firstName
+              : getToUser?.data?.client?.name.firstName
+              } ${getToUser?.data?.retireProfessional
                 ? getToUser.data.retireProfessional.name.lastName
                 : getToUser?.data?.client?.name.lastName
-            }`,
+              }`,
             profileUrl: getToUser?.data?.retireProfessional
               ? getToUser?.data?.retireProfessional?.profileUrl
               : getToUser?.data?.client?.profileUrl,
@@ -366,7 +364,7 @@ const Page: React.FC = () => {
           recipient: { _id: id.id },
           createdAt: new Date().toISOString(),
         };
-// 
+        // 
         // console.log("Temporary message:", temporaryMessage);
 
         setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
@@ -381,15 +379,13 @@ const Page: React.FC = () => {
             email: getToUser?.data?.retireProfessional
               ? getToUser?.data?.retireProfessional?.email
               : getToUser?.data?.client?.email,
-            name: `${
-              getToUser?.data?.retireProfessional
-                ? getToUser.data.retireProfessional.name.firstName
-                : getToUser?.data?.client?.name.firstName
-            } ${
-              getToUser?.data?.retireProfessional
+            name: `${getToUser?.data?.retireProfessional
+              ? getToUser.data.retireProfessional.name.firstName
+              : getToUser?.data?.client?.name.firstName
+              } ${getToUser?.data?.retireProfessional
                 ? getToUser.data.retireProfessional.name.lastName
                 : getToUser?.data?.client?.name.lastName
-            }`,
+              }`,
             profileUrl: getToUser?.data?.retireProfessional
               ? getToUser?.data?.retireProfessional?.profileUrl
               : getToUser?.data?.client?.profileUrl,
@@ -406,7 +402,10 @@ const Page: React.FC = () => {
 
         // Reset input fields
         setMessages("");
+        setInbox([]);
         setSelectedImages([])
+        setSelectedBase64Images([])
+
       }
     } catch (e) {
       console.log(e, "error");
@@ -462,12 +461,12 @@ const Page: React.FC = () => {
   const handleProjectModal = async () => {
     // try {
     // if (getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
-      if (isButtonDisabled) return;
-      setIsButtonDisabled(true);
-      setProjectModal((prevState) => !prevState);
-      setTimeout(() => {
-        setIsButtonDisabled(false);
-      });
+    if (isButtonDisabled) return;
+    setIsButtonDisabled(true);
+    setProjectModal((prevState) => !prevState);
+    setTimeout(() => {
+      setIsButtonDisabled(false);
+    });
     // } else {
     //   await sendOnboardingUrl({});
     //   toast.error("Please  Check your mail and verify your stripe account.");
@@ -543,9 +542,8 @@ const Page: React.FC = () => {
 
         {/* Sidebar with Overlay */}
         <div
-          className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${
-            showSidebar ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`fixed inset-0 z-50 transition-transform duration-300 lg:hidden ${showSidebar ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
             <div className="p-4">
@@ -567,15 +565,14 @@ const Page: React.FC = () => {
       </div>
       <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
         <div
-          className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${
-            showSidebar ? "hidden" : "block"
-          }`}
+          className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
+            }`}
         >
           <div className="p-4">
             <AllUsers
               handleshowMessage={handleshowMessage}
               getConversation={{ data: users }}
-              // messageNotifications={messageNotifications}
+            // messageNotifications={messageNotifications}
             />
           </div>
         </div>
@@ -689,8 +686,8 @@ const Page: React.FC = () => {
           </div>
 
           <div className="flex-1">
-            <div className="mx-auto bg-white p-4 pb-0 h-full rounded-[10px]">
-              <div className="flex flex-col overflow-y-auto  h-full">
+            <div className="mx-auto bg-white p-4 pb-0 rounded-[10px]">
+              <div className="flex flex-col overflow-y-auto ">
                 {isFetching ? (
                   <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
                 ) : (
@@ -706,17 +703,18 @@ const Page: React.FC = () => {
                     senderName={""}
                   />
                 )}
+
               </div>
             </div>
           </div>
 
+
           <div className="px-4 absolute bottom-0 left-0 w-full border-t border-gray-300 bg-white flex items-center gap-2">
             <div
-              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${
-                fileBtn
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-5 pointer-events-none"
-              }`}
+              className={`absolute -top-[95px] left-[35px] flex flex-col gap-y-3 transition-all duration-500 ease-in-out ${fileBtn
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-5 pointer-events-none"
+                }`}
             >
               <button
                 onClick={() => handleFileClick("document")}
@@ -732,41 +730,45 @@ const Page: React.FC = () => {
               </button>
             </div>
 
+
             <form
               onSubmit={onSendMessage}
-              className="flex items-center gap-2 p-4 w-full"
+              className="flex items-center gap-2 p-4 w-full relative"
               encType="multipart/form-data"
             >
               <AiOutlinePaperClip
                 onClick={handleClick}
-                className="text-xl absolute left-10 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
+                className="text-xl absolute left-6 hover:bg-white rounded-full text-[#25314C] transition-all cursor-pointer w-8 h-8 p-1"
               />
+
+
               {selectedBase64Images.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {selectedBase64Images.map((base64, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 bg-gray-200 px-3 py-2 rounded-lg"
-                    >
-                      <Image
-                        width={90}
-                        height={40}
-                        src={base64}
-                        alt="Selected"
-                        className="w-[90px] h-10 object-cover rounded"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleFileRemove(base64)}
-                        className="text-red-500 font-bold"
+                <div className="bg-gray-400 p-4 rounded-[9px] absolute bottom-[75px] left-[-15px] w-full">
+                  <div className=" flex gap-2">
+                    {selectedBase64Images.map((base64, index) => (
+                      <div
+                        key={index}
+                        className=" bg-gray-200 px-3 py-2 rounded-lg w-[200px] h-[150px] relative"
                       >
-                        X
-                      </button>
-                    </div>
-                  ))}
+                        <Image
+                          width={200}
+                          height={150}
+                          src={base64}
+                          alt="Selected"
+                          className="w-full h-full object-cover rounded"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleFileRemove(base64)}
+                          className="text-red-500 font-bold absolute top-3 left-3 "
+                        >
+                          X
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
-
               <input
                 id="fileInput"
                 type="file"
@@ -778,7 +780,7 @@ const Page: React.FC = () => {
                 placeholder="Write message here..."
                 value={messages} // Use 'messages' state here
                 onChange={(e) => setMessages(e.target.value)} // Update state correctly on change
-                className="flex-1 w-full bg-gray-100 pl-12 py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
+                className="flex-1 w-full bg-gray-100 pl-12 px py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
               />
               <button type="submit" className="bg-primary rounded-full">
                 <FiSend className="text-lg text-white cursor-pointer w-8 h-8 p-2" />
@@ -794,6 +796,7 @@ const Page: React.FC = () => {
                 <EmojiPicker onEmojiClick={handleEmojiClick} />
               </div>
             )}
+
             {/* <MdOutlineKeyboardVoice className="text-xl hover:shadow-md  bg-[#F2FAFF] rounded-full text-[#25314C] cursor-pointer w-8 h-8 p-1" /> */}
             <button
               onClick={handleCreateZoomMeeting}

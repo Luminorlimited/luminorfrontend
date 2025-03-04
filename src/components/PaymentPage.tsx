@@ -103,7 +103,6 @@ export default function PaymentPage() {
                      
 
                         <div className="border rounded-lg p-4 bg-muted/30">
-                            <div className="text-sm font-medium mb-3">Search Filters</div>
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <div className="w-full">
                                     <div className="flex items-center justify-between space-y-2">

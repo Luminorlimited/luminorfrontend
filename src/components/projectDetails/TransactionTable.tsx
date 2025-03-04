@@ -45,7 +45,7 @@ export default function TransactionTable() {
     //             : String(bValue).localeCompare(String(aValue))
     //     })
     const { data: transactionList } = useTransactionListQuery(undefined)
-    // console.log('my transaction list ', transactionList);
+    console.log('my transaction list ', transactionList);
 
     const [searchQuery, setSearchQuery] = useState("");
 

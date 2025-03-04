@@ -3,27 +3,21 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
-// import LanguageSwitcher from "./LanguageSwitcher";
 import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
-// import { Search } from "lucide-react";
 import { MobileNavbar } from "./MobileNavbar";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
 import { useRouter } from "next/navigation";
-// import { BiMessage } from "react-icons/bi";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  // DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { GoBell } from "react-icons/go";
 import Image from "next/image";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import demoprofile from "@/assets/placeholderimg.png"
 import Cookies from "js-cookie";
 import { FaRegMessage } from "react-icons/fa6";
-// import { useDecodedToken } from "@/components/common/DecodeToken";
 import { RootState } from "@/redux/store";
 
 

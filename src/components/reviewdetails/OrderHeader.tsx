@@ -20,7 +20,7 @@ export default function OrderHeader({ getSingleOrder }: { getSingleOrder: any })
                     Your order is now in the works
                 </h1>
                 <p className="text-gray-600">
-                    {getSingleOrder?.data?.retireProfessional[0]?.name?.firstName} {getSingleOrder?.data?.retireProfessional[0]?.name?.lastName} has accept the order. You should complete the order
+                    {getSingleOrder?.name?.firstName} {getSingleOrder?.name?.lastName} has accept the order. You should complete the order
                     {/* <br />by{' '} */}
                     {/* <span className="font-semibold">{getSingleOrder.data.retireProfessional[0].name.firstName}</span> */}
                 </p>

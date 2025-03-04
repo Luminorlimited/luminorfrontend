@@ -10,6 +10,13 @@ export const navbarLinks = (role: string): navbarDataTypes[] => {
       title: "Orders",
       link: "/orders",
     });
+  } else {
+    links.push({
+      id: 1,
+      title: "Payment",
+      link: "/payment",
+    });
+    
   }
 
   links.push(
