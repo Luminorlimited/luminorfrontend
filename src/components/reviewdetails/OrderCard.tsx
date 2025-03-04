@@ -122,7 +122,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                             <h3 className="text-lg text-gray-600">Order form</h3>
                         </div>
                         <div className="text-lg text-gray-900 font-medium text-right">
-                            {getSingleOrder?.data?.retireProfessional[0]?.name?.firstName} {getSingleOrder?.data?.retireProfessional[0]?.name?.lastName}
+                            {getSingleOrder?.data?.client?.name?.firstName} {getSingleOrder?.data?.client?.name?.lastName}
                         </div>
 
                         <div>

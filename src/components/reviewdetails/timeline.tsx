@@ -60,7 +60,7 @@ export default function Timeline({ getSingleOrder }: { getSingleOrder: any }) {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center justify-between">
-                            <span className="text-gray-700">{getSingleOrder?.name?.firstName} {getSingleOrder?.name?.lastName}  has placed the order</span>
+                            <span className="text-gray-700">{getSingleOrder?.data?.client?.name?.firstName} {getSingleOrder?.data?.client?.name?.lastName}  has placed the order</span>
                             <span className="text-gray-500 text-sm">{formattedDate}</span>
                         </div>
 
@@ -72,7 +72,7 @@ export default function Timeline({ getSingleOrder }: { getSingleOrder: any }) {
                     </div>
                     <div className="flex-1">
                         <div className="flex items-center justify-between">
-                            <span className="text-gray-700">{getSingleOrder?.name?.firstName} {getSingleOrder?.name?.lastName}  submitted the requirement</span>
+                            <span className="text-gray-700">{getSingleOrder?.data?.client?.name?.firstName} {getSingleOrder?.data?.client?.name?.lastName}  submitted the requirement</span>
                             <span className="text-gray-500 text-sm">{formattedDate}</span>
                         </div>
                         {getSingleOrder?.data?.result?.clientRequerment ? (
