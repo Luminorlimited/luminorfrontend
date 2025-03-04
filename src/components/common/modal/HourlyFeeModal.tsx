@@ -38,9 +38,16 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                 {/* Delivery */}
                 <div className="space-y-2">
                     <label htmlFor="delivery" className="block text-sm font-medium text-gray-700">
-                        Delivery
+                        How many days
                     </label>
-                    <select
+                    <input
+                        {...register("hourlyFee.delivery", { required: true })}
+                        id="price"
+                        // type="number" // Change to text to ensure value is a string
+                        placeholder="How many days"
+                        className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
+                    />
+                    {/* <select
                         {...register("hourlyFee.delivery", { required: true })}
                         id="delivery"
                         className="block w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
@@ -50,7 +57,7 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
                                 {days} {days === 1 ? "day" : "days"}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
                 </div>
 
                 {/* Price */}

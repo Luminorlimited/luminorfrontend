@@ -45,9 +45,16 @@ export function FlatFeeModal({ register }: FlatFeeModalProps) {
                         htmlFor="delivery"
                         className="block text-sm font-medium text-gray-700"
                     >
-                        Delivery
+                        How many days
                     </label>
-                    <select
+                    <input
+                        {...register("flatFee.delivery", { required: true })}
+                        id="price"
+                        // type="number" // Change to text to ensure value is a string
+                        placeholder="How many days"
+                        className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
+                    />
+                    {/* <select
                         id="delivery"
                         {...register("flatFee.delivery", { required: true })}
                         className="block w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
@@ -57,7 +64,7 @@ export function FlatFeeModal({ register }: FlatFeeModalProps) {
                                 {days} {days === 1 ? "day" : "days"}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
                 </div>
 
                 {/* Price */}
