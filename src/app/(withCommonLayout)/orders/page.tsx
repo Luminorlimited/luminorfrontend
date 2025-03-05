@@ -10,7 +10,7 @@ const Page: React.FC = () => {
   const { data: orderList, isLoading } = useTransactionListQuery(undefined);
 
   if (isLoading) {
-    <p>Please wait....</p>
+    return <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
   }
 
   return (
@@ -40,8 +40,6 @@ const Page: React.FC = () => {
             </Link>
           ))
           : (<p className='flex col-span-3 items-center justify-center py-28 text-center'>No Order Found.</p>)}
-
-
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ import { FiSend } from "react-icons/fi";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
-// import { MdOutlineKeyboardVoice } from "react-icons/md";
 import EmojiPicker from "emoji-picker-react";
 import { IoMdMenu } from "react-icons/io";
 import { Video, FileText, Images } from "lucide-react";

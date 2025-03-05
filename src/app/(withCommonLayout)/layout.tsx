@@ -18,16 +18,6 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
     setShowAlert((prev) => !prev);
   };
 
-  // console.log(
-  // "GEtprofile acitvation",
-  //   getprofile?.data?.client?.isActivated
-  // );
-
-  // console.log(
-  // "retire acitvation",
-  //   getprofile?.data?.retireProfessional?.isActivated
-  //   );
-
 
 
 
