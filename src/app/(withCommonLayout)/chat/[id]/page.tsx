@@ -431,6 +431,8 @@ const Page: React.FC = () => {
     input.click();
   };
 
+  console.log("my message is ", messages);
+
   const handleClick = () => {
     setTimeout(() => {
       showFileBtn((prev) => !prev);
@@ -680,8 +682,8 @@ const Page: React.FC = () => {
                     currentUser={user1 ?? ""}
                     profileUrl={getToUser?.data?.profileUrl}
                     colorScheme={{
-                      senderBg: `${messages === "Your Offer Acccepted!" ? "bg-green-700 text-white" : messages === "Your Offer Canceled" ? "bg-red-700 text-white" : "bg-[#F2FAFF] text-[#4A4C56]"}`,
-                      receiverBg: `${messages === "Your Offer Acccepted!" ? "bg-green-700 text-white" : messages === "Your Offer Canceled" ? "bg-red-700 text-white" : "bg-[#F8F8F8] text-[#4A4C56]"}`,
+                      senderBg: `bg-[#F2FAFF] text-[#4A4C56]`,
+                      receiverBg: `bg-[#F8F8F8] text-[#4A4C56]`,
                     }}
                     senderName={""}
                   />
