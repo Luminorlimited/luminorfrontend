@@ -39,7 +39,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
     const [open, setOpen] = useState(true);
     const [step, setStep] = useState<number>(1);
     const [socket, setSocket] = useState<any>(null);
-    const totalSteps = 6;
+    // const totalSteps = 6;
     // const [finalStep, setFinalStep] = useState<any>(null);
     // const steps = Array.from({ length: totalSteps }, (_, i) => i + 1);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -54,9 +54,13 @@ const ProjectModal: React.FC<projectModalProps> = ({
         },
     ]);
 
-    const { register, handleSubmit, getValues, setValue } = useForm();
-    const handleNext = () => {
-        if (step < totalSteps) setStep(step + 1);
+    const { register, handleSubmit, getValues, setValue, trigger, } = useForm();
+
+    const handleNext = async () => {
+        const isValid = await trigger();
+        if (isValid && step < getTotalSteps()) {
+            setStep(step + 1);
+        }
     };
     const handleBack = () => {
         if (step > 1) setStep(step - 1);
@@ -155,7 +159,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
                 <div className="space-y-6 py-4 px-4 max-h-[550px] overflow-y-scroll">
                     <form onSubmit={handleSubmit(onSubmit)}>
                         {step === 1 ? (
-                            <ProjectDescModal register={register} handleNext={handleNext} />
+                            <ProjectDescModal register={register} />
                         ) : step === 2 ? (
                             <PaymentModal
                                 register={register}
@@ -194,7 +198,7 @@ const ProjectModal: React.FC<projectModalProps> = ({
                                 <Button
                                     type="button"
                                     className="w-[100px] bg-[#6938EF] text-white py-2 rounded-[10px] hover:bg-[#6938EF]/90"
-                                    onClick={() => setStep((step) => step + 1)}
+                                    onClick={handleNext}
                                 >
                                     Next
                                 </Button>

@@ -42,15 +42,15 @@ export function FlatFeeModal({ register }: FlatFeeModalProps) {
                 {/* Delivery */}
                 <div className="space-y-2">
                     <label
-                        htmlFor="delivery"
+                        htmlFor="days"
                         className="block text-sm font-medium text-gray-700"
                     >
                         How many days
                     </label>
                     <input
                         {...register("flatFee.delivery", { required: true })}
-                        id="price"
-                        // type="number" // Change to text to ensure value is a string
+                        id="days"
+                        max={90}
                         placeholder="How many days"
                         className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
                     />

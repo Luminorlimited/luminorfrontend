@@ -37,12 +37,12 @@ export function HourlyFeeModal({ register }: HourlyFeeModalProps) {
 
                 {/* Delivery */}
                 <div className="space-y-2">
-                    <label htmlFor="delivery" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="days" className="block text-sm font-medium text-gray-700">
                         How many days
                     </label>
                     <input
                         {...register("hourlyFee.delivery", { required: true })}
-                        id="price"
+                        id="days"
                         // type="number" // Change to text to ensure value is a string
                         placeholder="How many days"
                         className="pl-7 w-full mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none"
