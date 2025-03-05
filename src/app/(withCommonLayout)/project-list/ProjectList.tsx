@@ -99,7 +99,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     setCurrentPage(pageNumber);
   };
   // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-  console.log("My test is", currentItems);
+  // console.log("My test is", currentItems);
   return (
     <div>
       {loading || loading2 ? <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " /> : null}
