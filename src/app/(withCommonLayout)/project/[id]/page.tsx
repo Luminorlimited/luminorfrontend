@@ -39,6 +39,9 @@ export default function OrderDetailsPage() {
     // Format date to a readable format
     const formatDate = (dateString: any) => {
         const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return "Invalid Date";
+        }
         return new Intl.DateTimeFormat("en-US", {
             year: "numeric",
             month: "long",
@@ -47,6 +50,8 @@ export default function OrderDetailsPage() {
             minute: "2-digit",
         }).format(date);
     };
+
+    console.log("my offer", getSingleOrder);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-10 px-4">
@@ -95,25 +100,25 @@ export default function OrderDetailsPage() {
                             <div className="space-y-6">
                                 <div className="bg-blue-50 p-4 rounded-lg">
                                     <h3 className="font-medium text-blue-800 mb-1">Project Name</h3>
-                                    <p className="text-blue-900 font-semibold">{getSingleOrder?.data?.result?.project.projectName}</p>
+                                    <p className="text-blue-900 font-semibold">{getSingleOrder?.data?.result?.project?.projectName}</p>
                                 </div>
                                 <div>
                                     <h3 className="font-medium text-gray-700 mb-1">Description</h3>
-                                    <p className="text-gray-900">{getSingleOrder?.data?.result?.project.description}</p>
+                                    <p className="text-gray-900">{getSingleOrder?.data?.result?.project?.description}</p>
                                 </div>
                                 <div className="bg-indigo-50 p-4 rounded-lg">
                                     <h3 className="font-medium text-indigo-800 mb-1">Agreement Type</h3>
-                                    <p className="text-indigo-900 font-semibold">{getSingleOrder?.data?.result?.project.agreementType.replace("_", " ")}</p>
+                                    <p className="text-indigo-900 font-semibold">{getSingleOrder?.data?.result?.project?.agreementType.replace("_", " ")}</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-purple-50 p-4 rounded-lg">
                                         <h3 className="font-medium text-purple-800 mb-1">Revisions</h3>
-                                        <p className="text-purple-900 text-2xl font-bold">{getSingleOrder?.data?.result?.project.flatFee.revision}</p>
+                                        <p className="text-purple-900 text-2xl font-bold">{getSingleOrder?.data?.result?.project?.flatFee?.revision}</p>
                                     </div>
                                     <div className="bg-violet-50 p-4 rounded-lg">
                                         <h3 className="font-medium text-violet-800 mb-1">Delivery Time</h3>
                                         <p className="text-violet-900 text-2xl font-bold">
-                                            {getSingleOrder?.data?.result?.project.flatFee.delivery} <span className="text-sm font-normal">day(s)</span>
+                                            {getSingleOrder?.data?.result?.project?.flatFee?.delivery} <span className="text-sm font-normal">day(s)</span>
                                         </p>
                                     </div>
                                 </div>
@@ -121,7 +126,7 @@ export default function OrderDetailsPage() {
                                     <h3 className="font-medium text-gray-700 mb-1">Created At</h3>
                                     <p className="text-gray-900 flex items-center gap-2">
                                         <Calendar className="h-4 w-4 text-gray-500" />
-                                        {formatDate(getSingleOrder?.data?.result?.project.createdAt)}
+                                        {formatDate(getSingleOrder?.data?.result?.project?.createdAt)}
                                     </p>
                                 </div>
                             </div>
@@ -131,7 +136,7 @@ export default function OrderDetailsPage() {
                                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
                                 asChild
                             >
-                                <a href={getSingleOrder?.data?.result?.project.orderAgreementPDF} target="_blank" rel="noopener noreferrer">
+                                <a href={getSingleOrder?.data?.result?.project?.orderAgreementPDF} target="_blank" rel="noopener noreferrer">
                                     <FileCheck className="h-4 w-4" />
                                     View Agreement PDF
                                     <ExternalLink className="h-3 w-3 ml-1" />

@@ -23,12 +23,13 @@ import io, { Socket } from "socket.io-client";
 import { useDecodedToken } from "@/components/common/DecodeToken";
 import { Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent,  CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { cn } from "@/lib/utils";
 
 
 interface Notification {
@@ -162,7 +163,6 @@ const Navbar = () => {
 
 
 
-
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
       <span className="lg:w-auto">
@@ -204,48 +204,74 @@ const Navbar = () => {
         {/* <LanguageSwitcher /> */}
 
         {/* User Section */}
-        <Popover open={open} onOpenChange={setOpen}>
-          {/* {notification.count > 0 &&
+        {user?.role === 'client' && (
+          <Popover open={open} onOpenChange={setOpen}>
+            {/* {notification.count > 0 &&
             <span className="bg-red-600 text-white text-sm p-1 rounded-full">{notification.count}</span>
           } */}
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-5 w-5" />
-              {(notification?.count ?? 0) > 0 && (
-                <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
-                  {notification?.count}
-                </span>
-              )}
-              <span className="sr-only">Toggle notifications</span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80 p-0" align="end">
-            <Card className="border-0 shadow-none">
-              <CardHeader className="border-b p-4 pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">Notifications</CardTitle>
-                  {/* {unreadCount > 0 && (
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                {(notification?.count ?? 0) > 0 && (
+                  <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
+                    {notification?.count}
+                  </span>
+                )}
+                <span className="sr-only">Toggle notifications</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0" align="end">
+              <Card className="border-0 shadow-none">
+                <CardHeader className="border-b p-4 pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Notifications</CardTitle>
+                    {/* {unreadCount > 0 && (
                     <Button variant="ghost" size="sm" className="h-auto p-0 text-sm font-medium" onClick={markAllAsRead}>
                       Mark all as read
                     </Button>
                   )} */}
-                </div>
-                <CardDescription >You have {notification?.count} unread notifications</CardDescription>
-              </CardHeader>
-              <CardContent className="p-0 max-h-[300px] overflow-auto">
-                {(notification?.count ?? 0) > 0 ? (
-                  <div className="px-3">
-                    <ul>
-                      <li className="list-item">• {notification?.message}</li>
-                    </ul>
                   </div>
-                ) : (
-                  <div className="p-8 text-center text-muted-foreground">No notifications</div>
-                )}
-              </CardContent>
-            </Card>
-          </PopoverContent>
-        </Popover>
+                 
+                </CardHeader>
+                <CardContent className="p-0 max-h-[300px] overflow-auto">
+                  {(notification?.count ?? 0) > 0 ? (
+                    <div className="px-3">
+                      <ul className="space-y-2">
+                        <li>
+                          {/* <Link
+                            href={`/chat/${notification?.fromUser}`}
+                            className="block px-4 py-2 bg-gray-100 rounded-lg transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md"
+                          >
+                            • {notification?.message}
+                          </Link> */}
+                          <Link
+                            href={`/chat/${notification?.fromUser}`}
+                            className={cn(
+                              "group flex items-center gap-3 rounded-md  p-3 transition-all hover:border-primary/50 hover:bg-accent")}
+                          >
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                              <Bell className="h-4 w-4" />
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                              <p className="line-clamp-1 text-sm font-medium text-foreground group-hover:text-primary">
+                                {notification?.message}
+                              </p>
+                              
+                            </div>
+                          </Link>
+                        </li>
+                      </ul>
+
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center text-muted-foreground">No notifications</div>
+                  )}
+                </CardContent>
+              </Card>
+            </PopoverContent>
+          </Popover>
+        )}
+      
         {user ? (
           <div className="flex gap-3 items-center relative" ref={dropdownRef}>
 
