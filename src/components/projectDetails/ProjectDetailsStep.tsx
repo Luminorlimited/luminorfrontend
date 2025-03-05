@@ -16,9 +16,9 @@ interface Step {
 
 export default function ProjectDetails() {
     const offerId = useParams()
-    // // console.log('my offer', offerId);
+   
     const { data: getSingleOffer } = useGetSingleOfferQuery(offerId.id)
-    // // console.log(getSingleOffer?.data?.orderAgreementPDF);
+    
 
     // console.log(getSingleOffer)
     const handleDownloadPdf = () => {

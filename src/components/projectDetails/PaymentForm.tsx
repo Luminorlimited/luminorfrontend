@@ -23,10 +23,6 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
     const offerId = useParams()
     const customerId = getprofile?.data?.client?.stripe?.customerId
-    // const token = useDecodedToken()
-
-
-    // console.log("My requirement data is", requirementdata);
 
     const [offerPayment, { isLoading }] = useOfferpaymentMutation({});
 
@@ -112,7 +108,6 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
         }
     };
 
-    console.log("my get single offer is", getSingleOffer?.data);
 
 
     return (

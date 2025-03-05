@@ -110,7 +110,7 @@ export default function PaymentPage() {
                                                 </Link>
                                             </TableCell>
                                             <TableCell>
-                                                <Link className="text-primary" href={`/project/${item?.project?._id}`}>
+                                                <Link className="text-primary" href={`/project/${item?._id}`}>
                                                     {item?.project?.projectName}
                                                 </Link>
                                             </TableCell>
