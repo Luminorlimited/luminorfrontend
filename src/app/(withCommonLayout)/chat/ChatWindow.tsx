@@ -73,8 +73,12 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           <Image
             src={
               isSender
-                ? profileData?.data?.profileUrl && profileData?.data?.profileUrl !== "null" ? profileData?.data?.profileUrl : avatar1
-                : profileUrl || avatar2
+                ? profileData?.data?.profileUrl && profileData?.data?.profileUrl !== "null"
+                  ? profileData.data.profileUrl
+                  : avatar1
+                : profileUrl && profileUrl !== "null"
+                  ? profileUrl
+                  : avatar2
             }
             alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
             width={50}
@@ -82,6 +86,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
             className="w-full h-full object-cover rounded-full"
           />
         </Avatar>
+
         {/* Message Content */}
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
