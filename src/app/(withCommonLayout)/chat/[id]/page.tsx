@@ -24,8 +24,6 @@ import {
   useGetMessageQuery,
   useGetuserQuery,
   useImageSendMutation,
-  // useImageSendMutation,
-  // useSendOnboardingUrlMutation,
 } from "@/redux/Api/messageApi";
 import { useGetOfferQuery } from "@/redux/Api/offerApi";
 import { useDecodedToken } from "@/components/common/DecodeToken";
@@ -67,12 +65,9 @@ const Page: React.FC = () => {
     isFetching,
   } = useGetMessageQuery({ user1, user2: id.id }, { skip: !id.id });
 
-  // // console.log(oldMessages, "check old messages");
-  // // console.log(oldSingleMessages, "check old single messages");
   const { data: getConversation } = useGetConversationQuery(undefined, {
     skip: !id.id,
   });
-  // console.log(getConversation,"check convirsation",id.id)
   const [fileUpload] = useImageSendMutation({});
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
@@ -350,7 +345,6 @@ const Page: React.FC = () => {
           fromUserId: token?.id,
         };
 
-        // console.log("Sending message:", message);
 
         socketRef.current.emit("privateMessage", JSON.stringify(message)); // Ensure message includes media
 
@@ -686,8 +680,8 @@ const Page: React.FC = () => {
                     currentUser={user1 ?? ""}
                     profileUrl={getToUser?.data?.profileUrl}
                     colorScheme={{
-                      senderBg: "bg-[#F2FAFF] text-[#4A4C56]",
-                      receiverBg: "bg-[#F8F8F8] text-[#4A4C56]",
+                      senderBg: `${messages === "Your Offer Acccepted!" ? "bg-green-700 text-white" : messages === "Your Offer Canceled" ? "bg-red-700 text-white" : "bg-[#F2FAFF] text-[#4A4C56]"}`,
+                      receiverBg: `${messages === "Your Offer Acccepted!" ? "bg-green-700 text-white" : messages === "Your Offer Canceled" ? "bg-red-700 text-white" : "bg-[#F8F8F8] text-[#4A4C56]"}`,
                     }}
                     senderName={""}
                   />

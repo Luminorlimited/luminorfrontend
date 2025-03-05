@@ -91,7 +91,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 : "rounded-r-[10px] rounded-b-[10px]"
             } inline-block ${
               isSender ? colorScheme.senderBg : colorScheme.receiverBg
-            }`}
+              } border-0 `}
           >
             {
               message?.media && message?.media && (

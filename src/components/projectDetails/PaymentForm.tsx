@@ -341,7 +341,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Service fee</span>
                                     <span className="text-gray-900">
-                                        £ {getSingleOffer?.data?.offer?.serviceFee}
+                                        £ {getSingleOffer?.data?.offer?.serviceFee.tofixed(2)}
                                     </span>
 
                                 </div>
