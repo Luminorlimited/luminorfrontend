@@ -26,7 +26,7 @@ const paymentApi = baseApi.injectEndpoints({
             },
             providesTags: ['Payment']
         }),
-        ProfessionalOrder: build.query({
+        clientPayment: build.query({
             query: () => {
                 return {
                     url: `/order/client-order`,
@@ -65,6 +65,6 @@ const paymentApi = baseApi.injectEndpoints({
 
 
 
-export const { useOfferpaymentMutation, useTransactionListQuery, useProfessionalOrderQuery, useGetSingleOrderQuery, useDeliverOrderMutation } = paymentApi
+export const { useOfferpaymentMutation, useTransactionListQuery, useClientPaymentQuery, useGetSingleOrderQuery, useDeliverOrderMutation } = paymentApi
 
 

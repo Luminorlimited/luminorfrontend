@@ -10,40 +10,10 @@ import Link from 'next/link'
 
 
 export default function TransactionTable() {
-    // const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
-    // const [searchQuery, setSearchQuery] = useState('')
+    
     const [sortBy, setSort] = useState<string | null>(null)
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
-    // const toggleSelectAll = () => {
-    //     if (selectedRows.size === transactions.length) {
-    //         setSelectedRows(new Set())
-    //     } else {
-    //         setSelectedRows(new Set(transactions.map(t => t.id)))
-    //     }
-    // }
-
-    // const toggleRowSelection = (id: string) => {
-    //     const newSelected = new Set(selectedRows)
-    //     if (newSelected.has(id)) {
-    //         newSelected.delete(id)
-    //     } else {
-    //         newSelected.add(id)
-    //     }
-    //     setSelectedRows(newSelected)
-    // }
-
-    // const filteredTransactions = transactions.filter(transaction =>
-    //         transaction.orderNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    //     )
-    //     .sort((a, b) => {
-    //         if (!sortBy) return 0
-    //         const aValue = a[sortBy as keyof Transaction]
-    //         const bValue = b[sortBy as keyof Transaction]
-    //         return sortDirection === 'asc'
-    //             ? String(aValue).localeCompare(String(bValue))
-    //             : String(bValue).localeCompare(String(aValue))
-    //     })
     const { data: transactionList } = useTransactionListQuery(undefined)
     console.log('my transaction list ', transactionList);
 
@@ -62,29 +32,15 @@ export default function TransactionTable() {
         }
     }
 
-    // const offerId = useParams().id
-
-
-    // // console.log('My transaction list', transactionList);
-
-
-    // // console.log('my order', transactionList?.data[3]?.project?.orderAgreementPDF);
     const handleDownloadPdf = () => {
-        const pdfUrl = transactionList?.data?.project?.orderAgreementPDF; // Fetch the PDF URL
+        const pdfUrl = transactionList?.data?.project?.orderAgreementPDF; 
         if (pdfUrl) {
-            const encodedUrl = encodeURI(pdfUrl); // Encode URL to handle special characters
-            // console.log(encodedUrl); // Log the URL to check if it's correct
+            const encodedUrl = encodeURI(pdfUrl);
             window.open(encodedUrl, '_blank');
         } else {
             toast.error("PDF file not available");
         }
     };
-
-
-
-    // const downloadPdf = () => {
-    //     // transactionList?.data?.project?.orderAgreementPDF
-    // }
 
     return (
         <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -137,16 +93,16 @@ export default function TransactionTable() {
                                             : "No Date"}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                        {transaction.transaction._id}
+                                        {transaction?.transaction?._id}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         {transaction?.project?.projectName || "No Service Name"}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                        {transaction.transaction.orderId}
+                                        {transaction?.transaction?.orderId}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                        ${transaction.transaction.amount}
+                                        ${transaction?.transaction?.amount}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                         <button
