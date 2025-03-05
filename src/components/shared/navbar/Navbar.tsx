@@ -126,7 +126,7 @@ const Navbar = () => {
 
             <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer" >
               <Image
-                src={profileData?.data?.profileUrl ?? demoprofile.src }
+                src={profileData?.data?.profileUrl ?? demoprofile.src}
                 width={40}
                 height={40}
                 alt="profile"

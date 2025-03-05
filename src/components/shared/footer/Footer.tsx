@@ -119,7 +119,7 @@ export default function Footer() {
         <hr className="opacity-40 my-10" />
         <div className="flex flex-col md:flex-row justify-between items-center text-white">
           <div className="flex flex-col md:flex-row gap-5 items-center md:items-end mb-4 md:mb-0">
-            <Image src={logo} alt="Luminor logo" height={50} width={100} />
+            <Image src={logo} alt="Luminorlogo" height={50} width={100} />
             {/* <Logo /> */}
             <p className="">Copyright © luminor 2025. All rights reserved</p>
           </div>

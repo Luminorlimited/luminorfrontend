@@ -293,11 +293,21 @@ export default function Client() {
     if (selectedImage instanceof File) {
       return URL.createObjectURL(selectedImage);
     }
-    if (typeof selectedImage === "string" && selectedImage.length) {
+
+    if (typeof selectedImage === "string" && selectedImage.trim().length > 0) {
       return selectedImage;
     }
-    return avatar.src;
-  }, [selectedImage]);
+
+    if (
+      profileData?.data?.profileUrl &&
+      profileData.data.profileUrl !== "null" &&
+      profileData.data.profileUrl.trim().length > 0
+    ) {
+      return profileData.data.profileUrl; // Use latest profile URL
+    }
+
+    return avatar.src; // Default avatar
+  }, [selectedImage, profileData?.data?.profileUrl]);
 
   useMemo(() => {
     if (selectedImage instanceof File) {
@@ -383,7 +393,7 @@ export default function Client() {
         ) : (
           <Image
             className="w-full h-full object-cover"
-            src={imageUrl || profileData?.data?.coverUrl}
+            src={imageUrl ?? profileData?.data?.coverUrl}
             width={1200}
             height={400}
             alt="cover image"

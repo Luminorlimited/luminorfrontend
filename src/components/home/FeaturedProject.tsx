@@ -33,12 +33,19 @@ const FeaturedProject: React.FC = () => {
                 <div className="relative w-full">
                     <div className="overflow-hidden rounded-[10px] max-w-[500px] h-[218px]">
                         <Image
-                            src={data?.workSample || data?.coverUrl || projectImgFallback}
+                            src={
+                                (data?.workSample && data?.workSample !== "null")
+                                    ? data.workSample
+                                    : (data?.coverUrl && data?.coverUrl !== "null")
+                                        ? data.coverUrl
+                                        : projectImgFallback
+                            }
                             alt="Consulting service"
                             width={500}
                             height={218}
                             className="object-cover hover:scale-105 w-full h-full transition-all"
                         />
+
                     </div>
 
                     {isClient && (

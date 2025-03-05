@@ -568,7 +568,7 @@ const Page: React.FC = () => {
               <div className="flex items-center">
                 <div className="w-[40px] h-[40px]">
                   <Image
-                    src={getToUser?.data?.profileUrl || demoimg}
+                    src={getToUser?.data?.profileUrl ?? demoimg}
                     alt="Jane Cooper"
                     width={40}
                     height={40}
