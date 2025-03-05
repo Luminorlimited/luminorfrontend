@@ -30,6 +30,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils";
+import { useSeenNotificationMutation } from "@/redux/Api/messageApi";
 
 
 interface Notification {
@@ -44,6 +45,7 @@ interface Notification {
 const Navbar = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [seenNotification] = useSeenNotificationMutation({})
 
   const user = useSelector((state: RootState) => state.Auth.user);
 
@@ -160,6 +162,30 @@ const Navbar = () => {
   // }
 
 
+  // const formUser = notification?.fromUser
+  // const bodyId = {
+  //   ids: [notification?.fromUser, notification?.toUser]
+  // }
+
+  const handleSeenButton = (fromUser: string) => {
+    if (!notification) return;
+
+    const bodyId = {
+      ids: [notification.fromUser, notification.toUser]
+    };
+
+    seenNotification({ userId: fromUser, data: bodyId })
+      .unwrap()
+      .then(() => {
+        console.log("Notification marked as seen");
+        router.push(`/chat/${fromUser}`);
+      })
+      .catch((error) => {
+        console.error("Failed to mark notification as seen", error);
+      });
+  };
+
+
 
 
 
@@ -244,8 +270,10 @@ const Navbar = () => {
                           >
                             • {notification?.message}
                           </Link> */}
-                          <Link
-                            href={`/chat/${notification?.fromUser}`}
+                          <button
+                            // href={`/chat/${notification?.fromUser}`}
+                            onClick={() => notification?.fromUser && handleSeenButton(notification.fromUser)}
+                            type="button"
                             className={cn(
                               "group flex items-center gap-3 rounded-md  p-3 transition-all hover:border-primary/50 hover:bg-accent")}
                           >
@@ -258,7 +286,7 @@ const Navbar = () => {
                               </p>
                               
                             </div>
-                          </Link>
+                          </button>
                         </li>
                       </ul>
 

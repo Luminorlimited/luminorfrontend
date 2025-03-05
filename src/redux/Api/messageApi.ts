@@ -12,6 +12,14 @@ const projectApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['message'],
         }),
+        seenNotification: build.mutation({
+            query: ({userId, data}) => ({
+                url: `/notification/${userId}`,
+                method: 'PATCH',
+                body: data
+            }),
+            invalidatesTags: ['message'],
+        }),
         getMessage: build.query({
             query: ({ user1, user2 }) => ({
                 url: `/messages?user1=${user1}&user2=${user2}`,
@@ -54,4 +62,4 @@ const projectApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation, useSendOnboardingUrlMutation } = projectApi;
+export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation, useSeenNotificationMutation, useSendOnboardingUrlMutation } = projectApi;
