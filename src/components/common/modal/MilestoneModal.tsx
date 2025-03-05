@@ -137,7 +137,7 @@ export default function MilestoneModal({
                                 htmlFor={`price-${index}`}
                                 className="block text-sm font-medium text-gray-700"
                             >
-                                Price
+                                Prices
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
@@ -145,9 +145,10 @@ export default function MilestoneModal({
                                 </span>
                                 <input
                                     id={`price-${index}`}
-                                    type="number"
+                                    
                                     {...register(`milestones.${index}.price`)}
                                     value={milestone.price}
+                                    placeholder="Enter"
                                     onChange={(e) => updateMilestone(index, "price", e.target.value)}
                                     className="pl-7 mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none w-full"
                                 />

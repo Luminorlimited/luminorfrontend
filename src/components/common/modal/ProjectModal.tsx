@@ -254,9 +254,9 @@ const ProjectModal: React.FC<projectModalProps> = ({
                                 <div key={stepNumber} className="flex items-center">
                                     <div
                                         className={`h-8 w-8 rounded-full flex items-center justify-center text-sm font-medium ${stepNumber < step
-                                            ? "bg-[#6938EF] text-white"
+                                            ? "bg-[#34DC48] text-white"
                                             : stepNumber === step
-                                                ? "border-2 border-[#6938EF] text-[#6938EF]"
+                                                ? "border-2 border-[#34DC48] text-[#34DC48]"
                                                 : "border-2 border-gray-200 text-gray-400"
                                             }`}
                                     >

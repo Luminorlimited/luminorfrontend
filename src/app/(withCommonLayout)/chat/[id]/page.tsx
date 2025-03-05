@@ -534,6 +534,7 @@ const Page: React.FC = () => {
         >
           <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
             <div className="p-4">
+            
               <AllUsers
                 handleshowMessage={handleshowMessage}
                 getConversation={{ data: users }}
@@ -555,6 +556,7 @@ const Page: React.FC = () => {
           className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
             }`}
         >
+         
           <div className="p-4">
             <AllUsers
               handleshowMessage={handleshowMessage}
