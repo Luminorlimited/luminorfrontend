@@ -96,7 +96,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 : "rounded-r-[10px] rounded-b-[10px]"
             } inline-block ${
               isSender ? colorScheme.senderBg : colorScheme.receiverBg
-              } ${message?.message === "Your Offer Acccepted!" ? "bg-green-700 text-white" : message?.message === "Your Offer Canceled!" ? "bg-red-700 text-white" : ""} `}
+              } ${message?.message === "Offer Acccepted!" ? "bg-green-700 text-white" : message?.message === "Offer Canceled!" ? "bg-red-700 text-white" : ""} `}
           >
             {
               message?.media && message?.media && (

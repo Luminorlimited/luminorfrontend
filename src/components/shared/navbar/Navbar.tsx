@@ -19,6 +19,8 @@ import demoprofile from "@/assets/placeholderimg.png"
 import Cookies from "js-cookie";
 import { FaRegMessage } from "react-icons/fa6";
 import { RootState } from "@/redux/store";
+import io, { Socket } from "socket.io-client";
+import { useDecodedToken } from "@/components/common/DecodeToken";
 
 
 
@@ -29,11 +31,6 @@ const Navbar = () => {
   const user = useSelector((state: RootState) => state.Auth.user);
 
   const { data: profileData } = useGetProfileQuery({});
-
-  // const demoimg =
-  //   !profileData?.data?.profileUrl || profileData?.data?.profileUrl === "null" || profileData?.data?.profileUrl === null
-  //     ? demoprofile.src
-  //     : profileData?.data?.profileUrl;
 
 
   const handleLogOut = () => {
@@ -52,7 +49,40 @@ const Navbar = () => {
   const [fileBtn, showFileBtn] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement | null>(null);
-  // const [notifications, setNotifications] = useState<Notification[]>([]);
+    const socketRef = useRef<Socket | null>(null);
+    const [isSocketReady, setIsSocketReady] = useState(false);
+  const [notification, setNotification] = useState("0")
+  
+  const token = useDecodedToken();
+
+   useEffect(() => {
+    if (!socketRef.current) {
+      const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+        transports: ["websocket"],
+      });
+      socketRef.current = mysocket;
+
+      mysocket.on("connect", () => {
+        setIsSocketReady(true);
+        mysocket.emit("register", JSON.stringify({ id: token?.id }));
+        console.log("socket connected", isSocketReady);
+      });
+
+      mysocket.on("sendNotification", (data) => {
+        console.log("my data is", data);
+      })
+
+     }
+     
+     return () => {
+       if (socketRef.current) {
+         socketRef.current.off("connect");
+         socketRef.current.disconnect();
+         socketRef.current = null;
+       }
+     };
+  }, [token, isSocketReady]);
+
 
   const handleClick = () => {
     showFileBtn((prev) => !prev);
@@ -76,7 +106,7 @@ const Navbar = () => {
     };
   }, []);
 
-  // console.log("profile url", typeof (profileData?.data?.profileUrl));
+  
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
