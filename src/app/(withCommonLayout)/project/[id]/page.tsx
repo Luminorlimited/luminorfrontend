@@ -63,8 +63,8 @@ export default function OrderDetailsPage() {
                         </div>
                         <Badge
                             className={`mt-4 md:mt-0 text-sm font-semibold px-3 py-1 rounded-full ${getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending"
-                                ? "bg-amber-500 text-amber-950"
-                                : "bg-emerald-500 text-emerald-950"
+                                ? "bg-amber-500 text-amber-950 hover:bg-amber-500"
+                                : "bg-emerald-500 text-emerald-950 hover:bg-emerald-500"
                                 }`}
                         >
                             {getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
@@ -169,8 +169,8 @@ export default function OrderDetailsPage() {
                                     <h3 className="font-medium text-gray-700 mb-2">Payment Status</h3>
                                     <Badge
                                         className={`px-3 py-1 text-sm font-semibold ${getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending"
-                                            ? "bg-amber-100 text-amber-800 border border-amber-300"
-                                            : "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                                            ? "bg-amber-100 text-amber-800 border border-amber-300 hover:bg-bg-amber-100"
+                                            : "bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-bg-emerald-100"
                                             }`}
                                     >
                                         {getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
@@ -270,8 +270,24 @@ export default function OrderDetailsPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-medium text-cyan-800 mb-1">Delivery Time</h3>
-                                        <p className="text-cyan-900 text-2xl font-bold">
-                                            {formatDate(getSingleOrder?.data?.result?.createdAt) + getSingleOrder?.data?.result?.project} <span className="text-sm font-normal">day(s)</span>
+                                        <p className="text-cyan-900 text-lg font-bold">
+                                            {formatDate(
+                                                new Date(getSingleOrder?.data?.result?.createdAt).setDate(
+                                                    new Date(getSingleOrder?.data?.result?.createdAt).getDate() +
+                                                    // Sum of milestones delivery times
+                                                    (getSingleOrder?.data?.result?.project?.milestones?.reduce(
+                                                        (total:number, milestone:any) => total + (milestone.delivery ?? 0),
+                                                        0 // Default to 0 if no milestone delivery time
+                                                    ) ?? 0) +
+                                                    // Sum of hourlyFee.delivery if exists
+                                                    (getSingleOrder?.data?.result?.project?.hourlyFee?.delivery ?? 0) +
+                                                    // Sum of flatFee.delivery if exists
+                                                    (getSingleOrder?.data?.result?.project?.flatFee?.delivery ?? 0)
+                                                )
+                                            )}
+                                            <span className="text-sm font-normal">day(s)</span>
+
+
                                         </p>
                                     </div>
                                 </div>
