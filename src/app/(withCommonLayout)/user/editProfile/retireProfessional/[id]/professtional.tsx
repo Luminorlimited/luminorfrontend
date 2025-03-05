@@ -335,7 +335,7 @@ export default function Professional() {
         throw new Error("Invalid response from the server");
       } else {
         toast.success("Profile Updated Successfully");
-
+        setWorkSample("")
         // console.log("My response is", formData);
       }
       // reset();
@@ -888,10 +888,8 @@ export default function Professional() {
               <div>
                 {workSample && (
                   <div className="mt-4 text-center">
-                    <p className="text-sm text-gray-700">
-                      Selected file:{" "}
-                      {workSample instanceof File ? workSample.name : ""}
-                    </p>
+                   
+                    <p className="text-left text-lg font-medium">Preview Work Sample</p>
                     {workSample instanceof File &&
                       workSample.type.startsWith("image/") && (
                         <Image
@@ -911,6 +909,25 @@ export default function Professional() {
                   </div>
                 )}
               </div>
+              <div>
+                {profileData?.data?.workSample &&
+                  profileData?.data?.workSample !== "null" ? (
+                    <div>
+                      <p className="text-left text-lg font-medium">Work Sample</p>
+
+                      <Image
+                        src={profileData?.data?.workSample}
+                        alt="Preview"
+                        width={250}
+                        height={250}
+                        className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
+                      />
+                    </div>
+                ) : (
+                  ""
+                )}
+              </div>
+
               <div className="flex justify-center">
                 <button
                   disabled={loading}

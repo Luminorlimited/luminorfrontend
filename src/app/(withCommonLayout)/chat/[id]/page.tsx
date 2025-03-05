@@ -14,7 +14,7 @@ import EmojiPicker from "emoji-picker-react";
 import { IoMdMenu } from "react-icons/io";
 import { Video, FileText, Images } from "lucide-react";
 import io, { Socket } from "socket.io-client";
-import demoimg from "@/assets/images/msgavatar2.png";
+import demoimg from "@/assets/placeholderimg.png";
 import AllUsers from "@/app/(withCommonLayout)/chat/AllUsers";
 import OffersModal from "@/components/common/modal/OffersModal";
 import { toast } from "sonner";
@@ -265,7 +265,7 @@ const Page: React.FC = () => {
       console.error("Socket is not initialized.");
     }
 
-    setProfileUrl(profileUrl || demoimg.src);
+    setProfileUrl(profileUrl ?? demoimg.src);
     setInbox(oldMessages?.data?.messages);
   };
 
@@ -306,14 +306,13 @@ const Page: React.FC = () => {
         tempImageMessage = {
           id: Date.now(),
           media: uploadedFileLink,
-          // Indicating loading state
           sender: { _id: token?.id },
           recipient: { _id: id.id },
           createdAt: new Date().toISOString(),
-          // Custom flag for frontend
         };
 
         setInbox((prevInbox) => [...prevInbox, tempImageMessage]);
+
         let currentUser = users.find((user) => user.email === user2);
         if (!currentUser) {
           currentUser = {
@@ -364,8 +363,6 @@ const Page: React.FC = () => {
           recipient: { _id: id.id },
           createdAt: new Date().toISOString(),
         };
-        // 
-        // console.log("Temporary message:", temporaryMessage);
 
         setInbox((prevInbox) => [...prevInbox, temporaryMessage]);
 
@@ -402,7 +399,7 @@ const Page: React.FC = () => {
 
         // Reset input fields
         setMessages("");
-        setInbox([]);
+       
         setSelectedImages([])
         setSelectedBase64Images([])
 
@@ -457,31 +454,21 @@ const Page: React.FC = () => {
     setIsModalOpen((e) => !e);
   };
 
-  // const [sendOnboardingUrl] = useSendOnboardingUrlMutation();
   const handleProjectModal = async () => {
-    // try {
-    // if (getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
     if (isButtonDisabled) return;
     setIsButtonDisabled(true);
     setProjectModal((prevState) => !prevState);
     setTimeout(() => {
       setIsButtonDisabled(false);
     });
-    // } else {
-    //   await sendOnboardingUrl({});
-    //   toast.error("Please  Check your mail and verify your stripe account.");
-    // }
-    // } catch (e) {
-
-    // }
+ 
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
     const validImages = files.filter((file) => file.type.startsWith("image/"));
-    // console.log("my file is ", files);
-    // Alert for invalid files
+    
     if (validImages.length !== files.length) {
       alert("Please select only valid image files.");
       return;

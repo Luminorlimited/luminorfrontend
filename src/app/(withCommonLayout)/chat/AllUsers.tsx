@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import demoimg from '@/assets/images/msgavatar2.png';
+import demoimg from '@/assets/placeholderimg.png';
 import { BiSearch } from 'react-icons/bi';
 
 interface AllUsersProps {
