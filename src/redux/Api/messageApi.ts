@@ -12,11 +12,17 @@ const projectApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['message'],
         }),
+        getNotification: build.query({
+            query: () => ({
+                url: `/notification`,
+                method: 'GET',
+            }),
+            providesTags: ['message'],
+        }),
         seenNotification: build.mutation({
-            query: ({userId, data}) => ({
-                url: `/notification/${userId}`,
+            query: (notificationId) => ({
+                url: `/notification/${notificationId}`,
                 method: 'PATCH',
-                body: data
             }),
             invalidatesTags: ['message'],
         }),
@@ -62,4 +68,4 @@ const projectApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation, useSeenNotificationMutation, useSendOnboardingUrlMutation } = projectApi;
+export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation, useSeenNotificationMutation, useSendOnboardingUrlMutation, useGetNotificationQuery } = projectApi;
