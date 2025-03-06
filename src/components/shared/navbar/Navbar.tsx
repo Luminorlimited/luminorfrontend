@@ -39,6 +39,7 @@ interface Notification {
   message: string;        // Notification message
   fromUser: string;       // ID of the sender user
   notificationId: string;       // ID of the sender user
+  _id: string;                  // ID of the notification
   type: "offer" | string; // Type of notification (e.g., offer, message, etc.)
   status: string; // Notification status
   count: number;          // Number of notifications (e.g., unread count)
@@ -71,49 +72,58 @@ const Navbar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement | null>(null);
   const socketRef = useRef<Socket | null>(null);
-  const [isSocketReady, setIsSocketReady] = useState(false);
-  // const [notification, setNotification] = useState<Notification | null>(null)
+  const [, setIsSocketReady] = useState(false);
 
   const token = useDecodedToken();
 
-  const { data: getAllNotification } = useGetNotificationQuery(undefined)
-  const [, setAllNotification] = useState(getAllNotification)
-  // console.log("set notification", allNotification);
+  const { data: getAllNotification  } = useGetNotificationQuery(undefined)
+
+  const [allNotification, setAllNotification] = useState(getAllNotification)
+
+
+
   useEffect(() => {
-    if (!socketRef.current) {
-      const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
-        transports: ["websocket"],
-      });
+    if (getAllNotification?.data) {
+      setAllNotification(getAllNotification.data);
+    }
+  }, [getAllNotification]);
+
+
+
+  useEffect(() => {
+    if (!socketRef.current && token?.id) {
+      const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
       socketRef.current = mysocket;
 
-      mysocket.on("connect", () => {
+      mysocket.on('connect', () => {
         setIsSocketReady(true);
-        mysocket.emit("register", JSON.stringify({ id: token?.id }));
-        console.log("socket connected", isSocketReady);
+        mysocket.emit('register', JSON.stringify({ id: token?.id }));
+        console.log('Socket connected');
       });
 
-      mysocket.on("sendNotification", (data: Notification) => {
-        // console.log("my data is", data);
-        // setNotification(data);
+      mysocket.on('sendNotification', (data: Notification) => {
+        console.log('New Notification Received:', data);
+
         setAllNotification((prev:any) => {
-          // Ensure `prev` is always an array
           if (!Array.isArray(prev)) return [data];
-          return [data, ...prev];
+            return [data, ...prev];    
         });
+      });
 
-        // console.log("new notification is", allNotification);
-      })
-
+      mysocket.on('disconnect', () => {
+        console.log('Socket disconnected');
+      });
     }
 
     return () => {
       if (socketRef.current) {
-        socketRef.current.off("connect");
+        socketRef.current.off('connect');
+        socketRef.current.off('sendNotification');
         socketRef.current.disconnect();
         socketRef.current = null;
       }
     };
-  }, [token, isSocketReady]);
+  }, [token?.id]);
 
 
 
@@ -160,7 +170,7 @@ const Navbar = () => {
 
 
 
-
+  // console.log("my count is", allNotification);
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
       <span className="lg:w-auto">
@@ -203,15 +213,13 @@ const Navbar = () => {
 
         {/* User Section */}
           <Popover open={open} onOpenChange={setOpen}>
-            {/* {notification.count > 0 &&
-            <span className="bg-red-600 text-white text-sm p-1 rounded-full">{notification.count}</span>
-          } */}
+          
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
-                {(getAllNotification?.data?.count ?? 0) > 0 && (
+                {allNotification?.count  > 0 && (
                   <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
-                    {getAllNotification?.data?.count}
+                    {allNotification?.count}
                   </span>
                 )}
                 <span className="sr-only">Toggle notifications</span>
@@ -234,19 +242,14 @@ const Navbar = () => {
                   {/* {getAllNotification?.data?.count > 0 ? ( */}
                   <div className="px-3">
                     <ul className="space-y-2">
-                      {/* <Link
-                            href={`/chat/${notification?.fromUser}`}
-                            className="block px-4 py-2 bg-gray-100 rounded-lg transition-all duration-300 hover:bg-primary hover:text-white hover:shadow-md"
-                            >
-                            • {notification?.message}
-                            </Link> */}
+                     
                       {getAllNotification?.data?.result.map((item: any, index: number) => (
                         <li key={index}>
                           <button
                             onClick={() => handleSeenButton(item._id, item.sender)}
                             type="button"
                             className={cn(
-                              "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm"
+                              "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
                             )}
                           >
                             {/* Icon Container */}

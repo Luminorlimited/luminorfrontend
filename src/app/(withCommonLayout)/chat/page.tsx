@@ -107,7 +107,7 @@ const Page: React.FC = () => {
                 setLatestOffer(data?.offer);
             });
             mysocket.on("privateMessage", (data) => {
-                // console.log("Received private message:", data);
+                console.log("Received private message:", data);
                 const { message, fromUserId } = data;
                 // console.log(getToUser, "check get to user");
                 // console.log(fromUserId, "check from email");

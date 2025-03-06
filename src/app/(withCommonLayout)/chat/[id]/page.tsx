@@ -186,6 +186,7 @@ const Page: React.FC = () => {
         socketRef.current.off("connect");
         socketRef.current.off("conversation-list");
         socketRef.current.off("image-pass");
+        socketRef.current.off("userInChat");
         socketRef.current.off("privateMessage");
         socketRef.current.off("createZoomMeeting");
         socketRef.current.off("zoomMeetingError");
