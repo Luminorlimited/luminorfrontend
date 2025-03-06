@@ -159,7 +159,7 @@ export default function Professional() {
 
     const initAutocomplete = () => {
       const input = document.getElementById("search-input") as HTMLInputElement;
-      console.log("input is", input);
+      // console.log("input is", input);
       if (input) {
         autocomplete = new google.maps.places.Autocomplete(input);
 

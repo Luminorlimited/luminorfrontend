@@ -15,7 +15,7 @@ export default function TransactionTable() {
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
     const { data: transactionList } = useTransactionListQuery(undefined)
-    console.log('my transaction list ', transactionList);
+    // console.log('my transaction list ', transactionList);
 
     const [searchQuery, setSearchQuery] = useState("");
 

@@ -34,7 +34,7 @@ export default function OrderDetailsPage() {
         return <div>Error loading order</div>;
     }
 
-    console.log('Offer is', getSingleOrder);
+    // console.log('Offer is', getSingleOrder);
 
     // Format date to a readable format
     const formatDate = (dateString: any) => {
@@ -51,7 +51,7 @@ export default function OrderDetailsPage() {
         }).format(date);
     };
 
-    console.log("my offer", getSingleOrder);
+    // console.log("my offer", getSingleOrder);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-10 px-4">

@@ -93,7 +93,7 @@ const Navbar = () => {
       });
 
       mysocket.on("sendNotification", (data: Notification) => {
-        console.log("my data is", data);
+        // console.log("my data is", data);
         // setNotification(data);
         setAllNotification((prev:any) => {
           // Ensure `prev` is always an array
@@ -117,14 +117,14 @@ const Navbar = () => {
 
 
 
-  console.log("allnotification", getAllNotification);
+  // console.log("allnotification", getAllNotification);
   const handleSeenButton = (notificationId: string, sender: string) => {
     if (!notificationId) return;
-    console.log("allnotification", notificationId);
+    // console.log("allnotification", notificationId);
     seenNotification(notificationId)
       .unwrap()
       .then(() => {
-        console.log("Notification marked as seen");
+        // console.log("Notification marked as seen");
         router.push(`/chat/${sender}`);
       })
       .catch((error) => {

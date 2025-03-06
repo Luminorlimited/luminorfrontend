@@ -218,7 +218,7 @@ const Page: React.FC = () => {
         profileUrl: string | null;
     }) => {
         if (!isSocketReady) {
-            console.warn("Socket is still connecting...");
+            // console.warn("Socket is still connecting...");
             return;
         }
         const { id, profileUrl, email } = user;
