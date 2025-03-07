@@ -145,7 +145,7 @@ export default function Education({ register, handleNext, setValue, handleBack, 
           </Label><br />
           <input
             id="techskill"
-            placeholder="Enter skills and press Enter"
+            placeholder="Enter your technical skills"
             {...register("technicalSkill")}
             className="h-12 rounded-xl border-[#E5E7EB] w-full border px-3"
           />

@@ -13,10 +13,10 @@ import Financial from "@/components/svg/Financial";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { jwtDecode } from "jwt-decode";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import avatar from "@/assets/placeholderimg.png"
 import { toast } from "sonner";
-import bgCover from "@/assets/coverimg.png"
+import bgCover from "@/assets/Logo1.png"
 
 import {
   useEditclientprofileMutation,
@@ -185,7 +185,7 @@ export default function Client() {
       reset({
         firstName: profileData.data.client.name.firstName,
         lastName: profileData.data.client.name.lastName,
-        companyName: profileData.data.companyName ,
+        companyName: profileData.data.companyName,
         companyWebsite: profileData.data.companyWebsite === "null" ? "" : profileData.data.companyWebsite,
         phoneNumber: profileData.data.phoneNumber,
         problemAreas: profileData.data.problemAreas === "null" ? "" : profileData.data.problemAreas,
@@ -200,14 +200,14 @@ export default function Client() {
 
   const [selectProject, setSelectProject] = useState<File | null>(null);
 
- 
+
 
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
   );
   // console.log("my client profile url is", profileData?.data?.profileUrl);
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter()
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
     // data.latitude = latitude
@@ -259,18 +259,18 @@ export default function Client() {
       formData.append("profileUrl", selectedImage);
     }
 
+    const res = await editclientProfile({ id: userIdValue, data: formData });
     try {
       // console.log("profile data is", data);
 
-      const res = await editclientProfile({ id: userIdValue, data: formData });
       if (res) {
-        toast.success("Profile Updated Successfully");
-        // console.log("Profile update response:", res.data);
+        toast.success(res?.data?.message);
+        router.push('/project-list/retireProfessional')
       } else {
         throw new Error("Failed to update profile");
       }
     } catch (error) {
-      toast.error("Profile update failed");
+      toast.error(res?.data?.message);
       console.error(error);
     } finally {
       setLoading(false);
@@ -360,17 +360,9 @@ export default function Client() {
 
         if (response) {
           toast.success("Cover photo updated successfully");
-
-          // Update the background image
           const newCoverPhotoUrl = URL.createObjectURL(file);
           setImageUrl(newCoverPhotoUrl)
 
-          // document
-          //   .querySelector(".bg-cover")
-          //   ?.setAttribute(
-          //     "style",
-          //     `background-image: url(${newCoverPhotoUrl})`
-          //   );
         }
       } catch (error) {
         console.error("Error updating cover photo:", error);
@@ -488,7 +480,7 @@ export default function Client() {
                   </label>
                   <input
                     id="fname"
-                    defaultValue={profileData?.data?.client?.name?.firstName || ""     }
+                    defaultValue={profileData?.data?.client?.name?.firstName || ""}
                     {...register("firstName")}
                     // onChange={(e) => setValue("firstName", e.target.value)}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
@@ -501,7 +493,7 @@ export default function Client() {
                   </label>
                   <input
                     id="lname"
-                    defaultValue={  profileData?.data?.client?.name?.lastName || ""  }
+                    defaultValue={profileData?.data?.client?.name?.lastName || ""}
                     {...register("lastName")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     // onChange={(e) => setValue("lastName", e.target.value)}
@@ -684,7 +676,7 @@ export default function Client() {
                           id="durationMin"
                           min={minPrice}
                           max={maxPrice}
-                          value={durationMinValue ??""}
+                          value={durationMinValue ?? ""}
                           onChange={(e) => setDurationMinValue(Number(e.target.value))}
                           className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                         />

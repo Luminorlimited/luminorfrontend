@@ -21,8 +21,8 @@ import {
   useGetProfileQuery,
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
-import bgCover from "@/assets/coverimg.png"
-import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
+import bgCover from "@/assets/Logo1.png"
+// import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
 import { cn } from "@/lib/utils";
 
 const servicesData = [
@@ -98,19 +98,19 @@ export default function Professional() {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
+  // const [showAlert, setShowAlert] = useState(false);
   const [imageUrl, setImageUrl] = useState<any>(bgCover)
 
-  const handleClose = () => {
-    setShowAlert((prev) => !prev);
-  };
-  useEffect(() => {
-    if (profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
-      setShowAlert(false);
-    } else {
-      setShowAlert(true);
-    }
-  }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess]);
+  // const handleClose = () => {
+  //   setShowAlert((prev) => !prev);
+  // };
+  // useEffect(() => {
+  //   if (profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess) {
+  //     setShowAlert(false);
+  //   } else {
+  //     setShowAlert(true);
+  //   }
+  // }, [profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess]);
 
   useEffect(() => {
     if (
@@ -334,7 +334,8 @@ export default function Professional() {
       if (!res || typeof res !== "object") {
         throw new Error("Invalid response from the server");
       } else {
-        toast.success("Profile Updated Successfully");
+        console.log("respponse is", res?.data?.message);
+        toast.success(res?.data?.message);
         setWorkSample("")
         // console.log("My response is", formData);
       }
@@ -418,26 +419,26 @@ export default function Professional() {
   // // console.log("cover url", profileData?.data?.coverUrl);
 
   // console.log(profileData?.data);
-  const [sendOnboardingUrl] = useSendOnboardingUrlMutation()
-  const [buttonText, setButtonText] = useState("Send onboarding URL");
-  const [isDisabled, setIsDisabled] = useState(false);
-  const handleOnboarding = async () => {
-    setIsDisabled(true); // Disable button while processing
-    try {
-      const res = await sendOnboardingUrl({});
-      if (res) {
-        toast.success("Please check your mail");
-        setButtonText("Onboarding URL Sent ✅");
-      } else {
-        toast.error("Email sending failed");
-        setIsDisabled(false); // Re-enable button on failure
-      }
-    } catch (er: any) {
+  // const [sendOnboardingUrl] = useSendOnboardingUrlMutation()
+  // const [buttonText, setButtonText] = useState("Send onboarding URL");
+  // const [isDisabled, setIsDisabled] = useState(false);
+  // const handleOnboarding = async () => {
+  //   setIsDisabled(true); // Disable button while processing
+  //   try {
+  //     const res = await sendOnboardingUrl({});
+  //     if (res) {
+  //       toast.success("Please check your mail");
+  //       setButtonText("Onboarding URL Sent ✅");
+  //     } else {
+  //       toast.error("Email sending failed");
+  //       setIsDisabled(false); // Re-enable button on failure
+  //     }
+  //   } catch (er: any) {
 
-      toast.error("message sending failed", er);
-      setIsDisabled(false);
-    }
-  };
+  //     toast.error("message sending failed", er);
+  //     setIsDisabled(false);
+  //   }
+  // };
 
 
   if (isLoading) {
@@ -446,7 +447,7 @@ export default function Professional() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      {showAlert && (
+      {/* {showAlert && (
         <div
           className="bg-yellow-100 border border-yellow-400 text-bg_primary px-4 py-3 rounded relative"
           role="alert"
@@ -479,7 +480,7 @@ export default function Professional() {
             </svg>
           </span>
         </div>
-      )}
+      )} */}
 
 
       <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] bg-cover bg-center">
@@ -516,6 +517,8 @@ export default function Professional() {
           <PiNotePencilBold className="cog-icon text-lg text-white " />
         </div>
       </button>
+
+
       <input
         type="file"
         accept="image/*"
@@ -830,7 +833,7 @@ export default function Professional() {
                   type="number"
                   defaultValue={profileData?.data?.hourlyRate}
                   // onChange={(e) => setValue("hourlyRate", e.target.value)}
-                  className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                  className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3  [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                   placeholder="$100"
                 />
               </div>
@@ -888,7 +891,7 @@ export default function Professional() {
               <div>
                 {workSample && (
                   <div className="mt-4 text-center">
-                   
+
                     <p className="text-left text-lg font-medium">Preview Work Sample</p>
                     {workSample instanceof File &&
                       workSample.type.startsWith("image/") && (
@@ -912,17 +915,17 @@ export default function Professional() {
               <div>
                 {profileData?.data?.workSample &&
                   profileData?.data?.workSample !== "null" ? (
-                    <div>
-                      <p className="text-left text-lg font-medium">Work Sample</p>
+                  <div>
+                    <p className="text-left text-lg font-medium">Work Sample</p>
 
-                      <Image
-                        src={profileData?.data?.workSample}
-                        alt="Preview"
-                        width={250}
-                        height={250}
-                        className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
-                      />
-                    </div>
+                    <Image
+                      src={profileData?.data?.workSample}
+                      alt="Preview"
+                      width={250}
+                      height={250}
+                      className="mt-2 max-w-full h-auto rounded-lg border border-gray-300"
+                    />
+                  </div>
                 ) : (
                   ""
                 )}

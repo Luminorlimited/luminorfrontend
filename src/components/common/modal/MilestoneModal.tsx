@@ -148,9 +148,10 @@ export default function MilestoneModal({
                                     
                                     {...register(`milestones.${index}.price`)}
                                     value={milestone.price}
-                                    placeholder="Enter"
-                                    onChange={(e) => updateMilestone(index, "price", e.target.value)}
-                                    className="pl-7 mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none w-full"
+                                    type="number"
+                                    placeholder="Enter Price"
+                                    onChange={(e) => updateMilestone(index, "price", e.target.value)} 
+                                    className="pl-7 mt-1 p-2 border border-gray-300 focus:border-primary rounded-[8px] outline-none w-full [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                                 />
                             </div>
                         </div>
