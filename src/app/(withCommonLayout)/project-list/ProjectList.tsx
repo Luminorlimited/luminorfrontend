@@ -197,12 +197,15 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
               <div className="relative w-full">
                 <div className="overflow-hidden rounded-[10px]">
                   <Image
-                    src={data?.coverUrl || data?.workSample || projectImgFallback}
+                    src={data?.coverUrl && data?.coverUrl !== "null" ? data.coverUrl
+                      : data?.workSample && data?.workSample !== "null" ? data.workSample
+                        : projectImgFallback}
                     alt="Consulting service"
                     width={500}
                     height={218}
                     className="h-[218px] w-full object-cover hover:scale-105 transition-all"
                   />
+
                 </div>
 
                 <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
@@ -253,11 +256,11 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   {data.bio || "Untitled Project"}
                 </h3>
                 <h3 className="text-[14px]">
-                  
+
                   {data?.availability?.length > 0 && (
                     <h3 className="text-[14px]">
                       <b>Availability:</b>{" "}
-                      {data.availability.map((item:any, index:number) => (
+                      {data.availability.map((item: any, index: number) => (
                         <span key={item._id}>
                           {item.day}: {item.slots.join(", ")}
                           {index < data.availability.length - 1 ? " | " : ""}
