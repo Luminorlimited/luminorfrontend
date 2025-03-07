@@ -13,7 +13,7 @@ import HealthSvg from "@/components/svg/HealthSvg";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import avatar from "@/assets/placeholderimg.png"
 import {
@@ -274,6 +274,8 @@ export default function Professional() {
     profileData?.data?.profileUrl
   );
 
+  const router = useRouter()
+
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
 
@@ -337,6 +339,7 @@ export default function Professional() {
         console.log("respponse is", res?.data?.message);
         toast.success(res?.data?.message);
         setWorkSample("")
+        router.push('/project-list/client')
         // console.log("My response is", formData);
       }
       // reset();
