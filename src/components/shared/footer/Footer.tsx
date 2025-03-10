@@ -98,16 +98,16 @@ export default function Footer() {
         </div>
         <div className="flex flex-col md:flex-row justify-between items-center mb-10">
           <div className="flex gap-3 text-4xl mb-4 md:mb-0">
-            <Link href="#" aria-label="Instagram">
+            <Link href="https://www.instagram.com/" aria-label="Instagram">
               <RiInstagramFill className="bg-secondary text-white rounded-full  p-2" />
             </Link>
-            <Link href="#" aria-label="Facebook">
+            <Link href="https://www.facebook.com/" aria-label="Facebook">
               <FaFacebookF className="bg-white text-textColor-primary rounded-full p-2" />
             </Link>
-            <Link href="#" aria-label="Twitter">
+            <Link href="https://www.twitter.com/" aria-label="Twitter">
               <FaXTwitter className="bg-white text-textColor-primary rounded-full  p-2" />
             </Link>
-            <Link href="#" aria-label="LinkedIn">
+            <Link href="https://www.linkedin.com/" aria-label="LinkedIn">
               <FaLinkedinIn className="bg-white text-textColor-primary rounded-full  p-2" />
             </Link>
           </div>
@@ -127,7 +127,7 @@ export default function Footer() {
             <Link href="#" className="hover:underline hover:font-bold">
               Privacy Policy
             </Link>
-            <Link href="#" className="hover:underline hover:font-bold">
+            <Link href="/termsAndcondition" className="hover:underline hover:font-bold">
               Terms & Conditions
             </Link>
             <Link href="#" className="hover:underline hover:font-bold">
