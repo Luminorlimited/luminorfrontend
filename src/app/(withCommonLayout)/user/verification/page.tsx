@@ -35,10 +35,10 @@ export default function Page() {
       const res = await setVerify(data).unwrap();
 
       // console.log(res);
-      if (res) {
+      if (res?.success) {
         toast.success("Verification Complete");
 
-        // // console.log('my stripe', getProfile)
+        console.log('my stripe', res)
 
         const accessToken = res.data.accessToken;
         const user = res?.data?.user;
@@ -72,7 +72,7 @@ export default function Page() {
             profileData?.data?.retireProfessional?.stripe.onboardingUrl
           );
         } else {
-          router.push("/");
+          router.push(res?.data?.redirectTo);
         }
       } else {
         toast.error(res.message || "Verification failed");
