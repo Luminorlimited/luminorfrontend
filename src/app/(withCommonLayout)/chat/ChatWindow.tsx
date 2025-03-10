@@ -9,6 +9,8 @@ import avatar2 from "@/assets/images/msgavatar2.png";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
+import ModalImage from "react-modal-image";
+// import ModalImage from "react-modal-image";
 
 export interface userInfo {
   _id: string;
@@ -58,6 +60,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   // console.log(message, "message from chatWindow");
   // console.log(message.media, "check media file from chat window");
   const isSender = message?.sender._id == currentUser;
+  const mediaSrc = typeof message?.media === "string" ? message.media : "";
 
   const { data: profileData } = useGetProfileQuery(undefined);
 
@@ -65,9 +68,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
       <div
-        className={`flex items-start max-w-[70%] ${
-          isSender ? "flex-row-reverse" : "flex-row"
-        }`}
+        className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"
+          }`}
       >
         <Avatar className="w-10 h-10">
           <Image
@@ -90,28 +92,28 @@ const MessageBubble: FC<MessageBubbleProps> = ({
         {/* Message Content */}
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
-            className={`p-3 ${
-              isSender
+            className={`p-3 ${isSender
                 ? "rounded-l-[10px] rounded-b-[10px]"
                 : "rounded-r-[10px] rounded-b-[10px]"
-            } inline-block ${
-              isSender ? colorScheme.senderBg : colorScheme.receiverBg
+              } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
               } ${message?.message === "Offer Acccepted!" ? "bg-green-700 text-white" : message?.message === "Offer Canceled!" ? "bg-red-700 text-white" : ""} `}
           >
-            {
-              message?.media && message?.media && (
-                <Image
-                  src={message?.media}
+            {mediaSrc && (
+              <div
+                className={`mt-2 max-w-full h-auto rounded-lg border border-gray-300 cursor-pointer ${isSender
+                    ? `bg-${colorScheme.senderBg} p-3 rounded-[9px]`
+                    : `bg-${colorScheme.receiverBg} p-3 rounded-[9px]`
+                  }`}
+              >
+                <ModalImage
+                  small={mediaSrc}
+                  large={mediaSrc}
                   alt="Media"
-                  width={250}
-                  height={250}
-                  className={`mt-2 max-w-full h-auto rounded-lg border border-gray-300 ${isSender
-                      ? `bg-${colorScheme.senderBg} p-3 rounded-[9px]`
-                      : `bg-${colorScheme.receiverBg} p-3 rounded-[9px]`
-                    }`}
+                  hideDownload={false} // Enables download button
+                  hideZoom={false} // Enables zoom on image
                 />
-              )
-            }
+              </div>
+            )}
             {message?.message?.startsWith("https://") ? (
               <Link
                 href={message?.message}
@@ -129,9 +131,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
           </div>
 
           <div
-            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${
-              isSender && "flex items-center justify-end gap-2"
-            }`}
+            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"
+              }`}
           >
             {message?.createdAt
               ? new Date(message.createdAt).toLocaleTimeString()
