@@ -12,6 +12,12 @@ export default function Password({ register, handleBack, loading, confirmPasswor
   const [showPassword, setShowPassword] = useState(false);
   const [confirmshowPassword, setConfirmShowPassword] = useState(false);
 
+  const handleTerms = () => {
+    window.open("/termsAndcondition", "_blank"); // Opens in a new tab
+  };
+  const handleInfo = () => {
+    window.open("/info/retireProfessional", "_blank"); // Opens in a new tab
+  };
 
 
 
@@ -106,10 +112,23 @@ export default function Password({ register, handleBack, loading, confirmPasswor
                 className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
               />
           <label
-            htmlFor="terms"
-            className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            onClick={handleTerms}
+            className="text-sm text-primary underline cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            I agree to terms and condition
+            I read and agree to terms and condition.
+          </label>
+        </div>
+        <div className="flex items-center space-x-2 pb-2">
+          <Checkbox
+            id="further"
+            required
+            className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
+          />
+          <label
+            onClick={handleInfo}
+            className="text-sm text-primary underline cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            I have read and agree to the further information.
           </label>
         </div>
 

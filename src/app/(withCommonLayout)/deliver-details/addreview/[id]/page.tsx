@@ -108,7 +108,7 @@ export default function FeedbackForm() {
 
                 {/* Feedback Section */}
                 <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-gray-900">Write about the consultant</h3>
+                    <h3 className="text-xl font-semibold text-gray-900">Write about the <b>{getProfileById?.data?.retireProfessional?.name?.firstName || getProfileById?.data?.client?.name?.firstName}</b></h3>
                     <div className="relative">
                         <Controller
                             name="feedback"

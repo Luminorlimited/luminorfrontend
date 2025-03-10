@@ -15,11 +15,12 @@ export default function Password({ register, handleBack, isLoading, errors, conf
 
 
 
- 
-
-
-  
-  
+  const handleTerms = () => {
+    window.open("/termsAndcondition", "_blank"); // Opens in a new tab
+  };
+  const handleInfo = () => {
+    window.open("/info/client", "_blank"); // Opens in a new tab
+  };
 
 
   return (
@@ -114,10 +115,23 @@ export default function Password({ register, handleBack, isLoading, errors, conf
                 className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
               />
               <label
-                htmlFor="terms"
-                className="text-sm text-gray-600 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                onClick={handleTerms}
+                className="text-sm text-primary underline cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                I agree to terms and condition
+                I read and agree to terms and condition.
+              </label>
+            </div>
+            <div className="flex items-center space-x-2 pb-2">
+              <Checkbox
+              id="further"
+              required
+                className="border-[#6C3CE1] data-[state=checked]:bg-[#6C3CE1] data-[state=checked]:text-white"
+              />
+              <label
+                onClick={handleInfo}
+                className="text-sm text-primary underline cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                I have read and agree to the further information.
               </label>
             </div>
 

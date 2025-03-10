@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ArrowUpDown, Download, Search } from 'lucide-react'
-import { useTransactionListQuery } from '@/redux/Api/paymentApi'
+import { useClientPaymentQuery } from '@/redux/Api/paymentApi'
 import { toast } from 'sonner'
 import Link from 'next/link'
 // import Link from 'next/link'
@@ -14,7 +14,7 @@ export default function TransactionTable() {
     const [sortBy, setSort] = useState<string | null>(null)
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
-    const { data: transactionList } = useTransactionListQuery(undefined)
+    const { data: transactionList } = useClientPaymentQuery(undefined)
     // console.log('my transaction list ', transactionList);
 
     const [searchQuery, setSearchQuery] = useState("");
