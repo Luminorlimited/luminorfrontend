@@ -14,8 +14,8 @@ const SearchBox = () => {
   const router = useRouter()
   const user = useSelector((state: RootState) => state.Auth.user);
 
-  const handleSearch = (data: any) => {
-    console.log(data);
+  const handleSearch = () => {
+    // console.log(data);
     if (!user) {
       router.push("/user/auth/login");
       return;

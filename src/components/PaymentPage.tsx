@@ -19,7 +19,7 @@ export default function PaymentPage() {
     const {data: clientPayment} = useClientPaymentQuery({})
     // Mock data for payments
   
-    console.log("payment", clientPayment);
+    // console.log("payment", clientPayment);
 
     // Filter payments based on search term
     const filteredPayments = clientPayment?.data.filter(
