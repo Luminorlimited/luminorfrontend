@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useClientReviewMutation, useProfessionalAddReviewMutation } from '@/redux/Api/reviewApi';
 import { useDecodedToken } from '@/components/common/DecodeToken';
 import { useGetSingleUserQuery } from '@/redux/Api/dashboard/userapi';
+import { useState } from 'react';
 // import { useRouter } from 'next/navigation';
 
 // import OrderCard from '@/components/reviewdetails/OrderCard';
@@ -28,9 +29,11 @@ export default function FeedbackForm() {
     const id = userId?.id
 
     const token = useDecodedToken()
-    const [clientReview] = useProfessionalAddReviewMutation()
+    const [clientReview, {isLoading}] = useProfessionalAddReviewMutation()
     const [professionalReview] = useClientReviewMutation()
-    const {data:getProfileById}= useGetSingleUserQuery(id)
+    const { data: getProfileById } = useGetSingleUserQuery(id)
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
 // console.log("my profile is ", getProfileById);
     const maxLength = 700;
@@ -47,6 +50,8 @@ export default function FeedbackForm() {
             alert("Please provide both feedback and a rating.");
             return;
         }
+        setIsSubmitting(true); // Start loading
+
 
         try {
 
@@ -76,6 +81,8 @@ export default function FeedbackForm() {
         } catch (error) {
             console.error("Error submitting review:", error);
             toast.error("An error occurred.");
+        } finally {
+            setIsSubmitting(false); // Stop loading
         }
     };
 
@@ -128,7 +135,13 @@ export default function FeedbackForm() {
                     </div>
                     <div className='flex gap-3 justify-end'>
                         <Button className='bg-gray-500 rounded-[25px]' onClick={handleHome}>Skip</Button>
-                        <Button className='rounded-[25px]' onClick={handleSubmit(onSubmit)}>Submit</Button>
+                        <Button
+                            className={`rounded-[25px] ${isLoading? "text-white bg-slate-700": "bg-primary text-white"}`}
+                            onClick={handleSubmit(onSubmit)}
+                            disabled={isSubmitting || isLoading}
+                        >
+                            {isSubmitting || isLoading ? "Submitting..." : "Submit"}
+                        </Button>
                     </div>
                 </div>
             </div>
