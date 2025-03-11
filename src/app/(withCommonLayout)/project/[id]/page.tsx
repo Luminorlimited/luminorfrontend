@@ -157,7 +157,15 @@ export default function OrderDetailsPage() {
                             <div className="space-y-5">
                                 <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                     <span className="text-gray-800 font-medium">Base Price:</span>
-                                    <span className="text-emerald-900 font-bold">${getSingleOrder?.data?.result?.project?.flatFee.price.toFixed(2)}</span>
+                                    <span className="text-emerald-900 font-bold">
+                                        {getSingleOrder?.data?.result?.project?.flatFee?.price.toFixed(2) ||
+                                            getSingleOrder?.data?.result?.project?.hourlyFee?.price.toFixed(2) ||
+                                            getSingleOrder?.data?.result?.project?.milestones?.reduce(
+                                                (total: number, milestone: any) => total + (milestone.price ?? 0),
+                                                0 // Initial value for reduce
+                                            )?.toFixed(2)}
+                                    </span>
+
                                 </div>
                                 <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                     <span className="text-gray-800 font-medium">Service Fee:</span>
