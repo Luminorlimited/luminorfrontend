@@ -158,8 +158,8 @@ export default function OrderDetailsPage() {
                                 <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                     <span className="text-gray-800 font-medium">Base Price:</span>
                                     <span className="text-emerald-900 font-bold">
-                                        {getSingleOrder?.data?.result?.project?.flatFee?.price.toFixed(2) ||
-                                            getSingleOrder?.data?.result?.project?.hourlyFee?.price.toFixed(2) ||
+                                        {getSingleOrder?.data?.result?.project?.flatFee?.price?.toFixed(2) ||
+                                            getSingleOrder?.data?.result?.project?.hourlyFee?.price?.toFixed(2) ||
                                             getSingleOrder?.data?.result?.project?.milestones?.reduce(
                                                 (total: number, milestone: any) => total + (milestone.price ?? 0),
                                                 0 // Initial value for reduce
@@ -169,7 +169,7 @@ export default function OrderDetailsPage() {
                                 </div>
                                 <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                     <span className="text-gray-800 font-medium">Service Fee:</span>
-                                    <span className="text-gray-900 font-bold">${getSingleOrder?.data?.result?.project?.serviceFee.toFixed(2)}</span>
+                                    <span className="text-gray-900 font-bold">${getSingleOrder?.data?.result?.project?.serviceFee?.toFixed(2)}</span>
                                 </div>
                                 <Separator className="my-2" />
                                 <div className="flex justify-between items-center p-4 bg-gradient-to-r from-gray-100 to-gray-100 rounded-lg">
