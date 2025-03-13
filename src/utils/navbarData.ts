@@ -20,7 +20,7 @@ export const navbarLinks = (role: string): navbarDataTypes[] => {
     {
       id: 2,
       title: "About",
-      link: "/#about",
+      link: "/about-us",
     },
   );
 
