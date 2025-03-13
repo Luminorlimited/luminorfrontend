@@ -52,7 +52,7 @@ const footerData: FooterColumn[] = [
   {
     title: "Company",
     links: [
-      { label: "About Us", href: "#" },
+      { label: "About Us", href: "/about-us" },
       { label: "Careers", href: "#" },
       { label: "Our Impact", href: "#" },
       { label: "Contact Us", href: "#" },
