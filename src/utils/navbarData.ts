@@ -4,6 +4,26 @@ import { ChevronDown } from "lucide-react";
 export const navbarLinks = (role: string): navbarDataTypes[] => {
   const links: navbarDataTypes[] = [];
 
+ 
+
+  links.push(
+    {
+      id: 3,
+      title: "Services",
+      link: `${role === "client"
+        ? "/project-list/retireProfessional"
+        : "/project-list/client"
+
+        }`,
+      icon: ChevronDown,
+    },
+    {
+      id: 2,
+      title: "About",
+      link: "/#about",
+    },
+  );
+
   if (role === "retireProfessional") {
     links.push({
       id: 1,
@@ -16,26 +36,8 @@ export const navbarLinks = (role: string): navbarDataTypes[] => {
       title: "Payment",
       link: "/payment",
     });
-    
-  }
 
-  links.push(
-    {
-      id: 2,
-      title: "About",
-      link: "/#about",
-    },
-    {
-      id: 3,
-      title: "Services",
-      link: `${role === "client"
-          ? "/project-list/retireProfessional"
-          : "/project-list/client"
-            
-        }`,
-      icon: ChevronDown,
-    }
-  );
+  }
 
   return links;
 };

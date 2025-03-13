@@ -26,6 +26,9 @@ export default {
       },
       colors: {
         bg_primary: '#5633D1',
+        yellow: "#f9cb5b",
+        pink: "#ff7aae",
+        sky: "#73cbfc",
         bg_secondary: "#e7e7e7",
         primary: {
           DEFAULT: "#5633D1",

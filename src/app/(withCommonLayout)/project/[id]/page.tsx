@@ -57,7 +57,7 @@ export default function OrderDetailsPage() {
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-gray-50 to-gray-50 py-10 px-4">
             <div className="container mx-auto max-w-6xl">
                 {/* Header with animated gradient */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-indigo-600 to-violet-600 p-8 mb-10 shadow-lg">
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-indigo-600 to-pink p-8 mb-10 shadow-lg">
                     <div className="absolute inset-0 bg-grid-white/10 bg-[size:20px_20px] opacity-20"></div>
                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center">
                         <div>
@@ -90,7 +90,7 @@ export default function OrderDetailsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Order Summary Card */}
                     <Card className="md:col-span-2 overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-gray-500 to-gray-500 p-4">
+                        <div className="bg-gradient-to-r from-bg_primary to-pink p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <Briefcase className="h-5 w-5" />
                                 Project Summary
@@ -133,7 +133,7 @@ export default function OrderDetailsPage() {
                         </CardContent>
                         <CardFooter className="flex flex-col items-start p-6 pt-0">
                             <Button
-                                className="bg-gradient-to-r from-gray-600 to-gray-600 hover:from-gray-700 hover:to-gray-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                                className="bg-bg_primary hover:bg-sky text-white border-none shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
                                 asChild
                             >
                                 <a href={getSingleOrder?.data?.result?.project?.orderAgreementPDF} target="_blank" rel="noopener noreferrer">
@@ -147,7 +147,7 @@ export default function OrderDetailsPage() {
 
                     {/* Payment Information Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-gray-500 to-gray-500 p-4">
+                        <div className="bg-gradient-to-r from-bg_primary to-pink p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <DollarSign className="h-5 w-5" />
                                 Payment Information
@@ -211,7 +211,7 @@ export default function OrderDetailsPage() {
 
                     {/* Professional Details Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-gray-600 to-gray-600 p-4">
+                        <div className="bg-gradient-to-r from-bg_primary to-sky p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <User className="h-5 w-5" />
                                 Professional Details
@@ -241,7 +241,7 @@ export default function OrderDetailsPage() {
 
                     {/* Client Requirements Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-gray-600 to-gray-600 p-4">
+                        <div className="bg-gradient-to-r from-bg_primary to-sky p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <FileText className="h-5 w-5" />
                                 Client Requirements
@@ -254,7 +254,7 @@ export default function OrderDetailsPage() {
                                     View the client requirements document to understand project specifications
                                 </p>
                                 <Button
-                                    className="bg-gradient-to-r from-gray-600 to-gray-600 hover:from-gray-700 hover:to-gray-700 text-white border-none shadow-md hover:shadow-lg transition-all duration-300 w-full flex items-center justify-center gap-2"
+                                    className="bg-bg_primary hover:bg-bg_primary text-white border-none shadow-md hover:shadow-lg transition-all duration-300 w-full flex items-center justify-center gap-2"
                                     asChild
                                 >
                                     <Link href={getSingleOrder?.data?.result?.clientRequerment} target="_blank" rel="noopener noreferrer">
@@ -269,7 +269,7 @@ export default function OrderDetailsPage() {
 
                     {/* Delivery Information Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-gray-600 to-gray-600 p-4">
+                        <div className="bg-gradient-to-r from-bg_primary to-sky p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <Clock className="h-5 w-5" />
                                 Delivery Information

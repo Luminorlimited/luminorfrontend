@@ -21,7 +21,7 @@ import {
   useGetProfileQuery,
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
-import bgCover from "@/assets/Logo1.png"
+import bgCover from "@/assets/images/bannerimg.jpg"
 // import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
 import { cn } from "@/lib/utils";
 

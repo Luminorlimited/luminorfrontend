@@ -16,7 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import { useParams, useRouter } from "next/navigation";
 import avatar from "@/assets/placeholderimg.png"
 import { toast } from "sonner";
-import bgCover from "@/assets/Logo1.png"
+import bgCover from "@/assets/images/bannerimg.jpg"
 
 import {
   useEditclientprofileMutation,
