@@ -18,6 +18,7 @@ import {
 } from "@/redux/Api/projectApi";
 import { RootState } from "@/redux/store";
 import { Filters } from "./sidebar";
+import LoaderAnimation from "@/components/loader/LoaderAnimation";
 
 interface ProjectListProps {
   FilteredData: Filters;
@@ -102,7 +103,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
   // console.log("My test is", currentItems);
   return (
     <div>
-      {loading || loading2 ? <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " /> : null}
+      {loading || loading2 ? <div className="min-h-screen"><LoaderAnimation/></div> : null}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2 justify-center mb-8">
         {route === "/project-list/client"
           ? currentItems?.map((data: any, index: number) => (

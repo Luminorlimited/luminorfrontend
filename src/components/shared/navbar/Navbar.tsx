@@ -76,7 +76,7 @@ const Navbar = () => {
 
   const token = useDecodedToken();
 
-  const { data: getAllNotification  } = useGetNotificationQuery(undefined)
+  const { data: getAllNotification } = useGetNotificationQuery(undefined)
 
   const [allNotification, setAllNotification] = useState(getAllNotification)
 
@@ -104,9 +104,9 @@ const Navbar = () => {
       mysocket.on('sendNotification', (data: Notification) => {
         console.log('New Notification Received:', data);
 
-        setAllNotification((prev:any) => {
+        setAllNotification((prev: any) => {
           if (!Array.isArray(prev)) return [data];
-            return [data, ...prev];    
+          return [data, ...prev];
         });
       });
 
@@ -212,79 +212,84 @@ const Navbar = () => {
         {/* <LanguageSwitcher /> */}
 
         {/* User Section */}
-          <Popover open={open} onOpenChange={setOpen}>
-          
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                {allNotification?.count  > 0 && (
-                  <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
-                    {allNotification?.count}
-                  </span>
-                )}
-                <span className="sr-only">Toggle notifications</span>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[450px] p-0" align="end">
-              <Card className="border-0 shadow-none">
-                <CardHeader className="border-b p-4 pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Notifications</CardTitle>
-                    {/* {unreadCount > 0 && (
+        <Popover open={open} onOpenChange={setOpen}>
+
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon" className="relative">
+              <div className="cursor-pointer transition-colors group relative hover:fill-primary border  rounded-full p-2 hover:border-primary mr-2">
+                <Bell className="group-hover:fill-primary" />
+              </div>
+
+              
+
+              {allNotification?.count > 0 && (
+                <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
+                  {allNotification?.count}
+                </span>
+              )}
+              <span className="sr-only">Toggle notifications</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[450px] p-0" align="end">
+            <Card className="border-0 shadow-none">
+              <CardHeader className="border-b p-4 pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">Notifications</CardTitle>
+                  {/* {unreadCount > 0 && (
                     <Button variant="ghost" size="sm" className="h-auto p-0 text-sm font-medium" onClick={markAllAsRead}>
                       Mark all as read
                     </Button>
                   )} */}
-                  </div>
+                </div>
 
-                </CardHeader>
-                <CardContent className="p-0 max-h-[300px] overflow-auto">
-                  {/* {getAllNotification?.data?.count > 0 ? ( */}
-                  <div className="px-3">
-                    <ul className="space-y-2">
-                     
-                      {getAllNotification?.data?.result.map((item: any, index: number) => (
-                        <li key={index}>
-                          <button
-                            onClick={() => handleSeenButton(item._id, item.sender)}
-                            type="button"
-                            className={cn(
-                              "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
+              </CardHeader>
+              <CardContent className="p-0 max-h-[300px] overflow-auto">
+                {/* {getAllNotification?.data?.count > 0 ? ( */}
+                <div className="px-3">
+                  <ul className="space-y-2">
+
+                    {getAllNotification?.data?.result.map((item: any, index: number) => (
+                      <li key={index}>
+                        <button
+                          onClick={() => handleSeenButton(item._id, item.sender)}
+                          type="button"
+                          className={cn(
+                            "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
+                          )}
+                        >
+                          {/* Icon Container */}
+                          <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                            {item?.type === "offer" ? <Bell className="h-5 w-5" /> : <LuMessageSquareMore className="h-5 w-5" />
+                            }
+
+                            {/* Red Bullet for Unseen Notifications */}
+                            {item?.status === "unseen" && (
+                              <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
                             )}
-                          >
-                            {/* Icon Container */}
-                            <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                              {item?.type === "offer" ? <Bell className="h-5 w-5" /> : <LuMessageSquareMore className="h-5 w-5" />
-}
-                              
-                              {/* Red Bullet for Unseen Notifications */}
-                              {item?.status === "unseen" && (
-                                <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
-                              )}
-                            </div>
+                          </div>
 
-                            {/* Message & Status */}
-                            <div className="flex-1 overflow-hidden justify-start">
-                              <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
-                                {item?.message}
-                              </p>
+                          {/* Message & Status */}
+                          <div className="flex-1 overflow-hidden justify-start">
+                            <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
+                              {item?.message}
+                            </p>
 
-                            </div>
-                          </button>
-                        </li>
-                      ))}
+                          </div>
+                        </button>
+                      </li>
+                    ))}
 
-                    </ul>
+                  </ul>
 
-                  </div>
-                  {/* // ) : ( */}
-                  {/* <div className="p-8 text-center text-muted-foreground">No notifications</div> */}
-                  {/* // )} */}
-                </CardContent>
-              </Card>
-            </PopoverContent>
-          </Popover>
-      
+                </div>
+                {/* // ) : ( */}
+                {/* <div className="p-8 text-center text-muted-foreground">No notifications</div> */}
+                {/* // )} */}
+              </CardContent>
+            </Card>
+          </PopoverContent>
+        </Popover>
+
 
         {user ? (
           <div className="flex gap-3 items-center relative" ref={dropdownRef}>

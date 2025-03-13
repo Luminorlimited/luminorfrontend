@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 // import { useGetProfileQuery } from "@/redux/Api/userApi";
 import { setLoading } from "@/redux/ReduxFunction";
+import LoaderAnimation from "@/components/loader/LoaderAnimation";
 
 const Page: React.FC = () => {
   const router = useRouter();
@@ -393,7 +394,7 @@ const Page: React.FC = () => {
 
         // Reset input fields
         setMessages("");
-       
+
         setSelectedImages([])
         setSelectedBase64Images([])
 
@@ -457,14 +458,14 @@ const Page: React.FC = () => {
     setTimeout(() => {
       setIsButtonDisabled(false);
     });
- 
+
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
     const validImages = files.filter((file) => file.type.startsWith("image/"));
-    
+
     if (validImages.length !== files.length) {
       alert("Please select only valid image files.");
       return;
@@ -530,7 +531,7 @@ const Page: React.FC = () => {
         >
           <div className="w-2/3 h-full bg-white shadow-md sidebar relative">
             <div className="p-4">
-            
+
               <AllUsers
                 handleshowMessage={handleshowMessage}
                 getConversation={{ data: users }}
@@ -552,7 +553,7 @@ const Page: React.FC = () => {
           className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
             }`}
         >
-         
+
           <div className="p-4">
             <AllUsers
               handleshowMessage={handleshowMessage}
@@ -674,7 +675,10 @@ const Page: React.FC = () => {
             <div className="mx-auto bg-white p-4 pb-0 rounded-[10px]">
               <div className="flex flex-col overflow-y-auto ">
                 {isFetching ? (
-                  <div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " />
+                  <div className="h-20 w-20 absolute top-[15px] left-[350px] transform -translate-x-1/2 -translate-y-1/2">
+                    <LoaderAnimation />
+                  </div>
+
                 ) : (
                   <ChatWindow
                     handleOpenModal={handleOpenModal}

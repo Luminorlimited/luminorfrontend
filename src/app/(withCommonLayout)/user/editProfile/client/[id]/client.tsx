@@ -23,6 +23,7 @@ import {
   useGetProfileQuery,
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
+import LoaderAnimation from "@/components/loader/LoaderAnimation";
 // import bgCover from "@/assets/images/profilebanner.png";
 
 const servicesData = [
@@ -369,10 +370,10 @@ export default function Client() {
         toast.error("Image is too large. Please upload a smaller image");
       }
     }
-  };
+  }
 
   if (isLoading) {
-    return <div className="min-h-screen"><div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " /></div>
+    return <div className="min-h-screen"><LoaderAnimation/></div>
   }
 
   return (

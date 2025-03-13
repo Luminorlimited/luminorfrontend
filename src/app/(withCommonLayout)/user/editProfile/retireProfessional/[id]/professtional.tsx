@@ -24,6 +24,7 @@ import {
 import bgCover from "@/assets/images/bannerimg.jpg"
 // import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
 import { cn } from "@/lib/utils";
+import LoaderAnimation from "@/components/loader/LoaderAnimation";
 
 const servicesData = [
   {
@@ -445,7 +446,7 @@ export default function Professional() {
 
 
   if (isLoading) {
-    return <div className="min-h-screen"><div className="border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-primary absolute top-1/2 left-1/2 " /></div>
+    return <div className="min-h-screen"><LoaderAnimation/></div>
   }
   return (
     <div className="min-h-screen flex flex-col">
