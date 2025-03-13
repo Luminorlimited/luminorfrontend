@@ -1,4 +1,5 @@
 'use client'
+import LoaderAnimation from "@/components/loader/LoaderAnimation";
 // import Chat from "@/components/reviewdetails/chat";
 import ConversationHeader from "@/components/reviewdetails/conversation-header";
 import Milestones from "@/components/reviewdetails/milestones";
@@ -12,8 +13,11 @@ import { useParams } from "next/navigation";
 
 export default function Page() {
     const orderId = useParams()
-    const { data: getSingleOrder } = useGetSingleOrderQuery(orderId.id)
+    const { data: getSingleOrder, isLoading } = useGetSingleOrderQuery(orderId.id)
     // console.log('My order details is', getSingleOrder);
+    if (isLoading) {
+        return <div><LoaderAnimation/></div>
+    }
     return (
         <div className="max-w-[1300px] mx-auto p-6 space-y-6">
             <div className="lg:flex lg:flex-row flex-col gap-8 w-full">

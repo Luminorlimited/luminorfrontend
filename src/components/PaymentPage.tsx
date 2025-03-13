@@ -2,23 +2,24 @@
 
 import { useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Card, CardContent,  CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { IoMdDownload } from "react-icons/io";
 
 import { Button } from "@/components/ui/button"
 
-import { Search,  X } from "lucide-react"
+import { Search, X } from "lucide-react"
 import { useClientPaymentQuery } from "@/redux/Api/paymentApi"
 import Link from "next/link"
+import LoaderAnimation from "./loader/LoaderAnimation"
 
 export default function PaymentPage() {
     const [searchTerm, setSearchTerm] = useState("")
 
-    const {data: clientPayment} = useClientPaymentQuery({})
+    const { data: clientPayment, isLoading } = useClientPaymentQuery({})
     // Mock data for payments
-  
+
     // console.log("payment", clientPayment);
 
     // Filter payments based on search term
@@ -38,7 +39,7 @@ export default function PaymentPage() {
             <Card className="border-0">
                 <CardHeader className="pb-3">
                     <div className="flex flex-col gap-4">
-                     
+
 
                         <div className="border rounded-lg p-4 bg-muted/30">
                             <div className="flex flex-col sm:flex-row gap-4">
@@ -84,63 +85,66 @@ export default function PaymentPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="rounded-md border overflow-hidden">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[100px]">Sl</TableHead>
-                                    <TableHead>Transaction Id</TableHead>
-                                    <TableHead>Professional Name</TableHead>
-                                    <TableHead>Project Name</TableHead>
-                                    <TableHead className="hidden md:table-cell">Payment Date</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
-                                    <TableHead>Requirement</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="w-[50px]"></TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {clientPayment?.data?.length > 0 ? (
-                                    filteredPayments.map((item: any, index: number) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="font-medium">{index + 1}</TableCell>
-                                            <TableCell className="font-medium">#{item?.transaction?._id}</TableCell>
-                                            <TableCell>
-                                                <Link className="text-primary" href={`/chat/${item?.orderReciver?._id}`}>
-                                                    {item?.orderReciver?.name?.firstName} {item?.orderReciver?.name?.lastName}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Link className="text-primary" href={`/project/${item?._id}`}>
-                                                    {item?.project?.projectName}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell className="hidden md:table-cell">{new Date(item.createdAt).toLocaleDateString()}</TableCell>
-                                            <TableCell className="text-right">{item.totalPrice}</TableCell>
-                                            <TableCell className="text-center">
-                                                <Link className="text-primary" href={item.clientRequerment} download>
-                                                    <IoMdDownload className="text-2xl" />
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell
-                                                className={`${item?.transaction?.paymentStatus === "pending"
+                        {isLoading ? <LoaderAnimation /> : (
+
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">Sl</TableHead>
+                                        <TableHead>Transaction Id</TableHead>
+                                        <TableHead>Professional Name</TableHead>
+                                        <TableHead>Project Name</TableHead>
+                                        <TableHead className="hidden md:table-cell">Payment Date</TableHead>
+                                        <TableHead className="text-right">Amount</TableHead>
+                                        <TableHead>Requirement</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="w-[50px]"></TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {clientPayment?.data?.length > 0 || clientPayment?.data ? (
+                                        filteredPayments.map((item: any, index: number) => (
+                                            <TableRow key={index}>
+                                                <TableCell className="font-medium">{index + 1}</TableCell>
+                                                <TableCell className="font-medium">#{item?.transaction?._id}</TableCell>
+                                                <TableCell>
+                                                    <Link className="text-primary" href={`/chat/${item?.orderReciver?._id}`}>
+                                                        {item?.orderReciver?.name?.firstName} {item?.orderReciver?.name?.lastName}
+                                                    </Link>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Link className="text-primary" href={`/project/${item?._id}`}>
+                                                        {item?.project?.projectName}
+                                                    </Link>
+                                                </TableCell>
+                                                <TableCell className="hidden md:table-cell">{new Date(item.createdAt).toLocaleDateString()}</TableCell>
+                                                <TableCell className="text-right">{item.totalPrice}</TableCell>
+                                                <TableCell className="text-center">
+                                                    <Link className="text-primary" href={item.clientRequerment} download>
+                                                        <IoMdDownload className="text-2xl" />
+                                                    </Link>
+                                                </TableCell>
+                                                <TableCell
+                                                    className={`${item?.transaction?.paymentStatus === "pending"
                                                         ? "text-yellow-600 border-yellow-400 "
                                                         : "bg-green-500 hover:bg-green-600"
-                                                    }`}
-                                            >
-                                                {item?.transaction?.paymentStatus}
+                                                        }`}
+                                                >
+                                                    {item?.transaction?.paymentStatus}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="h-24 text-center">
+                                                No results found.
                                             </TableCell>
                                         </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={6} className="h-24 text-center">
-                                            No results found.
-                                        </TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                      
-                        </Table>
+                                    )}
+                                </TableBody>
+
+                            </Table>
+                        )}
                     </div>
                     <div className="text-xs text-muted-foreground mt-4">
                         {searchTerm ? (

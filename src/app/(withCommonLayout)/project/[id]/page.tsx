@@ -1,5 +1,6 @@
 'use client'
 
+import LoaderAnimation from "@/components/loader/LoaderAnimation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
@@ -26,7 +27,7 @@ export default function OrderDetailsPage() {
 
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div><LoaderAnimation/></div>;
     }
 
     if (error) {
