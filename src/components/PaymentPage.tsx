@@ -34,7 +34,7 @@ export default function PaymentPage() {
     return (
         <div className="container mx-auto py-6 px-4 md:px-6">
             <h1 className="text-3xl font-bold tracking-tight mb-2">Payments to Retire Professional</h1>
-            <p className="text-muted-foreground mb-8">Manage and track your payments to retirement professionals.</p>
+            <p className="text-muted-foreground mb-8">Manage and track your payments to retirement professionals. </p>
 
             <Card className="border-0">
                 <CardHeader className="pb-3">
