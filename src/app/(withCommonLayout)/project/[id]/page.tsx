@@ -94,7 +94,7 @@ export default function OrderDetailsPage() {
                                     disabled={refundLoading || deliverLoading} // Disable if any action is in progress
                                     className="bg-red-700 hover:bg-red-800 rounded-[5px] flex items-center gap-2"
                                 >
-                                    {refundLoading ? <FaSpinner /> : "Cancel Delivery"}
+                                    {refundLoading ? <span className="flex gap-2 items-center"><FaSpinner />Cancel Delivery</span> : "Cancel Delivery"}
                                 </Button>
 
                                 {/* Accept Button with Loading */}
@@ -103,7 +103,7 @@ export default function OrderDetailsPage() {
                                     disabled={deliverLoading || refundLoading} // Disable if any action is in progress
                                     className="bg-green-700 hover:bg-green-800 rounded-[5px] flex items-center gap-2"
                                 >
-                                    {deliverLoading ? <FaSpinner /> : "Accept Delivery"}
+                                    {deliverLoading ? <span className="flex gap-2 items-center"><FaSpinner />Accept Delivery</span> : "Accept Delivery"}
                                 </Button>
                             </div>
                         </div>
