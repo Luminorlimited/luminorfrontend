@@ -5,14 +5,14 @@ import img12 from '@/assets/images/offer.png'
 // import { useParams } from "next/navigation";
 import { useDeliverOrderMutation } from "@/redux/Api/paymentApi";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 // import { useRouter } from "next/navigation";
 
 export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
     // console.log('my get single order is', getSingleOrder);
 
     const initdata = getSingleOrder?.data?.result?.project
-    // // console.log(initdata);
+   
 
     const deliveryday = initdata?.flatFee
         ? initdata.flatFee.delivery
@@ -49,7 +49,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
     // // console.log('my order id', id);
     // const { data: deliverOrder } = useDeliverOrderMutation(id)
     const [deliverOrder, { isLoading }] = useDeliverOrderMutation({})
-    const router = useRouter()
+    // const router = useRouter()
 
     // // console.log("my order id", getSingleOrder?.data?.client[0]._id);
     const handleDeliver = async () => {
@@ -64,10 +64,10 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                 // console.log('this is console', id);
                 const res = await deliverOrder(id);
                 // console.log("my response is",);
-                if (res) {
+                if (res?.data?.success) {
+                    // console.log("response is", res);
                     toast.success("Order delivered successfully");
-                    router.push(`/deliver-details/addreview/${getSingleOrder?.data?.result?.orderFrom?._id}`)
-                    // console.log("Order delivered:", res);
+                   
                 }
             } else {
                 toast.error("Failed to deliver order");

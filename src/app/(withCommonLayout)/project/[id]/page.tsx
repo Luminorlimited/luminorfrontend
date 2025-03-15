@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useGetSingleOrderQuery } from "@/redux/Api/paymentApi";
+import { useDeliverProjectMutation, useGetSingleOrderQuery, useRefundMoneyMutation } from "@/redux/Api/paymentApi";
 import {
     FileText,
     Calendar,
@@ -19,15 +19,20 @@ import {
     AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { FaSpinner } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function OrderDetailsPage() {
     const offerId = useParams();
     const { data: getSingleOrder, isLoading, error } = useGetSingleOrderQuery(offerId.id);
+    const [deliverProject, { isLoading: deliverLoading }] = useDeliverProjectMutation({})
+    const [refundMoney, { isLoading: refundLoading }] = useRefundMoneyMutation({})
+    const router = useRouter()
 
 
     if (isLoading) {
-        return <div><LoaderAnimation/></div>;
+        return <div><LoaderAnimation /></div>;
     }
 
     if (error) {
@@ -52,14 +57,67 @@ export default function OrderDetailsPage() {
         }).format(date);
     };
 
-    // console.log("my offer", getSingleOrder);
+    const handleAccept = async (id: string) => {
+        const res = await deliverProject(id)
+        if (res?.data?.success) {
+            // console.log("response is", res);
+            toast.success("Order Delivered Successfully")
+            router.push("/payment")
+        } else {
+            toast.error("Order Delivered Failed")
+        }
+    }
+    const handleCancel = async (id: string) => {
+        const res = await refundMoney(id)
+        if (res?.data?.success) {
+            // console.log("response is", res);
+            toast.success(res?.data?.message)
+            router.push("/payment")
+        } else {
+            toast.error("Order cannot refunded.")
+        }
+    }
 
+    console.log("res", getSingleOrder?.data?.result?.transaction?.paymentStatus);
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-gray-50 to-gray-50 py-10 px-4">
             <div className="container mx-auto max-w-6xl">
                 {/* Header with animated gradient */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-indigo-600 to-pink p-8 mb-10 shadow-lg">
-                    <div className="absolute inset-0 bg-grid-white/10 bg-[size:20px_20px] opacity-20"></div>
+                {
+                    getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
+
+                        <div className="flex justify-end py-5">
+                            <div className="flex gap-3">
+                                {/* Cancel Button with Loading */}
+                                <Button
+                                    onClick={() => handleCancel(getSingleOrder?.data?.result?._id)}
+                                    disabled={refundLoading || deliverLoading} // Disable if any action is in progress
+                                    className="bg-red-700 hover:bg-red-800 rounded-[5px] flex items-center gap-2"
+                                >
+                                    {refundLoading ? <FaSpinner /> : "Cancel Delivery"}
+                                </Button>
+
+                                {/* Accept Button with Loading */}
+                                <Button
+                                    onClick={() => handleAccept(getSingleOrder?.data?.result?._id)}
+                                    disabled={deliverLoading || refundLoading} // Disable if any action is in progress
+                                    className="bg-green-700 hover:bg-green-800 rounded-[5px] flex items-center gap-2"
+                                >
+                                    {deliverLoading ? <FaSpinner /> : "Accept Delivery"}
+                                </Button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="flex justify-end py-5">
+                            <div className=" flex gap-3">
+                                <Button className="bg-red-300 hover:bg-red-300 cursor-not-allowed rounded-[5px]">Cancel Delivery</Button>
+                                <Button className="bg-green-300 hover:bg-green-300 cursor-not-allowed rounded-[5px]">Accept Delivery</Button>
+                            </div>
+                        </div>
+                    )
+                }
+                <div className="relative overflow-hidden rounded-2xl bg-primary p-8 mb-10 shadow-lg">
+                    {/* <div className="absolute inset-0 bg-grid-white/10 bg-[size:20px_20px] opacity-20"></div> */}
                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center">
                         <div>
                             <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-2">Order Details</h1>
@@ -91,7 +149,7 @@ export default function OrderDetailsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Order Summary Card */}
                     <Card className="md:col-span-2 overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-bg_primary to-pink p-4">
+                        <div className="bg-primary p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <Briefcase className="h-5 w-5" />
                                 Project Summary
@@ -148,7 +206,7 @@ export default function OrderDetailsPage() {
 
                     {/* Payment Information Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-bg_primary to-pink p-4">
+                        <div className="bg-primary p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <DollarSign className="h-5 w-5" />
                                 Payment Information
@@ -212,7 +270,7 @@ export default function OrderDetailsPage() {
 
                     {/* Professional Details Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-bg_primary to-sky p-4">
+                        <div className="bg-primary p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <User className="h-5 w-5" />
                                 Professional Details
@@ -233,7 +291,7 @@ export default function OrderDetailsPage() {
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <h3 className="font-medium text-gray-800 mb-1">Role</h3>
                                     <p className="text-gray-900 font-semibold">
-                                        {getSingleOrder?.data?.retireProfessional?.role.replace(/([A-Z])/g, " $1").replace(/^./, (str:any) => str.toUpperCase())}
+                                        {getSingleOrder?.data?.retireProfessional?.role.replace(/([A-Z])/g, " $1").replace(/^./, (str: any) => str.toUpperCase())}
                                     </p>
                                 </div>
                             </div>
@@ -242,7 +300,7 @@ export default function OrderDetailsPage() {
 
                     {/* Client Requirements Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-bg_primary to-sky p-4">
+                        <div className="bg-primary p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <FileText className="h-5 w-5" />
                                 Client Requirements
@@ -270,7 +328,7 @@ export default function OrderDetailsPage() {
 
                     {/* Delivery Information Card */}
                     <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
-                        <div className="bg-gradient-to-r from-bg_primary to-sky p-4">
+                        <div className="bg-primary p-4">
                             <CardTitle className="flex items-center gap-2 text-white">
                                 <Clock className="h-5 w-5" />
                                 Delivery Information
@@ -290,7 +348,7 @@ export default function OrderDetailsPage() {
                                                     new Date(getSingleOrder?.data?.result?.createdAt).getDate() +
                                                     // Sum of milestones delivery times
                                                     (getSingleOrder?.data?.result?.project?.milestones?.reduce(
-                                                        (total:number, milestone:any) => total + (milestone.delivery ?? 0),
+                                                        (total: number, milestone: any) => total + (milestone.delivery ?? 0),
                                                         0 // Default to 0 if no milestone delivery time
                                                     ) ?? 0) +
                                                     // Sum of hourlyFee.delivery if exists

@@ -32,15 +32,17 @@ import {
 import { cn } from "@/lib/utils";
 import { useGetNotificationQuery, useSeenNotificationMutation } from "@/redux/Api/messageApi";
 import { LuMessageSquareMore } from "react-icons/lu";
+import { TbTruckDelivery } from "react-icons/tb";
 
 
 interface Notification {
   toUser: string;         // ID of the recipient user
   message: string;        // Notification message
   fromUser: string;       // ID of the sender user
-  notificationId: string;       // ID of the sender user
+  notificationId: string;
+  orderId: string;// ID of the sender user
   _id: string;                  // ID of the notification
-  type: "offer" | string; // Type of notification (e.g., offer, message, etc.)
+  type: "offer" | "message" | string; // Type of notification (e.g., offer, message, etc.)
   status: string; // Notification status
   count: number;          // Number of notifications (e.g., unread count)
 }
@@ -130,7 +132,6 @@ const Navbar = () => {
   // console.log("allnotification", getAllNotification);
   const handleSeenButton = (notificationId: string, sender: string) => {
     if (!notificationId) return;
-    // console.log("allnotification", notificationId);
     seenNotification(notificationId)
       .unwrap()
       .then(() => {
@@ -167,6 +168,11 @@ const Navbar = () => {
   }, []);
 
   const [open, setOpen] = useState(false)
+
+
+  const handleOrder = (orderId:any) => {
+    router.push(`/project/${orderId}`)
+  }
 
 
 
@@ -220,7 +226,7 @@ const Navbar = () => {
                 <Bell className="group-hover:fill-primary" />
               </div>
 
-              
+
 
               {allNotification?.count > 0 && (
                 <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
@@ -235,11 +241,7 @@ const Navbar = () => {
               <CardHeader className="border-b p-4 pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">Notifications</CardTitle>
-                  {/* {unreadCount > 0 && (
-                    <Button variant="ghost" size="sm" className="h-auto p-0 text-sm font-medium" onClick={markAllAsRead}>
-                      Mark all as read
-                    </Button>
-                  )} */}
+
                 </div>
 
               </CardHeader>
@@ -251,107 +253,115 @@ const Navbar = () => {
                     {getAllNotification?.data?.result.map((item: any, index: number) => (
                       <li key={index}>
                         <button
-                          onClick={() => handleSeenButton(item._id, item.sender)}
+                          onClick={item?.orderId ? () => handleOrder(item.orderId) : () => handleSeenButton(item._id, item.sender)}
                           type="button"
                           className={cn(
                             "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
                           )}
                         >
-                          {/* Icon Container */}
-                          <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                            {item?.type === "offer" ? <Bell className="h-5 w-5" /> : <LuMessageSquareMore className="h-5 w-5" />
-                            }
+                         
 
-                            {/* Red Bullet for Unseen Notifications */}
-                            {item?.status === "unseen" && (
-                              <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
-                            )}
-                          </div>
+                        {/* Icon Container */}
+                        <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                          {item?.type === "offer" ? (
+                            <Bell className="h-5 w-5" />
+                          ) : item?.type === "message" ? (
+                            <LuMessageSquareMore className="h-5 w-5" />
+                          ) : (
+                            <TbTruckDelivery className="h-5 w-5" />
+                          )}
 
-                          {/* Message & Status */}
-                          <div className="flex-1 overflow-hidden justify-start">
-                            <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
-                              {item?.message}
-                            </p>
 
-                          </div>
-                        </button>
+                          {/* Red Bullet for Unseen Notifications */}
+                          {item?.status === "unseen" && (
+                            <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
+                          )}
+                        </div>
+
+                        {/* Message & Status */}
+                        <div className="flex-1 overflow-hidden justify-start">
+                          <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
+                            {item?.message}
+                          </p>
+
+                        </div>
+                      </button>
                       </li>
                     ))}
 
-                  </ul>
+                </ul>
 
-                </div>
-                {/* // ) : ( */}
-                {/* <div className="p-8 text-center text-muted-foreground">No notifications</div> */}
-                {/* // )} */}
-              </CardContent>
-            </Card>
-          </PopoverContent>
-        </Popover>
+              </div>
+              {/* // ) : ( */}
+              {/* <div className="p-8 text-center text-muted-foreground">No notifications</div> */}
+              {/* // )} */}
+            </CardContent>
+          </Card>
+        </PopoverContent>
+      </Popover>
 
 
-        {user ? (
-          <div className="flex gap-3 items-center relative" ref={dropdownRef}>
+      {user ? (
+        <div className="flex gap-3 items-center relative" ref={dropdownRef}>
 
-            <Link title="Chat" href={'/chat'} className="cursor-pointer transition-colors group relative hover:fill-primary border rounded-full p-2 hover:border-primary mr-2"> <FaRegMessage className="group-hover:fill-primary" /></Link>
+          <Link title="Chat" href={'/chat'} className="cursor-pointer transition-colors group relative hover:fill-primary border rounded-full p-2 hover:border-primary mr-2"> <FaRegMessage className="group-hover:fill-primary" /></Link>
 
-            <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer" >
-              <Image
-                src={profileData?.data?.profileUrl ?? demoprofile.src}
-                width={40}
-                height={40}
-                alt="profile"
-                className="rounded-full cursor-pointer w-full h-full  hover:opacity-90 transition-all"
-                onClick={handleClick}
-              />
-              <ul
-                className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${fileBtn
-                  ? "opacity-100 translate-y-0 z-[50]"
-                  : "opacity-0 translate-y-5 pointer-events-none z-[10]"
-                  }`}
+          <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer" >
+            <Image
+              src={profileData?.data?.profileUrl ?? demoprofile.src}
+              width={40}
+              height={40}
+              alt="profile"
+              className="rounded-full cursor-pointer w-full h-full  hover:opacity-90 transition-all"
+              onClick={handleClick}
+            />
+            <ul
+              className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${fileBtn
+                ? "opacity-100 translate-y-0 z-[50]"
+                : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+                }`}
+            >
+
+              <Link
+                href={`${user?.role === "admin" ? `/dashboard/profile` : `/user/editProfile/${user?.role}/${user?.id}`}`}
               >
-
-                <Link
-                  href={`${user?.role === "admin" ? `/dashboard/profile` : `/user/editProfile/${user?.role}/${user?.id}`}`}
-                >
-                  <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
-                    Edit Profile
-                  </li>
-                </Link>
-                <li
-                  onClick={handleLogOut}
-                  className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer"
-                >
-                  Logout
+                <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
+                  Edit Profile
                 </li>
-              </ul>
-            </div>
+              </Link>
+              <li
+                onClick={handleLogOut}
+                className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer"
+              >
+                Logout
+              </li>
+            </ul>
           </div>
-        ) : (
-          <div className="flex gap-3">
-            <Link
-              className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
-              href="/usertype"
-            >
-              <SignUpIcon />
-              Sign Up
-            </Link>
-            <Link
-              className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
-              href="/user/auth/login"
-            >
-              <AvatarIcon /> Log in
-            </Link>
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="flex gap-3">
+          <Link
+            className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
+            href="/usertype"
+          >
+            <SignUpIcon />
+            Sign Up
+          </Link>
+          <Link
+            className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+            href="/user/auth/login"
+          >
+            <AvatarIcon /> Log in
+          </Link>
+        </div>
+      )}
+    </div>
 
-      {/* Mobile Navbar */}
-      <div className="lg:hidden block">
-        <MobileNavbar />
-      </div>
-    </nav>
+      {/* Mobile Navbar */ }
+  <div className="lg:hidden block">
+    <MobileNavbar />
+  </div>
+    </nav >
   );
 };
 

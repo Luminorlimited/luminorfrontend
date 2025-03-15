@@ -48,13 +48,30 @@ const paymentApi = baseApi.injectEndpoints({
         deliverOrder: build.mutation({
             query: (id) => {
                 return {
-                    url: `/stripe/deliver-project/${id}`,
-                    method: 'PATCH',
-
+                    url: `/stripe/delivery-request/${id}`,
+                    method: 'GET',
                 }
             },
             invalidatesTags: ['Payment']
-        })
+        }),
+        deliverProject: build.mutation({
+            query: (id) => {
+                return {
+                    url: `/stripe/deliver-project/${id}`,
+                    method: 'PATCH',
+                }
+            },
+            invalidatesTags: ['Payment']
+        }),
+        refundMoney: build.mutation({
+            query: (id) => {
+                return {
+                    url: `/stripe/refund-payment/${id}`,
+                    method: 'POST',
+                }
+            },
+            invalidatesTags: ['Payment']
+        }),
 
 
 
@@ -65,6 +82,6 @@ const paymentApi = baseApi.injectEndpoints({
 
 
 
-export const { useOfferpaymentMutation, useTransactionListQuery, useClientPaymentQuery, useGetSingleOrderQuery, useDeliverOrderMutation } = paymentApi
+export const { useOfferpaymentMutation, useTransactionListQuery, useClientPaymentQuery, useGetSingleOrderQuery, useDeliverOrderMutation, useDeliverProjectMutation, useRefundMoneyMutation } = paymentApi
 
 
