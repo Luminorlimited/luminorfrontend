@@ -49,7 +49,7 @@ export default function OrdersPage() {
 function OrderCard({ order }: { order: any }) {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case "paid":
+      case "completed":
         return "bg-green-100 text-green-800 border-green-200"
       case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-200"
@@ -89,7 +89,7 @@ function OrderCard({ order }: { order: any }) {
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Package className="w-4 h-4 mr-2" />
-              <span>Order #{order.transaction.orderId.slice(-6)}</span>
+              <span>Order #{order.transaction.orderId.slice(-8)}</span>
             </div>
           </div>
         </CardContent>
