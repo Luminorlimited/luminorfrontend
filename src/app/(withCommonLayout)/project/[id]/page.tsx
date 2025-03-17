@@ -127,14 +127,21 @@ export default function OrderDetailsPage() {
                         </div>
                         <Badge
                             className={`mt-4 md:mt-0 text-sm font-semibold px-3 py-1 rounded-full ${getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending"
-                                ? "bg-amber-500 text-gray-950 hover:bg-amber-500"
-                                : "bg-emerald-500 text-emerald-950 hover:bg-emerald-500"
+                                    ? "bg-amber-500 text-gray-950 hover:bg-amber-500"
+                                    : getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded"
+                                        ? "bg-red-600 text-white hover:bg-red-700"
+                                        : "bg-emerald-500 text-emerald-950 hover:bg-emerald-500"
                                 }`}
                         >
                             {getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
                                 <div className="flex items-center gap-1">
                                     <AlertCircle className="h-4 w-4" />
                                     <span>Pending</span>
+                                </div>
+                            ) : getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded" ? (
+                                <div className="flex items-center gap-1">
+                                    <CheckCircle className="h-4 w-4" />
+                                    <span>Refunded</span>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-1">
@@ -143,6 +150,7 @@ export default function OrderDetailsPage() {
                                 </div>
                             )}
                         </Badge>
+
                     </div>
                 </div>
 
