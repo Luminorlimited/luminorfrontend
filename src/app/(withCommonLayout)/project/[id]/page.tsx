@@ -57,12 +57,12 @@ export default function OrderDetailsPage() {
         }).format(date);
     };
 
-    const handleAccept = async (id: string) => {
+    const handleAccept = async (id: string, userId:string) => {
         const res = await deliverProject(id)
         if (res?.data?.success) {
             // console.log("response is", res);
             toast.success("Order Delivered Successfully")
-            router.push("/payment")
+            router.push(`/deliver-details/addreview/${userId}`)
         } else {
             toast.error("Order Delivered Failed")
         }
@@ -99,7 +99,7 @@ export default function OrderDetailsPage() {
 
                                 {/* Accept Button with Loading */}
                                 <Button
-                                    onClick={() => handleAccept(getSingleOrder?.data?.result?._id)}
+                                    onClick={() => handleAccept(getSingleOrder?.data?.result?._id, getSingleOrder?.data?.retireProfessional?._id)}
                                     disabled={deliverLoading || refundLoading} // Disable if any action is in progress
                                     className="bg-green-700 hover:bg-green-800 rounded-[5px] flex items-center gap-2"
                                 >

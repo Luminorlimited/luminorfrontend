@@ -69,7 +69,7 @@ export default function FeedbackForm() {
                 const res = await clientReview({ id, data });
 
 
-                if (res?.data) {
+                if (res?.data?.success) {
                     toast.success("Thanks for review!!!");
                     reset();
                     router.push('/')
