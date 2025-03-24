@@ -1,114 +1,114 @@
-'use client'
+"use client"
 
-import Image from 'next/image'
-import { useState } from 'react'
+import type React from "react"
+
+import Image from "next/image"
+import { useState } from "react"
 import visa from "@/assets/payment/visa.jpg"
-import { FaArrowRightLong } from "react-icons/fa6";
-import { PaymentInfoStepProps } from './PaymentInfoStep'
-import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useParams } from 'next/navigation'
-import { useGetProfileQuery } from '@/redux/Api/userApi'
-import { useOfferpaymentMutation } from '@/redux/Api/paymentApi'
-import { toast } from 'sonner'
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
-
+import { FaArrowRightLong } from "react-icons/fa6"
+import type { PaymentInfoStepProps } from "./PaymentInfoStep"
+import { CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from "@stripe/react-stripe-js"
+import { useParams } from "next/navigation"
+import { useGetProfileQuery } from "@/redux/Api/userApi"
+import { useOfferpaymentMutation } from "@/redux/Api/paymentApi"
+import { toast } from "sonner"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requirementdata }) => {
-    const [paymentMethod, setPaymentMethod] = useState('card')
-    const [saveCard, setSaveCard] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState("card")
+    const [saveCard, setSaveCard] = useState(false)
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
     const { data: getprofile } = useGetProfileQuery(null)
-
 
     const offerId = useParams()
     const customerId = getprofile?.data?.client?.stripe?.customerId
 
-    const [offerPayment, { isLoading }] = useOfferpaymentMutation({});
+    const [offerPayment, { isLoading }] = useOfferpaymentMutation({})
 
-
-
-
-    const stripe = useStripe();
-    const elements = useElements();
+    const stripe = useStripe()
+    const elements = useElements()
     const router = useRouter()
     const totalPrice = getSingleOffer?.data?.offer?.totalPrice
+
     const handleSubmit = async (e: any) => {
-        e.preventDefault();
+        e.preventDefault()
+        console.log("Form submission started")
 
         if (!stripe || !elements) {
-            console.error('Stripe or Elements not loaded');
-            return;
+            console.error("Stripe or Elements not loaded")
+            return
         }
 
-        const cardElement = elements.getElement(CardNumberElement);
+        const cardElement = elements.getElement(CardNumberElement)
         if (!cardElement) {
-            console.error('Card element not found');
-            return;
+            console.error("Card element not found")
+            return
         }
-
-        const { error, paymentMethod: stripePaymentMethod } = await stripe.createPaymentMethod({
-            type: 'card',
-            card: cardElement,
-        });
-
-        if (error) {
-            console.error('Error creating payment method:', error.message);
-            return;
-        }
-        const formData = new FormData();
-
-
-
-        const data = {
-
-            customerId: customerId,
-            paymentMethodId: stripePaymentMethod?.id,
-            amount: JSON.stringify(totalPrice),
-
-            offerId: offerId.id,
-            caption: requirementdata?.captions,
-
-            additionalMessage: requirementdata?.additionalMessage,
-
-
-        }
-        // // console.log(amount, "check amount")
-        // console.log(requirementdata.clientRequirement, "check client requirement")
-        formData.append("data", JSON.stringify(data));
-        if (requirementdata?.clientRequirement && requirementdata.clientRequirement.length > 0) {
-            requirementdata.clientRequirement.forEach((upload: { file: File }, index: number) => {
-                if (upload.file instanceof File) {
-                    formData.append("clientRequirement", upload.file); // Append each file under the same key
-                } else {
-                    console.warn(`Invalid file at index ${index}:`, upload.file);
-                }
-            });
-        } else {
-            console.warn("No valid files in clientRequirement");
-        }
-
 
         try {
-            const response = await offerPayment((formData));
+            console.log("Creating payment method...")
+            const { error, paymentMethod: stripePaymentMethod } = await stripe.createPaymentMethod({
+                type: "card",
+                card: cardElement,
+            })
 
-            if (response.data) {
-                // alert('Payment Successful!');
-                toast.success('Payment Successful!');
-                // router.push(`/deliver-details/addreview/${getSingleOffer?.data?.offer?.professionalEmail?._id}`)
-                router.push(`/`)
+            if (error) {
+                console.error("Error creating payment method:", error.message)
+                return
+            }
 
+            console.log("Payment method created successfully:", stripePaymentMethod)
+
+            const formData = new FormData()
+
+            const data = {
+                customerId: customerId,
+                paymentMethodId: stripePaymentMethod?.id,
+                amount: JSON.stringify(totalPrice),
+                offerId: offerId.id,
+                caption: requirementdata?.captions,
+                additionalMessage: requirementdata?.additionalMessage,
+                firstName: firstName,
+                lastName: lastName,
+            }
+
+            console.log("Preparing data for submission:", data)
+
+            formData.append("data", JSON.stringify(data))
+
+            if (requirementdata?.clientRequirement && requirementdata.clientRequirement.length > 0) {
+                console.log("Adding client requirements to form data")
+                requirementdata.clientRequirement.forEach((upload: { file: File }, index: number) => {
+                    if (upload.file instanceof File) {
+                        formData.append("clientRequirement", upload.file)
+                        console.log(`Added file at index ${index}:`, upload.file.name)
+                    } else {
+                        console.warn(`Invalid file at index ${index}:`, upload.file)
+                    }
+                })
             } else {
-                console.error('Payment failed:', response.error);
-                alert('Payment Failed. Please try again.');
+                console.warn("No valid files in clientRequirement")
+            }
+
+            console.log("Submitting payment to API...")
+            const response = await offerPayment(formData)
+            console.log("API response received:", response)
+
+            if ("data" in response) {
+                console.log("Payment successful!", response.data)
+                toast.success("Payment Successful!")
+                router.push(`/`)
+            } else if ("error" in response) {
+                console.error("Payment failed:", response.error)
+                toast.error("Payment Failed. Please try again.")
             }
         } catch (err) {
-            console.error('Error during payment process:', err);
-            alert('An error occurred. Please try again.');
+            console.error("Error during payment process:", err)
+            toast.error("An error occurred. Please try again.")
         }
-    };
-
-
+    }
 
     return (
         <div className="lg:p-6">
@@ -120,10 +120,9 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                             <div className="bg-[#F2FAFF] ml-1 border-none rounded-[8px] p-4">
                                 Your card details are secure and payments will be held until the project is marked as completed
                             </div>
-
                         </div>
 
-                        <form id="paymentForm" onSubmit={handleSubmit} className="space-y-4" content='application/json'>
+                        <form id="paymentForm" onSubmit={handleSubmit} className="space-y-4">
                             <h2 className="text-base font-medium text-gray-900">Payment Options</h2>
 
                             <div className="relative rounded-lg border p-4">
@@ -132,17 +131,17 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                         type="radio"
                                         id="card"
                                         name="payment"
-                                        checked={paymentMethod === 'card'}
-                                        onChange={() => setPaymentMethod('card')}
+                                        checked={paymentMethod === "card"}
+                                        onChange={() => setPaymentMethod("card")}
                                         className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
                                     />
                                     <label htmlFor="card" className="flex items-center gap-2 text-sm text-gray-700">
                                         Credit & Debit Cards
-                                        <Image src={visa} alt="Visa" width={32} height={20} className="ml-auto" />
+                                        <Image src={visa || "/placeholder.svg"} alt="Visa" width={32} height={20} className="ml-auto" />
                                     </label>
                                 </div>
 
-                                {paymentMethod === 'card' && (
+                                {paymentMethod === "card" && (
                                     <div className="mt-4 space-y-4">
                                         <div className="space-y-2">
                                             <label className="block text-sm text-gray-700">Card Number</label>
@@ -150,14 +149,14 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                                 options={{
                                                     style: {
                                                         base: {
-                                                            fontSize: '16px',
-                                                            color: '#424770',
-                                                            '::placeholder': {
-                                                                color: '#aab7c4',
+                                                            fontSize: "16px",
+                                                            color: "#424770",
+                                                            "::placeholder": {
+                                                                color: "#aab7c4",
                                                             },
                                                         },
                                                         invalid: {
-                                                            color: '#9e2146',
+                                                            color: "#9e2146",
                                                         },
                                                     },
                                                 }}
@@ -172,14 +171,14 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                                     options={{
                                                         style: {
                                                             base: {
-                                                                fontSize: '16px',
-                                                                color: '#424770',
-                                                                '::placeholder': {
-                                                                    color: '#aab7c4',
+                                                                fontSize: "16px",
+                                                                color: "#424770",
+                                                                "::placeholder": {
+                                                                    color: "#aab7c4",
                                                                 },
                                                             },
                                                             invalid: {
-                                                                color: '#9e2146',
+                                                                color: "#9e2146",
                                                             },
                                                         },
                                                     }}
@@ -192,14 +191,14 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                                     options={{
                                                         style: {
                                                             base: {
-                                                                fontSize: '16px',
-                                                                color: '#424770',
-                                                                '::placeholder': {
-                                                                    color: '#aab7c4',
+                                                                fontSize: "16px",
+                                                                color: "#424770",
+                                                                "::placeholder": {
+                                                                    color: "#aab7c4",
                                                                 },
                                                             },
                                                             invalid: {
-                                                                color: '#9e2146',
+                                                                color: "#9e2146",
                                                             },
                                                         },
                                                     }}
@@ -214,6 +213,8 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                                 <input
                                                     type="text"
                                                     placeholder="First Name"
+                                                    value={firstName}
+                                                    onChange={(e) => setFirstName(e.target.value)}
                                                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                                 />
                                             </div>
@@ -222,6 +223,8 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                                 <input
                                                     type="text"
                                                     placeholder="Last Name"
+                                                    value={lastName}
+                                                    onChange={(e) => setLastName(e.target.value)}
                                                     className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                                 />
                                             </div>
@@ -250,13 +253,11 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                         <h3 className="text-sm font-medium text-gray-900">Payment Policy</h3>
                                     </div>
                                     <p className="text-sm text-gray-600">
-                                        If the project is not marked as completed one month after the specified end date,
-                                        payment will be processed automatically
+                                        If the project is not marked as completed one month after the specified end date, payment will be
+                                        processed automatically
                                     </p>
                                 </div>
                             </div>
-
-
                         </form>
                     </div>
 
@@ -267,38 +268,37 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 <div className="relative w-[322px] h-[96px]">
                                     {/* Iframe displaying the PDF */}
                                     <iframe
-                                        src={getSingleOffer.data?.offer.orderAgreementPDF}
+                                        src={getSingleOffer?.data?.offer?.orderAgreementPDF}
                                         width="322"
                                         height="96"
                                         style={{
-                                            border: 'none',
-                                            objectFit: 'cover',
-                                            overflow: 'hidden',
+                                            border: "none",
+                                            objectFit: "cover",
+                                            overflow: "hidden",
                                         }}
                                         title="PDF Preview"
                                     />
                                     {/* Transparent link overlay */}
                                     <Link
-                                        href={getSingleOffer.data?.offer?.orderAgreementPDF}
+                                        href={getSingleOffer?.data?.offer?.orderAgreementPDF || "#"}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="absolute top-0 left-0 w-full h-full"
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ cursor: "pointer" }}
                                     />
                                 </div>
-
                             </div>
                             <div>
-                                <h3 className="font-medium text-gray-900">
-                                    {getSingleOffer?.data?.offer?.projectName}
-                                </h3>
+                                <h3 className="font-medium text-gray-900">{getSingleOffer?.data?.offer?.projectName}</h3>
                                 <p className="text-sm text-gray-600">{getSingleOffer?.data?.offer?.description}</p>
                             </div>
                         </div>
 
                         <div className="mt-6 space-y-4">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-600">Displays project name, payment amount, estimated date, and status.</span>
+                                <span className="text-gray-600">
+                                    Displays project name, payment amount, estimated date, and status.
+                                </span>
                                 <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.offer?.totalReceive}</span>
                             </div>
 
@@ -319,7 +319,15 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                     </svg>
                                     <span className="text-gray-600">Delivery Time</span>
                                 </div>
-                                <span className="text-gray-600">  {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFee?.delivery}</span>
+                                <span className="text-gray-600">
+                                    {getSingleOffer?.data?.offer?.milestones?.reduce(
+                                        (total: number, milestone: any) => total + milestone?.delivery,
+                                        0,
+                                    ) ||
+                                        getSingleOffer?.data?.offer?.hourlyFee?.delivery ||
+                                        getSingleOffer?.data?.offer?.flatFee?.delivery ||
+                                        "N/A"}
+                                </span>
                             </div>
 
                             <hr className="border-gray-200" />
@@ -327,7 +335,9 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                             <div className="space-y-2 border rounded-[10px] p-5 bg-[#FAFAFA]">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Order From</span>
-                                    <span className="text-gray-900">{getSingleOffer?.data?.retireProfessional?.name?.firstName || "Unknown"}</span>
+                                    <span className="text-gray-900">
+                                        {getSingleOffer?.data?.retireProfessional?.name?.firstName || "Unknown"}
+                                    </span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Order No</span>
@@ -336,20 +346,23 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Service fee</span>
                                     <span className="text-gray-900">
-                                        £ {getSingleOffer?.data?.offer?.serviceFee
+                                        £{" "}
+                                        {getSingleOffer?.data?.offer?.serviceFee
                                             ? Number(getSingleOffer.data.offer.serviceFee).toFixed(2)
                                             : "0.00"}
-
                                     </span>
-
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Delivery time</span>
                                     <span className="text-gray-900">
-                                        {getSingleOffer?.data?.offer?.milestones.reduce((total: number, milestone: any) => total + milestone?.delivery, 0) | getSingleOffer?.data?.offer?.hourlyFee?.delivery | getSingleOffer?.data?.offer?.flatFee?.delivery}
-
+                                        {getSingleOffer?.data?.offer?.milestones?.reduce(
+                                            (total: number, milestone: any) => total + milestone?.delivery,
+                                            0,
+                                        ) ||
+                                            getSingleOffer?.data?.offer?.hourlyFee?.delivery ||
+                                            getSingleOffer?.data?.offer?.flatFee?.delivery ||
+                                            "N/A"}
                                     </span>
-
                                 </div>
                                 <hr className="border-gray-200" />
 
@@ -359,11 +372,22 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 </div>
                             </div>
 
-
-                            <button onClick={() => document.getElementById('paymentForm')?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))} className={`w-full flex justify-center mt-12 bg-primary px-4 py-3 text-lg font-medium  rounded-[8px]  items-center gap-2 ${isLoading ? "bg-slate-500 text-white" : "bg-primary text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"}`} disabled={isLoading}>
-                                {isLoading ? 'Processing...' : 'Confirm & Pay'} <FaArrowRightLong />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    console.log("Payment button clicked")
+                                    document
+                                        .getElementById("paymentForm")
+                                        ?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))
+                                }}
+                                className={`w-full flex justify-center mt-12 px-4 py-3 text-lg font-medium rounded-[8px] items-center gap-2 ${isLoading
+                                        ? "bg-slate-500 text-white"
+                                        : "bg-primary text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                    }`}
+                                disabled={isLoading}
+                            >
+                                {isLoading ? "Processing..." : "Confirm & Pay"} <FaArrowRightLong />
                             </button>
-
                         </div>
                     </div>
                 </div>

@@ -58,7 +58,7 @@ export default function FeedbackForm() {
             if (token?.role === "client") {
                 const res = await professionalReview({ id, data });
                 if (res?.data) {
-                    toast.success("Thanks for review!!!");
+                    toast.success("Thanks for review!");
                     reset();
                     router.push('/')
 
@@ -70,7 +70,7 @@ export default function FeedbackForm() {
 
 
                 if (res?.data?.success) {
-                    toast.success("Thanks for review!!!");
+                    toast.success("Thanks for review!");
                     reset();
                     router.push('/')
 

@@ -78,7 +78,7 @@ export default function OrderDetailsPage() {
         }
     }
 
-    console.log("res", getSingleOrder?.data?.result?.transaction?.paymentStatus);
+    // console.log("res", getSingleOrder?.data?.result?.transaction?.paymentStatus);
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-gray-50 to-gray-50 py-10 px-4">
             <div className="container mx-auto max-w-6xl">
@@ -253,15 +253,15 @@ export default function OrderDetailsPage() {
                                             : "bg-emerald-100 text-gray-800 border border-emerald-300 hover:bg-bg-emerald-100"
                                             }`}
                                     >
-                                        {getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
+                                        {getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed" ? (
                                             <div className="flex items-center gap-1">
-                                                <AlertCircle className="h-4 w-4" />
-                                                <span>Pending</span>
+                                                <CheckCircle className="h-4 w-4" />
+                                                <span>{getSingleOrder?.data?.result?.transaction?.paymentStatus}</span>
                                             </div>
                                         ) : (
                                             <div className="flex items-center gap-1">
-                                                <CheckCircle className="h-4 w-4" />
-                                                <span>Completed</span>
+                                                <AlertCircle className="h-4 w-4" />
+                                                <span>{getSingleOrder?.data?.result?.transaction?.paymentStatus}</span>
                                             </div>
                                         )}
                                     </Badge>
