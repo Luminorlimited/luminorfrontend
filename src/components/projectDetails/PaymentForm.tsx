@@ -99,7 +99,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
             if ("data" in response) {
                 console.log("Payment successful!", response.data)
                 toast.success("Payment Successful!")
-                router.push(`/`)
+                router.push(`/clientOrder`)
             } else if ("error" in response) {
                 console.error("Payment failed:", response.error)
                 toast.error("Payment Failed. Please try again.")

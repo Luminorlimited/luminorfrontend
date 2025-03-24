@@ -63,6 +63,16 @@ const paymentApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['Payment']
         }),
+        revisionProject: build.mutation({
+            query: ({id, body}) => {
+                return {
+                    url: `/stripe/revision-request/${id}`,
+                    method: 'PATCH',
+                    data: body
+                }
+            },
+            invalidatesTags: ['Payment']
+        }),
         refundMoney: build.mutation({
             query: (id) => {
                 return {
@@ -82,6 +92,6 @@ const paymentApi = baseApi.injectEndpoints({
 
 
 
-export const { useOfferpaymentMutation, useTransactionListQuery, useClientPaymentQuery, useGetSingleOrderQuery, useDeliverOrderMutation, useDeliverProjectMutation, useRefundMoneyMutation } = paymentApi
+export const { useOfferpaymentMutation, useTransactionListQuery, useClientPaymentQuery, useGetSingleOrderQuery, useDeliverOrderMutation, useDeliverProjectMutation, useRefundMoneyMutation, useRevisionProjectMutation } = paymentApi
 
 

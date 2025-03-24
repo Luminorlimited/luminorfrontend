@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useDeliverProjectMutation, useGetSingleOrderQuery, useRefundMoneyMutation } from "@/redux/Api/paymentApi";
+import { useDeliverProjectMutation, useGetSingleOrderQuery, useRefundMoneyMutation, useRevisionProjectMutation } from "@/redux/Api/paymentApi";
 import {
     FileText,
     Calendar,
@@ -19,15 +19,21 @@ import {
     AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+
 import { useParams, useRouter } from "next/navigation";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
 
 export default function OrderDetailsPage() {
+
+    const { register, handleSubmit } = useForm();
+
     const offerId = useParams();
     const { data: getSingleOrder, isLoading, error } = useGetSingleOrderQuery(offerId.id);
     const [deliverProject, { isLoading: deliverLoading }] = useDeliverProjectMutation({})
     const [refundMoney, { isLoading: refundLoading }] = useRefundMoneyMutation({})
+    const [revisionProject, { isLoading: revisionLoading }] = useRevisionProjectMutation({})
     const router = useRouter()
 
 
@@ -57,7 +63,7 @@ export default function OrderDetailsPage() {
         }).format(date);
     };
 
-    const handleAccept = async (id: string, userId:string) => {
+    const handleAccept = async (id: string, userId: string) => {
         const res = await deliverProject(id)
         if (res?.data?.success) {
             // console.log("response is", res);
@@ -78,10 +84,61 @@ export default function OrderDetailsPage() {
         }
     }
 
-    // console.log("res", getSingleOrder?.data?.result?.transaction?.paymentStatus);
+    console.log("object",);
+
+    const onSubmit = async (data: any) => {
+        const res = await revisionProject({id:offerId.id, data:data})
+        if (res?.data?.success) {
+            toast.success("Revision Set Successfully")
+        }
+        // console.log("Revision Data:", data);
+    };
+
+    const isPaymentCompleted = getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed" || getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded";
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-gray-50 to-gray-50 py-10 px-4">
-            <div className="container mx-auto max-w-6xl">
+            <div className="container">
+                <div className="flex justify-end">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 flex gap-3 items-center">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Duration</label>
+                            <select
+                                className="p-2 rounded-[8px]"
+                                {...register("duration", { required: true })}
+                                disabled={isPaymentCompleted}
+                                title={isPaymentCompleted ? "Payment Completed" : ""}
+                            >
+                                <option>Select Value</option>
+                                <option value="2">2</option>
+                                <option value="4">4</option>
+                                <option value="7">7</option>
+                                <option value="14">14</option>
+                                <option value="20">20</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea
+                                {...register("description", { required: true })}
+                                rows={1}
+                                className="mt-1 block max-w-[250px] rounded-[8px] p-2 border border-gray-300 shadow-sm focus:ring-#5633D1 focus:border-#5633D1"
+                                disabled={isPaymentCompleted}
+                                title={isPaymentCompleted ? "Payment Completed" : ""}
+                            ></textarea>
+                        </div>
+                        <div title={isPaymentCompleted ? "Payment Completed" : ""}>
+                            <Button
+                                type="submit"
+                                className="bg-[#5633D1] rounded-[8px] text-white w-full"
+                                disabled={isPaymentCompleted || revisionLoading}
+                            >
+                                {revisionLoading ? "Submitting..." : "Submit Revision"}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div className="container mx-auto ">
                 {/* Header with animated gradient */}
                 {
                     getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
@@ -127,10 +184,10 @@ export default function OrderDetailsPage() {
                         </div>
                         <Badge
                             className={`mt-4 md:mt-0 text-sm font-semibold px-3 py-1 rounded-full ${getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending"
-                                    ? "bg-amber-500 text-gray-950 hover:bg-amber-500"
-                                    : getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded"
-                                        ? "bg-red-600 text-white hover:bg-red-700"
-                                        : "bg-emerald-500 text-emerald-950 hover:bg-emerald-500"
+                                ? "bg-amber-500 text-gray-950 hover:bg-amber-500"
+                                : getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded"
+                                    ? "bg-red-600 text-white hover:bg-red-700"
+                                    : "bg-emerald-500 text-emerald-950 hover:bg-emerald-500"
                                 }`}
                         >
                             {getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
@@ -154,7 +211,7 @@ export default function OrderDetailsPage() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-6">
                     {/* Order Summary Card */}
                     <Card className="md:col-span-2 overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
                         <div className="bg-primary p-4">
