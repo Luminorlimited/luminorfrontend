@@ -9,7 +9,7 @@ import { useTransactionListQuery } from "@/redux/Api/paymentApi"
 
 export default function OrdersPage() {
   const { data: orderList, isLoading } = useTransactionListQuery(undefined)
-
+console.log("order list", orderList);
   if (isLoading) {
     return (
       <div className="container p-4 mx-auto">
@@ -61,7 +61,7 @@ function OrderCard({ order }: { order: any }) {
   }
 
   return (
-    <Link href={`/deliver-details/${order.transaction.orderId}`}>
+    <Link href={`/deliver-details/${order?.transaction?.orderId}`}>
       <Card className="overflow-hidden transition-all duration-300 border hover:shadow-lg hover:border-primary/20">
         <CardHeader className="p-4 pb-0">
           <div className="flex items-start justify-between">
@@ -69,6 +69,7 @@ function OrderCard({ order }: { order: any }) {
             <Badge variant="outline" className={`${getStatusColor(order?.transaction?.paymentStatus)} border`}>
               {order?.transaction?.paymentStatus}
             </Badge>
+          
           </div>
         </CardHeader>
         <CardContent className="p-4">
@@ -89,8 +90,15 @@ function OrderCard({ order }: { order: any }) {
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Package className="w-4 h-4 mr-2" />
-              <span>Order #{order.transaction.orderId.slice(-8)}</span>
+              <span> <b>Revision</b> {order?.revisionCount}</span>
             </div>
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Package className="w-4 h-4 mr-2" />
+              <span>Order #{order?.transaction?.orderId.slice(-8)}</span>
+            </div>
+            <Badge variant="outline" className={`${order?.revisionCount > 0 ? "bg-red-900 text-white" : "bg-green-700 text-white"} `}>
+              {order?.revisionCount > 0 ? "In Revision" : "Order Accepted"}
+            </Badge>
           </div>
         </CardContent>
         <CardFooter className="p-4 pt-2 border-t bg-muted/10">
