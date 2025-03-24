@@ -260,11 +260,11 @@ export default function OrderDetailsPage() {
                                 className="bg-bg_primary hover:bg-sky text-white border-none shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
                                 asChild
                             >
-                                <a href={getSingleOrder?.data?.result?.project?.orderAgreementPDF} target="_blank" rel="noopener noreferrer">
+                                <Link href={getSingleOrder?.data?.result?.project?.orderAgreementPDF || ""} target="_blank" rel="noopener noreferrer">
                                     <FileCheck className="h-4 w-4" />
                                     View Agreement PDF
                                     <ExternalLink className="h-3 w-3 ml-1" />
-                                </a>
+                                </Link>
                             </Button>
                         </CardFooter>
                     </Card>
@@ -381,7 +381,7 @@ export default function OrderDetailsPage() {
                                     className="bg-bg_primary hover:bg-bg_primary text-white border-none shadow-md hover:shadow-lg transition-all duration-300 w-full flex items-center justify-center gap-2"
                                     asChild
                                 >
-                                    <Link href={getSingleOrder?.data?.result?.clientRequerment} target="_blank" rel="noopener noreferrer">
+                                    <Link href={getSingleOrder?.data?.result?.clientRequerment || ""} target="_blank" rel="noopener noreferrer">
                                         <FileText className="h-4 w-4" />
                                         View Requirements PDF
                                         <ExternalLink className="h-3 w-3 ml-1" />
