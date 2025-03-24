@@ -105,7 +105,7 @@ export default function Users() {
                 ) : users?.length > 0 ? (
                     paginate(users, currentPage)?.map((user: any, index: number) => (
                         <TableRow key={index}>
-                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>{index + 1 + (currentPage - 1) * itemsPerPage}</TableCell> {/* Updated Serial Number Logic */}
                             <TableCell>
                                 <Link className="text-primary hover:underline" href={`/dashboard/users/${user?.client ? user?.client?._id : user?.retireProfessional?._id}`}>
                                     <span className={user?.[userType]?.name?.lastName ? "" : "font-bold"}>
