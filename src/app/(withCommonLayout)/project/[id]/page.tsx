@@ -87,7 +87,7 @@ export default function OrderDetailsPage() {
     console.log("object",);
 
     const onSubmit = async (data: any) => {
-        const res = await revisionProject({id:offerId.id, data:data})
+        const res = await revisionProject({ id: offerId.id, data: data })
         if (res?.data?.success) {
             toast.success("Revision Set Successfully")
         }
@@ -100,7 +100,7 @@ export default function OrderDetailsPage() {
             <div className="container">
                 <div className="flex justify-end">
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 flex gap-3 items-center">
-                        <div>
+                        <div className="pt-[16px]">
                             <label className="block text-sm font-medium text-gray-700">Duration</label>
                             <select
                                 className="p-2 rounded-[8px]"
@@ -126,7 +126,7 @@ export default function OrderDetailsPage() {
                                 title={isPaymentCompleted ? "Payment Completed" : ""}
                             ></textarea>
                         </div>
-                        <div title={isPaymentCompleted ? "Payment Completed" : ""}>
+                        <div className="pt-6" title={isPaymentCompleted ? "Payment Completed" : ""}>
                             <Button
                                 type="submit"
                                 className="bg-[#5633D1] rounded-[8px] text-white w-full"

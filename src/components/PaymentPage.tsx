@@ -126,8 +126,8 @@ export default function PaymentPage() {
                                                 </TableCell>
                                                 <TableCell
                                                     className={`${item?.transaction?.paymentStatus === "refunded"
-                                                        ? "text-white bg-red-700" : item?.transaction?.paymentStatus === "completed" ? "bg-green-500 hover:bg-green-600" : "bg-yellow hover:bg-yellow"
-                                                        }`}
+                                                        ? "text-white bg-red-700" : item?.transaction?.paymentStatus === "completed" ? "bg-green-500 hover:bg-green-600" : item?.transaction.paymentStatus === "revision" ? "text-white bg-red-900" : "bg-yellow hover:bg-yellow"
+                                                        } font-medium text-lg`}
                                                 >
                                                     {item?.transaction?.paymentStatus}
                                                 </TableCell>
