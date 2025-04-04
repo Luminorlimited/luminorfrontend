@@ -141,7 +141,7 @@ export default function OrderDetailsPage() {
             <div className="container mx-auto ">
                 {/* Header with animated gradient */}
                 {
-                    getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
+                    getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ||  getSingleOrder?.data?.result?.revisionCount > 0 ? (
 
                         <div className="flex justify-end py-5">
                             <div className="flex gap-3">

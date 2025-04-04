@@ -143,7 +143,7 @@ function EmptyOrderState() {
         You haven&lsquo;t placed any orders yet. Browse our projects and make your first purchase!
       </p>
       <Link
-        href="/projects"
+        href="/project-list/client"
         className="px-4 py-2 text-sm font-medium text-white rounded-md bg-primary hover:bg-primary/90"
       >
         Browse Projects

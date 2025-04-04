@@ -9,21 +9,23 @@ import Link from 'next/link';
 import { useClientListQuery, useProfessionalListQuery } from '@/redux/Api/projectApi';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import LoaderAnimation from '../loader/LoaderAnimation';
 
 const FeaturedProject: React.FC = () => {
     const [showAll, setShowAll] = useState(false);
-    // const route = usePathname();
-    const clientData = useClientListQuery(undefined);
-    const professionalData = useProfessionalListQuery(undefined);
+
+    // Fetch client and professional data with loading states
+    const { data: clientData, isLoading: clientLoading } = useClientListQuery(undefined);
+    const { data: professionalData, isLoading: professionalLoading } = useProfessionalListQuery(undefined);
+
     const userRole = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
-    // console.log("client is", clientData);
+
     const handleToggleShowAll = () => {
         setShowAll(!showAll);
     };
 
     const renderProjects = (data: any[], isClient: boolean) => {
         const projectsToShow = showAll ? data : data.slice(0, 3);
-        // console.log("my clientData is", data);
 
         return projectsToShow.map((data: any, index: number) => (
             <div
@@ -45,7 +47,6 @@ const FeaturedProject: React.FC = () => {
                             height={218}
                             className="object-cover hover:scale-105 w-full h-full transition-all"
                         />
-
                     </div>
 
                     {isClient && (
@@ -105,17 +106,26 @@ const FeaturedProject: React.FC = () => {
 
     return (
         <div>
-            <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 justify-center mb-8">
-                {userRole === 'client' ? renderProjects(professionalData?.data?.data || [], false) : renderProjects(clientData?.data?.data || [], true)}
-            </div>
-            <div className="text-center">
-                <button
-                    onClick={handleToggleShowAll}
-                    className="rounded-[12px] px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all duration-200"
-                >
-                    {showAll ? "Show Less" : "Explore More Service"}
-                </button>
-            </div>
+            {/* Show loading spinner if data is loading */}
+            {(clientLoading || professionalLoading) ? (
+                 <div className="max-w-[400px] mx-auto">
+                 <LoaderAnimation />
+               </div>
+            ) : (
+                <>
+                    <div className="grid lg:grid-cols-3 gap-4 md:grid-cols-2 grid-cols-1 justify-center mb-8">
+                        {userRole === 'client' ? renderProjects(professionalData?.data?.data || [], false) : renderProjects(clientData?.data?.data || [], true)}
+                    </div>
+                    <div className="text-center">
+                        <button
+                            onClick={handleToggleShowAll}
+                            className="rounded-[12px] px-6 py-4 text-[16px] bg-primary font-medium text-white hover:bg-[#4629af] transition-all duration-200"
+                        >
+                            {showAll ? "Show Less" : "Explore More Service"}
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 };

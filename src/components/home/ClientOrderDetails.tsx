@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -11,33 +10,33 @@ import Link from "next/link"
 import LoaderAnimation from "../loader/LoaderAnimation"
 
 export default function OrderDetailsPage() {
-    const [order,] = useState({
-        _id: "67c6d38810257ff11d055623",
-        clientRequerment:
-            "https://smtech-space.nyc3.digitaloceanspaces.com/merged-pdfs/1741083527486_merged_1741083527480.pdf",
-        orderFrom: {
-            name: {
-                firstName: "Basias",
-                lastName: "Tylers",
-            },
-            email: "reltokuknu@gufum.com",
-        },
-        orderReciver: {
-            name: {
-                firstName: "Leilani",
-                lastName: "Aguilar",
-            },
-            email: "refemu@dreamclarify.org",
-        },
-        deliveryDate: "1",
-        totalPrice: "38.4",
-        transaction: {
-            amount: 38.4,
-            paymentStatus: "pending",
-            charge: 6.4,
-        },
-        createdAt: "2025-03-04T10:18:48.943Z",
-    })
+    // const [order,] = useState({
+    //     _id: "67c6d38810257ff11d055623",
+    //     clientRequerment:
+    //         "https://smtech-space.nyc3.digitaloceanspaces.com/merged-pdfs/1741083527486_merged_1741083527480.pdf",
+    //     orderFrom: {
+    //         name: {
+    //             firstName: "Basias",
+    //             lastName: "Tylers",
+    //         },
+    //         email: "reltokuknu@gufum.com",
+    //     },
+    //     orderReciver: {
+    //         name: {
+    //             firstName: "Leilani",
+    //             lastName: "Aguilar",
+    //         },
+    //         email: "refemu@dreamclarify.org",
+    //     },
+    //     deliveryDate: "1",
+    //     totalPrice: "38.4",
+    //     transaction: {
+    //         amount: 38.4,
+    //         paymentStatus: "pending",
+    //         charge: 6.4,
+    //     },
+    //     createdAt: "2025-03-04T10:18:48.943Z",
+    // })
 
     const DeliveryformatDate = (dateString: any) => {
         const date = new Date(dateString);
@@ -200,7 +199,7 @@ export default function OrderDetailsPage() {
                         </div>
 
                         <div className="pt-4">
-                            <Link href={`/project/${order?._id}`} className="w-full bg-[#5633D1] block py-3 rounded-[8px] text-lg text-white font-medium text-center hover:bg-[#4628b0]">
+                            <Link href={`/project/${orderDetails?.result?._id}`} className="w-full bg-[#5633D1] block py-3 rounded-[8px] text-lg text-white font-medium text-center hover:bg-[#4628b0]">
                                 View Payment Details
                             </Link>
                         </div>
