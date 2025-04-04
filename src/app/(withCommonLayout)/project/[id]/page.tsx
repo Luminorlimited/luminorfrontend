@@ -95,6 +95,9 @@ export default function OrderDetailsPage() {
     };
 
     const isPaymentCompleted = getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed" || getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded";
+    const revisionCount = getSingleOrder?.data?.result?.revisionCount || 0;
+    const shouldDisableTextarea = isPaymentCompleted && revisionCount > 0;
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-gray-50 to-gray-50 py-10 px-4">
             <div className="container">
@@ -105,7 +108,7 @@ export default function OrderDetailsPage() {
                             <select
                                 className="p-2 rounded-[8px]"
                                 {...register("duration", { required: true })}
-                                disabled={isPaymentCompleted}
+                                disabled={shouldDisableTextarea}
                                 title={isPaymentCompleted ? "Payment Completed" : ""}
                             >
                                 <option>Select Value</option>
@@ -122,7 +125,7 @@ export default function OrderDetailsPage() {
                                 {...register("description", { required: true })}
                                 rows={1}
                                 className="mt-1 block max-w-[250px] rounded-[8px] p-2 border border-gray-300 shadow-sm focus:ring-#5633D1 focus:border-#5633D1"
-                                disabled={isPaymentCompleted}
+                                disabled={shouldDisableTextarea}
                                 title={isPaymentCompleted ? "Payment Completed" : ""}
                             ></textarea>
                         </div>
@@ -130,7 +133,7 @@ export default function OrderDetailsPage() {
                             <Button
                                 type="submit"
                                 className="bg-[#5633D1] rounded-[8px] text-white w-full"
-                                disabled={isPaymentCompleted || revisionLoading}
+                                disabled={shouldDisableTextarea || revisionLoading}
                             >
                                 {revisionLoading ? "Submitting..." : "Submit Revision"}
                             </Button>
