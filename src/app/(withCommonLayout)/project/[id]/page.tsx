@@ -95,8 +95,9 @@ export default function OrderDetailsPage() {
     };
 
     const isPaymentCompleted = getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed" || getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded";
-    const revisionCount = getSingleOrder?.data?.result?.revisionCount
-    const shouldDisableTextarea = isPaymentCompleted && revisionCount > 0;
+    
+    const revisionCount = getSingleOrder?.data?.result?.transaction?.paymentStatus === "revision"
+    const shouldDisableTextarea = isPaymentCompleted || revisionCount 
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-gray-50 to-gray-50 py-10 px-4">
