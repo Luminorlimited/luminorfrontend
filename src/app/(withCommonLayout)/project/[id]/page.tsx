@@ -95,14 +95,14 @@ export default function OrderDetailsPage() {
     };
 
     const isPaymentCompleted = getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed" || getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded";
-    const revisionCount = getSingleOrder?.data?.result?.revisionCount || 0;
+    const revisionCount = getSingleOrder?.data?.result?.revisionCount
     const shouldDisableTextarea = isPaymentCompleted && revisionCount > 0;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-gray-50 to-gray-50 py-10 px-4">
             <div className="container">
                 <div className="flex justify-end">
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 flex gap-3 items-center">
+                    <form onSubmit={handleSubmit(onSubmit)}  className="space-y-4 flex gap-3 items-center">
                         <div className="pt-[16px]">
                             <label className="block text-sm font-medium text-gray-700">Duration</label>
                             <select
@@ -202,6 +202,12 @@ export default function OrderDetailsPage() {
                                 <div className="flex items-center gap-1">
                                     <CheckCircle className="h-4 w-4" />
                                     <span>Refunded</span>
+                                </div>
+                            ) : 
+                            getSingleOrder?.data?.result?.revisionCount > 0 ? (
+                                <div className="flex items-center gap-1">
+                                    <CheckCircle className="h-4 w-4" />
+                                    <span>In Revision</span>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-1">
