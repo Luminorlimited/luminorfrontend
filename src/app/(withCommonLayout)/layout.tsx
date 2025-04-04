@@ -1,13 +1,25 @@
 "use client";
+import { useDecodedToken } from "@/components/common/DecodeToken";
 import Footer from "@/components/shared/footer/Footer";
 import Navbar from "@/components/shared/navbar/Navbar";
+import { useGetNotificationQuery } from "@/redux/Api/messageApi";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import { RootState } from "@/redux/store";
 import { usePathname } from "next/navigation";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-
-
+import { io, Socket } from "socket.io-client";
+interface Notification {
+  toUser: string; // ID of the recipient user
+  message: string; // Notification message
+  fromUser: string; // ID of the sender user
+  notificationId: string;
+  orderId: string; // ID of the sender user
+  _id: string; // ID of the notification
+  type: "offer" | "delivery" | string; // Type of notification (e.g., offer, message, etc.)
+  status: string; // Notification status
+  count: number; // Number of notifications (e.g., unread count)
+}
 const CommonLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const { data: getprofile } = useGetProfileQuery(undefined)
@@ -32,6 +44,66 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
 
   }, [getprofile?.data?.client?.isActivated, getprofile?.data?.retireProfessional?.isActivated])
   const user = useSelector((state: RootState) => state.Auth.user?.role)
+
+
+
+
+
+
+
+
+  const socketRef = useRef<Socket | null>(null);
+
+  const [, setIsSocketReady] = useState(false);
+
+  const token = useDecodedToken();
+
+  const { data: getAllNotification } = useGetNotificationQuery(undefined);
+
+  const [allNotification, setAllNotification] = useState(getAllNotification);
+
+
+
+    useEffect(() => {
+      if (getAllNotification?.data) {
+        setAllNotification(getAllNotification.data);
+      }
+    }, [getAllNotification]);
+  
+    useEffect(() => {
+      if (!socketRef.current && token?.id) {
+        const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
+        socketRef.current = mysocket;
+  
+        mysocket.on("connect", () => {
+          setIsSocketReady(true);
+          mysocket.emit("register", JSON.stringify({ id: token?.id }));
+          console.log("Socket connected");
+        });
+  
+        mysocket.on("sendNotification", (data: Notification) => {
+          console.log("New Notification Received:", data);
+          
+          setAllNotification((prev: any) => {
+            if (!Array.isArray(prev)) return [data];
+            return [data, ...prev];
+          });
+        });
+  
+        mysocket.on("disconnect", () => {
+          console.log("Socket disconnected");
+        });
+      }
+  
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.off("connect");
+          socketRef.current.off("sendNotification");
+          socketRef.current.disconnect();
+          socketRef.current = null;
+        }
+      };
+    }, [token?.id]);
   // console.log("my role is", getprofile);
 
   return (
@@ -66,7 +138,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
         pathname !== "/user/auth/client" &&
         pathname !== "/user/auth/professional" &&
         pathname !== "/user/verification" ? (
-        <Navbar />
+        <Navbar allNotification={allNotification} getAllNotification={getAllNotification} />
       ) : (
         ""
       )}

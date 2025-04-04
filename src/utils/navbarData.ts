@@ -34,12 +34,12 @@ export const navbarLinks = (role: string): navbarDataTypes[] => {
   } else {
     links.push(
       {
-        id: 1,
+        id: 4,
         title: "Order",
         link: "/clientOrder",
       },
       {
-        id: 1,
+        id: 5,
         title: "Payment",
         link: "/payment",
       },
