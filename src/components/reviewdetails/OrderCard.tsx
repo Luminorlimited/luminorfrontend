@@ -67,7 +67,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                 // console.log("my response is",);
                 if (res?.data?.success) {
                     // console.log("response is", res);
-                    toast.success("Order delivered successfully");
+                    toast.success("Your order delivery has been sent to the client to accept.");
                     router.push('/')
                 }
             } else {
