@@ -148,7 +148,7 @@ export default function OrderDetailsPage() {
                                 {/* Cancel Button with Loading */}
                                 <Button
                                     onClick={() => handleCancel(getSingleOrder?.data?.result?._id)}
-                                    disabled={refundLoading || deliverLoading} // Disable if any action is in progress
+                                    disabled={refundLoading || deliverLoading ||isPaymentCompleted} // Disable if any action is in progress
                                     className="bg-red-700 hover:bg-red-800 rounded-[5px] flex items-center gap-2"
                                 >
                                     {refundLoading ? <span className="flex gap-2 items-center"><FaSpinner />Cancel Delivery</span> : "Cancel Delivery"}
@@ -157,7 +157,7 @@ export default function OrderDetailsPage() {
                                 {/* Accept Button with Loading */}
                                 <Button
                                     onClick={() => handleAccept(getSingleOrder?.data?.result?._id, getSingleOrder?.data?.retireProfessional?._id)}
-                                    disabled={deliverLoading || refundLoading} // Disable if any action is in progress
+                                    disabled={deliverLoading || refundLoading ||isPaymentCompleted} // Disable if any action is in progress
                                     className="bg-green-700 hover:bg-green-800 rounded-[5px] flex items-center gap-2"
                                 >
                                     {deliverLoading ? <span className="flex gap-2 items-center"><FaSpinner />Accept Delivery</span> : "Accept Delivery"}
