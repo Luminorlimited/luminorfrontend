@@ -89,7 +89,7 @@ export default function OrderDetailsPage() {
     const onSubmit = async (data: any) => {
         const res = await revisionProject({ id: offerId.id, data: data })
         if (res?.data?.success) {
-            toast.success("Revision Set Successfully")
+            toast.success("Revision Sent Successfully")
         }
         // console.log("Revision Data:", data);
     };

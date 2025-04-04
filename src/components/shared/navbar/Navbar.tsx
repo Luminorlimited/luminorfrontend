@@ -32,7 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useGetNotificationQuery, useSeenNotificationMutation } from "@/redux/Api/messageApi";
 import { LuMessageSquareMore } from "react-icons/lu";
-import { TbTruckDelivery } from "react-icons/tb";
+import { LuBellRing } from "react-icons/lu";
 
 
 interface Notification {
@@ -277,7 +277,7 @@ const Navbar = () => {
                                 ) : item?.type === "privateMessage" ? (
                                   <LuMessageSquareMore className="h-5 w-5" />
                                 ) : (
-                                  <TbTruckDelivery className="h-5 w-5" />
+                                  <LuBellRing className="h-5 w-5" />
                                 )}
 
 
