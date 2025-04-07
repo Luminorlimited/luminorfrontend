@@ -77,7 +77,7 @@ export default function OrderDetailsPage() {
         const res = await refundMoney(id)
         if (res?.data?.success) {
             // console.log("response is", res);
-            toast.success(res?.data?.message)
+            toast.success("Refund Sent Successfully")
             router.push("/payment")
         } else {
             toast.error("Order cannot refunded.")
