@@ -102,7 +102,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
                 className={`px-4 py-2 rounded-[8px]   ${
                   getSingleOrder?.data?.result?.transaction?.paymentStatus ===
                   "pending"
-                    ? "bg-amber-700"
+                    ? "bg-amber-700 text-white"
                     : getSingleOrder?.data?.result?.transaction
                         ?.paymentStatus === "completed"
                     ? "bg-green-800 text-white"

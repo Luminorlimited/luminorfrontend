@@ -247,12 +247,12 @@ export default function OrderDetailsPage() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="bg-gray-50 p-4 rounded-lg">
                                         <h3 className="font-medium text-gray-800 mb-1">Revisions</h3>
-                                        <p className="text-gray-900 text-2xl font-bold">{getSingleOrder?.data?.result?.project?.flatFee?.revision}</p>
+                                        <p className="text-gray-900 text-2xl font-bold">{getSingleOrder?.data?.result?.project?.flatFee?.revision || getSingleOrder?.data?.result?.project?.hourlyFee?.revision}</p>
                                     </div>
                                     <div className="bg-gray-50 p-4 rounded-lg">
                                         <h3 className="font-medium text-gray-800 mb-1">Delivery Time</h3>
                                         <p className="text-gray-900 text-2xl font-bold">
-                                            {getSingleOrder?.data?.result?.project?.flatFee?.delivery} <span className="text-sm font-normal">day(s)</span>
+                                            {getSingleOrder?.data?.result?.project?.flatFee?.delivery || getSingleOrder?.data?.result?.project?.hourlyFee?.delivery} <span className="text-sm font-normal">day(s)</span>
                                         </p>
                                     </div>
                                 </div>
@@ -267,7 +267,7 @@ export default function OrderDetailsPage() {
                         </CardContent>
                         <CardFooter className="flex flex-col items-start p-6 pt-0">
                             <Button
-                                className="bg-bg_primary hover:bg-sky text-white border-none shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                                className="bg-bg_primary hover:bg-primary  rounded-[10px] text-white border-none shadow-sm hover:shadow-lg transition-all duration-300 flex items-center gap-2"
                                 asChild
                             >
                                 <Link href={getSingleOrder?.data?.result?.project?.orderAgreementPDF || ""} target="_blank" rel="noopener noreferrer">
@@ -388,7 +388,7 @@ export default function OrderDetailsPage() {
                                     View the client requirements document to understand project specifications
                                 </p>
                                 <Button
-                                    className="bg-bg_primary hover:bg-bg_primary text-white border-none shadow-md hover:shadow-lg transition-all duration-300 w-full flex items-center justify-center gap-2"
+                                    className="bg-bg_primary rounded-[10px] hover:bg-bg_primary text-white border-none shadow-sm hover:shadow-lg transition-all duration-300 w-full flex items-center justify-center gap-2"
                                     asChild
                                 >
                                     <Link href={getSingleOrder?.data?.result?.clientRequerment || ""} target="_blank" rel="noopener noreferrer">

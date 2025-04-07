@@ -51,6 +51,11 @@ interface MessageBubbleProps {
   };
 }
 
+function extractOrderId(message: string): string {
+  // Example message: "You have a revision request from Ina Barrera. View details: https://luminor-ltd.com/deliver-details/67f3569d8596b7ecfc618826"
+  const urlMatch = message.match(/deliver-details\/([a-f0-9]+)/);
+  return urlMatch ? urlMatch[1] : "";
+}
 const MessageBubble: FC<MessageBubbleProps> = ({
   message,
   currentUser,
@@ -68,19 +73,21 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
       <div
-        className={`flex items-start max-w-[70%] ${isSender ? "flex-row-reverse" : "flex-row"
-          }`}
+        className={`flex items-start max-w-[70%] ${
+          isSender ? "flex-row-reverse" : "flex-row"
+        }`}
       >
         <Avatar className="w-10 h-10">
           <Image
             src={
               isSender
-                ? profileData?.data?.profileUrl && profileData?.data?.profileUrl !== "null"
+                ? profileData?.data?.profileUrl &&
+                  profileData?.data?.profileUrl !== "null"
                   ? profileData.data.profileUrl
                   : avatar1
                 : profileUrl && profileUrl !== "null"
-                  ? profileUrl
-                  : avatar2
+                ? profileUrl
+                : avatar2
             }
             alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
             width={50}
@@ -92,18 +99,28 @@ const MessageBubble: FC<MessageBubbleProps> = ({
         {/* Message Content */}
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
-            className={`p-3 ${isSender
+            className={`p-3 ${
+              isSender
                 ? "rounded-l-[10px] rounded-b-[10px]"
                 : "rounded-r-[10px] rounded-b-[10px]"
-              } inline-block ${isSender ? colorScheme.senderBg : colorScheme.receiverBg
-              } ${message?.message === "Offer Acccepted!" ? "bg-green-700 text-white" : message?.message === "Your offer has been declined, please speak to the retired professional" ? "bg-red-700 text-white" : ""} `}
+            } inline-block ${
+              isSender ? colorScheme.senderBg : colorScheme.receiverBg
+            } ${
+              message?.message === "Offer Acccepted!"
+                ? "bg-green-700 text-white"
+                : message?.message ===
+                  "Your offer has been declined, please speak to the retired professional"
+                ? "bg-red-700 text-white"
+                : ""
+            } `}
           >
             {mediaSrc && (
               <div
-                className={`mt-2 max-w-full h-auto rounded-lg border border-gray-300 cursor-pointer ${isSender
+                className={`mt-2 max-w-full h-auto rounded-lg border border-gray-300 cursor-pointer ${
+                  isSender
                     ? `bg-${colorScheme.senderBg} p-3 rounded-[9px]`
                     : `bg-${colorScheme.receiverBg} p-3 rounded-[9px]`
-                  }`}
+                }`}
               >
                 <ModalImage
                   small={mediaSrc}
@@ -125,14 +142,24 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                   ? `${message?.message.substring(0, 25)}...`
                   : message?.message}
               </Link>
+            ) : message?.message?.startsWith(
+                "You have a revision request from"
+              ) ? (
+              <Link
+                href={`/deliver-details/${extractOrderId(message?.message)}`}
+                className="text-blue-600 cursor-pointer hover:underline"
+              >
+                {message?.message}
+              </Link>
             ) : (
               <span>{message?.message}</span>
             )}
           </div>
 
           <div
-            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${isSender && "flex items-center justify-end gap-2"
-              }`}
+            className={`text-xs text-muted-foreground text-[#A0AEC0] mt-1 ${
+              isSender && "flex items-center justify-end gap-2"
+            }`}
           >
             {message?.createdAt
               ? new Date(message.createdAt).toLocaleTimeString()

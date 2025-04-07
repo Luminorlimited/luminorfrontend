@@ -52,7 +52,7 @@ function OrderCard({ order }: { order: any }) {
       case "completed":
         return "bg-green-100 text-green-800 border-green-200"
       case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+        return "bg-amber-100 text-amber-800 border-amber-200"
       case "refunded":
         return "bg-red-100 text-red-800 border-red-200"
       default:
@@ -62,13 +62,15 @@ function OrderCard({ order }: { order: any }) {
 
   return (
     <Link href={`/deliver-details/${order?.transaction?.orderId}`}>
-      <Card className="overflow-hidden transition-all duration-300 border hover:shadow-lg hover:border-primary/20">
+      <Card className="overflow-hidden transition-all duration-300 border hover:shadow-lg hover:border-primary/20 rounded-[10px]">
         <CardHeader className="p-4 pb-0">
           <div className="flex items-start justify-between">
             <h2 className="text-lg font-semibold line-clamp-1">{order?.project?.projectName}</h2>
-            <Badge variant="outline" className={`${getStatusColor(order?.transaction?.paymentStatus)} border`}>
+           <span className="flex gap-2 items-center"><p className="text-sm">Payment Status:</p>
+           <Badge variant="outline" className={`${getStatusColor(order?.transaction?.paymentStatus)} border`}>
               {order?.transaction?.paymentStatus}
             </Badge>
+           </span>
           
           </div>
         </CardHeader>

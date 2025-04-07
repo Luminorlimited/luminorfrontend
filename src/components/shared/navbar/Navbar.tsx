@@ -19,8 +19,6 @@ import demoprofile from "@/assets/placeholderimg.png";
 import Cookies from "js-cookie";
 import { FaRegMessage } from "react-icons/fa6";
 import { RootState } from "@/redux/store";
-// import io, { Socket } from "socket.io-client";
-// import { useDecodedToken } from "@/components/common/DecodeToken";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +34,7 @@ import {
 } from "@/redux/Api/messageApi";
 import { LuMessageSquareMore } from "react-icons/lu";
 import { LuBellRing } from "react-icons/lu";
+// import { useDecodedToken } from "@/components/common/DecodeToken";
 
 interface Notification {
   toUser: string; // ID of the recipient user
@@ -110,7 +109,7 @@ const Navbar = ({
     }
   };
 
-  const menus = navbarLinks(user?.role as string);
+  const menus = navbarLinks(user as any);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
