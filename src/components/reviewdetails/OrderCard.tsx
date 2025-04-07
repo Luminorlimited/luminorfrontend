@@ -40,7 +40,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
         year: 'numeric',
     })})`;
 
-
+    const btnDisabled = getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded"
 
 
     // const orderId = useParams()
@@ -171,12 +171,12 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
             <div className="">
               <button
                 onClick={handleDeliver}
-                className={`text-center  block w-full py-4 px-4 rounded-[10px] text-lg ${
-                  isLoading
+                className={`text-center  block w-full ${btnDisabled && "bg-slate-500 text-white cursor-not-allowed"} py-4 px-4 rounded-[10px] text-lg ${
+                  isLoading 
                     ? "bg-slate-500 text-white"
                     : "bg-primary text-white "
                 }`}
-                disabled={isLoading}
+                disabled={isLoading || btnDisabled}
               >
                 {isLoading ? "Delivering..." : "Deliver Order"}
               </button>

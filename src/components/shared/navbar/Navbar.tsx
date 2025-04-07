@@ -83,6 +83,8 @@ const Navbar = ({
   // console.log("notification", getAllNotification);
 
   // console.log("allnotification", getAllNotification);
+  // const user = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
+
   const handleSeenButton = (notificationId: string, sender: string) => {
     if (!notificationId) return;
     seenNotification(notificationId)
@@ -121,7 +123,13 @@ const Navbar = ({
   const [open, setOpen] = useState(false);
 
   const handleOrder = (orderId: any) => {
-    router.push(`/project/${orderId}`);
+    if(user?.role === "client"){
+
+      router.push(`/project/${orderId}`);
+    }else{
+      
+      router.push(`/deliver-details/${orderId}`);
+    }
   };
   // console.log(getAllNotification?.data?.result);
 
@@ -132,6 +140,7 @@ const Navbar = ({
     ...(getAllNotification?.data?.result || []),
   ];
 
+  
   // Remove duplicates based on _id (optional but ideal)
   const uniqueNotifications = Array.from(
     new Map(mergedNotifications.map((item) => [item._id, item])).values()
@@ -214,7 +223,7 @@ const Navbar = ({
                               onClick={
                                 item?.orderId
                                   ? () => handleOrder(item.orderId)
-                                  : () =>
+                                  :  () =>
                                       handleSeenButton(item._id, item.sender)
                               }
                               type="button"
