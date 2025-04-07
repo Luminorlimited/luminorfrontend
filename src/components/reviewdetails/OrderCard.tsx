@@ -83,80 +83,107 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
 
 
     return (
-        <div>
-            <div className="bg-white px-2 py-3 shadow-sm border rounded-[10px]">
-                {/* Header */}
-                <div className=" flex items-center justify-between pb-4">
-                    <h1 className="text-2xl font-semibold text-gray-900">Orders Details</h1>
-                    <button className="p-2 hover:bg-gray-100 rounded-full">
-                        <MoreVertical className="w-5 h-5 text-gray-500" />
-                    </button>
-                </div>
+      <div>
+        <div className="bg-white px-2 py-3 shadow-sm border rounded-[10px]">
+          {/* Header */}
+          <div className=" flex items-center justify-between pb-4">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Orders Details
+            </h1>
+            <button className="p-2 hover:bg-gray-100 rounded-full">
+              <MoreVertical className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
 
-                {/* Banner Image Section */}
-                <div className="relative bg-[#FAFAFA] px-2">
-                    <div className="absolute top-1 right-2 z-10">
-                        <span className="px-4 py-2 rounded-[8px] bg-[#D3F4EF] text-[#black]  font-medium">
-                            In Process
-                        </span>
-                    </div>
-                    <Image
-                        src={img12}
-                        alt="Order document with passport"
-                        width={1200}
-                        height={400}
-                        className="w-full h-[300px] object-cover"
-                    />
-                    {/* Description */}
-                    <div className="p-6">
-                        <h2 className="text-lg text-black font-medium">
-                            {getSingleOrder?.data?.result?.project?.projectName}
-                        </h2>
-                    </div>
-                </div>
-
-
-                {/* Order Details Grid */}
-                <div className=" space-y-6 mt-4">
-                    <div className="grid grid-cols-2 gap-y-3 bg-[#FAFAFA] rounded-[10px] p-2">
-                        <div>
-                            <h3 className="text-lg text-gray-600">Order form</h3>
-                        </div>
-                        <div className="text-lg text-gray-900 font-medium text-right">
-                            {getSingleOrder?.data?.client?.name?.firstName} {getSingleOrder?.data?.client?.name?.lastName}
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg text-gray-600">Delivery date</h3>
-                        </div>
-                        <div className="text-lg text-gray-900 font-medium text-right">
-                            {formattedDate}
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg text-gray-600">Total price {getSingleOrder?.data?.result?.project?.flatFee ? "(Flat Fee)" : getSingleOrder?.data?.result?.project?.hourlyFee ? "(Hourle Fee)" : "(Milestone)"}</h3>
-                        </div>
-                        <div className="text-lg text-gray-900 font-medium text-right">
-                            £ {getSingleOrder?.data?.result?.project?.totalPrice}
-                        </div>
-
-                        <div>
-                            <h3 className="text-lg text-gray-600">Order no</h3>
-                        </div>
-                        <div className="lg:text-lg text-sm text-gray-900 font-medium text-right truncate">
-                            #{getSingleOrder?.data?.result?._id}
-                        </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <div className=''>
-                        <button onClick={handleDeliver} className={`text-center  block w-full py-4 px-4 rounded-[10px] text-lg ${isLoading ? "bg-slate-500 text-black" : "bg-primary text-white "}`} disabled={isLoading}>
-                            {isLoading ? 'Delivering...' : 'Deliver Order'}
-                        </button>
-                    </div>
-                </div>
+          {/* Banner Image Section */}
+          <div className="relative bg-[#FAFAFA] px-2">
+            <div className="absolute top-1 right-2 z-10">
+              <span
+                className={`px-4 py-2 rounded-[8px]   ${
+                  getSingleOrder?.data?.result?.transaction?.paymentStatus ===
+                  "pending"
+                    ? "bg-amber-700"
+                    : getSingleOrder?.data?.result?.transaction
+                        ?.paymentStatus === "completed"
+                    ? "bg-green-800 text-white"
+                    : "bg-red-900 text-white"
+                } text-[#black]  font-medium`}
+              >
+                {getSingleOrder?.data?.result?.transaction?.paymentStatus}
+              </span>
             </div>
+            <Image
+              src={img12}
+              alt="Order document with passport"
+              width={1200}
+              height={400}
+              className="w-full h-[300px] object-cover"
+            />
+            {/* Description */}
+            <div className="p-6">
+              <h2 className="text-lg text-black font-medium">
+                {getSingleOrder?.data?.result?.project?.projectName}
+              </h2>
+            </div>
+          </div>
+
+          {/* Order Details Grid */}
+          <div className=" space-y-6 mt-4">
+            <div className="grid grid-cols-2 gap-y-3 bg-[#FAFAFA] rounded-[10px] p-2">
+              <div>
+                <h3 className="text-lg text-gray-600">Order form</h3>
+              </div>
+              <div className="text-lg text-gray-900 font-medium text-right">
+                {getSingleOrder?.data?.client?.name?.firstName}{" "}
+                {getSingleOrder?.data?.client?.name?.lastName}
+              </div>
+
+              <div>
+                <h3 className="text-lg text-gray-600">Delivery date</h3>
+              </div>
+              <div className="text-lg text-gray-900 font-medium text-right">
+                {formattedDate}
+              </div>
+
+              <div>
+                <h3 className="text-lg text-gray-600">
+                  Total price{" "}
+                  {getSingleOrder?.data?.result?.project?.flatFee
+                    ? "(Flat Fee)"
+                    : getSingleOrder?.data?.result?.project?.hourlyFee
+                    ? "(Hourle Fee)"
+                    : "(Milestone)"}
+                </h3>
+              </div>
+              <div className="text-lg text-gray-900 font-medium text-right">
+                £ {getSingleOrder?.data?.result?.project?.totalPrice}
+              </div>
+
+              <div>
+                <h3 className="text-lg text-gray-600">Order no</h3>
+              </div>
+              <div className="lg:text-lg text-sm text-gray-900 font-medium text-right truncate">
+                #{getSingleOrder?.data?.result?._id}
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <div className="">
+              <button
+                onClick={handleDeliver}
+                className={`text-center  block w-full py-4 px-4 rounded-[10px] text-lg ${
+                  isLoading
+                    ? "bg-slate-500 text-white"
+                    : "bg-primary text-white "
+                }`}
+                disabled={isLoading}
+              >
+                {isLoading ? "Delivering..." : "Deliver Order"}
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
     );
 }
 
