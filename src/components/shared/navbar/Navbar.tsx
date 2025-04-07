@@ -86,6 +86,7 @@ const Navbar = ({
   // const user = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
 
   const handleSeenButton = (notificationId: string, sender: string) => {
+    console.log("notification", notificationId);
     if (!notificationId) return;
     seenNotification(notificationId)
       .unwrap()
