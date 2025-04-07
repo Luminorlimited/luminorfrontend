@@ -46,8 +46,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
     }
   )})`;
 
-  const btnDisabled =
-    getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded";
+  const btnDisabled = getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded" || getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed";
 
   // const orderId = useParams()
   const id = getSingleOrder?.data?.result?._id;
