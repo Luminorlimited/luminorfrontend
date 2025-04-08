@@ -50,12 +50,18 @@ interface MessageBubbleProps {
     receiverBg: string;
   };
 }
-
 function extractOrderId(message: string): string {
   // Example message: "You have a revision request from Ina Barrera. View details: https://luminor-ltd.com/deliver-details/67f3569d8596b7ecfc618826"
   const urlMatch = message.match(/deliver-details\/([a-f0-9]+)/);
   return urlMatch ? urlMatch[1] : "";
 }
+function extractdeliverId(message: string): string {
+  // Example message: "You have a revision request from Ina Barrera. View details: https://luminor-ltd.com/deliver-details/67f3569d8596b7ecfc618826"
+  const urlMatch = message.match(/project\/([a-f0-9]+)/);
+  return urlMatch ? urlMatch[1] : "";
+}
+
+
 const MessageBubble: FC<MessageBubbleProps> = ({
   message,
   currentUser,
@@ -150,6 +156,13 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 className="text-blue-600 cursor-pointer hover:underline"
               >
                 {message?.message}
+              </Link>
+            ): message?.message?.startsWith("You received a delivery request") ? (
+              <Link
+              href={`/project/${extractdeliverId(message?.message)}`}
+              className="text-blue-600 cursor-pointer hover:underline"
+            >
+              {message?.message}
               </Link>
             ) : (
               <span>{message?.message}</span>
