@@ -22,10 +22,8 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data, onClose }) 
         router.push(`/project-details/${data._id}`)
     }
     const offerId = data._id
-    // console.log('My new offer is ', data);
 
     const [deleteOffers] = useDeleteOfferMutation()
-    // console.log('my offer is', data);
 
     const deleteOffer = async () => {
         try {

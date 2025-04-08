@@ -52,7 +52,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
   const id = getSingleOrder?.data?.result?._id;
   // console.log('my order id', id);
 
-  // // console.log('my order id', id);
+  // console.log('my order id', getSingleOrder?.data?.result?.clientRequerment);
   // const { data: deliverOrder } = useDeliverOrderMutation(id)
   const [deliverOrder, { isLoading }] = useDeliverOrderMutation({});
   const router = useRouter();
@@ -100,7 +100,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
 
         {/* Banner Image Section */}
         <div className="relative bg-[#FAFAFA] px-2">
-          <div className="absolute top-1 right-2 z-10">
+          <div className="absolute top-[-5px] left-[-5px] z-10">
             <span
               className={`px-4 py-2 rounded-[8px]   ${
                 getSingleOrder?.data?.result?.transaction?.paymentStatus ===
@@ -116,11 +116,11 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
             </span>
           </div>
           <div className=" overflow-hidden rounded-lg">
-            <div className="relative w-[322px] h-[96px]">
+            <div className="relative max-w-full h-[196px]">
               {/* Iframe displaying the PDF */}
               <iframe
-                src={getSingleOrder?.data?.offer?.orderAgreementPDF}
-                width="322"
+                src={getSingleOrder?.data?.result?.project?.orderAgreementPDF}
+                width="422"
                 height="96"
                 style={{
                   border: "none",
@@ -131,7 +131,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
               />
               {/* Transparent link overlay */}
               <Link
-                href={getSingleOrder?.data?.offer?.orderAgreementPDF || "#"}
+                href={getSingleOrder?.data?.result?.project?.orderAgreementPDF || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="absolute top-0 left-0 w-full h-full"

@@ -13,7 +13,7 @@ export default function OrderDetails({ getSingleOrder }: { getSingleOrder: any }
         }
     };
     return (
-        <div className="max-w-[550px] ">
+        <div >
             <OrderCard getSingleOrder={getSingleOrder} />
 
             <div className='mt-6  bg-[#FAFAFA] lg:p-6 md:p-6 p-2'>

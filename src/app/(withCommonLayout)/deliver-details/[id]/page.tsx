@@ -5,6 +5,7 @@ import ConversationHeader from "@/components/reviewdetails/conversation-header";
 import Milestones from "@/components/reviewdetails/milestones";
 import OrderDetails from "@/components/reviewdetails/OrderDetails";
 import OrderHeader from "@/components/reviewdetails/OrderHeader";
+import RevisionDetails from "@/components/reviewdetails/RevisionDetails";
 import Timeline from "@/components/reviewdetails/timeline";
 import { useGetSingleOrderQuery } from "@/redux/Api/paymentApi";
 import { useParams } from "next/navigation";
@@ -19,16 +20,18 @@ export default function Page() {
         return <div><LoaderAnimation/></div>
     }
     return (
-        <div className="max-w-[1300px] mx-auto p-6 space-y-6">
-            <div className="lg:flex lg:flex-row flex-col gap-8 w-full">
-                <div className="">
+        <div className="container mx-auto p-6 space-y-6">
+            <div className="grid lg:grid-cols-6 gap-7 w-full">
+                <div className="lg:col-span-4">
                     <OrderHeader getSingleOrder={getSingleOrder} />
                     <ConversationHeader getSingleOrder={getSingleOrder} />
                     <Timeline getSingleOrder={getSingleOrder} />
                     <Milestones getSingleOrder={getSingleOrder} />
+                    <RevisionDetails getSingleOrder={getSingleOrder}/>
                     {/* <Chat /> */}
+
                 </div>
-                <div>
+                <div className="lg:col-span-2 ">
                     <OrderDetails getSingleOrder={getSingleOrder} />
                 </div>
             </div>
