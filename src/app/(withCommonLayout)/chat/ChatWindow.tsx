@@ -51,12 +51,10 @@ interface MessageBubbleProps {
   };
 }
 function extractOrderId(message: string): string {
-  // Example message: "You have a revision request from Ina Barrera. View details: https://luminor-ltd.com/deliver-details/67f3569d8596b7ecfc618826"
   const urlMatch = message.match(/deliver-details\/([a-f0-9]+)/);
   return urlMatch ? urlMatch[1] : "";
 }
 function extractdeliverId(message: string): string {
-  // Example message: "You have a revision request from Ina Barrera. View details: https://luminor-ltd.com/deliver-details/67f3569d8596b7ecfc618826"
   const urlMatch = message.match(/project\/([a-f0-9]+)/);
   return urlMatch ? urlMatch[1] : "";
 }
@@ -68,21 +66,18 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   colorScheme,
   profileUrl,
 }) => {
-  // console.log(message, "message from chatWindow");
-  // console.log(message.media, "check media file from chat window");
   const isSender = message?.sender._id == currentUser;
   const mediaSrc = typeof message?.media === "string" ? message.media : "";
 
   const { data: profileData } = useGetProfileQuery(undefined);
 
-  // console.log("My image", message)
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
       <div
         className={`flex items-start max-w-[70%] ${
           isSender ? "flex-row-reverse" : "flex-row"
         }`}
-      >
+    >
         <Avatar className="w-10 h-10">
           <Image
             src={
@@ -157,7 +152,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               >
                 {message?.message}
               </Link>
-            ): message?.message?.startsWith("You received a delivery request") ? (
+            ): message?.message?.startsWith("You received a delivery request.") ? (
               <Link
               href={`/project/${extractdeliverId(message?.message)}`}
               className="text-blue-600 cursor-pointer hover:underline"
@@ -177,7 +172,6 @@ const MessageBubble: FC<MessageBubbleProps> = ({
             {message?.createdAt
               ? new Date(message.createdAt).toLocaleTimeString()
               : "N/A"}{" "}
-            {/* Add fallback */}
             {isSender && <CheckCheck />}
           </div>
         </div>
