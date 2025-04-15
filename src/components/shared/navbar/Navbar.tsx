@@ -3,7 +3,9 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 // import SearchBox from "./SearchBox";
 import { navbarLinks } from "@/utils/navbarData";
-import { AvatarIcon, SignUpIcon } from "@/utils/Icons";
+import { CiLogin } from "react-icons/ci";
+import { IoLogInOutline } from "react-icons/io5";
+
 import { MobileNavbar } from "./MobileNavbar";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "@/redux/ReduxFunction";
@@ -224,7 +226,7 @@ const Navbar = ({
                               onClick={
                                 item?.orderId
                                   ? () => handleOrder(item.orderId)
-                                  :  () =>
+                                  : () =>
                                       handleSeenButton(item._id, item.sender)
                               }
                               type="button"
@@ -317,17 +319,18 @@ const Navbar = ({
         ) : (
           <div className="flex gap-3">
             <Link
-              className="btn-secondary text-nowrap p-[10px] flex items-center text-textColor-primary hover:text-textColor-primary active:text-textColor-primary"
+              className="bg-sky font-medium gap-2 hover:bg-blue text-black rounded-full  p-[10px] flex items-center  "
               href="/usertype"
             >
-              <SignUpIcon />
+              <CiLogin />
               Sign Up
             </Link>
             <Link
-              className="py-[10px] px-5 btn-primary text-white font-medium text-base hover:text-white active:text-white flex items-center gap-2 rounded-full"
+              className="bg-sky font-medium gap-2 hover:bg-blue text-black rounded-full  p-[10px] flex items-center  "
               href="/user/auth/login"
             >
-              <AvatarIcon /> Log in
+              <IoLogInOutline />
+              Log in
             </Link>
           </div>
         )}
