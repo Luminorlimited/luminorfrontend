@@ -14,7 +14,6 @@ import Image from 'next/image'
 import { useGetAdminProfileQuery, useUpdateAdminMutation, useUpdateProfileImgMutation } from "@/redux/Api/dashboard/userapi"
 import { AvatarFallback } from "@radix-ui/react-avatar"
 import ProfileSkeleton from "./skeleton/ProfileSkeleton"
-import heic2any from "heic2any"
 
 
 interface AdminProfile {
@@ -58,16 +57,10 @@ export default function Profile() {
         })
     }
 
-    const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            if (file.type === 'image/heic') {
-                const convertedBlob = await heic2any({ blob: file, toType: 'image/jpeg' }) as Blob;
-                const jpegFile = new File([convertedBlob], file.name.replace(/\.heic$/, '.jpeg'), { type: 'image/jpeg' });
-                setNewProfileImage(jpegFile);
-            } else {
-                setNewProfileImage(file);
-            }
+            setNewProfileImage(file)
         }
     }
 
@@ -140,7 +133,7 @@ export default function Profile() {
                                         <Edit2 className="w-4 h-4 mr-2" />
                                         Change Avatar
                                     </Label>
-                                    <Input id="avatar" type="file" className="hidden" onChange={handleAvatarChange}   accept="image/png, image/jpeg, image/jpg, image/heic" />
+                                    <Input id="avatar" type="file" className="hidden" onChange={handleAvatarChange} accept="image/png, image/jpeg, image/jpg, image/heic" />
                                 </div>
                             )}
                         </div>
