@@ -41,6 +41,7 @@
     "file-saver": "^2.0.5",
     "framer-motion": "^12.4.1",
     "google-map-react": "^2.2.1",
+    "heic2any": "^0.0.4",
     "i": "^0.3.7",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
