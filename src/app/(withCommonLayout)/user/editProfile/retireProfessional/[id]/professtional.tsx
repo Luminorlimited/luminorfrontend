@@ -15,16 +15,20 @@ import Financial from "@/components/svg/Financial";
 
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import avatar from "@/assets/placeholderimg.png"
+import avatar from "@/assets/placeholderimg.png";
 import {
   useEditprofessionalprofileMutation,
   useGetProfileQuery,
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
-import bgCover from "@/assets/images/bannerimg.jpg"
+import bgCover from "@/assets/images/bannerimg.jpg";
 // import { useSendOnboardingUrlMutation } from "@/redux/Api/messageApi";
 import { cn } from "@/lib/utils";
 import LoaderAnimation from "@/components/loader/LoaderAnimation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+// import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const servicesData = [
   {
@@ -92,6 +96,7 @@ export default function Professional() {
   const userIdValue = userId.id;
 
   const { data: profileData, isLoading } = useGetProfileQuery(undefined);
+  const user = useSelector((state: RootState) => state.Auth.user);
 
   const { register, handleSubmit, setValue, watch, reset } = useForm();
   const [loading, setLoading] = useState(false);
@@ -100,7 +105,7 @@ export default function Professional() {
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
   // const [showAlert, setShowAlert] = useState(false);
-  const [imageUrl, setImageUrl] = useState<any>(bgCover)
+  const [imageUrl, setImageUrl] = useState<any>(bgCover);
 
   // const handleClose = () => {
   //   setShowAlert((prev) => !prev);
@@ -142,8 +147,16 @@ export default function Professional() {
     profileData?.data?.location?.coordinates[0],
   ]);
 
-  const timeSlots = ["Morning", "Afternoon", "Evening"]
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  const timeSlots = ["Morning", "Afternoon", "Evening"];
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
 
   const dayShortForm: Record<string, string> = {
     Monday: "Mon",
@@ -153,7 +166,7 @@ export default function Professional() {
     Friday: "Fri",
     Saturday: "Sat",
     Sunday: "Sun",
-  }
+  };
 
   useEffect(() => {
     let autocomplete: google.maps.places.Autocomplete;
@@ -190,7 +203,6 @@ export default function Professional() {
     };
   }, []);
 
-
   useEffect(() => {
     if (profileData) {
       reset({
@@ -199,7 +211,10 @@ export default function Professional() {
         phone: profileData.data.phoneNumber,
         email: profileData.data.retireProfessional.email,
         bio: profileData.data.bio === "null" ? "" : profileData.data.bio,
-        description: profileData.data.description === "null" ? "" : profileData.data.description,
+        description:
+          profileData.data.description === "null"
+            ? ""
+            : profileData.data.description,
         expertise: profileData.data.expertise,
         duration: profileData.data.duration,
         preferedProjects: profileData.data.preferedProjects,
@@ -211,71 +226,70 @@ export default function Professional() {
       if (profileData.data.availability) {
         const availabilityObj: Record<string, string[]> = {};
 
-        profileData.data.availability.forEach((slot: { day: string; slots: any }) => {
+        profileData.data.availability.forEach(
+          (slot: { day: string; slots: any }) => {
+            const fullDay = Object.keys(dayShortForm).find(
+              (key) => dayShortForm[key] === slot.day
+            );
 
-          const fullDay = Object.keys(dayShortForm).find(key => dayShortForm[key] === slot.day);
+            if (fullDay) {
+              let timeSlots: string[];
 
-          if (fullDay) {
-            let timeSlots: string[];
+              if (typeof slot.slots === "string") {
+                // If slots is a string, split it
+                timeSlots = slot.slots.split(",");
+              } else if (Array.isArray(slot.slots)) {
+                // If slots is already an array, use it directly
+                timeSlots = slot.slots;
+              } else {
+                // If slots is missing or an unexpected type, assign an empty array
+                timeSlots = [];
+              }
 
-            if (typeof slot.slots === "string") {
-              // If slots is a string, split it
-              timeSlots = slot.slots.split(",");
-            } else if (Array.isArray(slot.slots)) {
-              // If slots is already an array, use it directly
-              timeSlots = slot.slots;
-            } else {
-              // If slots is missing or an unexpected type, assign an empty array
-              timeSlots = [];
+              availabilityObj[fullDay] = timeSlots;
             }
-
-            availabilityObj[fullDay] = timeSlots;
           }
-        });
+        );
 
         setSelectedValues(availabilityObj);
       }
-
-
-
     }
   }, [profileData, reset]);
-
-
 
   const [workSample, setWorkSample] = useState<string | File>(
     profileData?.data?.workSample
   );
 
-
-
-
   // Store selected values for each day
-  const [selectedValues, setSelectedValues] = useState<Record<string, string[]>>({})
+  const [selectedValues, setSelectedValues] = useState<
+    Record<string, string[]>
+  >({});
 
   const handleTimeSlotClick = (day: string, timeSlot: string) => {
     setSelectedValues((prev) => {
-      const daySelections = prev[day] || []
+      const daySelections = prev[day] || [];
       if (daySelections.includes(timeSlot)) {
         // Remove the time slot if it's already selected
         return {
           ...prev,
-          [day]: Array.isArray(daySelections) ? daySelections.filter((slot) => slot !== timeSlot) : [],
-        }
+          [day]: Array.isArray(daySelections)
+            ? daySelections.filter((slot) => slot !== timeSlot)
+            : [],
+        };
       } else {
         // Add the time slot if it's not already selected
         return {
           ...prev,
           [day]: [...daySelections, timeSlot],
-        }
+        };
       }
-    })
-  }
+    });
+  };
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
   );
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
@@ -295,8 +309,6 @@ export default function Professional() {
       }
     });
 
-
-
     const availabilityArray = Object.entries(selectedValues)
       .filter(([, slots]) => slots.length > 0)
       .map(([day, slots]) => ({
@@ -305,8 +317,7 @@ export default function Professional() {
       }));
 
     // console.log("Availability Data (Before Sending):", availabilityArray);
-    formData.append("availability", JSON.stringify(availabilityArray))
-
+    formData.append("availability", JSON.stringify(availabilityArray));
 
     // console.log("Availability data:", availabilityArray)
 
@@ -339,8 +350,8 @@ export default function Professional() {
       } else {
         console.log("respponse is", res?.data?.message);
         toast.success(res?.data?.message);
-        setWorkSample("")
-        router.push('/project-list/client')
+        setWorkSample("");
+        router.push("/project-list/client");
         // console.log("My response is", formData);
       }
       // reset();
@@ -393,7 +404,8 @@ export default function Professional() {
     }
   }, [selectedImage]);
 
-  const [updateCoverPhoto, { isLoading: coverPhotoLoading }] = useUpdateCoverPhotoMutation();
+  const [updateCoverPhoto, { isLoading: coverPhotoLoading }] =
+    useUpdateCoverPhotoMutation();
   const handleCoverPhotoChange = async (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -411,8 +423,7 @@ export default function Professional() {
 
           // Update the background image
           const newCoverPhotoUrl = URL.createObjectURL(file);
-          setImageUrl(newCoverPhotoUrl)
-
+          setImageUrl(newCoverPhotoUrl);
         }
       } catch (error) {
         console.error("Error updating cover photo:", error);
@@ -421,17 +432,28 @@ export default function Professional() {
     }
   };
 
-
-
   if (isLoading) {
-    return <div className="min-h-screen"><LoaderAnimation/></div>
+    return (
+      <div className="min-h-screen">
+        <LoaderAnimation />
+      </div>
+    );
   }
+  
+  const handleonboarding = () => {};
   return (
     <div className="min-h-screen flex flex-col">
-     
+      {user?.role === "retireProfessional" &&
+        !profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess && (
+          <div className="container py-1">
+            <p>
+              Your are not onboarding {" "}
+              <Button className="bg-bg_primary rounded-[9px]" onClick={handleonboarding}>Send Onboarding url</Button>
+            </p>
+          </div>
+        )}
 
       <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] bg-cover bg-center">
-
         {coverPhotoLoading ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
             <span className="text-gray-500">Loading...</span>
@@ -439,14 +461,17 @@ export default function Professional() {
         ) : (
           <Image
             className="w-full h-full object-cover"
-            src={profileData?.data?.coverUrl ? profileData?.data?.coverUrl : imageUrl}
+            src={
+              profileData?.data?.coverUrl
+                ? profileData?.data?.coverUrl
+                : imageUrl
+            }
             width={1200}
             height={400}
             alt="cover-image "
           />
         )}
       </div>
-
 
       <button
         type="button"
@@ -464,7 +489,6 @@ export default function Professional() {
           <PiNotePencilBold className="cog-icon text-lg text-white " />
         </div>
       </button>
-
 
       <input
         type="file"
@@ -523,14 +547,19 @@ export default function Professional() {
               </div>
 
               <h1 className="text-2xl font-semibold mt-4">
-                {watch("firstName") || profileData?.data?.retireProfessional?.name?.firstName}{" "}
-                {watch("lastName") || profileData?.data?.retireProfessional?.name?.lastName}
+                {watch("firstName") ||
+                  profileData?.data?.retireProfessional?.name?.firstName}{" "}
+                {watch("lastName") ||
+                  profileData?.data?.retireProfessional?.name?.lastName}
               </h1>
               <p className="text-gray-600">
                 {" "}
-
-                {profileData?.data?.bio && profileData?.data?.bio.trim() && profileData?.data?.bio.trim() !== "null" && profileData?.data?.bio != " " ?
-                  `I am ${profileData?.data?.bio}` : ""}
+                {profileData?.data?.bio &&
+                profileData?.data?.bio.trim() &&
+                profileData?.data?.bio.trim() !== "null" &&
+                profileData?.data?.bio != " "
+                  ? `I am ${profileData?.data?.bio}`
+                  : ""}
               </p>
             </div>
 
@@ -545,7 +574,6 @@ export default function Professional() {
                     id="fname"
                     {...register("firstName")}
                     placeholder="Write your First Name"
-
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     // onChange={(e) => setValue("firstName", e.target.value)}
                     required
@@ -559,7 +587,6 @@ export default function Professional() {
                     id="lname"
                     {...register("lastName")}
                     placeholder="Write your Last Name"
-
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     // onChange={(e) => setValue("lastName", e.target.value)}
                     required
@@ -697,7 +724,7 @@ export default function Professional() {
                   className="border outline-none focus:outline-none focus:border-primary rounded-[10px] w-full py-3 px-2"
                   defaultValue={profileData?.data?.duration ?? ""}
                 >
-                  <option value="" >Select Duration</option>
+                  <option value="">Select Duration</option>
                   <option value={20}>Short Term (1-29) days</option>
                   <option value={31}>Long Term (30-...) days</option>
                 </select>
@@ -711,9 +738,14 @@ export default function Professional() {
                     <table className="w-full border-collapse border border-gray-300">
                       <thead>
                         <tr>
-                          <th className="border border-gray-300 p-2 text-left text-sm">Time Slot</th>
+                          <th className="border border-gray-300 p-2 text-left text-sm">
+                            Time Slot
+                          </th>
                           {days.map((day) => (
-                            <th key={day} className="border border-gray-300 p-2 text-center text-sm">
+                            <th
+                              key={day}
+                              className="border border-gray-300 p-2 text-center text-sm"
+                            >
                               {day}
                             </th>
                           ))}
@@ -738,9 +770,11 @@ export default function Professional() {
                                       "p-2 mb-1 border border-gray-300 rounded-md cursor-pointer text-center",
                                       selectedValues[day]?.includes(slot)
                                         ? "bg-[#A020F0] text-white"
-                                        : "bg-white hover:bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600",
+                                        : "bg-white hover:bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
                                     )}
-                                    onClick={() => handleTimeSlotClick(day, slot)}
+                                    onClick={() =>
+                                      handleTimeSlotClick(day, slot)
+                                    }
                                   >
                                     {slot}
                                   </div>
@@ -754,7 +788,6 @@ export default function Professional() {
                   </div>
                 </div>
               </div>
-
 
               <div>
                 <label className="block text-sm mb-2" htmlFor="prefProject">
@@ -791,10 +824,11 @@ export default function Professional() {
               </div>
 
               <div
-                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${isDragging
-                  ? "border-gray-400 rounded-xl bg-gray-50"
-                  : "border-gray-200"
-                  } transition-colors duration-200`}
+                className={`relative p-8 rounded-[15px] border-2 border-dashed hover:border-slate-700 transition-all ${
+                  isDragging
+                    ? "border-gray-400 rounded-xl bg-gray-50"
+                    : "border-gray-200"
+                } transition-colors duration-200`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -838,8 +872,9 @@ export default function Professional() {
               <div>
                 {workSample && (
                   <div className="mt-4 text-center">
-
-                    <p className="text-left text-lg font-medium">Preview Work Sample</p>
+                    <p className="text-left text-lg font-medium">
+                      Preview Work Sample
+                    </p>
                     {workSample instanceof File &&
                       workSample.type.startsWith("image/") && (
                         <Image
@@ -861,7 +896,7 @@ export default function Professional() {
               </div>
               <div>
                 {profileData?.data?.workSample &&
-                  profileData?.data?.workSample !== "null" ? (
+                profileData?.data?.workSample !== "null" ? (
                   <div>
                     <p className="text-left text-lg font-medium">Work Sample</p>
 
@@ -881,10 +916,11 @@ export default function Professional() {
               <div className="flex justify-center">
                 <button
                   disabled={loading}
-                  className={` py-5 px-7 rounded-[50px] my-14 ${loading
-                    ? "bg-gray-500 text-white"
-                    : "bg-primary text-white "
-                    }`}
+                  className={` py-5 px-7 rounded-[50px] my-14 ${
+                    loading
+                      ? "bg-gray-500 text-white"
+                      : "bg-primary text-white "
+                  }`}
                 >
                   {loading ? "Saving..." : "Save Information"}
                 </button>

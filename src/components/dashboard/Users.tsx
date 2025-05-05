@@ -27,11 +27,11 @@ export default function Users() {
     useGetClientQuery(undefined);
   const [updateUserStatus] = useUpdateStatusMutation({});
 
-  const handleStatusChange = async (id: string, isActivated: string) => {
+  const handleStatusChange = async (id: string, status: string) => {
     try {
       await updateUserStatus({
         id,
-        data: { isActivated },
+        data: { status },
       }).unwrap();
       // Optionally trigger a refetch or state update here
     } catch (error) {
