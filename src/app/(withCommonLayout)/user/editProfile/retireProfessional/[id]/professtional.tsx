@@ -420,29 +420,7 @@ export default function Professional() {
       }
     }
   };
-  // // console.log("cover url", profileData?.data?.coverUrl);
 
-  // console.log(profileData?.data);
-  // const [sendOnboardingUrl] = useSendOnboardingUrlMutation()
-  // const [buttonText, setButtonText] = useState("Send onboarding URL");
-  // const [isDisabled, setIsDisabled] = useState(false);
-  // const handleOnboarding = async () => {
-  //   setIsDisabled(true); // Disable button while processing
-  //   try {
-  //     const res = await sendOnboardingUrl({});
-  //     if (res) {
-  //       toast.success("Please check your mail");
-  //       setButtonText("Onboarding URL Sent ✅");
-  //     } else {
-  //       toast.error("Email sending failed");
-  //       setIsDisabled(false); // Re-enable button on failure
-  //     }
-  //   } catch (er: any) {
-
-  //     toast.error("message sending failed", er);
-  //     setIsDisabled(false);
-  //   }
-  // };
 
 
   if (isLoading) {
@@ -472,7 +450,7 @@ export default function Professional() {
 
       <button
         type="button"
-        className="cog-button absolute top-[450px] right-4 z-[10000]"
+        className="cog-button absolute top-[380px] right-4 z-[10000]"
         onClick={() => {
           const fileInput = document.getElementById(
             "coverPhotoInput"

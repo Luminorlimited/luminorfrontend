@@ -68,8 +68,9 @@ const Navbar = ({
   const handleLogOut = () => {
     dispatch(logOut());
     Cookies.remove("token");
-    router.push("/");
+    window.location.href = "/"; // This does a full page reload to the homepage
   };
+  
   // console.log("my profile is", profileData);
   useEffect(() => {
     if (profileData?.data?.client?.isDeleted) {

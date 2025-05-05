@@ -72,6 +72,8 @@ export function DashboardSidebar() {
         try {
             await dispatch(logOut());
             router.push("/");
+            window.location.href = "/"; // This does a full page reload to the homepage
+
             Cookies.remove("token");
             toast.success("Successfully logged out");
         } catch (e) {
