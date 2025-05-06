@@ -27,6 +27,16 @@ const userApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['User']
         }),
+        generateUrl: build.mutation({
+            query: () => {
+                return {
+                    url: '/stripe/generate-onboarding-url',
+                    method: 'POST',
+                }
+            },
+            invalidatesTags: ['User']
+        }),
+
         adminloginUser: build.mutation({
             query: (data: any) => {
                 // // console.log(data)
@@ -121,4 +131,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation, useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation, useAdminloginUserMutation } = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation, useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation, useAdminloginUserMutation, useGenerateUrlMutation } = userApi

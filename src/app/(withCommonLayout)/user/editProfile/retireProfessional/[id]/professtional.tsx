@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import avatar from "@/assets/placeholderimg.png";
 import {
   useEditprofessionalprofileMutation,
+  useGenerateUrlMutation,
   useGetProfileQuery,
   useUpdateCoverPhotoMutation,
 } from "@/redux/Api/userApi";
@@ -104,9 +105,22 @@ export default function Professional() {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [location, setLocation] = useState("");
-  // const [showAlert, setShowAlert] = useState(false);
   const [imageUrl, setImageUrl] = useState<any>(bgCover);
 
+  const [generateOnboardingUrl, { isLoading: generateLoading }] =
+    useGenerateUrlMutation({});
+
+  const handleonboarding = async () => {
+    try {
+      const res = await generateOnboardingUrl({}).unwrap();
+      if (res?.data?.success) {
+        toast.success("Check your email.");
+      }
+    } catch (e) {
+      console.log(e);
+      toast.error("Something went wrong!");
+    }
+  };
   // const handleClose = () => {
   //   setShowAlert((prev) => !prev);
   // };
@@ -439,16 +453,21 @@ export default function Professional() {
       </div>
     );
   }
-  
-  const handleonboarding = () => {};
+
   return (
     <div className="min-h-screen flex flex-col">
       {user?.role === "retireProfessional" &&
         !profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess && (
           <div className="container py-1">
             <p>
-              Your are not onboarding {" "}
-              <Button className="bg-bg_primary rounded-[9px]" onClick={handleonboarding}>Send Onboarding url</Button>
+              Onboarding incomplete. Click below to get your onboarding link.{" "}
+              <Button
+                disabled={generateLoading}
+                className="bg-bg_primary hover:bg-bg_primary/80 rounded-[9px]"
+                onClick={handleonboarding}
+              >
+                Send Onboarding URL
+              </Button>
             </p>
           </div>
         )}
