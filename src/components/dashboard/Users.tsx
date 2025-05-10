@@ -21,11 +21,12 @@ import {
 } from "@/redux/Api/dashboard/userapi";
 import logo from "@/assets/placeholderimg.png";
 import Image from "next/image";
+import { toast } from "sonner";
 
 export default function Users() {
   const { data: getClient, isLoading: clientLoading } =
     useGetClientQuery(undefined);
-  const [updateUserStatus] = useUpdateStatusMutation({});
+  const [updateUserStatus, { isLoading:UpdateStatusLoading }] = useUpdateStatusMutation({});
 
   const handleStatusChange = async (id: string, status: string) => {
     try {
@@ -33,7 +34,7 @@ export default function Users() {
         id,
         data: { status },
       }).unwrap();
-      // Optionally trigger a refetch or state update here
+      toast.success("User Status Updated Successfully")
     } catch (error) {
       console.error("Failed to update status:", error);
     }
@@ -182,34 +183,29 @@ export default function Users() {
                 {user?.[userType === "client" ? "description" : "bio"] || "N/A"}
               </TableCell>
               <TableCell>{user?.averageRating || 0}</TableCell>
+
               {userType === "retireProfessional" && (
                 <TableCell>
                   <select
-                    value={
-                   user?.retireProfessional?.isActivated ||
-                      "pending"
-                    }
+                    value={user?.retireProfessional?.isActivated || "pending"}
                     onChange={(e) => {
                       handleStatusChange(
-                        
-                          user?.retireProfessional?._id ||
-                          "",
+                        user?.retireProfessional?._id || "",
                         e.target.value
-                      );
-                      // You might need to update local state here if not using react-query refetch
+                      )
                     }}
+                    disabled={UpdateStatusLoading}
                     className={`border rounded p-2 ${getStatusColor(
                       user?.retireProfessional?.isActivated
-                    )}`}
+                    )} ${UpdateStatusLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     <option value="active">Active</option>
                     <option value="inactive">Inactive</option>
                     <option value="pending">Pending</option>
                   </select>
+
                 </TableCell>
               )}
-
-
               <TableCell className="text-right">
                 <Button
                   variant="ghost"

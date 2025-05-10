@@ -9,7 +9,7 @@ import BusinesSvg from "@/components/svg/BusinesSvg";
 import SettingSvg from "@/components/svg/Settings";
 import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import clsx from "clsx"; 
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
 
@@ -113,12 +113,14 @@ export default function Professional() {
   const handleonboarding = async () => {
     try {
       const res = await generateOnboardingUrl({}).unwrap();
-      if (res?.data?.success) {
-        toast.success("Check your email.");
+      console.log("response is", res);
+      if (res?.success) {
+        console.log("response is", res);
+        toast.success(res?.message);
       }
     } catch (e) {
       console.log(e);
-      toast.error("Something went wrong!");
+      toast.error((e as { message?: string })?.message || "Something went wrong. Please try again later.");
     }
   };
   // const handleClose = () => {
@@ -460,13 +462,18 @@ export default function Professional() {
         !profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess && (
           <div className="container py-1">
             <p>
-              Onboarding incomplete. Click below to get your onboarding link.{" "}
+              <b>**Note** </b>Onboarding incomplete. Click below to get your onboarding link.{"     "}
               <Button
                 disabled={generateLoading}
-                className="bg-bg_primary hover:bg-bg_primary/80 rounded-[9px]"
                 onClick={handleonboarding}
+                className={clsx(
+                  "rounded-[9px] ml-3 min-w-[180px] transition-colors",
+                  generateLoading
+                    ? "bg-gray-500 cursor-not-allowed"
+                    : "bg-bg_primary hover:bg-bg_primary/80"
+                )}
               >
-                Send Onboarding URL
+                {generateLoading ? "Sending..." : "Send Onboarding URL"}
               </Button>
             </p>
           </div>

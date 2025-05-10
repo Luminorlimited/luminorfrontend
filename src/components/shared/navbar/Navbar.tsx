@@ -89,7 +89,7 @@ const Navbar = ({
   // const user = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
 
   const handleSeenButton = (notificationId: string, sender: string) => {
-    console.log("notification", notificationId);
+    // console.log("notification", notificationId);
     if (!notificationId) return;
     seenNotification(notificationId)
       .unwrap()
@@ -149,8 +149,8 @@ const Navbar = ({
   const uniqueNotifications = Array.from(
     new Map(mergedNotifications.map((item) => [item._id, item])).values()
   );
-  console.log(allNotification,
-    getAllNotification);
+  // console.log(allNotification,
+    // getAllNotification);
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
       <span className="lg:w-auto">
