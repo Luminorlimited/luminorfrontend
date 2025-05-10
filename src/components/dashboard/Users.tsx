@@ -200,7 +200,7 @@ export default function Users() {
                     )} ${UpdateStatusLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   >
                     <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="inactive">Deactivate</option>
                     <option value="pending">Pending</option>
                   </select>
 
