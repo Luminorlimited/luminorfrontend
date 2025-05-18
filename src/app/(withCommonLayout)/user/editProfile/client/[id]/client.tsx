@@ -79,7 +79,7 @@ export default function Client() {
   const token = useSelector((state: RootState) => state.Auth.token);
 
   const { id: userIdValue } = useParams();
-  const [imageUrl, setImageUrl] = useState<any>(bgCover)
+  const [, setImageUrl] = useState<any>(bgCover)
 
   // Decode the token
   try {
@@ -386,7 +386,7 @@ export default function Client() {
 
             <Image
               className="w-full h-full object-cover"
-              src={imageUrl ?? profileData?.data?.coverUrl}
+              src={profileData?.data?.coverUrl}
               width={1200}
               height={400}
               alt="cover image"
