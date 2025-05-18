@@ -17,7 +17,6 @@ import { useParams, useRouter } from "next/navigation";
 import avatar from "@/assets/placeholderimg.png"
 import { toast } from "sonner";
 import bgCover from "@/assets/images/bannerimg.jpg"
-
 import {
   useEditclientprofileMutation,
   useGetProfileQuery,
@@ -111,75 +110,74 @@ export default function Client() {
     }
   }, [profileData]);
 
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [location, setLocation] = useState("");
+  // const [latitude, setLatitude] = useState(0);
+  // const [longitude, setLongitude] = useState(0);
+  // const [location, setLocation] = useState("");
   // console.log("my old location is", location)
 
-  useEffect(() => {
-    if (
-      profileData?.data?.location?.coordinates[1] &&
-      profileData?.data?.location?.coordinates[0]
-    ) {
-      const fetchLocation = async () => {
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
-          );
-          const data = await response.json();
-          if (data?.display_name) {
-            setLocation(data.display_name); // Set location from API response
-          }
-        } catch (error) {
-          console.error("Error fetching location:", error);
-        }
-      };
+  // useEffect(() => {
+  //   if (
+  //     profileData?.data?.location?.coordinates[1] &&
+  //     profileData?.data?.location?.coordinates[0]
+  //   ) {
+  //     const fetchLocation = async () => {
+  //       try {
+  //         const response = await fetch(
+  //           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
+  //         );
+  //         const data = await response.json();
+  //         if (data?.display_name) {
+  //           setLocation(data.display_name); // Set location from API response
+  //         }
+  //       } catch (error) {
+  //         console.error("Error fetching location:", error);
+  //       }
+  //     };
 
-      fetchLocation();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    profileData?.data?.location?.coordinates[1],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    profileData?.data?.location?.coordinates[0],
-  ]);
+  //     fetchLocation();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   profileData?.data?.location?.coordinates[1],
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   profileData?.data?.location?.coordinates[0],
+  // ]);
 
 
-  useEffect(() => {
-    let autocomplete: google.maps.places.Autocomplete;
+  // useEffect(() => {
+  //   let autocomplete: google.maps.places.Autocomplete;
 
-    const initAutocomplete = () => {
-      const input = document.getElementById("search-input") as HTMLInputElement;
-      // console.log("input is", input);
-      if (input) {
-        autocomplete = new google.maps.places.Autocomplete(input);
+  //   const initAutocomplete = () => {
+  //     const input = document.getElementById("search-input") as HTMLInputElement;
+  //     if (input) {
+  //       autocomplete = new google.maps.places.Autocomplete(input);
 
-        autocomplete.addListener("place_changed", () => {
-          const place = autocomplete.getPlace();
+  //       autocomplete.addListener("place_changed", () => {
+  //         const place = autocomplete.getPlace();
 
-          if (!place.geometry || !place.geometry.location) {
-            alert(`No details available for input: '${place.name}'`);
-            return;
-          }
+  //         if (!place.geometry || !place.geometry.location) {
+  //           alert(`No details available for input: '${place.name}'`);
+  //           return;
+  //         }
 
-          setLatitude(place.geometry.location.lat());
-          setLongitude(place.geometry.location.lng());
-          setLocation(place.formatted_address || "");
-        });
-      }
-    };
+  //         setLatitude(place.geometry.location.lat());
+  //         setLongitude(place.geometry.location.lng());
+  //         setLocation(place.formatted_address || "");
+  //       });
+  //     }
+  //   };
 
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
-    script.async = true;
-    script.onload = initAutocomplete;
-    document.body.appendChild(script);
+  //   const script = document.createElement("script");
+  //   script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
+  //   script.async = true;
+  //   script.onload = initAutocomplete;
+  //   document.body.appendChild(script);
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  //   return () => {
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (profileData) {
@@ -232,8 +230,8 @@ export default function Client() {
     formData.append("name[firstName]", data.firstName);
     formData.append("name[lastName]", data.lastName);
     formData.append("location[type]", "Point");
-    formData.append("location[coordinates][0]", longitude.toString());
-    formData.append("location[coordinates][1]", latitude.toString());
+    // formData.append("location[coordinates][0]", longitude.toString());
+    // formData.append("location[coordinates][1]", latitude.toString());
     formData.append("projectDurationRange[max]", String(data.maxDuration));
     formData.append("projectDurationRange[min]", String(data.minDuration));
     formData.append("budgetRange[min]", String(data.minBudget));
@@ -384,13 +382,19 @@ export default function Client() {
             <span className="text-gray-500">Loading...</span>
           </div>
         ) : (
-          <Image
-            className="w-full h-full object-cover"
-            src={imageUrl ?? profileData?.data?.coverUrl}
-            width={1200}
-            height={400}
-            alt="cover image"
-          />
+          profileData?.data?.coverUrl ? (
+
+            <Image
+              className="w-full h-full object-cover"
+              src={imageUrl ?? profileData?.data?.coverUrl}
+              width={1200}
+              height={400}
+              alt="cover image"
+            />
+          ):(
+            <div className="w-full h-full bg-[#71c8fe]"></div>
+
+          )
         )}
 
       </div>
@@ -553,7 +557,7 @@ export default function Client() {
                   />
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-sm mb-2" htmlFor="search-input">
                   Location
                 </label>
@@ -564,7 +568,7 @@ export default function Client() {
                   onChange={(e) => setLocation(e.target.value)} // Update state when user types
                   placeholder="Search for a location..."
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label className="block text-sm mb-2" htmlFor="problemArea">

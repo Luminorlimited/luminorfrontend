@@ -18,13 +18,6 @@ export function middleware(request: NextRequest) {
     "/user/auth/client",
   ];
 
-  const clientRoutes = [
-    "/project-list/retireProfessional",
-    "/user/editProfile/client",
-    "/user/editProfile/client/:params*",
-    "/orders",
-    "/payment-details",
-  ];
   const adminRoutes = [
     "/dashboard",
     "/dashboard/:params*",
@@ -34,13 +27,19 @@ export function middleware(request: NextRequest) {
     "/dashboard/users",
     "/dashboard/users/:params*",
   ];
+  const clientRoutes = [
+    "/project-list/retireProfessional",
+    "/user/editProfile/client",
+    "/user/editProfile/client/:params*",
+    "/orders",
+    "/payment-details",
+  ];
 
   const professionalRoutes = [
     "/project-list/client",
     "/user/editProfile/retireProfessional",
     "/user/editProfile/retireProfessional/:params*",
     "/deliver-details",
-    // "/deliver-details/:params*",
   ];
 
   // If no token, allow access to public authentication pages
@@ -48,7 +47,10 @@ export function middleware(request: NextRequest) {
     if (adminRoutes.includes(pathname)) {
       return NextResponse.redirect(AdminloginRoute);
     }
-    if (clientRoutes.includes(pathname) || professionalRoutes.includes(pathname)) {
+    if (
+      clientRoutes.includes(pathname) ||
+      professionalRoutes.includes(pathname)
+    ) {
       return NextResponse.redirect(loginRoute);
     }
     return NextResponse.next();
@@ -78,9 +80,13 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(AdminloginRoute);
     }
 
-    if (professionalRoutes.includes(pathname) && role !== "retireProfessional") {
+    if (
+      professionalRoutes.includes(pathname) &&
+      role !== "retireProfessional"
+    ) {
       return NextResponse.redirect(loginRoute);
     }
+    // console.log("user role is", professionalRoutes.includes(pathname))
 
     return NextResponse.next(); // Allow access if role matches
   } catch (e) {
@@ -92,13 +98,13 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/profile",
-    "/project-list/client",
-    "/project-list/:params*",
-    "/project-list/professional",
+    // "/project-list/client",
+    // "/project-list/:params*",
+    // "/project-list/professional",
     "/user/editProfile/client",
     "/user/editProfile/retireProfessional",
     "/user/editProfile/retireProfessional/:params*",
-    "/project-list/default",
+    // "/project-list/default",
     "/dashboard",
     "/dashboard/:params*",
     "/chat",
