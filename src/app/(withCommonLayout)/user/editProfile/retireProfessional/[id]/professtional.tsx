@@ -453,7 +453,7 @@ export default function Professional() {
         !profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess && (
           <div className="container py-1">
             <p>
-              <b>**Note** </b>Onboarding incomplete. Click below to get your onboarding link.{"     "}
+              Onboarding is incomplete. Please click on the link to complete onboarding.{"     "}
               <Button
                 disabled={generateLoading}
                 onClick={handleonboarding}
