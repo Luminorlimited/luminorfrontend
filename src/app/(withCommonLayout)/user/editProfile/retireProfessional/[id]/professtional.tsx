@@ -9,7 +9,7 @@ import BusinesSvg from "@/components/svg/BusinesSvg";
 import SettingSvg from "@/components/svg/Settings";
 import TechnicalSvg from "@/components/svg/TechnicalSvg";
 import HealthSvg from "@/components/svg/HealthSvg";
-import clsx from "clsx"; 
+import clsx from "clsx";
 import Education from "@/components/svg/Education";
 import Financial from "@/components/svg/Financial";
 
@@ -121,10 +121,13 @@ export default function Professional() {
       }
     } catch (e) {
       console.log(e);
-      toast.error((e as { message?: string })?.message || "Something went wrong. Please try again later.");
+      toast.error(
+        (e as { message?: string })?.message ||
+          "Something went wrong. Please try again later."
+      );
     }
   };
- 
+
   // useEffect(() => {
   //   if (
   //     profileData?.data?.location?.coordinates[1] &&
@@ -351,6 +354,7 @@ export default function Professional() {
         id: userIdValue,
         data: formData,
       });
+      // console.log("response is", res);
 
       if (!res || typeof res !== "object") {
         throw new Error("Invalid response from the server");
@@ -449,45 +453,21 @@ export default function Professional() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {user?.role === "retireProfessional" &&
-        !profileData?.data?.retireProfessional?.stripe?.isOnboardingSucess && (
-          <div className="container py-1">
-            <p>
-              Onboarding is incomplete. Please click on the link to complete onboarding.{"     "}
-              <Button
-                disabled={generateLoading}
-                onClick={handleonboarding}
-                className={clsx(
-                  "rounded-[9px] ml-3 min-w-[180px] transition-colors",
-                  generateLoading
-                    ? "bg-gray-500 cursor-not-allowed"
-                    : "bg-bg_primary hover:bg-bg_primary/80"
-                )}
-              >
-                {generateLoading ? "Sending..." : "Send Onboarding URL"}
-              </Button>
-            </p>
-          </div>
-        )}
-
       <div className="relative w-full h-[200px] sm:h-[250px] md:h-[300px] lg:h-[350px] bg-cover bg-center">
         {coverPhotoLoading ? (
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
             <span className="text-gray-500">Loading...</span>
           </div>
+        ) : profileData?.data.coverUrl ? (
+          <Image
+            className="w-full h-full object-cover"
+            src={profileData?.data?.coverUrl}
+            width={1200}
+            height={400}
+            alt="cover-image "
+          />
         ) : (
-          profileData?.data.coverUrl? (
-
-            <Image
-              className="w-full h-full object-cover"
-              src={profileData?.data?.coverUrl }
-              width={1200}
-              height={400}
-              alt="cover-image "
-            />
-          ):(
-            <div className="w-full h-full bg-[#71c8fe]"></div>
-          )
+          <div className="w-full h-full bg-[#71c8fe]"></div>
         )}
       </div>
 
@@ -930,6 +910,28 @@ export default function Professional() {
                   ""
                 )}
               </div>
+
+              {user?.role === "retireProfessional" &&
+                !profileData?.data?.retireProfessional?.stripe
+                  ?.isOnboardingSucess && (
+                  <div className="container py-1">
+                    <p>
+                     Onboarding for payment details is incomplete. Please click on the link to fill out your payment details.{"     "}
+                      <Button
+                        disabled={generateLoading}
+                        onClick={handleonboarding}
+                        className={clsx(
+                          "rounded-[9px] ml-3 min-w-[180px] transition-colors",
+                          generateLoading
+                            ? "bg-gray-500 cursor-not-allowed"
+                            : "bg-bg_primary hover:bg-bg_primary/80"
+                        )}
+                      >
+                        {generateLoading ? "Sending..." : "Send Onboarding URL"}
+                      </Button>
+                    </p>
+                  </div>
+                )}
 
               <div className="flex justify-center">
                 <button

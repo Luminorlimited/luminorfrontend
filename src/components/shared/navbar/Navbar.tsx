@@ -260,9 +260,7 @@ const Navbar = ({
                         ))}
                       </ul>
                     </div>
-                    {/* // ) : ( */}
-                    {/* <div className="p-8 text-center text-muted-foreground">No notifications</div> */}
-                    {/* // )} */}
+                   
                   </CardContent>
                 </Card>
               </PopoverContent>

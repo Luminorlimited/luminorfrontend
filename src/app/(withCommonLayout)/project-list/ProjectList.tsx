@@ -5,7 +5,7 @@ import Image from "next/image";
 import { BiTime } from "react-icons/bi";
 import Pagination from "@/components/common/pagination/Pagination";
 import demoimg from '@/assets/images/msgavatar2.png';
-import projectImgFallback from "@/assets/images/package.png"; // Fallback project image
+// import projectImgFallback from "@/assets/images/package.png"; // Fallback project image
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useSelector } from "react-redux";
@@ -113,7 +113,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
             >
 
               <div className="relative w-full">
-                <div className="overflow-hidden rounded-[10px] max-w-[500px] h-[218px]">
+                {/* <div className="overflow-hidden rounded-[10px] max-w-[500px] h-[218px]">
                   <Image
                     src={data?.coverUrl || projectImgFallback}
                     alt="Consulting service"
@@ -121,7 +121,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                     height={218}
                     className="object-cover hover:scale-105 w-full h-full transition-all"
                   />
-                </div>
+                </div> */}
 
                 <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                   <BiTime className="h-4 w-4" />
@@ -196,7 +196,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
             >
 
               <div className="relative w-full">
-                <div className="overflow-hidden rounded-[10px]">
+                {/* <div className="overflow-hidden rounded-[10px]">
                   <Image
                     src={data?.coverUrl && data?.coverUrl !== "null" ? data.coverUrl
                       : data?.workSample && data?.workSample !== "null" ? data.workSample
@@ -207,9 +207,10 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                     className="h-[218px] w-full object-cover hover:scale-105 transition-all"
                   />
 
-                </div>
+                </div> */}
 
-                <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
+{/* absolute bottom-[-10px] left-5 */}
+                <div className="flex max-w-[150px] items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                   <BiTime className="h-4 w-4" />
                   <span className="text-xs">
                     {data?.projectDurationRange?.max || 0} days | Duration
