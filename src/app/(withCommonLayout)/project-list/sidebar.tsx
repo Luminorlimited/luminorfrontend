@@ -241,7 +241,6 @@ export function Sidebar({
 
   const pathName = usePathname();
 
-
   // const industryOptions = [
   //   { label: "Education", value: "EDUCATION" },
   //   { label: "Ecommerce", value: "ECOMMERCE" },
@@ -315,7 +314,6 @@ export function Sidebar({
 
   return (
     <div className="my-4 w-full max-w-md space-y-4 p-4 font-sans border rounded-[15px] lg:overflow-auto overflow-y-scroll h-full">
-
       {/* <div className="rounded-2xl border bg-white shadow-sm">
         <button
           onClick={() => toggleSection("industry")}
@@ -411,7 +409,79 @@ export function Sidebar({
         )}
       </div>
 
-      {pathName === "/project-list/client" ? (
+      {pathName === "/project-list/client" && (
+        <div className="grid grid-rows-2 gap-6 bg-white p-4 shadow-md rounded-[15px]">
+          <div>
+            <label className="block text-lg mb-4 font-medium">
+              Project Duration Range
+            </label>
+            <div className="w-full py-8">
+              <div className="relative h-2 mb-8">
+                <div className="absolute w-full h-full bg-gray-200 rounded-full" />
+                <div
+                  className="absolute h-full bg-primary rounded-full"
+                  style={getDurationProgressStyle()}
+                />
+                <input
+                  type="range"
+                  min={minDay}
+                  max={maxDay}
+                  value={durationMinValue}
+                  onChange={handleDurationMinChange}
+                  className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                />
+                <input
+                  type="range"
+                  min={minDay}
+                  max={maxDay}
+                  value={durationMaxValue}
+                  onChange={handleDurationMaxChange}
+                  className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                />
+              </div>
+              <div className="w-full p-4 text-center border rounded-lg border-gray-200">
+                {durationMinValue} Day - {durationMaxValue} Day
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-lg mb-4 font-medium">
+              Budget Range
+            </label>
+            <div className="w-full py-8">
+              <div className="relative h-2 mb-8">
+                <div className="absolute w-full h-full bg-gray-200 rounded-full" />
+                <div
+                  className="absolute h-full bg-primary rounded-full"
+                  style={getBudgetProgressStyle()}
+                />
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  value={budgetMinValue}
+                  onChange={handleBudgetMinChange}
+                  className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                />
+                <input
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  value={budgetMaxValue}
+                  onChange={handleBudgetMaxChange}
+                  className="absolute w-full h-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:shadow-md"
+                />
+              </div>
+              <div className="w-full p-4 text-center border rounded-lg border-gray-200">
+                ${budgetMinValue} - ${budgetMaxValue}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* {pathName === "/project-list/client" ? (
         <div className="grid grid-rows-2 gap-6 bg-white p-4 shadow-md rounded-[15px]">
           <div>
             <label className="block text-lg mb-4 font-medium">
@@ -515,7 +585,7 @@ export function Sidebar({
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

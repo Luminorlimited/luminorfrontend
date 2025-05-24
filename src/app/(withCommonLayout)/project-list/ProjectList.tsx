@@ -123,10 +123,16 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   />
                 </div> */}
 
-                <div className="absolute bottom-[-10px] left-5 flex items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
+                <div className="flex max-w-[150px] items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                   <BiTime className="h-4 w-4" />
                   <span className="text-xs">{data?.projectDurationRange?.max || "0"} days | Duration</span>
                 </div>
+                 {/* <div className="flex max-w-[150px] items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
+                  <BiTime className="h-4 w-4" />
+                  <span className="text-xs">
+                    {data?.projectDurationRange?.max || 0} days | Duration
+                  </span>
+                </div> */}
               </div>
 
               <div className="p-5">
@@ -168,7 +174,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   {data?.description || "Untitled Projects"}
                 </h3>
 
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center pt-2">
                   <div className="text-xl">
                     <span className="text-gray-500">Budget: </span>
                     <span className="font-medium text-gray-900">
@@ -216,6 +222,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                     {data?.projectDurationRange?.max || 0} days | Duration
                   </span>
                 </div>
+                
               </div>
 
               <div className="p-5">
@@ -274,7 +281,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 </h3>
 
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pt-2">
                   <div className="text-xl">
                     <span className="text-gray-500">Budget: </span>
                     <span className="font-medium text-gray-900">

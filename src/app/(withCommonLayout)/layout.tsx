@@ -143,7 +143,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
         ""
       )}
 
-      <div className="text-textColor-primary">{children}</div>
+      <div className="text-textColor-primary ">{children}</div>
       {pathname !== "/usertype" &&
         pathname !== "/user/auth/login" &&
         pathname !== "/user/auth/client" &&

@@ -36,6 +36,18 @@ export default function PaymentPage() {
     return fullName.includes(searchTerm.toLowerCase());
   });
 
+   if(clientPayment?.data?.length === 0) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+
+            <div className="container mx-auto py-8 px-4 text-center ">
+                <h1 className="text-3xl font-bold text-primary mb-2"> Payment List</h1>
+                <p className="text-gray-500">You have no transaction yet.</p>
+            </div>
+            </div>
+        )
+    }
+
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
       <h1 className="text-3xl font-bold tracking-tight mb-2">
