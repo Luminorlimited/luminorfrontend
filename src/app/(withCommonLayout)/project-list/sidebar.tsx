@@ -51,20 +51,21 @@ export function Sidebar({
   const maxPrice = 10000;
   const minDay = 1;
   const maxDay = 90;
-  const minLoc = 10;
-  const maxLoc = 10000;
+  // const minLoc = 10;
+  // const maxLoc = 10000;
   const dispatch = useDispatch();
 
   const [budgetMinValue, setBudgetMinValue] = useState(1);
   const [budgetMaxValue, setBudgetMaxValue] = useState(5000);
   const [durationMinValue, setDurationMinValue] = useState(1);
   const [durationMaxValue, setDurationMaxValue] = useState(90);
-  const [locMinLoc, setMinLoc] = useState(10);
-  const [locMaxLoc, setMaxLoc] = useState(10000);
+  // const [locMinLoc, setMinLoc] = useState(10);
+  // const [locMaxLoc, setMaxLoc] = useState(10000);
   const [currentLocation, setCurrentLocation] = useState<{
     lat: number;
     long: number;
   } | null>(null);
+  console.log(currentLocation, "currentLocation");
 
   const handleBudgetMinChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,71 +189,59 @@ export function Sidebar({
       right: `${right}%`,
     };
   }, [durationMinValue, durationMaxValue]);
-  const handleLocMinChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = Math.min(
-        Number(event.target.value),
-        durationMaxValue - minGap2
-      );
-      setMinLoc(value);
-      setFilters((prev) => ({ ...prev, minDay: value }));
-      dispatch(setMinRange({ min: value }));
-    },
-    [dispatch, durationMaxValue, setFilters]
-  );
+  // const handleLocMinChange = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const value = Math.min(
+  //       Number(event.target.value),
+  //       durationMaxValue - minGap2
+  //     );
+  //     setMinLoc(value);
+  //     setFilters((prev) => ({ ...prev, minDay: value }));
+  //     dispatch(setMinRange({ min: value }));
+  //   },
+  //   [dispatch, durationMaxValue, setFilters]
+  // );
 
-  const handleLocMaxChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = Math.max(
-        Number(event.target.value),
-        durationMinValue + minGap2
-      );
-      setMaxLoc(value);
-      setFilters((prev) => ({ ...prev, maxDay: value }));
-      dispatch(
-        setLocation({
-          max: value,
-          min: locMinLoc,
-          lat: currentLocation?.lat,
-          long: currentLocation?.long,
-        })
-      );
-    },
-    [
-      currentLocation?.lat,
-      currentLocation?.long,
-      dispatch,
-      durationMinValue,
-      locMinLoc,
-      setFilters,
-    ]
-  );
+  // const handleLocMaxChange = useCallback(
+  //   (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const value = Math.max(
+  //       Number(event.target.value),
+  //       durationMinValue + minGap2
+  //     );
+  //     setMaxLoc(value);
+  //     setFilters((prev) => ({ ...prev, maxDay: value }));
+  //     dispatch(
+  //       setLocation({
+  //         max: value,
+  //         min: locMinLoc,
+  //         lat: currentLocation?.lat,
+  //         long: currentLocation?.long,
+  //       })
+  //     );
+  //   },
+  //   [
+  //     currentLocation?.lat,
+  //     currentLocation?.long,
+  //     dispatch,
+  //     durationMinValue,
+  //     locMinLoc,
+  //     setFilters,
+  //   ]
+  // );
 
-  // console.log(currentLocation);
 
-  const getLocationProgressStyle = useCallback(() => {
-    const left = ((locMinLoc - minLoc) / (maxLoc - minLoc)) * 100;
-    const right = 100 - ((locMaxLoc - minLoc) / (maxLoc - minLoc)) * 100;
-    return {
-      left: `${left}%`,
-      right: `${right}%`,
-    };
-  }, [locMinLoc, locMaxLoc]);
+  // const getLocationProgressStyle = useCallback(() => {
+  //   const left = ((locMinLoc - minLoc) / (maxLoc - minLoc)) * 100;
+  //   const right = 100 - ((locMaxLoc - minLoc) / (maxLoc - minLoc)) * 100;
+  //   return {
+  //     left: `${left}%`,
+  //     right: `${right}%`,
+  //   };
+  // }, [locMinLoc, locMaxLoc]);
 
   const pathName = usePathname();
 
-  // const industryOptions = [
-  //   { label: "Education", value: "EDUCATION" },
-  //   { label: "Ecommerce", value: "ECOMMERCE" },
-  //   { label: "Real State", value: "REAL_ESTATE" },
-  //   { label: "Entertainment", value: "ENTERTAINMENT" },
-  //   { label: "Travel", value: "TRAVEL" },
-  //   { label: "Automotive", value: "AUTOMOTIVE" },
-  //   { label: "Manufacturing", value: "MANUFACTURING" },
-  //   { label: "Food", value: "FOOD" },
-  //   { label: "Fashion", value: "FASHION" },
-  //   { label: "Other", value: "Other" },
-  // ];
+
 
   const timelineOptions = [
     { label: "Short Term", value: "shortTerm" },
@@ -314,36 +303,7 @@ export function Sidebar({
 
   return (
     <div className="my-4 w-full max-w-md space-y-4 p-4 font-sans border rounded-[15px] lg:overflow-auto overflow-y-scroll h-full">
-      {/* <div className="rounded-2xl border bg-white shadow-sm">
-        <button
-          onClick={() => toggleSection("industry")}
-          className="flex w-full items-center justify-between p-4 text-left"
-        >
-          <h2 className="text-lg font-semibold">Industry</h2>
-          {openSections.industry ? (
-            <HiChevronUp className="h-5 w-5" />
-          ) : (
-            <HiChevronDown className="h-5 w-5" />
-          )}
-        </button>
-        {openSections.industry && (
-          <div className="space-y-3 p-4 pt-0">
-            {industryOptions.map((option) => (
-              <label key={option.value} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={(selectedItems.industry as string[]).includes(
-                    option.value
-                  )}
-                  onChange={() => handleFilterChange("industry", option.value)}
-                  className="h-4 w-4 rounded border-gray-300"
-                />
-                <span className="font-medium">{option.label}</span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div> */}
+     
 
       {/* Timeline Section */}
       <div className="rounded-2xl border bg-white shadow-sm">
