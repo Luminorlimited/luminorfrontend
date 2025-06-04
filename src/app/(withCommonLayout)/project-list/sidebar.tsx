@@ -17,7 +17,7 @@ import {
   setSkillType,
   setTimeline,
 } from "@/redux/slice/Sidebar";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { setLocation } from "@/redux/slice/locationSlice";
 
 export type Filters = {
@@ -148,17 +148,16 @@ export function Sidebar({
 
   React.useEffect(() => {
     if (!navigator || !navigator.geolocation) {
-      Swal.fire(
-        "Opps!",
-        "Geolocation is not supported by this browser.",
-        "error"
-      );
+      // Swal.fire(
+      //   "Opps!",
+      //   "Geolocation is not supported by this browser.",
+      //   "error"
+      // );
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        // console.log("Location allowed:", position.coords);
         setCurrentLocation({
           long: position?.coords?.longitude,
           lat: position?.coords?.latitude,
@@ -173,7 +172,8 @@ export function Sidebar({
         );
       },
       (err) => {
-        Swal.fire("Opps!", err.message, "error");
+        console.log("err", err);
+        // Swal.fire("Opps!", err.message, "error");
       }
     );
   }, [dispatch]);

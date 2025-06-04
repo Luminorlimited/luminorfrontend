@@ -344,10 +344,10 @@ export default function Professional() {
       formData.append("workSample", workSample);
       // console.log("Work Sample file added:", workSample);
     }
-    const formDataJSON = Object.fromEntries(formData.entries());
+    // const formDataJSON = Object.fromEntries(formData.entries());
     // formDataJSON.availability = JSON.parse(formDataJSON); // Parse availability back to an object
 
-    console.log("FormData as JSON:", formDataJSON);
+    // console.log("FormData as JSON:", formDataJSON);
 
     try {
       const res = await editprofessionalProfile({
