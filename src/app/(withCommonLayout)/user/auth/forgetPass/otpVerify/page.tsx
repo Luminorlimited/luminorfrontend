@@ -88,10 +88,10 @@ export default function Page() {
           <div className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]">
             <div className="text-center">
               <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
-                Verify your Otp!
+                Verify your OTP
               </h1>
               <p className="text-[#666666] text-xl">
-                Please enter your otp for reset password.
+                Please enter your OTP to reset your password
               </p>
             </div>
 
@@ -101,7 +101,7 @@ export default function Page() {
                   htmlFor="otp"
                   className="block text-lg font-medium text-[#1A1A1A] mb-2"
                 >
-                  Enter your Otp
+                  Enter your OTP
                 </label>
                 <input
                   id="otp"
@@ -109,7 +109,7 @@ export default function Page() {
                   type="text"
                   required
                   className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Otp"
+                  placeholder="OTP"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                 />
@@ -124,7 +124,7 @@ export default function Page() {
                 }`}
                 disabled={isLoading}
               >
-                {isLoading ? "Verifyin Otp..." : "Verify Otp"}
+                {isLoading ? "Verifyin OTP..." : "Verify OTP"}
               </button>
 
               {/* <div className="text-center text-lg flex mx-auto justify-center gap-2">

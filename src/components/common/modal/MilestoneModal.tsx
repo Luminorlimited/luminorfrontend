@@ -141,7 +141,7 @@ export default function MilestoneModal({
                             </label>
                             <div className="relative">
                                 <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                                    £
+                                    $
                                 </span>
                                 <input
                                     id={`price-${index}`}
@@ -192,7 +192,7 @@ export default function MilestoneModal({
             <div className="flex items-center justify-between border-t pt-4">
                 <div className="text-sm">
                     <span className="text-gray-500">Total: {totalDays} days</span>
-                    <span className="ml-4 font-medium">£{totalPrice}</span>
+                    <span className="ml-4 font-medium">${totalPrice}</span>
                 </div>
             </div>
         </div>

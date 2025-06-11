@@ -85,7 +85,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 Reset your password!
               </h1>
               <p className="text-[#666666] text-xl">
-                Please enter your email address for reset password.
+                Please enter your new password
               </p>
             </div>
 
@@ -95,7 +95,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   htmlFor="password"
                   className="block text-lg font-medium text-[#1A1A1A] mb-2"
                 >
-                  Enter your new Password
+                  Enter your new password
                 </label>
                 <div className="relative">
                   <input
@@ -122,7 +122,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   htmlFor="confirmPass"
                   className="block text-lg font-medium text-[#1A1A1A] mb-2"
                 >
-                  Enter your confirm Password
+                 Confirm password
                 </label>
                 <div className="relative">
                   <input

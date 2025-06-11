@@ -299,7 +299,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 <span className="text-gray-600">
                                     Displays project name, payment amount, estimated date, and status.
                                 </span>
-                                <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.offer?.totalReceive}</span>
+                                <span className="font-medium text-gray-900">$ {getSingleOffer?.data?.offer?.totalReceive}</span>
                             </div>
 
                             <div className="flex items-center justify-between text-sm">
@@ -346,7 +346,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-600">Service fee</span>
                                     <span className="text-gray-900">
-                                        £{" "}
+                                        ${" "}
                                         {getSingleOffer?.data?.offer?.serviceFee
                                             ? Number(getSingleOffer.data.offer.serviceFee).toFixed(2)
                                             : "0.00"}
@@ -368,7 +368,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
                                 <div className="flex justify-between ">
                                     <span className="font-medium text-gray-900">Total Amount</span>
-                                    <span className="font-medium text-gray-900">£ {getSingleOffer?.data?.offer?.totalPrice}</span>
+                                    <span className="font-medium text-gray-900">$ {getSingleOffer?.data?.offer?.totalPrice}</span>
                                 </div>
                             </div>
 

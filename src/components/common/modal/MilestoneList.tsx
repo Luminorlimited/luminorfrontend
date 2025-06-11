@@ -43,7 +43,7 @@ export function MilestoneList({ milestones, setStep }: MilestoneListProps) {
                         </div>
                         <div className="flex items-center gap-8">
                             <span className="text-sm">{milestone.delivery} days</span>
-                            <span className="text-sm font-medium w-16">£ {milestone.price}</span>
+                            <span className="text-sm font-medium w-16">$ {milestone.price}</span>
                         </div>
                     </div>
                 ))}
@@ -63,7 +63,7 @@ export function MilestoneList({ milestones, setStep }: MilestoneListProps) {
 
                     <div className="flex items-center gap-8">
                         <span className="text-sm">Total: {totalDays} days</span>
-                        <span className="text-sm font-medium w-16">£ {totalPrice}</span>
+                        <span className="text-sm font-medium w-16">$ {totalPrice}</span>
                     </div>
                 </div>
             </div>

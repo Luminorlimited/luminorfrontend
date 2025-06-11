@@ -176,7 +176,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
               </h3>
             </div>
             <div className="text-lg text-gray-900 font-medium text-right">
-              £ {getSingleOrder?.data?.result?.project?.totalPrice}
+              $ {getSingleOrder?.data?.result?.project?.totalPrice}
             </div>
 
             <div>

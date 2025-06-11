@@ -69,11 +69,11 @@ export default function Page() {
                             </div>
                             <div className="flex items-center justify-start gap-2">
                                 <span className="text-black font-semibold">Service Fee:</span>
-                                <span className="font-medium text-[#4A4C56]">£{projectDetails.serviceFee.toFixed(2)}</span>
+                                <span className="font-medium text-[#4A4C56]">${projectDetails.serviceFee.toFixed(2)}</span>
                             </div>
                             <div className="flex items-center justify-start gap-2">
                                 <span className="text-black font-semibold">Total Amount:</span>
-                                <span className="font-medium text-[#4A4C56]">£{projectDetails.totalAmount.toFixed(2)}</span>
+                                <span className="font-medium text-[#4A4C56]">${projectDetails.totalAmount.toFixed(2)}</span>
                             </div>
                         </div>
                     </div>

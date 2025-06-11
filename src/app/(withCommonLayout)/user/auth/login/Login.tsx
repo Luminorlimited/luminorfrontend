@@ -37,7 +37,7 @@ export default function Login() {
         router.push("/user/verification");
       } else {
         // // console.log();
-        toast.error(`${res?.error?.data?.message}. Please Login`);
+        toast.error(`${res?.error?.data?.message}`);
       }
     } catch (error) {
       toast.error("Login Failed");

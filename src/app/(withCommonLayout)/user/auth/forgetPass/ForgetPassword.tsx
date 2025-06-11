@@ -110,7 +110,7 @@ export default function ForgetPassword() {
                   }`}
                 disabled={isLoading}
               >
-                {isLoading ? "Sending Otp..." : "Send Otp"}
+                {isLoading ? "Sending OTP..." : "Send OTP"}
               </button>
 
               {/* <div className="text-center text-lg flex mx-auto justify-center gap-2">
