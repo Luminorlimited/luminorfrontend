@@ -137,6 +137,9 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
         pathname !== "/user/auth/login" &&
         pathname !== "/user/auth/client" &&
         pathname !== "/user/auth/professional" &&
+        pathname !== "/user/auth/forgetPass" &&
+        pathname !== "/user/auth/forgetPass/otpVerify" &&
+        pathname !== "/user/auth/forgetPass/otpVerify/resetPassword" &&
         pathname !== "/user/verification" ? (
         <Navbar allNotification={allNotification} getAllNotification={getAllNotification} />
       ) : (
@@ -148,6 +151,9 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
         pathname !== "/user/auth/login" &&
         pathname !== "/user/auth/client" &&
         pathname !== "/user/auth/professional" &&
+        pathname !== "/user/auth/forgetPass" &&
+        pathname !== "/user/auth/forgetPass/otpVerify" &&
+        pathname !== "/user/auth/forgetPass/otpVerify/resetPassword" &&
         pathname !== "/user/verification" ? (
         <Footer />
       ) : (

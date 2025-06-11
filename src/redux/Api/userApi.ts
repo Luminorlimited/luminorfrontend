@@ -27,6 +27,39 @@ const userApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['User']
         }),
+        forgetPass: build.mutation({
+            query: (data: any) => {
+                // console.log(data)
+                return {
+                    url: '/auth/forget-password',
+                    method: 'POST',
+                    body: data
+                }
+            },
+            invalidatesTags: ['User']
+        }),
+        verifyOtp: build.mutation({
+            query: (data: any) => {
+                // console.log(data)
+                return {
+                    url: '/auth/forget-password-verify',
+                    method: 'POST',
+                    body: data
+                }
+            },
+            invalidatesTags: ['User']
+        }),
+        resetPass: build.mutation({
+            query: (data: any) => {
+                // console.log(data)
+                return {
+                    url: '/auth/reset-password',
+                    method: 'PATCH',
+                    body: data
+                }
+            },
+            invalidatesTags: ['User']
+        }),
         generateUrl: build.mutation({
             query: () => {
                 return {
@@ -131,4 +164,4 @@ const userApi = baseApi.injectEndpoints({
 
 
 
-export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation, useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation, useAdminloginUserMutation, useGenerateUrlMutation } = userApi
+export const { useLoginUserMutation, useClientUserMutation, useProfessionalUserMutation, useVerifyUserMutation, useEditclientprofileMutation, useEditprofessionalprofileMutation, useGetProfileQuery, useGetProfileByIdQuery, useUpdateCoverPhotoMutation, useAdminloginUserMutation, useGenerateUrlMutation, useForgetPassMutation, useVerifyOtpMutation, useResetPassMutation } = userApi

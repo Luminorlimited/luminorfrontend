@@ -5,36 +5,33 @@ import Image from "next/image";
 import Logo from "@/utils/Logo";
 import usertypeshape from "@/assets/shapes/usertypeshape.png";
 import circleshape from "@/assets/shapes/circleshape.png";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
-import ImageCarousel from "./ImageCarousel/ImageCarousel";
-import { useLoginUserMutation } from "@/redux/Api/userApi";
+import { useForgetPassMutation } from "@/redux/Api/userApi";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { FaArrowRightLong } from "react-icons/fa6";
 import { toast } from "sonner";
+import ImageCarousel from "../login/ImageCarousel/ImageCarousel";
 
-export default function Login() {
+export default function ForgetPassword() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-  const [LogInUser, {isLoading}] = useLoginUserMutation();
+  const [forgetPass, {isLoading}] = useForgetPassMutation();
 
   // const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); 
-    const data = { email, password }; 
+    const data = { email }; 
 
     try {
       // setIsLoading(true); // Set loading state to true
-      const res: any = await LogInUser(data);
+      const res: any = await forgetPass(data);
 
       if (res?.data?.success) {
-        localStorage.setItem("email", email);
-        toast.success("Check your email for verification");
-        router.push("/user/verification");
+          console.log("response is", res);
+          localStorage.setItem("email", email);
+          toast.success(res?.data?.message);
+            router.push("/user/auth/forgetPass/otpVerify");
+        // router.push("/user/verification");
       } else {
         // // console.log();
         toast.error(`${res?.error?.data?.message}. Please Login`);
@@ -78,10 +75,10 @@ export default function Login() {
           <div className="lg:max-w-[500px] w-full space-y-8 lg:mt-0 mt-[100px]">
             <div className="text-center">
               <h1 className="text-[40px] font-semibold text-[#1A1A1A] mb-4">
-                Welcome to Luminor!
+                Reset your password!
               </h1>
               <p className="text-[#666666] text-xl">
-                Please Enter your details
+               Please enter your email address for reset password.
               </p>
             </div>
 
@@ -105,44 +102,6 @@ export default function Login() {
                 />
               </div>
 
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-lg font-medium text-[#1A1A1A] mb-2"
-                >
-                  Enter your Password
-                </label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    className="appearance-none relative block w-full px-4 py-4 border border-[#E5E7EB] rounded-xl placeholder-[#666666] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-4 flex items-center text-gray-500"
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
-                </div>
-
-                <div className="flex justify-end items-center space-x-2 pt-3">
-                  <Link
-                    href='/user/auth/forgetPass'
-                    // htmlFor="pass"
-                    className="text-sm hover:underline flex gap-2 cursor-pointer  text-bg_primary justify-end leading-none "
-                  >
-                   
-                    Forget Password?
-                  </Link>
-                </div>
-              </div>
               <button
                 type="submit"
                 className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium hover:shadow-lg transition-colors hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${isLoading
@@ -151,10 +110,10 @@ export default function Login() {
                   }`}
                 disabled={isLoading}
               >
-                {isLoading ? "Logging in..." : "Log in"}
+                {isLoading ? "Sending Otp..." : "Send Otp"}
               </button>
 
-              <div className="text-center text-lg flex mx-auto justify-center gap-2">
+              {/* <div className="text-center text-lg flex mx-auto justify-center gap-2">
                 Don&apos;t have an account?
                 <Link
                   href="/usertype"
@@ -162,7 +121,7 @@ export default function Login() {
                 >
                   Create Account <FaArrowRightLong />
                 </Link>
-              </div>
+              </div> */}
 
 
 
