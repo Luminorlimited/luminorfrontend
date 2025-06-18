@@ -101,11 +101,11 @@ export default function Client() {
   // Set values when profileData is available
   useEffect(() => {
     if (profileData?.data?.budgetRange) {
-      setBudgetMinValue(profileData.data.budgetRange.min ?? minPrice);
+      setBudgetMinValue(profileData.data.budgetRange.min ?? 0);
       setBudgetMaxValue(profileData.data.budgetRange.max ?? maxPrice);
     }
     if (profileData?.data?.projectDurationRange) {
-      setDurationMinValue(profileData.data.projectDurationRange.min ?? minPrice);
+      setDurationMinValue(profileData.data.projectDurationRange.min ?? 0);
       setDurationMaxValue(profileData.data.projectDurationRange.max ?? maxPrice);
     }
   }, [profileData]);
@@ -630,11 +630,11 @@ export default function Client() {
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
                 <div>
                   <label className="block text-md mb-4">
-                    Budget Preference
+                    Budget Preference ($)
                   </label>
                   <div className="w-full py-3">
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
+                      {/* <div>
                         <label htmlFor="budgetMin" className="block text-sm mb-2">
                           Min Budget
                         </label>
@@ -646,9 +646,9 @@ export default function Client() {
                           // value={budgetMinValue}
                           value={budgetMinValue ?? ''}
                           onChange={(e) => setBudgetMinValue(Number(e.target.value))}
-                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <label htmlFor="budgetMax" className="block text-sm mb-2">
                           Max Budget
@@ -660,7 +660,7 @@ export default function Client() {
                           max={maxPrice}
                           value={budgetMaxValue ?? ""}
                           onChange={(e) => setBudgetMaxValue(Number(e.target.value))}
-                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                         />
                       </div>
                     </div>
@@ -668,11 +668,11 @@ export default function Client() {
                 </div>
                 <div>
                   <label className="block text-md mb-4">
-                    Project Duration Range
+                    Project Duration Range (Days)
                   </label>
                   <div className="w-full py-3">
                     <div className="grid grid-cols-2 gap-4">
-                      <div>
+                      {/* <div>
                         <label htmlFor="durationMin" className="block text-sm mb-2">
                           Min Duration
                         </label>
@@ -685,7 +685,7 @@ export default function Client() {
                           onChange={(e) => setDurationMinValue(Number(e.target.value))}
                           className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <label htmlFor="durationMax" className="block text-sm mb-2">
                           Max Duration
@@ -697,7 +697,7 @@ export default function Client() {
                           max={maxPrice}
                           value={durationMaxValue ?? ""}
                           onChange={(e) => setDurationMaxValue(Number(e.target.value))}
-                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
+                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                         />
                       </div>
                     </div>
