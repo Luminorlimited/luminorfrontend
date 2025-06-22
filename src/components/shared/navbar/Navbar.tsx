@@ -85,7 +85,7 @@ const Navbar = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement | null>(null);
 
-  console.log("My new notification", count);
+  // console.log("My new notification", count);
 
   // console.log("allnotification", getAllNotification);
   // const user = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role

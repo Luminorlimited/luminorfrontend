@@ -87,7 +87,7 @@ export default function OrderDetailsPage() {
     console.log("object",);
 
     const onSubmit = async (data: any) => {
-        const res = await revisionProject({ id: offerId.id, data: data })
+        const res = await revisionProject({ id: offerId.id, data })
         console.log("data is", data);
         if (res?.data?.success) {
             toast.success(res?.data?.message)
@@ -97,7 +97,7 @@ export default function OrderDetailsPage() {
 
     const isPaymentCompleted = getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed" || getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded";
     
-    const revisionCount = getSingleOrder?.data?.result?.transaction?.paymentStatus === "revision"
+    const revisionCount = getSingleOrder?.data?.result?.project?.isAccepted
     const shouldDisableTextarea = isPaymentCompleted || revisionCount 
 
     return (
@@ -195,12 +195,18 @@ export default function OrderDetailsPage() {
                                     : "bg-emerald-500 text-emerald-950 hover:bg-emerald-500"
                                 }`}
                         >
-                            {getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
+                            {
+                            getSingleOrder?.data?.result?.transaction?.paymentStatus === "pending" ? (
                                 <div className="flex items-center gap-1">
                                     <AlertCircle className="h-4 w-4" />
                                     <span>Pending</span>
                                 </div>
-                            ) : getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded" ? (
+                            ) :  getSingleOrder?.data?.result?.transaction?.paymentStatus === "completed"? (
+                                 <div className="flex items-center gap-1">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <span>Accepted</span>
+                                </div>
+                            ):   getSingleOrder?.data?.result?.transaction?.paymentStatus === "refunded" ? (
                                 <div className="flex items-center gap-1">
                                     <CheckCircle className="h-4 w-4" />
                                     <span>Refunded</span>

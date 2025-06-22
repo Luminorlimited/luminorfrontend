@@ -1,15 +1,20 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { CalendarIcon, CreditCard, Package, ShoppingBag } from "lucide-react"
-import { useTransactionListQuery } from "@/redux/Api/paymentApi"
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CalendarIcon, CreditCard, Package, ShoppingBag } from "lucide-react";
+import { useTransactionListQuery } from "@/redux/Api/paymentApi";
 
 export default function OrdersPage() {
-  const { data: orderList, isLoading } = useTransactionListQuery(undefined)
-console.log("order list", orderList);
+  const { data: orderList, isLoading } = useTransactionListQuery(undefined);
+  console.log("order list", orderList);
   if (isLoading) {
     return (
       <div className="container p-4 mx-auto">
@@ -20,7 +25,7 @@ console.log("order list", orderList);
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -43,42 +48,40 @@ console.log("order list", orderList);
         <EmptyOrderState />
       )}
     </div>
-  )
+  );
 }
 
 function OrderCard({ order }: { order: any }) {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
-        return "bg-green-100 text-green-800 border-green-200"
+        return "bg-green-100 text-green-800 border-green-200";
       case "pending":
-        return "bg-amber-100 text-amber-800 border-amber-200"
+        return "bg-amber-100 text-amber-800 border-amber-200";
       case "refunded":
-        return "bg-red-100 text-red-800 border-red-200"
+        return "bg-red-100 text-red-800 border-red-200";
       default:
-        return "bg-blue-100 text-blue-800 border-blue-200"
+        return "bg-blue-100 text-blue-800 border-blue-200";
     }
-  }
+  };
 
   return (
     <Link href={`/deliver-details/${order?.transaction?.orderId}`}>
       <Card className="overflow-hidden transition-all duration-300 border hover:shadow-lg hover:border-primary/20 rounded-[10px]">
         <CardHeader className="p-4 pb-0">
           <div className="flex items-start justify-between">
-            <h2 className="text-lg font-semibold line-clamp-1">{order?.project?.projectName}</h2>
-           <span className="flex gap-2 items-center"><p className="text-sm">Payment Status:</p>
-           <Badge variant="outline" className={`${getStatusColor(order?.transaction?.paymentStatus)} border`}>
-              {order?.transaction?.paymentStatus}
-            </Badge>
-           </span>
-          
+            <h2 className="text-lg font-semibold line-clamp-1">
+              {order?.project?.projectName}
+            </h2>
           </div>
         </CardHeader>
         <CardContent className="p-4">
           <div className="space-y-3">
             <div className="flex items-center text-sm text-muted-foreground">
               <CreditCard className="w-4 h-4 mr-2" />
-              <span className="font-medium text-foreground">${order?.project?.totalPrice}</span>
+              <span className="font-medium text-foreground">
+                ${order?.project?.totalPrice}
+              </span>
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <CalendarIcon className="w-4 h-4 mr-2" />
@@ -92,23 +95,39 @@ function OrderCard({ order }: { order: any }) {
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Package className="w-4 h-4 mr-2" />
-              <span> <b>Revision</b> {order?.revisionCount}</span>
+              <span>
+                {" "}
+                <b>Revision</b> {order?.revisionCount}
+              </span>
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Package className="w-4 h-4 mr-2" />
               <span>Order #{order?.transaction?.orderId.slice(-8)}</span>
             </div>
-            <Badge variant="outline" className={`${order?.revisionCount > 0 ? "bg-red-900 text-white" : "bg-green-700 text-white"} `}>
+            {/* <Badge variant="outline" className={`${order?.revisionCount > 0 ? "bg-red-900 text-white" : "bg-green-700 text-white"} `}>
               {order?.revisionCount > 0 ? "In Revision" : "Order Accepted"}
-            </Badge>
+            </Badge> */}
+            <span className="flex gap-2 items-center">
+              <p className="text-sm">Status:</p>
+              <Badge
+                variant="outline"
+                className={`${getStatusColor(
+                  order?.transaction?.paymentStatus
+                )} border`}
+              >
+                {order?.transaction?.paymentStatus}
+              </Badge>
+            </span>
           </div>
         </CardContent>
         <CardFooter className="p-4 pt-2 border-t bg-muted/10">
-          <div className="flex items-center justify-center w-full text-sm font-medium text-primary">View Details</div>
+          <div className="flex items-center justify-center w-full text-sm font-medium text-primary">
+            View Details
+          </div>
         </CardFooter>
       </Card>
     </Link>
-  )
+  );
 }
 
 function OrderCardSkeleton() {
@@ -131,7 +150,7 @@ function OrderCardSkeleton() {
         <Skeleton className="w-full h-5" />
       </CardFooter>
     </Card>
-  )
+  );
 }
 
 function EmptyOrderState() {
@@ -142,7 +161,8 @@ function EmptyOrderState() {
       </div>
       <h3 className="mb-2 text-xl font-semibold">No Orders Found</h3>
       <p className="max-w-md mb-6 text-muted-foreground">
-        You haven&lsquo;t placed any orders yet. Browse our projects and make your first purchase!
+        You haven&lsquo;t placed any orders yet. Browse our projects and make
+        your first purchase!
       </p>
       <Link
         href="/project-list/client"
@@ -151,6 +171,5 @@ function EmptyOrderState() {
         Browse Projects
       </Link>
     </div>
-  )
+  );
 }
-

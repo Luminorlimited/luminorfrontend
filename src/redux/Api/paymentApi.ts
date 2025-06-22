@@ -64,11 +64,11 @@ const paymentApi = baseApi.injectEndpoints({
             invalidatesTags: ['Payment']
         }),
         revisionProject: build.mutation({
-            query: ({id, body}) => {
+            query: ({id, data}) => {
                 return {
                     url: `/stripe/revision-request/${id}`,
                     method: 'PATCH',
-                    data: body
+                    body: data
                 }
             },
             invalidatesTags: ['Payment']
