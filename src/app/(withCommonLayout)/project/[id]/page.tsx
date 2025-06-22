@@ -88,8 +88,9 @@ export default function OrderDetailsPage() {
 
     const onSubmit = async (data: any) => {
         const res = await revisionProject({ id: offerId.id, data: data })
+        console.log("data is", data);
         if (res?.data?.success) {
-            toast.success("Revision Sent Successfully")
+            toast.success(res?.data?.message)
         }
         // console.log("Revision Data:", data);
     };
@@ -133,7 +134,7 @@ export default function OrderDetailsPage() {
                         <div className="pt-6" title={isPaymentCompleted ? "Payment Completed" : ""}>
                             <Button
                                 type="submit"
-                                className="bg-[#5633D1] rounded-[8px] text-white w-full"
+                                className="bg-[#5633D1] hover:bg-[#4728b8] rounded-[8px] text-white w-full"
                                 disabled={shouldDisableTextarea || revisionLoading}
                             >
                                 {revisionLoading ? "Submitting..." : "Submit Revision"}

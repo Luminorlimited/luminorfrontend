@@ -60,7 +60,7 @@ export default function FeedbackForm() {
                 if (res?.data) {
                     toast.success("Thanks for review!");
                     reset();
-                    router.push('/')
+                    router.push('/clientOrder')
 
                 } else {
                     toast.error("You are unauthorized.");

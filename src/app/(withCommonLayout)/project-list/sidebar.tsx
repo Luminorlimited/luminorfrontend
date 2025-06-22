@@ -61,11 +61,11 @@ export function Sidebar({
   const [durationMaxValue, setDurationMaxValue] = useState(90);
   // const [locMinLoc, setMinLoc] = useState(10);
   // const [locMaxLoc, setMaxLoc] = useState(10000);
-  const [currentLocation, setCurrentLocation] = useState<{
+  const [, setCurrentLocation] = useState<{
     lat: number;
     long: number;
   } | null>(null);
-  console.log(currentLocation, "currentLocation");
+  // console.log(currentLocation, "currentLocation");
 
   const handleBudgetMinChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {

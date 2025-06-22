@@ -10,7 +10,7 @@ import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import ModalImage from "react-modal-image";
-// import ModalImage from "react-modal-image";
+
 
 export interface userInfo {
   _id: string;

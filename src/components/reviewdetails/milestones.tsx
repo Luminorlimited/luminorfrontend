@@ -42,6 +42,15 @@
 //     upcoming: "Coming Up"
 // };
 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
 export default function Milestones({
   getSingleOrder,
 }: {
@@ -60,70 +69,68 @@ export default function Milestones({
             : "Milestone"}
         </h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full table-auto border-collapse">
-            <thead>
-              <tr className="text-center font-medium">
-                <td>Serial</td>
-                <td>Description</td>
-                <td>Revision</td>
-                <td>Price</td>
-              </tr>
-            </thead>
-            <tbody>
+          <Table className="min-w-full border-collapse">
+            <TableHeader>
+              <TableRow className="text-center font-medium">
+                <TableHead>Serial</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Revision</TableHead>
+                <TableHead>Price</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {getOffer?.flatFee ? (
-                <tr className="border-b">
-                  <td className="py-2 px-4">1</td>
-                  <td className="py-2 px-4 text-[#4A4C56] font-medium">
+                <TableRow className="border-b">
+                  <TableCell className="py-2 px-4">1</TableCell>
+                  <TableCell className="py-2 px-4 text-[#4A4C56] font-medium">
                     {getOffer.projectName}
-                  </td>
-                  <td className="py-2 px-4 text-[#4A4C56]">
+                  </TableCell>
+                  <TableCell className="py-2 px-4 text-[#4A4C56]">
                     {getOffer.flatFee.revision} Hour
-                  </td>
-                  <td className="py-2 px-4 text-[#4A4C56]">
+                  </TableCell>
+                  <TableCell className="py-2 px-4 text-[#4A4C56]">
                     ${getOffer.flatFee.price}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : getOffer?.hourlyFee ? (
-                <tr className="border-b">
-                  <td className="py-2 px-4">1</td>
-                  <td className="py-2 px-4 text-[#4A4C56] font-medium">
+                <TableRow className="border-b">
+                  <TableCell className="py-2 px-4">1</TableCell>
+                  <TableCell className="py-2 px-4 text-[#4A4C56] font-medium">
                     {getOffer?.projectName}
-                  </td>
-                  <td className="py-2 px-4 text-[#4A4C56]">
+                  </TableCell>
+                  <TableCell className="py-2 px-4 text-[#4A4C56]">
                     {getOffer?.hourlyFee?.revision} Hour
-                  </td>
-                  <td className="py-2 px-4 text-[#4A4C56]">
+                  </TableCell>
+                  <TableCell className="py-2 px-4 text-[#4A4C56]">
                     ${getOffer?.hourlyFee?.pricePerHour}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ) : getOffer?.milestones ? (
                 getOffer.milestones.map((milestone: any, index: number) => (
-                  <tr key={milestone._id} className="border-b">
-                    <td className="py-2 px-4">{index + 1}</td>
-                    <td className="py-2 px-4 text-[#4A4C56] font-medium">
+                  <TableRow key={milestone._id} className="border-b">
+                    <TableCell className="py-2 px-4">{index + 1}</TableCell>
+                    <TableCell className="py-2 px-4 text-[#4A4C56] font-medium">
                       {milestone.description}
-                    </td>
-                    <td className="py-2 px-4 text-[#4A4C56]">
+                    </TableCell>
+                    <TableCell className="py-2 px-4 text-[#4A4C56]">
                       {milestone.delivery} Hour
-                    </td>
-                    <td className="py-2 px-4 text-[#4A4C56]">
+                    </TableCell>
+                    <TableCell className="py-2 px-4 text-[#4A4C56]">
                       ${milestone.price}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))
               ) : (
-                <tr>
-                  <td colSpan={4} className="py-2 px-4 text-center">
+                <TableRow>
+                  <TableCell colSpan={4} className="py-2 px-4 text-center">
                     No data available
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
-
-      
     </div>
   );
 }

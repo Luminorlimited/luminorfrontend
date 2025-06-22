@@ -19,6 +19,15 @@ const projectApi = baseApi.injectEndpoints({
             }),
             providesTags: ['message'],
         }),
+
+        getMessageNotification: build.query({
+            query: () => ({
+                url: `/notification/message-count`,
+                method: 'GET',
+            }),
+            providesTags: ['message'],
+        }),
+
         seenNotification: build.mutation({
             query: (notificationId) => ({
                 url: `/notification/${notificationId}`,
@@ -68,4 +77,4 @@ const projectApi = baseApi.injectEndpoints({
     }),
 });
 
-export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation, useSeenNotificationMutation, useSendOnboardingUrlMutation, useGetNotificationQuery } = projectApi;
+export const { useGetMessageQuery, useSendMessageMutation, useGetuserQuery, useGetConversationQuery, useImageSendMutation, useSeenNotificationMutation, useSendOnboardingUrlMutation, useGetMessageNotificationQuery, useGetNotificationQuery } = projectApi;

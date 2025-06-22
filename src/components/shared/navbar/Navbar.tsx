@@ -31,11 +31,13 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import {
+  // useGetMessageNotificationQuery,
   // useGetNotificationQuery,
   useSeenNotificationMutation,
 } from "@/redux/Api/messageApi";
 import { LuMessageSquareMore } from "react-icons/lu";
 import { LuBellRing } from "react-icons/lu";
+import { useMessageNotification } from "../hooks/useMessageNotification";
 // import { useDecodedToken } from "@/components/common/DecodeToken";
 
 interface Notification {
@@ -62,7 +64,7 @@ const Navbar = ({
   const [seenNotification] = useSeenNotificationMutation({});
 
   const user = useSelector((state: RootState) => state.Auth.user);
-
+  const { count } = useMessageNotification();
   const { data: profileData } = useGetProfileQuery({});
 
   const handleLogOut = () => {
@@ -70,7 +72,7 @@ const Navbar = ({
     Cookies.remove("token");
     window.location.href = "/"; // This does a full page reload to the homepage
   };
-  
+
   // console.log("my profile is", profileData);
   useEffect(() => {
     if (profileData?.data?.client?.isDeleted) {
@@ -83,7 +85,7 @@ const Navbar = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement | null>(null);
 
-  // console.log("notification", getAllNotification);
+  console.log("My new notification", count);
 
   // console.log("allnotification", getAllNotification);
   // const user = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
@@ -127,11 +129,9 @@ const Navbar = ({
   const [open, setOpen] = useState(false);
 
   const handleOrder = (orderId: any) => {
-    if(user?.role === "client"){
-
+    if (user?.role === "client") {
       router.push(`/project/${orderId}`);
-    }else{
-      
+    } else {
       router.push(`/deliver-details/${orderId}`);
     }
   };
@@ -144,13 +144,12 @@ const Navbar = ({
     ...(getAllNotification?.data?.result || []),
   ];
 
-  
   // Remove duplicates based on _id (optional but ideal)
   const uniqueNotifications = Array.from(
     new Map(mergedNotifications.map((item) => [item._id, item])).values()
   );
   // console.log(allNotification,
-    // getAllNotification);
+  // getAllNotification);
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
       <span className="lg:w-auto">
@@ -260,7 +259,6 @@ const Navbar = ({
                         ))}
                       </ul>
                     </div>
-                   
                   </CardContent>
                 </Card>
               </PopoverContent>
@@ -268,11 +266,16 @@ const Navbar = ({
             <div className="flex gap-3 items-center relative" ref={dropdownRef}>
               <Link
                 title="Chat"
-                href={"/chat"}
-                className="cursor-pointer transition-colors group relative hover:fill-primary border rounded-full p-2 hover:border-primary mr-2"
+                href="/chat"
+                className="cursor-pointer transition-colors group hover:fill-primary border relative rounded-full p-2 hover:border-primary mr-2"
               >
-                {" "}
                 <FaRegMessage className="group-hover:fill-primary" />
+                {/* Notification badge - only show if count > 0 */}
+                {count > 0 && (
+                  <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
+                    {count > 9 ? "9+" : count}
+                  </span>
+                )}
               </Link>
 
               <div

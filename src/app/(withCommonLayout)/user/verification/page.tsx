@@ -38,7 +38,7 @@ export default function Page() {
       if (res?.success) {
         toast.success("Verification Complete");
 
-        console.log('my stripe', res)
+        console.log("my stripe", res);
 
         const accessToken = res.data.accessToken;
         const user = res?.data?.user;
@@ -79,7 +79,7 @@ export default function Page() {
       }
     } catch (error: any) {
       // Handle API errors or rejected promises
-      toast.error("Error Validation. Check your mail.");
+      toast.error(error?.data?.message);
       console.error(error);
     }
   };
@@ -148,12 +148,12 @@ export default function Page() {
 
               <button
                 type="submit"
-                className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium text-white bg-primary hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${isLoading
-                  ? "text-white bg-[#181522] hover:bg-[#181522] "
-                  : "text-white bg-primary "
-                  }`}
+                className={`w-full flex justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-xl font-medium text-white bg-primary hover:shadow-lg hover:bg-[#5B32D9] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C3BFF] ${
+                  isLoading
+                    ? "text-white bg-[#181522] hover:bg-[#181522] "
+                    : "text-white bg-primary "
+                }`}
                 disabled={isLoading}
-
               >
                 {isLoading ? "Verifying..." : "Verify"}
               </button>

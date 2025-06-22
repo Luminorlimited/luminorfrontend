@@ -3,17 +3,26 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import mainlogo from '@/assets/images/mainlogo.png'
+import mainlogo from "@/assets/images/mainlogo.png";
 import Image from "next/image";
 import { toast } from "sonner";
-import PhoneInput from "react-phone-input-2"
-import "react-phone-input-2/lib/style.css"
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import { z } from "zod";
 import { Controller } from "react-hook-form";
-import { useGetClientQuery, useGetProfessionalQuery } from "@/redux/Api/dashboard/userapi";
+import {
+  useGetClientQuery,
+  useGetProfessionalQuery,
+} from "@/redux/Api/dashboard/userapi";
 
-export default function Signup({ register, handleNext, getValues, control, setValue, watch }: any) {
-
+export default function Signup({
+  register,
+  handleNext,
+  getValues,
+  control,
+  setValue,
+  watch,
+}: any) {
   const schema = z.object({
     firstName: z.string().nonempty("First name is required"),
     lastName: z.string().nonempty("Last name is required"),
@@ -51,24 +60,29 @@ export default function Signup({ register, handleNext, getValues, control, setVa
     return true; // Return true if all fields are filled and email is valid
   };
 
-  const { data: getclientUser } = useGetClientQuery(undefined)
-  const { data: getprofessionalUser } = useGetProfessionalQuery(undefined)
+  const { data: getclientUser } = useGetClientQuery(undefined);
+  const { data: getprofessionalUser } = useGetProfessionalQuery(undefined);
   const professionalUser = getprofessionalUser?.data || {};
   const clientUser = getclientUser?.data || {};
   const allProfessionalUsers = Object.values(professionalUser).flat();
   const allClientUsers = Object.values(clientUser).flat();
 
   const emailExists = (email: string) =>
-    allProfessionalUsers.some((user: any) => user.retireProfessional.email === email) ||
-    allClientUsers.some((user: any) => user.client.email === email);
+    allProfessionalUsers.some(
+      (user: any) => user.retireProfessional.email === email
+    ) || allClientUsers.some((user: any) => user.client.email === email);
 
   const handleDateInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
     if (value.length > 8) value = value.slice(0, 8); // Limit to 8 characters
 
     let formattedValue = value;
-    if (value.length > 4) formattedValue = `${value.slice(0, 2)}-${value.slice(2, 4)}-${value.slice(4)}`;
-    else if (value.length > 2) formattedValue = `${value.slice(0, 2)}-${value.slice(2)}`;
+    if (value.length > 4)
+      formattedValue = `${value.slice(0, 2)}-${value.slice(2, 4)}-${value.slice(
+        4
+      )}`;
+    else if (value.length > 2)
+      formattedValue = `${value.slice(0, 2)}-${value.slice(2)}`;
 
     setValue("dob", formattedValue, { shouldValidate: true });
   };
@@ -109,9 +123,7 @@ export default function Signup({ register, handleNext, getValues, control, setVa
       <div className="flex flex-col gap-y-4">
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="firstName">
-              First Name
-            </Label>
+            <Label htmlFor="firstName">First Name</Label>
             <Input
               id="firstName"
               {...register("firstName", { required: true })}
@@ -120,9 +132,7 @@ export default function Signup({ register, handleNext, getValues, control, setVa
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="lastName">
-              Last Name
-            </Label>
+            <Label htmlFor="lastName">Last Name</Label>
             <Input
               id="lastName"
               {...register("lastName", { required: true })}
@@ -132,9 +142,7 @@ export default function Signup({ register, handleNext, getValues, control, setVa
           </div>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="dateOfBirth">
-            Date of Birth
-          </Label>
+          <Label htmlFor="dateOfBirth">Date of Birth</Label>
 
           <input
             id="dateOfBirth"
@@ -145,12 +153,9 @@ export default function Signup({ register, handleNext, getValues, control, setVa
             onChange={handleDateInput}
             className="w-full rounded-md border border-gray-200 p-2 focus:outline-none focus:ring-1 focus:ring-primary"
           />
-
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">
-            Email Address
-          </Label>
+          <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
             type="email"
@@ -160,9 +165,7 @@ export default function Signup({ register, handleNext, getValues, control, setVa
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phoneNumber">
-            Phone Number
-          </Label>
+          <Label htmlFor="phoneNumber">Phone Number</Label>
           <Controller
             name="phone"
             control={control}
