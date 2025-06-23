@@ -41,31 +41,39 @@ import { useMessageNotification } from "../hooks/useMessageNotification";
 // import { useDecodedToken } from "@/components/common/DecodeToken";
 
 interface Notification {
-  toUser: string; // ID of the recipient user
-  message: string; // Notification message
-  fromUser: string; // ID of the sender user
+  toUser: string;
+  message: string;
+  fromUser: string;
   notificationId: string;
-  orderId: string; // ID of the sender user
-  _id: string; // ID of the notification
-  type: "offer" | "delivery" | string; // Type of notification (e.g., offer, message, etc.)
-  status: string; // Notification status
-  count: number; // Number of notifications (e.g., unread count)
+  orderId: string;
+  _id: string;
+  type: "offer" | "delivery" | "privateMessage" | string;
+  status: string;
+  count?: number;
+  sender?: string;
+}
+
+interface NavbarProps {
+  allNotification: Notification[];
+  notificationCount: number;
+  setNotificationCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Navbar = ({
-  allNotification,
-  getAllNotification,
-}: {
-  allNotification: Notification;
-  getAllNotification: any;
-}) => {
+  allNotification = [],
+  notificationCount,
+  setNotificationCount,
+}: NavbarProps) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [seenNotification] = useSeenNotificationMutation({});
 
   const user = useSelector((state: RootState) => state.Auth.user);
   const { count } = useMessageNotification();
-  const { data: profileData } = useGetProfileQuery({});
+ const token = useSelector((state: RootState) => state.Auth.user?.id)
+ console.log("token", token);
+
+  console.log("token", token);  const { data: profileData } = useGetProfileQuery({});
 
   const handleLogOut = () => {
     dispatch(logOut());
@@ -84,24 +92,17 @@ const Navbar = ({
   const [fileBtn, showFileBtn] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement | null>(null);
-
-  // console.log("My new notification", count);
-
-  // console.log("allnotification", getAllNotification);
-  // const user = useSelector((state: RootState) => state.Auth.user?.role || ''); // Get the user's role
-
-  const handleSeenButton = (notificationId: string, sender: string) => {
-    // console.log("notification", notificationId);
+  const handleSeenButton = async (notificationId: string, sender: string) => {
     if (!notificationId) return;
-    seenNotification(notificationId)
-      .unwrap()
-      .then(() => {
-        // console.log("Notification marked as seen");
-        router.push(`/chat/${sender}`);
-      })
-      .catch((error) => {
-        console.error("Failed to mark notification as seen", error);
-      });
+
+    try {
+      await seenNotification(notificationId).unwrap();
+      // Decrement count when notification is seen
+      setNotificationCount((prev) => Math.max(0, prev - 1));
+      router.push(`/chat/${sender}`);
+    } catch (error) {
+      console.error("Failed to mark notification as seen", error);
+    }
   };
 
   const handleClick = () => {
@@ -139,15 +140,14 @@ const Navbar = ({
 
   // console.log("my count is", allNotification);
 
-  const mergedNotifications = [
-    ...(Array.isArray(allNotification) ? allNotification : []),
-    ...(getAllNotification?.data?.result || []),
-  ];
+  // const mergedNotifications = [
+  //   ...(Array.isArray(allNotification) ? allNotification : []),
+  //   ...(getAllNotification?.data?.result || []),
+  // ];
 
-  // Remove duplicates based on _id (optional but ideal)
-  const uniqueNotifications = Array.from(
-    new Map(mergedNotifications.map((item) => [item._id, item])).values()
-  );
+  // const uniqueNotifications = Array.from(
+  //   new Map(mergedNotifications.map((item) => [item._id, item])).values()
+  // );
   // console.log(allNotification,
   // getAllNotification);
   return (
@@ -201,9 +201,9 @@ const Navbar = ({
                     <Bell className="group-hover:fill-primary" />
                   </div>
 
-                  {allNotification?.count > 0 && (
+                  {notificationCount > 0 && (
                     <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
-                      {allNotification?.count}
+                      {notificationCount} {/* Show exact count */}
                     </span>
                   )}
                   <span className="sr-only">Toggle notifications</span>
@@ -220,43 +220,54 @@ const Navbar = ({
                     {/* {getAllNotification?.data?.count > 0 ? ( */}
                     <div className="px-3">
                       <ul className="space-y-2">
-                        {uniqueNotifications.map((item: any, index: number) => (
-                          <li key={item?._id || index}>
-                            <button
-                              onClick={
-                                item?.orderId
-                                  ? () => handleOrder(item.orderId)
-                                  : () =>
-                                      handleSeenButton(item._id, item.sender)
-                              }
-                              type="button"
-                              className={cn(
-                                "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
-                              )}
-                            >
-                              {/* Icon */}
-                              <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                                {item?.type === "offer" ? (
-                                  <Bell className="h-5 w-5" />
-                                ) : item?.type === "privateMessage" ? (
-                                  <LuMessageSquareMore className="h-5 w-5" />
-                                ) : (
-                                  <LuBellRing className="h-5 w-5" />
-                                )}
-                                {item?.status === "unseen" && (
-                                  <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
-                                )}
-                              </div>
+                        {allNotification.length > 0 ? (
+                          <ul className="space-y-2">
+                            {allNotification.map((item) => (
+                              <li key={item._id}>
+                                <button
+                                  onClick={
+                                    item.orderId
+                                      ? () => handleOrder(item.orderId)
+                                      : () =>
+                                          handleSeenButton(
+                                            item._id,
+                                            item.sender || ""
+                                          )
+                                  }
+                                  type="button"
+                                  className={cn(
+                                    "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
+                                  )}
+                                >
+                                  {/* Icon */}
+                                  <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                    {item.type === "offer" ? (
+                                      <Bell className="h-5 w-5" />
+                                    ) : item.type === "privateMessage" ? (
+                                      <LuMessageSquareMore className="h-5 w-5" />
+                                    ) : (
+                                      <LuBellRing className="h-5 w-5" />
+                                    )}
+                                    {item.status === "unseen" && (
+                                      <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
+                                    )}
+                                  </div>
 
-                              {/* Message */}
-                              <div className="flex-1 overflow-hidden justify-start">
-                                <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
-                                  {item?.message}
-                                </p>
-                              </div>
-                            </button>
-                          </li>
-                        ))}
+                                  {/* Message */}
+                                  <div className="flex-1 overflow-hidden justify-start">
+                                    <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
+                                      {item.message}
+                                    </p>
+                                  </div>
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="p-4 text-center text-gray-500">
+                            No notifications available
+                          </div>
+                        )}
                       </ul>
                     </div>
                   </CardContent>

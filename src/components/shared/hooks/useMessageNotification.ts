@@ -1,21 +1,31 @@
 import { useGetMessageNotificationQuery } from '@/redux/Api/messageApi';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 export const useMessageNotification = () => {
   const [count, setCount] = useState(0);
-  const { data: apiData, refetch } = useGetMessageNotificationQuery({});
-  const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
+  const userId = useSelector((state: RootState) => state.Auth.user?.id);
+
+  // Pass userId directly, not as an object
+  const { data: apiData, refetch } = useGetMessageNotificationQuery(userId, {
+    skip: !userId, // Skip query if userId is not available
+  });
 
   useEffect(() => {
-    // Initial count from API
-    if (apiData) {
+    if (apiData?.count !== undefined) {
       setCount(apiData.count);
     }
 
-    // SSE connection
-    const eventSourceUrl = `https://api.luminor-ltd.com/api/v1/notification/message-count${token ? `?token=${encodeURIComponent(token)}` : ''}`;
-    
-    const eventSource = new EventSource(eventSourceUrl, { withCredentials: true });
+    if (!userId) return;
+
+    const eventSourceUrl = `https://api.luminor-ltd.com/api/v1/notification/message-count/${userId}`;
+    console.log("eventSourceUrl", eventSourceUrl);
+    console.log("userId", userId);
+
+    const eventSource = new EventSource(eventSourceUrl, {
+      withCredentials: true,
+    });
 
     eventSource.onmessage = (event) => {
       try {
@@ -31,16 +41,15 @@ export const useMessageNotification = () => {
     eventSource.onerror = (error) => {
       console.error('SSE error:', error);
       eventSource.close();
-      // Attempt to reconnect after a delay
       setTimeout(() => {
-        refetch(); // Fallback to API call if SSE fails
+        refetch();
       }, 5000);
     };
 
     return () => {
       eventSource.close();
     };
-  }, [apiData, refetch, token]);
+  }, [apiData, refetch, userId]);
 
   return { count };
 };

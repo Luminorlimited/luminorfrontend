@@ -21,8 +21,8 @@ const projectApi = baseApi.injectEndpoints({
         }),
 
         getMessageNotification: build.query({
-            query: () => ({
-                url: `/notification/message-count`,
+            query: (id) => ({
+                url: `/notification/message-count/${id}`,
                 method: 'GET',
             }),
             providesTags: ['message'],
