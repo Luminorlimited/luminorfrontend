@@ -28,7 +28,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ data, onClose }) 
     const deleteOffer = async () => {
         try {
             await deleteOffers(offerId).unwrap();
-            toast.success("Offer cancellation has been sent to the client.");
+            toast.success("Offer cancellation has been sent to the Retired Professional.");
             onClose();
         } catch (error) {
             // console.log(error);
