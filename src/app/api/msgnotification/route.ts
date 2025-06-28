@@ -11,16 +11,6 @@ export async function GET(req: Request) {
       // Handle the case when id is not provided in the query params
       return NextResponse.json({ error: "ID parameter is missing" }, { status: 400 });
     }
-
-
-    // Set up the response headers for SSE
-    const headers = new Headers({
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      "Connection": "keep-alive",
-      "Access-Control-Allow-Origin": "*",
-    });
-
     // Create a ReadableStream for SSE
     const stream = new ReadableStream({
       start(controller) {
@@ -63,7 +53,7 @@ export async function GET(req: Request) {
       },
     });
 
-    return new NextResponse(stream, { headers }); // Return the streaming response
+    return new NextResponse(stream); // Return the streaming response
   } catch (error) {
     // Log and return a generic error in case of failure
     console.error("Error with SSE:", error);

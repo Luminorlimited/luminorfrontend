@@ -70,17 +70,30 @@ const Navbar = ({
   const [seenNotification] = useSeenNotificationMutation({});
 
   const user = useSelector((state: RootState) => state.Auth.user);
-  console.log("user id");
+  // console.log("user id", user);
   const [count, setCount] = useState(0);
   const [, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Initialize EventSource to listen for SSE
-    const eventSource = new EventSource(`/api/messagenotification/${user?.id}`);
+    // Check if user ID is available
+    if (!user?.id) {
+      console.error("User ID is missing");
+      return;
+    }
+
+    const eventSource = new EventSource(`https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`);
+
+    // Log the URL for debugging
+    console.log("EventSource URL: ", `https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`);
+
+    eventSource.onopen = () => {
+      console.log("SSE connection established");
+    };
 
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data); // Parse the incoming message
+        console.log("my data: ", data); // Log the data to the console
         if (data?.messageCount) {
           setCount(data.messageCount); // Update the count
         }
@@ -89,14 +102,14 @@ const Navbar = ({
       }
     };
 
-    // Handle SSE error
     eventSource.onerror = (error) => {
       console.error("SSE error:", error);
       setIsLoading(false); // Stop loading on error
     };
 
+    // Clean up on component unmount
     return () => {
-      eventSource.close(); // Clean up on component unmount
+      eventSource.close();
     };
   }, [user?.id]);
 
