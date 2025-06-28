@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Logo from "@/utils/Logo";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
@@ -37,7 +38,7 @@ import {
 } from "@/redux/Api/messageApi";
 import { LuMessageSquareMore } from "react-icons/lu";
 import { LuBellRing } from "react-icons/lu";
-import { useMessageNotification } from "../hooks/useMessageNotification";
+// import { useMessageNotification } from "../hooks/useMessageNotification";
 // import { useDecodedToken } from "@/components/common/DecodeToken";
 
 interface Notification {
@@ -69,11 +70,43 @@ const Navbar = ({
   const [seenNotification] = useSeenNotificationMutation({});
 
   const user = useSelector((state: RootState) => state.Auth.user);
-  const { count } = useMessageNotification();
- const token = useSelector((state: RootState) => state.Auth.user?.id)
- console.log("token", token);
+console.log("user id", user);
+  const [count, ] = useState(0);
+  // const [, setIsLoading] = useState(true);
 
-  console.log("token", token);  const { data: profileData } = useGetProfileQuery({});
+  // useEffect(() => {
+  //   // Initialize EventSource to listen for SSE
+  //   const eventSource = new EventSource(
+  //     `/api/messagenotification/${user?.id}`
+  //   );
+
+  //   eventSource.onmessage = (event) => {
+  //     try {
+  //       const data = JSON.parse(event.data); // Parse the incoming message
+  //       if (data?.messageCount) {
+  //         setCount(data.messageCount); // Update the count
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parsing SSE data:", error);
+  //     }
+  //   };
+
+  //   // Handle SSE error
+  //   eventSource.onerror = (error) => {
+  //     console.error("SSE error:", error);
+  //     setIsLoading(false); // Stop loading on error
+  //   };
+
+  //   return () => {
+  //     eventSource.close(); // Clean up on component unmount
+  //   };
+  // }, [user?.id]);
+
+  const token = useSelector((state: RootState) => state.Auth.user?.id);
+  console.log("token", token);
+
+  console.log("token", token);
+  const { data: profileData } = useGetProfileQuery({});
 
   const handleLogOut = () => {
     dispatch(logOut());
@@ -274,7 +307,7 @@ const Navbar = ({
                 </Card>
               </PopoverContent>
             </Popover>
-            <div className="flex gap-3 items-center relative" ref={dropdownRef}>
+            <div className="flex gap-3 items-center relative">
               <Link
                 title="Chat"
                 href="/chat"
@@ -298,7 +331,7 @@ const Navbar = ({
                   width={40}
                   height={40}
                   alt="profile"
-                  className="rounded-full cursor-pointer w-full h-full  hover:opacity-90 transition-all"
+                  className="rounded-full cursor-pointer w-full h-full hover:opacity-90 transition-all"
                   onClick={handleClick}
                 />
                 <ul
