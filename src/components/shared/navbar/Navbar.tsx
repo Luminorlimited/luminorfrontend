@@ -70,37 +70,35 @@ const Navbar = ({
   const [seenNotification] = useSeenNotificationMutation({});
 
   const user = useSelector((state: RootState) => state.Auth.user);
-console.log("user id", user);
-  const [count, ] = useState(0);
-  // const [, setIsLoading] = useState(true);
+  console.log("user id");
+  const [count, setCount] = useState(0);
+  const [, setIsLoading] = useState(true);
 
-  // useEffect(() => {
-  //   // Initialize EventSource to listen for SSE
-  //   const eventSource = new EventSource(
-  //     `/api/messagenotification/${user?.id}`
-  //   );
+  useEffect(() => {
+    // Initialize EventSource to listen for SSE
+    const eventSource = new EventSource(`/api/messagenotification/${user?.id}`);
 
-  //   eventSource.onmessage = (event) => {
-  //     try {
-  //       const data = JSON.parse(event.data); // Parse the incoming message
-  //       if (data?.messageCount) {
-  //         setCount(data.messageCount); // Update the count
-  //       }
-  //     } catch (error) {
-  //       console.error("Error parsing SSE data:", error);
-  //     }
-  //   };
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data); // Parse the incoming message
+        if (data?.messageCount) {
+          setCount(data.messageCount); // Update the count
+        }
+      } catch (error) {
+        console.error("Error parsing SSE data:", error);
+      }
+    };
 
-  //   // Handle SSE error
-  //   eventSource.onerror = (error) => {
-  //     console.error("SSE error:", error);
-  //     setIsLoading(false); // Stop loading on error
-  //   };
+    // Handle SSE error
+    eventSource.onerror = (error) => {
+      console.error("SSE error:", error);
+      setIsLoading(false); // Stop loading on error
+    };
 
-  //   return () => {
-  //     eventSource.close(); // Clean up on component unmount
-  //   };
-  // }, [user?.id]);
+    return () => {
+      eventSource.close(); // Clean up on component unmount
+    };
+  }, [user?.id]);
 
   const token = useSelector((state: RootState) => state.Auth.user?.id);
   console.log("token", token);

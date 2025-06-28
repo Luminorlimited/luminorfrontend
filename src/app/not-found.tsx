@@ -59,11 +59,11 @@ const NotFound = () => {
   }, [token?.id]);
   return (
     <div>
-     <Navbar 
-          allNotification={allNotification} 
-          notificationCount={notificationCount}
-          setNotificationCount={setNotificationCount}
-        />
+      <Navbar
+        allNotification={allNotification}
+        notificationCount={notificationCount}
+        setNotificationCount={setNotificationCount}
+      />
       <div className="flex justify-center items-center min-h-screen">
         <NotFoundAnimation />
       </div>
