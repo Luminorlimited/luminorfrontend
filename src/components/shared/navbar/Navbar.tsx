@@ -21,7 +21,7 @@ import { useGetProfileQuery } from "@/redux/Api/userApi";
 import demoprofile from "@/assets/placeholderimg.png";
 import Cookies from "js-cookie";
 import { FaRegMessage } from "react-icons/fa6";
-import { RootState } from "@/redux/store";
+// import { RootState } from "@/redux/store";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +37,6 @@ import {
   useSeenNotificationMutation,
 } from "@/redux/Api/messageApi";
 
-
 interface Notification {
   toUser: string
   message: string
@@ -49,6 +48,7 @@ interface Notification {
   status: string
   count?: number
   sender?: string
+  createdAt?: string
 }
 
 interface NavbarProps {
@@ -57,6 +57,7 @@ interface NavbarProps {
   setOfferNotificationCount: (count: number | ((prev: number) => number)) => void
   messageNotificationCount: number
   setMessageNotificationCount: (count: number | ((prev: number) => number)) => void
+  allNotifications?: Notification[]
 }
 
 const Navbar = ({
@@ -65,14 +66,29 @@ const Navbar = ({
   setOfferNotificationCount,
   messageNotificationCount,
   setMessageNotificationCount,
+  allNotifications = [],
 }: NavbarProps) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const [seenNotification] = useSeenNotificationMutation({})
-  const user = useSelector((state: RootState) => state.Auth.user)
-
+  const user = useSelector((state: any) => state.Auth.user)
   const [sseMessageCount, setSseMessageCount] = useState(0)
   const [, setIsLoading] = useState(true)
+
+  // State for dropdown menus
+  const [fileBtn, showFileBtn] = useState<boolean>(false)
+  const [notificationOpen, setNotificationOpen] = useState(false)
+  const [messageOpen, setMessageOpen] = useState(false)
+
+  // Refs
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const notificationRef = useRef<HTMLDivElement | null>(null)
+
+  // Get profile data
+  const { data: profileData } = useGetProfileQuery({})
+
+  // Filter message notifications
+  const messageNotifications = allNotifications.filter((notif) => notif.type === "privateMessage")
 
   // SSE for message count (backup/additional source)
   useEffect(() => {
@@ -82,6 +98,7 @@ const Navbar = ({
     }
 
     const eventSource = new EventSource(`https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`)
+
     console.log("EventSource URL: ", `https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`)
 
     eventSource.onopen = () => {
@@ -95,7 +112,6 @@ const Navbar = ({
 
         if (data?.messageCount !== undefined) {
           setSseMessageCount(data.messageCount)
-          // Update the main message count if SSE provides a different value
           setMessageNotificationCount(data.messageCount)
         }
       } catch (error) {
@@ -113,32 +129,26 @@ const Navbar = ({
     }
   }, [user?.id, setMessageNotificationCount])
 
-  // const token = useSelector((state: RootState) => state.Auth.user?.id)
-  const { data: profileData } = useGetProfileQuery({})
-
+  // Handle logout
   const handleLogOut = () => {
     dispatch(logOut())
     Cookies.remove("token")
     window.location.href = "/"
   }
 
+  // Check if user is deleted
   useEffect(() => {
     if (profileData?.data?.client?.isDeleted) {
       handleLogOut()
     }
   }, [profileData])
 
-  // State for dropdown menu visibility
-  const [fileBtn, showFileBtn] = useState<boolean>(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const notificationRef = useRef<HTMLDivElement | null>(null)
-
+  // Handle seen notification for offers
   const handleSeenButton = async (notificationId: string, sender: string) => {
     if (!notificationId) return
 
     try {
       await seenNotification(notificationId).unwrap()
-      // Decrement offer count when offer notification is seen
       setOfferNotificationCount((prev) => Math.max(0, prev - 1))
       router.push(`/chat/${sender}`)
     } catch (error) {
@@ -146,42 +156,60 @@ const Navbar = ({
     }
   }
 
+  // Handle seen notification for messages
+  const handleMessageSeenButton = async (notificationId: string, sender: string) => {
+    if (!notificationId) return
+
+    try {
+      await seenNotification(notificationId).unwrap()
+      setMessageNotificationCount((prev) => Math.max(0, prev - 1))
+      setMessageOpen(false)
+      router.push(`/chat/${sender}`)
+    } catch (error) {
+      console.error("Failed to mark message notification as seen", error)
+    }
+  }
+
+  // Handle profile dropdown
   const handleClick = () => {
     showFileBtn((prev) => !prev)
   }
 
+  // Handle click outside
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as Node
-    // Close the profile dropdown if clicking outside
+
     if (dropdownRef.current && !dropdownRef.current.contains(target)) {
       showFileBtn(false)
     }
   }
 
+  // Handle order navigation
+  const handleOrder = (orderId: string) => {
+    router.push(`/deliver-details/${orderId}`)
+    setOfferNotificationCount((prev) => Math.max(0, prev - 1))
+    setNotificationOpen(false)
+  }
+
+  // Handle chat click (legacy function for direct chat link)
+  const handleChatClick = () => {
+    setMessageNotificationCount(0)
+    setSseMessageCount(0)
+  }
+
+  // Get menu items
   const menus = navbarLinks(user as any)
 
+  // Use the higher of socket count or SSE count for display
+  const displayMessageCount = Math.max(messageNotificationCount, sseMessageCount)
+
+  // Setup click outside listener
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside)
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
-
-  const [open, setOpen] = useState(false)
-
-  const handleOrder = (orderId: string) => {
-    router.push(`/orders/${orderId}`)
-    setOfferNotificationCount((prev) => Math.max(0, prev - 1))
-  }
-
-  const handleChatClick = () => {
-    // Reset message count when user clicks on chat
-    setMessageNotificationCount(0)
-    setSseMessageCount(0)
-  }
-
-  // Use the higher of socket count or SSE count for display
-  const displayMessageCount = Math.max(messageNotificationCount, sseMessageCount)
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
@@ -215,13 +243,12 @@ const Navbar = ({
         {user ? (
           <div className="flex gap-3 items-center">
             {/* Bell Icon - Shows only OFFER notifications */}
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={notificationOpen} onOpenChange={setNotificationOpen}>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
                   <div className="cursor-pointer transition-colors group relative hover:fill-primary border rounded-full p-2 hover:border-primary mr-2">
                     <Bell className="group-hover:fill-primary" />
                   </div>
-                  {/* Show offer notification count only */}
                   {offerNotificationCount > 0 && (
                     <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
                       {offerNotificationCount}
@@ -240,7 +267,6 @@ const Navbar = ({
                   <CardContent className="p-0 max-h-[300px] overflow-auto">
                     <div className="px-3">
                       <ul className="space-y-2">
-                        {/* Show only offer notifications */}
                         {offerNotifications.length > 0 ? (
                           <ul className="space-y-2">
                             {offerNotifications.map((item) => (
@@ -282,21 +308,74 @@ const Navbar = ({
             </Popover>
 
             <div className="flex gap-3 items-center relative">
-              {/* Message Icon - Shows private message count */}
-              <Link
-                title="Chat"
-                href="/chat"
-                onClick={handleChatClick}
-                className="cursor-pointer transition-colors group hover:fill-primary border relative rounded-full p-2 hover:border-primary mr-2"
-              >
-                <FaRegMessage className="group-hover:fill-primary" />
-                {/* Show message count from socket/SSE */}
-                {displayMessageCount > 0 && (
-                  <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
-                    {displayMessageCount}
-                  </span>
-                )}
-              </Link>
+              {/* Message Icon - Shows private message notifications in modal */}
+              <Popover open={messageOpen} onOpenChange={setMessageOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <div className="cursor-pointer transition-colors group hover:fill-primary border relative rounded-full p-2 hover:border-primary mr-2">
+                      <FaRegMessage className="group-hover:fill-primary" />
+                    </div>
+                    {displayMessageCount > 0 && (
+                      <span className="absolute -top-1 rounded-full p-2 bg-red-700 text-white -right-1 h-5 w-5 flex items-center justify-center text-sm bg-destructive text-destructive-foreground">
+                        {displayMessageCount}
+                      </span>
+                    )}
+                    <span className="sr-only">Toggle messages</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[450px] p-0" align="end">
+                  <Card className="border-0 shadow-none">
+                    <CardHeader className="border-b p-4 pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">Messages</CardTitle>
+                        <Link href="/chat" onClick={handleChatClick} className="text-sm text-primary hover:underline">
+                          View All
+                        </Link>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-0 max-h-[300px] overflow-auto">
+                      <div className="px-3">
+                        <ul className="space-y-2">
+                          {messageNotifications.length > 0 ? (
+                            <ul className="space-y-2">
+                              {messageNotifications.map((item) => (
+                                <li key={item._id}>
+                                  <button
+                                    onClick={() => handleMessageSeenButton(item._id, item.sender || item.fromUser)}
+                                    type="button"
+                                    className={cn(
+                                      "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full",
+                                    )}
+                                  >
+                                    <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                                      <FaRegMessage className="h-5 w-5" />
+                                      {item.status === "unseen" && (
+                                        <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
+                                      )}
+                                    </div>
+                                    <div className="flex-1 overflow-hidden justify-start">
+                                      <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
+                                        {item.message}
+                                      </p>
+                                      {item.createdAt && (
+                                        <p className="text-left text-xs text-gray-500 mt-1">
+                                          {new Date(item.createdAt).toLocaleDateString()}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <div className="p-4 text-center text-gray-500">No messages available</div>
+                          )}
+                        </ul>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </PopoverContent>
+              </Popover>
 
               <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer">
                 <Image

@@ -9,7 +9,6 @@ import { usePathname } from "next/navigation";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
-
 interface Notification {
   toUser: string
   message: string
@@ -33,28 +32,33 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
   const [, setIsSocketReady] = useState(false)
   const token = useDecodedToken()
   const { data: getAllNotification } = useGetNotificationQuery(undefined)
-  const [, setAllNotification] = useState<Notification[]>([])
+
+  // Notification states
+  const [allNotification, setAllNotification] = useState<Notification[]>([])
   const [offerNotifications, setOfferNotifications] = useState<Notification[]>([])
   const [offerNotificationCount, setOfferNotificationCount] = useState(0)
   const [messageNotificationCount, setMessageNotificationCount] = useState(0)
 
+  // Check activation status
   useEffect(() => {
     const isActivated = getprofile?.data?.client?.isActivated || getprofile?.data?.retireProfessional?.isActivated
     setShowAlert(!isActivated)
   }, [getprofile])
 
+  // Initialize notifications from API
   useEffect(() => {
     if (getAllNotification?.data?.result) {
       const allNotifs = getAllNotification.data.result
       setAllNotification(allNotifs)
 
+      // Filter and set offer notifications
       const offers = allNotifs.filter((notif: Notification) => notif.type === "offer")
       setOfferNotifications(offers)
 
+      // Count unseen notifications
       const unseenOfferCount = offers.filter((notif: Notification) => notif.status === "unseen").length
       setOfferNotificationCount(unseenOfferCount)
 
-      // Count unseen private messages
       const unseenMessageCount = allNotifs.filter(
         (notif: Notification) => notif.type === "privateMessage" && notif.status === "unseen",
       ).length
@@ -62,6 +66,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [getAllNotification])
 
+  // Socket connection and event handlers
   useEffect(() => {
     if (!socketRef.current && token?.id) {
       const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!)
@@ -76,6 +81,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       socket.on("sendNotification", (data: Notification) => {
         console.log("New Notification Received:", data)
 
+        // Update all notifications
         setAllNotification((prev) => {
           const filtered = prev.filter((notif) => notif._id !== data._id)
           return [data, ...filtered]
@@ -97,8 +103,10 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       })
 
       socket.on("notificationSeen", (seenId: string) => {
+        // Update all notifications
         setAllNotification((prev) => prev.map((notif) => (notif._id === seenId ? { ...notif, status: "seen" } : notif)))
 
+        // Update offer notifications
         setOfferNotifications((prev) =>
           prev.map((notif) => (notif._id === seenId ? { ...notif, status: "seen" } : notif)),
         )
@@ -172,6 +180,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
           setOfferNotificationCount={setOfferNotificationCount}
           messageNotificationCount={messageNotificationCount}
           setMessageNotificationCount={setMessageNotificationCount}
+          allNotifications={allNotification}
         />
       )}
 

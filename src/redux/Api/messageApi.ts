@@ -35,6 +35,7 @@ const projectApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['message'],
         }),
+        
         getMessage: build.query({
             query: ({ user1, user2 }) => ({
                 url: `/messages?user1=${user1}&user2=${user2}`,

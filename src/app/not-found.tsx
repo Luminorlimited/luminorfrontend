@@ -1,68 +1,150 @@
 "use client";
 import { useDecodedToken } from "@/components/common/DecodeToken";
+// import { useDecodedToken } from "@/components/common/DecodeToken";
 import NotFoundAnimation from "@/components/NotFoundAnimation";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { useGetNotificationQuery } from "@/redux/Api/messageApi";
 import React, { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
+// Define the Notification type with at least 'type' and 'status' properties
+interface Notification {
+  toUser: string;
+  message: string;
+  fromUser: string;
+  notificationId: string;
+  orderId: string;
+  _id: string;
+  type: "offer" | "delivery" | "privateMessage" | string;
+  status: string;
+  count: number;
+  createdAt?: string;
+  sender?: string;
+}
+
 const NotFound = () => {
-  const socketRef = useRef<Socket | null>(null);
-
-  const [, setIsSocketReady] = useState(false);
-
   const token = useDecodedToken();
-  const [notificationCount, setNotificationCount] = useState(0);
+
   const { data: getAllNotification } = useGetNotificationQuery(undefined);
 
-  const [allNotification, setAllNotification] = useState(getAllNotification);
+  const [offerNotifications, setOfferNotifications] = useState<Notification[]>(
+    []
+  );
+  const [offerNotificationCount, setOfferNotificationCount] = useState(0);
+  const [, setIsSocketReady] = useState(false);
+
+  const socketRef = useRef<Socket | null>(null);
+
+  const [messageNotificationCount, setMessageNotificationCount] = useState(0);
+  const [allNotification, setAllNotification] = useState<Notification[]>([]);
 
   useEffect(() => {
-    if (getAllNotification?.data) {
-      setAllNotification(getAllNotification.data);
+    if (getAllNotification?.data?.result) {
+      const allNotifs = getAllNotification.data.result;
+      setAllNotification(allNotifs);
+
+      // Filter and set offer notifications
+      const offers = allNotifs.filter(
+        (notif: Notification) => notif.type === "offer"
+      );
+      setOfferNotifications(offers);
+
+      // Count unseen notifications
+      const unseenOfferCount = offers.filter(
+        (notif: Notification) => notif.status === "unseen"
+      ).length;
+      setOfferNotificationCount(unseenOfferCount);
+
+      const unseenMessageCount = allNotifs.filter(
+        (notif: Notification) =>
+          notif.type === "privateMessage" && notif.status === "unseen"
+      ).length;
+      setMessageNotificationCount(unseenMessageCount);
     }
   }, [getAllNotification]);
 
   useEffect(() => {
     if (!socketRef.current && token?.id) {
-      const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
-      socketRef.current = mysocket;
+      const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
+      socketRef.current = socket;
 
-      mysocket.on("connect", () => {
+      socket.on("connect", () => {
         setIsSocketReady(true);
-        mysocket.emit("register", JSON.stringify({ id: token?.id }));
+        socket.emit("register", JSON.stringify({ id: token?.id }));
         console.log("Socket connected");
       });
 
-      mysocket.on("sendNotification", (data: Notification) => {
+      socket.on("sendNotification", (data: Notification) => {
         console.log("New Notification Received:", data);
 
-        setAllNotification((prev: any) => {
-          if (!Array.isArray(prev)) return [data];
-          return [data, ...prev];
+        // Update all notifications
+        setAllNotification((prev) => {
+          const filtered = prev.filter((notif) => notif._id !== data._id);
+          return [data, ...filtered];
         });
+
+        // Handle offer notifications
+        if (data.type === "offer") {
+          setOfferNotifications((prev) => {
+            const filtered = prev.filter((notif) => notif._id !== data._id);
+            return [data, ...filtered];
+          });
+          setOfferNotificationCount((prev) => prev + 1);
+        }
+
+        // Handle private message notifications
+        if (data.type === "privateMessage") {
+          setMessageNotificationCount((prev) => prev + 1);
+        }
       });
 
-      mysocket.on("disconnect", () => {
+      socket.on("notificationSeen", (seenId: string) => {
+        // Update all notifications
+        setAllNotification((prev) =>
+          prev.map((notif) =>
+            notif._id === seenId ? { ...notif, status: "seen" } : notif
+          )
+        );
+
+        // Update offer notifications
+        setOfferNotifications((prev) =>
+          prev.map((notif) =>
+            notif._id === seenId ? { ...notif, status: "seen" } : notif
+          )
+        );
+
+        // Update message count when message notification is seen
+        setMessageNotificationCount((prev) => Math.max(0, prev - 1));
+      });
+
+      // Listen for real-time message count updates
+      socket.on("messageCountUpdate", (data: { messageCount: number }) => {
+        console.log("Message count update received:", data);
+        setMessageNotificationCount(data.messageCount);
+      });
+
+      socket.on("disconnect", () => {
         console.log("Socket disconnected");
       });
     }
 
     return () => {
       if (socketRef.current) {
-        socketRef.current.off("connect");
-        socketRef.current.off("sendNotification");
         socketRef.current.disconnect();
         socketRef.current = null;
       }
     };
   }, [token?.id]);
+
   return (
     <div>
       <Navbar
-        allNotification={allNotification}
-        notificationCount={notificationCount}
-        setNotificationCount={setNotificationCount}
+        offerNotifications={offerNotifications}
+        offerNotificationCount={offerNotificationCount}
+        setOfferNotificationCount={setOfferNotificationCount}
+        messageNotificationCount={messageNotificationCount}
+        setMessageNotificationCount={setMessageNotificationCount}
+        allNotifications={allNotification}
       />
       <div className="flex justify-center items-center min-h-screen">
         <NotFoundAnimation />

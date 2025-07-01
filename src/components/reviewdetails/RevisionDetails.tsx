@@ -25,7 +25,7 @@ export default function RevisionDetails({ getSingleOrder }: { getSingleOrder: an
   }
 
   // Calculate revision count from array length if not provided
-  const revisionCount = getSingleOrder?.data?.result.revisionCount 
+  const revisionCount = getSingleOrder?.data?.result?.revisionCount 
 
   return (
     <div>
@@ -40,7 +40,7 @@ export default function RevisionDetails({ getSingleOrder }: { getSingleOrder: an
       </CardHeader>
       <div className="grid lg:grid-cols-2 grid-cols-1">
         <div className="space-y-6">
-          {getSingleOrder?.data?.result.revision.map((rev:any, index:number) => (
+          {getSingleOrder?.data?.result?.revision.map((rev:any, index:number) => (
             <Card key={index} className="space-y-4 rounded-[8px] p-4 shadow-sm hover:shadow-md border-primary">
               {index > 0 && <Separator className="my-4" />}
               <div className="flex items-center justify-between">
@@ -74,7 +74,7 @@ export default function RevisionDetails({ getSingleOrder }: { getSingleOrder: an
             </Card>
           ))}
 
-          {getSingleOrder?.data?.result.revisionCount === 0 && (
+          {getSingleOrder?.data?.result?.revisionCount === 0 && (
             <div className="text-center py-6 text-muted-foreground">No revisions found</div>
           )}
         </div>
