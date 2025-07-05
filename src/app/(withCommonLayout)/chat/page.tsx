@@ -27,7 +27,6 @@ const Page: React.FC = () => {
 
     const token = useDecodedToken();
     const [, setInbox] = useState<Message[]>([]);
-    // // console.log("getprofile is", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
     const user1 = useSelector((state: RootState) => state.Auth.user?.id);
 
     const [, setProfileUrl] = useState<string>(demoimg.src);
@@ -40,8 +39,6 @@ const Page: React.FC = () => {
         data: oldMessages,
     } = useGetMessageQuery({ user1, user2: id.id }, { skip: !id.id });
 
-    // // console.log(oldMessages, "check old messages");
-    // // console.log(oldSingleMessages, "check old single messages");
     const { data: getConversation } = useGetConversationQuery(undefined, {
         skip: !id.id,
     });
@@ -53,11 +50,7 @@ const Page: React.FC = () => {
     const socketRef = useRef<Socket | null>(null);
     const [isSocketReady, setIsSocketReady] = useState(false);
     const { data: getoffer } = useGetOfferQuery(token?.id);
-    // const [messageNotifications, setmessageNotifications] = useState(0);
-
-    // const [offerNotification, setOfferNotification] = useState(0);
-
-    // console.log(selectedImages);
+   
   
     const [showSidebar, setShowSidebar] = useState(false);
 
@@ -70,8 +63,6 @@ const Page: React.FC = () => {
 
     useEffect(() => {
         if (token?.id) {
-            // // console.log("Offer notification useEffect triggered");
-            // // console.log(getoffer?.data?.data);
             setOfferNotification(getoffer?.data?.data?.count);
         }
     }, [token?.id, getoffer]);
@@ -94,23 +85,19 @@ const Page: React.FC = () => {
             });
 
             mysocket.on("conversation-list", (data) => {
-                // // console.log("Received conversation list:", data);
-                // console.log(data, "check data from useeffet convirsation list");
+                
 
                 setUsers(data);
             });
             mysocket.on("sendOffer", (data) => {
-                // // console.log("Received conversation list:", data);
-                // console.log(data, "check data from useeffet sendOffer");
-                // console.log(data.offer, "heck data from useeffet sendOffer");
+              
                 setOfferNotification(data?.offer?.count);
                 setLatestOffer(data?.offer);
             });
             mysocket.on("privateMessage", (data) => {
                 console.log("Received private message:", data);
                 const { message, fromUserId } = data;
-                // console.log(getToUser, "check get to user");
-                // console.log(fromUserId, "check from email");
+                
 
                 if (
                     message &&
@@ -123,15 +110,11 @@ const Page: React.FC = () => {
                     setInbox((prevInbox) => [...prevInbox, message]);
                 }
 
-                // setInbox((prevInbox) => [...prevInbox, message]);
             });
 
             mysocket.on("createZoomMeeting", (data) => {
-                // // console.log("Received Zoom meeting data:", data);
                 const { from, populateMessage } = data;
-                // console.log(populateMessage, from, "check zoom saved message");
                 if (populateMessage?.meetingLink) {
-                    // console.log(from, "check from create meeting");
                     window.open(populateMessage?.meetingLink, "_blank");
                     const loggedInUserId =
                         getToUser?.data?.[
@@ -225,16 +208,11 @@ const Page: React.FC = () => {
         const updatedUsers = users.map((u: any) =>
             u.id === id ? { ...u, unseenMessageCount: 0 } : u
         );
-        // console.log(updatedUsers, "check updatedusers");
         setUsers(updatedUsers);
         router.push(`/chat/${id}`);
-        // refetch();
 
         if (socketRef.current) {
-            // console.log("Sending userInChat event with:", {
-            // userEmail: token?.email,
-            //   chattingWith: email,
-            // });
+            
 
             socketRef.current.emit(
                 "userInChat",
@@ -248,29 +226,12 @@ const Page: React.FC = () => {
         setInbox(oldMessages?.data?.messages);
     };
 
-
-    
-   
-    
-
-
-  
-    
- 
-
-    
-
-  
-
     const handleSidebar = () => {
         setShowSidebar(!showSidebar);
     };
 
-
-
-  
     return (
-        <section>
+        <div className="container ">
             <div className="container mx-auto pt-[20px]">
                 <div className="text-[16px] flex gap-2">
                     <Link href={"/"} className="text-gray-700">
@@ -311,9 +272,9 @@ const Page: React.FC = () => {
                     ></div>
                 )}
             </div>
-            <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
+            <div className="flex lg:max-w-[1320px]  md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
                 <div
-                    className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
+                    className={`w-1/3 border-r  border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
                         }`}
                 >
                     <div className="p-4">
@@ -326,7 +287,7 @@ const Page: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="lg:w-2/3 w-full  flex flex-col relative">
+                <div className="lg:w-2/3 w-full  flex flex-col relative ">
                     <div className="flex items-center justify-between p-4 border-gray-300 bg-white mt-3 ">
                     
 
@@ -353,7 +314,7 @@ const Page: React.FC = () => {
                   
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 

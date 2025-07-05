@@ -6,7 +6,6 @@ import Button from "@/components/common/Button";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { FaRegSmile } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
-import { HiOutlineDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import ProjectModal from "@/components/common/modal/ProjectModal";
 import EmojiPicker from "emoji-picker-react";
@@ -43,8 +42,6 @@ const Page: React.FC = () => {
   const token = useDecodedToken();
   const [inbox, setInbox] = useState<Message[]>([]);
   const [messages, setMessages] = useState<string>("");
-  // const { data: getProfile } = useGetProfileQuery({});
-  // // console.log("getprofile is", getProfile?.data?.retireProfessional?.stripe?.isOnboardingSucess);
   const user1 = useSelector((state: RootState) => state.Auth.user?.id);
 
   const [, setProfileUrl] = useState<string>(demoimg.src);
@@ -79,7 +76,6 @@ const Page: React.FC = () => {
   const { data: getoffer, refetch: offerRefetch } = useGetOfferQuery(token?.id);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
 
-  // console.log("my user is", users);
   const [selectedBase64Images, setSelectedBase64Images] = useState<string[]>(
     []
   );
@@ -115,7 +111,6 @@ const Page: React.FC = () => {
       });
 
       mysocket.on("conversation-list", (data) => {
-        // console.log(data, "convirsation list");
 
         setUsers(data);
       });
@@ -267,10 +262,13 @@ const Page: React.FC = () => {
     setInbox(oldMessages?.data?.messages);
   };
 
+  console.log("profile professional", getToUser);
+  // console.log("profile client", getToUser);
+
   const onSendMessage = async (e: any) => {
     e.preventDefault();
     if (!messages.trim() && !selectedImages.length) {
-      alert("Please enter a message or select an image.");
+      toast.error("Please enter a message or select an image.");
       return;
     }
 
@@ -278,6 +276,7 @@ const Page: React.FC = () => {
       toast.error("Socket connection not established.");
       return;
     }
+    // console.log(object);
 
     try {
       let uploadedFileLink = "";
@@ -381,8 +380,8 @@ const Page: React.FC = () => {
                 : getToUser?.data?.client?.name.lastName
               }`,
             profileUrl: getToUser?.data?.retireProfessional
-              ? getToUser?.data?.retireProfessional?.profileUrl
-              : getToUser?.data?.client?.profileUrl,
+              ? getToUser?.data?.profileUrl
+              : getToUser?.data?.profileUrl,
           };
         }
 
@@ -550,7 +549,7 @@ const Page: React.FC = () => {
           ></div>
         )}
       </div>
-      <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px]  my-4 mx-auto shadow-sm border rounded-[15px]">
+      <div className="flex lg:max-w-[1320px] md:w-full  w-full inset-0 overflow-hidden h-[750px] px-4 my-4 mx-auto shadow-sm border rounded-[15px]">
         <div
           className={`w-1/3 border-r border-gray-300 bg-white overflow-y-scroll lg:block hidden ${showSidebar ? "hidden" : "block"
             }`}
@@ -565,8 +564,8 @@ const Page: React.FC = () => {
           </div>
         </div>
 
-        <div className="lg:w-2/3 w-full  flex flex-col relative">
-          <div className="flex items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
+        <div className="lg:w-2/3 w-full  flex flex-col relative ">
+          <div className="flex lg:flex-row md:flex-row flex-col gap-2 items-center justify-between p-4 border-b border-gray-300 bg-white mt-3 ">
             {getToUser?.data && (
               <div className="flex items-center">
                 <div className="w-[40px] h-[40px]">
@@ -585,22 +584,20 @@ const Page: React.FC = () => {
                     {getToUser?.data.client?.name?.lastName ||
                       getToUser?.data?.retireProfessional?.name?.lastName}
                   </h3>
-                  {/* <p className="text-xs text-gray-500">
-                    Last seen: 15 hours ago | Local time: 16 Oct 2024, 3:33
-                  </p> */}
+                 
                 </div>
               </div>
             )}
 
             {token?.role === "retireProfessional" ? (
               <div className="flex items-center gap-6">
-                <button
+                <Button
                   onClick={handleOpenModal}
                   className="rounded-[12px] px-6 py-4 text-[16px] font-medium text-black border transition-colors duration-200 disabled:bg-gray-300 disabled:text-gray-500"
                   disabled
                 >
                   Current Offers
-                </button>
+                </Button>
                 {isModalOpen && (
                   <OffersModal
                     onClose={handleOpenModal}
@@ -612,6 +609,7 @@ const Page: React.FC = () => {
                 )}
 
                 <Button
+                // className="lg:text-[20px] md:text-[20px] text-[14px]"
                   onClick={handleProjectModal}
                   disabled={isButtonDisabled}
                 >
@@ -624,9 +622,9 @@ const Page: React.FC = () => {
                     user2={id.id as string}
                   />
                 )}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                {/* <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
                   <HiOutlineDotsVertical />
-                </Link>
+                </Link> */}
               </div>
             ) : (
               <div className="flex items-center gap-6">
@@ -666,9 +664,9 @@ const Page: React.FC = () => {
                     user2={typeof id.id === "string" ? id.id : ""}
                   />
                 )}
-                <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
+                {/* <Link className="hover:bg-slate-100 hover:shadow-xl" href={"/"}>
                   <HiOutlineDotsVertical />
-                </Link>
+                </Link> */}
               </div>
             )}
           </div>
@@ -770,7 +768,7 @@ const Page: React.FC = () => {
               <input
                 placeholder="Write message here..."
                 value={messages} // Use 'messages' state here
-                onChange={(e) => setMessages(e.target.value)} // Update state correctly on change
+                onChange={(e) => setMessages(e.target.value)}
                 className="flex-1 w-full bg-gray-100 pl-12 px py-2 rounded-[20px] text-gray-700 focus:outline-none max-h-[50px] resize-none"
               />
               <button type="submit" className="bg-primary rounded-full">

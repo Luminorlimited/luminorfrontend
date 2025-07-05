@@ -73,7 +73,7 @@ export default function HowItWorks() {
               <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 1, delay: 0.5 }}>
                 {/* Right Arrow */}
                 <Image
-                  className="absolute top-[-16px] left-[-39px] lg:block hidden lg:w-[340px] md:w-[50px]"
+                  className="absolute xl:top-[-16px] lg:top-[5px] left-[-39px] lg:block hidden xl:w-[340px] lg:w-[200px] md:w-[50px]"
                   src={rightarrow}
                   width={340}
                   height={2}
@@ -83,7 +83,7 @@ export default function HowItWorks() {
               <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} transition={{ duration: 1, delay: 1 }}>
                 {/* Left Arrow */}
                 <Image
-                  className="absolute top-[-10px] right-[-30px] lg:block hidden lg:w-[346px] md:w-[50px]"
+                  className="absolute xl:top-[-16px] lg:top-[5px] xl:right-[-30px] lg:right-[-70px] lg:block hidden xl:w-[340px] lg:w-[200px] md:w-[50px]"
                   src={leftarrow}
                   width={348}
                   height={2}

@@ -10,7 +10,8 @@ import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import { useGetProfileQuery } from "@/redux/Api/userApi";
 import ModalImage from "react-modal-image";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export interface userInfo {
   _id: string;
@@ -59,7 +60,6 @@ function extractdeliverId(message: string): string {
   return urlMatch ? urlMatch[1] : "";
 }
 
-
 const MessageBubble: FC<MessageBubbleProps> = ({
   message,
   currentUser,
@@ -70,6 +70,8 @@ const MessageBubble: FC<MessageBubbleProps> = ({
   const mediaSrc = typeof message?.media === "string" ? message.media : "";
 
   const { data: profileData } = useGetProfileQuery(undefined);
+  const userData = useSelector((state: RootState) => state.Auth.user);
+  console.log("userData", userData);
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
@@ -77,25 +79,59 @@ const MessageBubble: FC<MessageBubbleProps> = ({
         className={`flex items-start max-w-[70%] ${
           isSender ? "flex-row-reverse" : "flex-row"
         }`}
-    >
-        <Avatar className="w-10 h-10">
-          <Image
-            src={
+      >
+        {isSender ? (
+          <Link
+            href={`${
               isSender
-                ? profileData?.data?.profileUrl &&
-                  profileData?.data?.profileUrl !== "null"
-                  ? profileData.data.profileUrl
-                  : avatar1
-                : profileUrl && profileUrl !== "null"
-                ? profileUrl
-                : avatar2
-            }
-            alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
-            width={50}
-            height={50}
-            className="w-full h-full object-cover rounded-full"
-          />
-        </Avatar>
+                ? `/user/editProfile/${userData?.role}/${userData?.id}`
+                : "#"
+            }`}
+          >
+            <Avatar className="w-10 h-10 relative group overflow-hidden rounded-full">
+              <div className="relative w-full h-full">
+                <Image
+                  src={
+                    isSender
+                      ? profileData?.data?.profileUrl &&
+                        profileData?.data?.profileUrl !== "null"
+                        ? profileData.data.profileUrl
+                        : avatar1
+                      : profileUrl && profileUrl !== "null"
+                      ? profileUrl
+                      : avatar2
+                  }
+                  alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
+                  width={50}
+                  height={50}
+                  className="w-full h-full object-cover rounded-full"
+                />
+                {/* Black overlay on hover */}
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-0 group-hover:opacity-40 transition-opacity duration-300 rounded-full" />
+              </div>
+            </Avatar>
+          </Link>
+        ) : (
+          <Avatar className="w-10 h-10">
+            <Image
+              src={
+                isSender
+                  ? profileData?.data?.profileUrl &&
+                    profileData?.data?.profileUrl !== "null"
+                    ? profileData.data.profileUrl
+                    : avatar1
+                  : profileUrl && profileUrl !== "null"
+                  ? profileUrl
+                  : avatar2
+              }
+              alt={isSender ? "Sender Avatar" : "Recipient Avatar"}
+              width={50}
+              height={50}
+              className="w-full h-full object-cover rounded-full"
+            />
+          </Avatar>
+        )}
+  
 
         {/* Message Content */}
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
@@ -111,7 +147,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 ? "bg-green-700 text-white"
                 : message?.message ===
                   "Your offer has been declined, please speak to the retired professional"
-                ? "bg-red-700 text-white"
+                ? "bg-gray-100 text-black"
                 : ""
             } `}
           >
@@ -152,12 +188,14 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               >
                 {message?.message}
               </Link>
-            ): message?.message?.startsWith("You received a delivery request.") ? (
+            ) : message?.message?.startsWith(
+                "You received a delivery request."
+              ) ? (
               <Link
-              href={`/project/${extractdeliverId(message?.message)}`}
-              className="text-blue-600 cursor-pointer hover:underline"
-            >
-              {message?.message}
+                href={`/project/${extractdeliverId(message?.message)}`}
+                className="text-blue-600 cursor-pointer hover:underline"
+              >
+                {message?.message}
               </Link>
             ) : (
               <span>{message?.message}</span>
@@ -202,7 +240,7 @@ const Communication: FC<CommunicationProps> = ({
       {/* Chat Area */}
 
       <div className="h-full">
-        <ScrollArea className="p-4 h-[67vh] lg:h-[60vh] overflow-y-auto">
+        <ScrollArea className="lg:p-4 md:p-4 p-1 xl:h-[62vh] lg:h-[69vh] h-[60vh]  overflow-y-auto">
           {/* Render each message */}
           {messages?.map((message, index: number) => (
             <MessageBubble
