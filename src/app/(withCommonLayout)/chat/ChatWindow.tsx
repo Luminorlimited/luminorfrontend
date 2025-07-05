@@ -229,7 +229,7 @@ const Communication: FC<CommunicationProps> = ({
 
   const scrollToBottom = () => {
     containerRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }
 
   useEffect(() => {
     scrollToBottom();
