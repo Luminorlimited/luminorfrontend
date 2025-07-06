@@ -10,124 +10,7 @@ import { useClientPaymentQuery } from "@/redux/Api/paymentApi"
 import LoaderAnimation from "../loader/LoaderAnimation"
 
 export default function ClientOrder() {
-    // const [orders,] = useState([
-    //     {
-    //         _id: "67c6d38810257ff11d055623",
-    //         projectName: "Website Redesign",
-    //         clientRequerment:
-    //             "https://smtech-space.nyc3.digitaloceanspaces.com/merged-pdfs/1741083527486_merged_1741083527480.pdf",
-    //         orderFrom: {
-    //             name: {
-    //                 firstName: "Basias",
-    //                 lastName: "Tylers",
-    //             },
-    //             email: "reltokuknu@gufum.com",
-    //         },
-    //         orderReciver: {
-    //             name: {
-    //                 firstName: "Leilani",
-    //                 lastName: "Aguilar",
-    //             },
-    //             email: "refemu@dreamclarify.org",
-    //         },
-    //         deliveryDate: "1",
-    //         totalPrice: "38.4",
-    //         status: "completed",
-    //         transaction: {
-    //             amount: 38.4,
-    //             paymentStatus: "paid",
-    //             charge: 6.4,
-    //         },
-    //         createdAt: "2025-03-04T10:18:48.943Z",
-    //     },
-    //     {
-    //         _id: "67c6d38810257ff11d055624",
-    //         projectName: "Mobile App Development",
-    //         clientRequerment:
-    //             "https://smtech-space.nyc3.digitaloceanspaces.com/merged-pdfs/1741083527486_merged_1741083527480.pdf",
-    //         orderFrom: {
-    //             name: {
-    //                 firstName: "John",
-    //                 lastName: "Smith",
-    //             },
-    //             email: "john@example.com",
-    //         },
-    //         orderReciver: {
-    //             name: {
-    //                 firstName: "Maria",
-    //                 lastName: "Rodriguez",
-    //             },
-    //             email: "maria@example.com",
-    //         },
-    //         deliveryDate: "7",
-    //         totalPrice: "120.5",
-    //         status: "in-progress",
-    //         transaction: {
-    //             amount: 120.5,
-    //             paymentStatus: "paid",
-    //             charge: 15.5,
-    //         },
-    //         createdAt: "2025-03-01T08:18:48.943Z",
-    //     },
-    //     {
-    //         _id: "67c6d38810257ff11d055625",
-    //         projectName: "Logo Design",
-    //         clientRequerment:
-    //             "https://smtech-space.nyc3.digitaloceanspaces.com/merged-pdfs/1741083527486_merged_1741083527480.pdf",
-    //         orderFrom: {
-    //             name: {
-    //                 firstName: "Emma",
-    //                 lastName: "Johnson",
-    //             },
-    //             email: "emma@example.com",
-    //         },
-    //         orderReciver: {
-    //             name: {
-    //                 firstName: "David",
-    //                 lastName: "Chen",
-    //             },
-    //             email: "david@example.com",
-    //         },
-    //         deliveryDate: "3",
-    //         totalPrice: "45.0",
-    //         status: "pending",
-    //         transaction: {
-    //             amount: 45.0,
-    //             paymentStatus: "pending",
-    //             charge: 5.0,
-    //         },
-    //         createdAt: "2025-03-02T14:18:48.943Z",
-    //     },
-    //     {
-    //         _id: "67c6d38810257ff11d055626",
-    //         projectName: "Content Writing",
-    //         clientRequerment:
-    //             "https://smtech-space.nyc3.digitaloceanspaces.com/merged-pdfs/1741083527486_merged_1741083527480.pdf",
-    //         orderFrom: {
-    //             name: {
-    //                 firstName: "Michael",
-    //                 lastName: "Brown",
-    //             },
-    //             email: "michael@example.com",
-    //         },
-    //         orderReciver: {
-    //             name: {
-    //                 firstName: "Sarah",
-    //                 lastName: "Wilson",
-    //             },
-    //             email: "sarah@example.com",
-    //         },
-    //         deliveryDate: "2",
-    //         totalPrice: "65.75",
-    //         status: "completed",
-    //         transaction: {
-    //             amount: 65.75,
-    //             paymentStatus: "paid",
-    //             charge: 8.75,
-    //         },
-    //         createdAt: "2025-02-28T09:18:48.943Z",
-    //     },
-    // ])
+ 
 
         const { data: clientOrder, isLoading } = useClientPaymentQuery({})
         console.log("client Payment", clientOrder);
@@ -145,14 +28,6 @@ export default function ClientOrder() {
         }
     }
 
-    // const formatDate = (dateString: string) => {
-    //     const date = new Date(dateString)
-    //     return new Intl.DateTimeFormat("en-US", {
-    //         year: "numeric",
-    //         month: "short",
-    //         day: "numeric",
-    //     }).format(date)
-    // }
 
 
     const DeliveryformatDate = (dateString: any) => {
@@ -250,7 +125,7 @@ export default function ClientOrder() {
                                 </div>
 
                                 <div className="flex items-center gap-2 text-sm font-medium">
-                                    <span className="text-primary">${Number.parseFloat(order?.project?.totalPrice).toFixed(2)}</span>
+                                    <span className="text-primary">${Number.parseFloat(order?.transaction?.amount).toFixed(2)}</span>
                                     {/* <span className="text-gray-500">•</span> */}
                                     {/* <span
                                         className={`${order?.transaction?.paymentStatus === "completed" ? "text-green-600" : "text-amber-600"}`}
