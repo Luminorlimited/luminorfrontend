@@ -83,7 +83,6 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
     if (!socketRef.current && token?.id && !isChatPage) {
       const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
       socketRef.current = socket;
-
       socket.on("connect", () => {
         setIsSocketReady(true);
         socket.emit("register", JSON.stringify({ id: token?.id }));
