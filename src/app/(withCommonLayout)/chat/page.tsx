@@ -32,15 +32,15 @@ const Page: React.FC = () => {
     const [, setProfileUrl] = useState<string>(demoimg.src);
     const id = useParams();
     const { data: getToUser } = useGetuserQuery(id.id);
-    // console.log(id.id, "check id");
+    console.log(id.id, "check chat component");
 
- 
-    const {
-        data: oldMessages,
-    } = useGetMessageQuery({ user1, user2: id.id }, { skip: !id.id });
+    const { data: oldMessages } = useGetMessageQuery(
+      { user1, user2: id.id },
+      { skip: !id.id }
+    );
 
     const { data: getConversation } = useGetConversationQuery(undefined, {
-        skip: !id.id,
+      skip: !id.id,
     });
     const [, setShowEmojiPicker] = useState(false);
     const emojiPickerRef = useRef<HTMLDivElement>(null);
@@ -50,109 +50,102 @@ const Page: React.FC = () => {
     const socketRef = useRef<Socket | null>(null);
     const [isSocketReady, setIsSocketReady] = useState(false);
     const { data: getoffer } = useGetOfferQuery(token?.id);
-   
-  
+
     const [showSidebar, setShowSidebar] = useState(false);
 
     useEffect(() => {
-        if (id) {
-            setOfferNotification(getoffer?.data?.data?.offersWithUserInfo?.count);
-        }
-    }, [getoffer?.data?.data?.offersWithUserInfo?.count, id, ]);
-
+      if (id) {
+        setOfferNotification(getoffer?.data?.data?.offersWithUserInfo?.count);
+      }
+    }, [getoffer?.data?.data?.offersWithUserInfo?.count, id]);
 
     useEffect(() => {
-        if (token?.id) {
-            setOfferNotification(getoffer?.data?.data?.count);
-        }
+      if (token?.id) {
+        setOfferNotification(getoffer?.data?.data?.count);
+      }
     }, [token?.id, getoffer]);
 
     useEffect(() => {
-        if (!token?.email) return;
+      if (!token?.email) return;
 
-        if (!socketRef.current) {
-            const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL);
-            socketRef.current = mysocket;
+      if (!socketRef.current) {
+        const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL);
+        socketRef.current = mysocket;
 
-            mysocket.on("connect", () => {
-                // console.log("Connected to socket.io.");
-                setIsSocketReady(true);
-                mysocket.emit("register", JSON.stringify({ id: token?.id }));
-                mysocket.emit(
-                    "userInChat",
-                    JSON.stringify({ userId: token?.id, chattingWith: id.id })
-                );
-            });
+        mysocket.on("connect", () => {
+          // console.log("Connected to socket.io.");
+          setIsSocketReady(true);
+          mysocket.emit("register", JSON.stringify({ id: token?.id }));
+          mysocket.emit(
+            "userInChat",
+            JSON.stringify({ userId: token?.id, chattingWith: id.id })
+          );
+        });
 
-            mysocket.on("conversation-list", (data) => {
-                
+        mysocket.on("conversation-list", (data) => {
+          setUsers(data);
+        });
+        mysocket.on("sendOffer", (data) => {
+          setOfferNotification(data?.offer?.count);
+          setLatestOffer(data?.offer);
+        });
+        mysocket.on("privateMessage", (data) => {
+          console.log("Received private message:", data);
+          const { message, fromUserId } = data;
 
-                setUsers(data);
-            });
-            mysocket.on("sendOffer", (data) => {
-              
-                setOfferNotification(data?.offer?.count);
-                setLatestOffer(data?.offer);
-            });
-            mysocket.on("privateMessage", (data) => {
-                console.log("Received private message:", data);
-                const { message, fromUserId } = data;
-                
+          if (
+            message &&
+            getToUser?.data?.[
+              getToUser?.data?.retireProfessional
+                ? "retireProfessional"
+                : "client"
+            ]?._id === fromUserId
+          ) {
+            setInbox((prevInbox) => [...prevInbox, message]);
+          }
+        });
 
-                if (
-                    message &&
-                    getToUser?.data?.[
-                        getToUser?.data?.retireProfessional
-                            ? "retireProfessional"
-                            : "client"
-                    ]?._id === fromUserId
-                ) {
-                    setInbox((prevInbox) => [...prevInbox, message]);
-                }
+        mysocket.on("createZoomMeeting", (data) => {
+          const { from, populateMessage } = data;
+          if (populateMessage?.meetingLink) {
+            window.open(populateMessage?.meetingLink, "_blank");
+            const loggedInUserId =
+              getToUser?.data?.[
+                getToUser?.data?.retireProfessional
+                  ? "retireProfessional"
+                  : "client"
+              ]?._id;
 
-            });
-
-            mysocket.on("createZoomMeeting", (data) => {
-                const { from, populateMessage } = data;
-                if (populateMessage?.meetingLink) {
-                    window.open(populateMessage?.meetingLink, "_blank");
-                    const loggedInUserId =
-                        getToUser?.data?.[
-                            getToUser?.data?.retireProfessional
-                                ? "retireProfessional"
-                                : "client"
-                        ]?._id;
-
-                    if (
-                        loggedInUserId === from ||
-                        loggedInUserId === populateMessage?.sender?._id ||
-                        loggedInUserId === populateMessage?.recipient?._id
-                    ) {
-                        setInbox((prevInbox) => [...prevInbox, populateMessage]);
-                    }
-                } else {
-                    toast.error("Invalid Zoom meeting data received.");
-                }
-            });
-
-            mysocket.on("zoomMeetingError", (err) => {
-                // console.log("Zoom meeting error:", err);
-                if (err)
-                    toast.error("Failed to create Zoom meeting. Please try again.");
-            });
-        }
-
-        return () => {
-            if (socketRef.current) {
-                socketRef.current.off("connect");
-                socketRef.current.off("conversation-list");
-                socketRef.current.off("privateMessage");
-                socketRef.current.off("createZoomMeeting");
-                socketRef.current.off("zoomMeetingError");
-                socketRef.current.disconnect();
-                socketRef.current = null;
+            if (
+              loggedInUserId === from ||
+              loggedInUserId === populateMessage?.sender?._id ||
+              loggedInUserId === populateMessage?.recipient?._id
+            ) {
+              setInbox((prevInbox) => [...prevInbox, populateMessage]);
             }
-        };
+          } else {
+            toast.error("Invalid Zoom meeting data received.");
+          }
+        });
+
+        mysocket.on("zoomMeetingError", (err) => {
+          // console.log("Zoom meeting error:", err);
+          if (err)
+            toast.error("Failed to create Zoom meeting. Please try again.");
+        });
+      }
+
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.off("connect");
+          socketRef.current.off("conversation-list");
+          socketRef.current.off("privateMessage");
+          socketRef.current.off("createZoomMeeting");
+          socketRef.current.off("zoomMeetingError");
+          socketRef.current.disconnect();
+          socketRef.current = null;
+        }
+      };
     }, [token?.email, getToUser, token?.id, id.id]);
 
     useEffect(() => {

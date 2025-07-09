@@ -24,115 +24,133 @@ interface Notification {
 }
 
 const CommonLayout = ({ children }: { children: ReactNode }) => {
-  const pathname = usePathname()
-  const { data: getprofile } = useGetProfileQuery(undefined)
-  const [showAlert, setShowAlert] = useState(false)
-  const user = useSelector((state: RootState) => state.Auth.user?.role)
-  const socketRef = useRef<Socket | null>(null)
-  const [, setIsSocketReady] = useState(false)
-  const token = useDecodedToken()
-  const { data: getAllNotification } = useGetNotificationQuery(undefined)
+  const pathname = usePathname();
 
+  const { data: getprofile } = useGetProfileQuery(undefined);
+  const [showAlert, setShowAlert] = useState(false);
+  const user = useSelector((state: RootState) => state.Auth.user?.role);
+  const socketRef = useRef<Socket | null>(null);
+  const [, setIsSocketReady] = useState(false);
+  const token = useDecodedToken();
+  const { data: getAllNotification } = useGetNotificationQuery(undefined);
+
+  const isChatPage = pathname.includes("/chat");
+  console.log(isChatPage, "check chatpage");
   // Notification states
-  const [allNotification, setAllNotification] = useState<Notification[]>([])
-  const [offerNotifications, setOfferNotifications] = useState<Notification[]>([])
-  const [offerNotificationCount, setOfferNotificationCount] = useState(0)
-  const [messageNotificationCount, setMessageNotificationCount] = useState(0)
+  const [allNotification, setAllNotification] = useState<Notification[]>([]);
+  const [offerNotifications, setOfferNotifications] = useState<Notification[]>(
+    []
+  );
+  const [offerNotificationCount, setOfferNotificationCount] = useState(0);
+  const [messageNotificationCount, setMessageNotificationCount] = useState(0);
 
   // Check activation status
   useEffect(() => {
-    const isActivated = getprofile?.data?.client?.isActivated || getprofile?.data?.retireProfessional?.isActivated
-    setShowAlert(!isActivated)
-  }, [getprofile])
+    const isActivated =
+      getprofile?.data?.client?.isActivated ||
+      getprofile?.data?.retireProfessional?.isActivated;
+    setShowAlert(!isActivated);
+  }, [getprofile]);
 
   // Initialize notifications from API
   useEffect(() => {
     if (getAllNotification?.data?.result) {
-      const allNotifs = getAllNotification.data.result
-      setAllNotification(allNotifs)
+      const allNotifs = getAllNotification.data.result;
+      setAllNotification(allNotifs);
 
       // Filter and set offer notifications
-      const offers = allNotifs.filter((notif: Notification) => notif.type === "offer")
-      setOfferNotifications(offers)
+      const offers = allNotifs.filter(
+        (notif: Notification) => notif.type === "offer"
+      );
+      setOfferNotifications(offers);
 
       // Count unseen notifications
-      const unseenOfferCount = offers.filter((notif: Notification) => notif.status === "unseen").length
-      setOfferNotificationCount(unseenOfferCount)
+      const unseenOfferCount = offers.filter(
+        (notif: Notification) => notif.status === "unseen"
+      ).length;
+      setOfferNotificationCount(unseenOfferCount);
 
       const unseenMessageCount = allNotifs.filter(
-        (notif: Notification) => notif.type === "privateMessage" && notif.status === "unseen",
-      ).length
-      setMessageNotificationCount(unseenMessageCount)
+        (notif: Notification) =>
+          notif.type === "privateMessage" && notif.status === "unseen"
+      ).length;
+      setMessageNotificationCount(unseenMessageCount);
     }
-  }, [getAllNotification])
+  }, [getAllNotification]);
 
   // Socket connection and event handlers
   useEffect(() => {
-    if (!socketRef.current && token?.id) {
-      const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!)
-      socketRef.current = socket
+    if (!socketRef.current && token?.id && !isChatPage) {
+      const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
+      socketRef.current = socket;
 
       socket.on("connect", () => {
-        setIsSocketReady(true)
-        socket.emit("register", JSON.stringify({ id: token?.id }))
-        console.log("Socket connected")
-      })
+        setIsSocketReady(true);
+        socket.emit("register", JSON.stringify({ id: token?.id }));
+        console.log("Socket connected");
+      });
 
       socket.on("sendNotification", (data: Notification) => {
-        console.log("New Notification Received:", data)
+        console.log("New Notification Received:", data);
 
         // Update all notifications
         setAllNotification((prev) => {
-          const filtered = prev.filter((notif) => notif._id !== data._id)
-          return [data, ...filtered]
-        })
+          const filtered = prev.filter((notif) => notif._id !== data._id);
+          return [data, ...filtered];
+        });
 
         // Handle offer notifications
         if (data.type === "offer") {
           setOfferNotifications((prev) => {
-            const filtered = prev.filter((notif) => notif._id !== data._id)
-            return [data, ...filtered]
-          })
-          setOfferNotificationCount((prev) => prev + 1)
+            const filtered = prev.filter((notif) => notif._id !== data._id);
+            return [data, ...filtered];
+          });
+          setOfferNotificationCount((prev) => prev + 1);
         }
 
         // Handle private message notifications
         if (data.type === "privateMessage") {
-          setMessageNotificationCount((prev) => prev + 1)
+          setMessageNotificationCount((prev) => prev + 1);
         }
-      })
+      });
 
       socket.on("notificationSeen", (seenId: string) => {
         // Update all notifications
-        setAllNotification((prev) => prev.map((notif) => (notif._id === seenId ? { ...notif, status: "seen" } : notif)))
+        setAllNotification((prev) =>
+          prev.map((notif) =>
+            notif._id === seenId ? { ...notif, status: "seen" } : notif
+          )
+        );
 
         // Update offer notifications
         setOfferNotifications((prev) =>
-          prev.map((notif) => (notif._id === seenId ? { ...notif, status: "seen" } : notif)),
-        )
+          prev.map((notif) =>
+            notif._id === seenId ? { ...notif, status: "seen" } : notif
+          )
+        );
 
         // Update message count when message notification is seen
-        setMessageNotificationCount((prev) => Math.max(0, prev - 1))
-      })
+        setMessageNotificationCount((prev) => Math.max(0, prev - 1));
+      });
 
       // Listen for real-time message count updates
       socket.on("messageCountUpdate", (data: { messageCount: number }) => {
-        console.log("Message count update received:", data)
-        setMessageNotificationCount(data.messageCount)
-      })
+        console.log("Message count update received:", data);
+        setMessageNotificationCount(data.messageCount);
+      });
 
       socket.on("disconnect", () => {
-        console.log("Socket disconnected")
-      })
+        console.log("Socket disconnected");
+      });
     }
 
     return () => {
       if (socketRef.current) {
-        socketRef.current.disconnect()
-        socketRef.current = null
+        socketRef.current.disconnect();
+        socketRef.current = null;
       }
-    }
-  }, [token?.id])
+    };
+  }, [token?.id, isChatPage]);
 
   // Paths where navbar/footer shouldn't appear
   const noNavFooterPaths = [

@@ -31,7 +31,6 @@ export default function AllUsers({ handleshowMessage, getConversation }: AllUser
     return fullName?.includes(searchInput.toLowerCase());
   });
 
-  // console.log("get conversation", getConversation);
 
   return (
     <div>

@@ -262,7 +262,7 @@ const Page: React.FC = () => {
     setInbox(oldMessages?.data?.messages);
   };
 
-  console.log("profile professional", getToUser);
+  // console.log("profile professional", getToUser);
   // console.log("profile client", getToUser);
 
   const onSendMessage = async (e: any) => {

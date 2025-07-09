@@ -19,8 +19,8 @@ const FeaturedProject: React.FC = () => {
   const { data: clientData, isLoading: clientLoading } = useClientListQuery(undefined)
   const { data: professionalData, isLoading: professionalLoading } = useProfessionalListQuery(undefined)
 
-  console.log("clientData", clientData)
-  console.log("professionalData", professionalData)
+  // console.log("clientData", clientData)
+  // console.log("professionalData", professionalData)
 
   // Get the user's role - replace with your actual Redux selector
   const userRole = useSelector((state: RootState) => state.Auth.user?.role || "")

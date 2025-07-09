@@ -71,7 +71,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 
   const { data: profileData } = useGetProfileQuery(undefined);
   const userData = useSelector((state: RootState) => state.Auth.user);
-  console.log("userData", userData);
+  // console.log("userData", userData);
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>

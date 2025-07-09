@@ -126,12 +126,7 @@ export default function ClientOrder() {
 
                                 <div className="flex items-center gap-2 text-sm font-medium">
                                     <span className="text-primary">${Number.parseFloat(order?.transaction?.amount).toFixed(2)}</span>
-                                    {/* <span className="text-gray-500">•</span> */}
-                                    {/* <span
-                                        className={`${order?.transaction?.paymentStatus === "completed" ? "text-green-600" : "text-amber-600"}`}
-                                    >
-                                        {order?.transaction?.paymentStatus.charAt(0).toUpperCase() + order?.transaction?.paymentStatus.slice(1)}
-                                    </span> */}
+                                   
                                 </div>
                             </div>
                         </CardContent>

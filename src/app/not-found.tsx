@@ -4,6 +4,7 @@ import { useDecodedToken } from "@/components/common/DecodeToken";
 import NotFoundAnimation from "@/components/NotFoundAnimation";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { useGetNotificationQuery } from "@/redux/Api/messageApi";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
@@ -23,6 +24,8 @@ interface Notification {
 }
 
 const NotFound = () => {
+  const pathname = usePathname();
+  const isChatPage = pathname.includes("/chat");
   const token = useDecodedToken();
 
   const { data: getAllNotification } = useGetNotificationQuery(undefined);
@@ -64,14 +67,14 @@ const NotFound = () => {
   }, [getAllNotification]);
 
   useEffect(() => {
-    if (!socketRef.current && token?.id) {
+    if (!socketRef.current && token?.id && !isChatPage) {
       const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
       socketRef.current = socket;
 
       socket.on("connect", () => {
         setIsSocketReady(true);
         socket.emit("register", JSON.stringify({ id: token?.id }));
-        console.log("Socket connected");
+        // console.log("Socket connected");
       });
 
       socket.on("sendNotification", (data: Notification) => {

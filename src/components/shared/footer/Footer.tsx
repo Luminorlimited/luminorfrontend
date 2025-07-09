@@ -124,15 +124,15 @@ export default function Footer() {
             <p className="">Copyright © luminor 2025. All rights reserved</p>
           </div>
           <div className="flex gap-5">
-            <Link href="#" className="hover:underline hover:font-bold">
+            {/* <Link href="#" className="hover:underline hover:font-bold">
               Privacy Policy
-            </Link>
+            </Link> */}
             <Link href="/termsAndcondition" className="hover:underline hover:font-bold">
               Terms & Conditions
             </Link>
-            <Link href="#" className="hover:underline hover:font-bold">
+            {/* <Link href="#" className="hover:underline hover:font-bold">
               Security
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
