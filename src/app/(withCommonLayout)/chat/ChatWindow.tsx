@@ -12,6 +12,8 @@ import { useGetProfileQuery } from "@/redux/Api/userApi";
 import ModalImage from "react-modal-image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useGetuserQuery } from "@/redux/Api/messageApi";
+import { useParams } from "next/navigation";
 
 export interface userInfo {
   _id: string;
@@ -55,11 +57,18 @@ function extractOrderId(message: string): string {
   const urlMatch = message.match(/deliver-details\/([a-f0-9]+)/);
   return urlMatch ? urlMatch[1] : "";
 }
-function extractdeliverId(message: string): string {
-  const urlMatch = message.match(/project\/([a-f0-9]+)/);
-  return urlMatch ? urlMatch[1] : "";
-}
 
+const extractDeliverId = (url: string) => {
+  const regex = /clientOrder\/([a-f0-9]{24})/; // Regex to match the order ID part of the URL
+  const match = url.match(regex);
+  return match ? match[1] : null; // Return the extracted order ID if found
+};
+
+const extractProjectId = (url: string) => {
+  const regex = /project\/([a-f0-9]{24})/; // Regex to match the project ID part of the URL
+  const match = url.match(regex);
+  return match ? match[1] : null; // Return the extracted project ID if found
+};
 const MessageBubble: FC<MessageBubbleProps> = ({
   message,
   currentUser,
@@ -68,10 +77,18 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 }) => {
   const isSender = message?.sender._id == currentUser;
   const mediaSrc = typeof message?.media === "string" ? message.media : "";
+  const params = useParams();
+  const getUser = useGetuserQuery(params?.id as string);
+  // console.log("currentUser", currentUser);
+  const senderUserName =
+    getUser?.data?.data?.retireProfessional?.name?.firstName;
+  // console.log("getUser", getUser?.data?.data?.retireProfessional?.name?.firstName);
 
   const { data: profileData } = useGetProfileQuery(undefined);
+  // console.log("get profile data", profileData);
   const userData = useSelector((state: RootState) => state.Auth.user);
-  // console.log("userData", userData);
+  // console.log("isSender", isSender);
+  // console.log("currentUser", message);
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-4`}>
@@ -131,9 +148,9 @@ const MessageBubble: FC<MessageBubbleProps> = ({
             />
           </Avatar>
         )}
-  
 
         {/* Message Content */}
+
         <div className={`mx-2 ${isSender ? "text-right" : "text-left"}`}>
           <div
             className={`p-3 ${
@@ -143,7 +160,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
             } inline-block ${
               isSender ? colorScheme.senderBg : colorScheme.receiverBg
             } ${
-              message?.message === "Offer Acccepted!"
+              message?.message === "Offer Accepted!"
                 ? "bg-green-700 text-white"
                 : message?.message ===
                   "Your offer has been declined, please speak to the retired professional"
@@ -163,12 +180,84 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                   small={mediaSrc}
                   large={mediaSrc}
                   alt="Media"
-                  hideDownload={false} // Enables download button
-                  hideZoom={false} // Enables zoom on image
+                  hideDownload={false}
+                  hideZoom={false}
                 />
               </div>
             )}
-            {message?.message?.startsWith("https://") ? (
+
+            {message?.message?.startsWith("Your offer has been accepted By") ? (
+              // Extract the URL from the message
+              (() => {
+                const match = message?.message.match(/(https:\/\/[^\s]+)/);
+                const userName = message?.message
+                  .split("By ")[1]
+                  ?.split(".")[0]; // Extract the name after "By "
+                const url = match ? match[0] : ""; // Extract the URL if present
+
+                if (userName && url) {
+                  return (
+                    <>
+                      {isSender ? (
+                        <Link
+                          href={`/clientOrder/${extractDeliverId(url)}`}
+                          // target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 cursor-pointer hover:underline"
+                        >
+                          {`Your offer has been accepted By ${senderUserName}. View details`}
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/deliver-details/${extractDeliverId(url)}`}
+                          // target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 cursor-pointer hover:underline"
+                        >
+                          {`Your offer has been accepted By ${userName}. View details`}
+                        </Link>
+                      )}
+                    </>
+                  );
+                }
+                // return null;
+              })()
+            ) : message?.message?.startsWith(
+                "You received  a delivery request."
+              ) ? (
+              (() => {
+                const match = message?.message.match(/:?\s*(https:\/\/[^\s]+)/);
+                const url = match ? match[0] : ""; // Extract the URL if present
+                console.log("url", url);
+
+                if (url) {
+                  return (
+                    <>
+                      {isSender ? (
+                        <Link
+                          href={`/project/${extractProjectId(url)}`}
+                          // target="_blank"
+                          // rel="noopener noreferrer"
+                          className="text-blue-600 cursor-pointer hover:underline"
+                        >
+                          {`You received  a delivery request. ${senderUserName}. View details`}
+                        </Link>
+                      ) : (
+                        <Link
+                          href={`/deliver-details/${extractProjectId(url)}`}
+                          // target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 cursor-pointer hover:underline"
+                        >
+                          {`You received  a delivery request. View details`}
+                        </Link>
+                      )}
+                    </>
+                  );
+                }
+                return null;
+              })()
+            ) : message?.message?.startsWith("https://") ? (
               <Link
                 href={message?.message}
                 target="_blank"
@@ -186,16 +275,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 href={`/deliver-details/${extractOrderId(message?.message)}`}
                 className="text-blue-600 cursor-pointer hover:underline"
               >
-                {message?.message}
-              </Link>
-            ) : message?.message?.startsWith(
-                "You received a delivery request."
-              ) ? (
-              <Link
-                href={`/project/${extractdeliverId(message?.message)}`}
-                className="text-blue-600 cursor-pointer hover:underline"
-              >
-                {message?.message}
+                {message?.message}da
               </Link>
             ) : (
               <span>{message?.message}</span>
@@ -227,9 +307,10 @@ const Communication: FC<CommunicationProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // console.log("Profile URL:", profileUrl);
   const scrollToBottom = () => {
     containerRef.current?.scrollIntoView({ behavior: "smooth" });
-  }
+  };
 
   useEffect(() => {
     scrollToBottom();

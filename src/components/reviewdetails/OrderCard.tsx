@@ -11,6 +11,42 @@ import Link from "next/link";
 // import { useRouter } from "next/navigation";
 
 export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
+
+
+
+//   const mysocket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+//   reconnection: true,
+//   reconnectionAttempts: 5,
+//   reconnectionDelay: 1000,
+//   reconnectionDelayMax: 5000,
+// });
+
+// // This function ensures the socket is connected before sending the offer
+// const sendOfferWithReconnection = (myOffer: any) => {
+//   // Check if socket is connected
+//   if (!mysocket.connected) {
+//     // Listen for 'connect' event to know when it reconnects
+//     mysocket.on("connect", () => {
+//       console.log("Reconnected to socket server");
+//       // Now that we are connected, emit the offer
+//       mysocket.emit("sendOffer", JSON.stringify(myOffer));
+//     });
+
+//     // Optionally, handle reconnection failure
+//     mysocket.on("connect_error", (error:any) => {
+//       toast.error("Reconnection failed. Please try again later.");
+//       console.error("Socket connection error:", error);
+//     });
+//   } else {
+//     // If already connected, directly emit the offer
+//     mysocket.emit("sendOffer", JSON.stringify(myOffer));
+//   }
+// };
+
+
+
+
+
   // console.log('my get single order is', getSingleOrder);
 
   const initdata = getSingleOrder?.data?.result?.project;
@@ -50,20 +86,16 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
 
   // const orderId = useParams()
   const id = getSingleOrder?.data?.result?._id;
-  // console.log('my order id', id);
 
-  // console.log('my order id', getSingleOrder?.data?.result?.clientRequerment);
-  // const { data: deliverOrder } = useDeliverOrderMutation(id)
+
+  
+  
   const [deliverOrder, { isLoading }] = useDeliverOrderMutation({});
   const router = useRouter();
 
   // // console.log("my order id", getSingleOrder?.data?.client[0]._id);
   const handleDeliver = async () => {
-    // if (!id) {
-    //     toast.error("Order ID is missing!");
-    //     return;
-    // }
-
+   
     try {
       if (id) {
         // console.log('this is console', id);

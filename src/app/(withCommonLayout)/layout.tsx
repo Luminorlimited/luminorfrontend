@@ -35,7 +35,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
   const { data: getAllNotification } = useGetNotificationQuery(undefined);
 
   const isChatPage = pathname.includes("/chat");
-  console.log(isChatPage, "check chatpage");
+  // console.log(isChatPage, "check chatpage");
   // Notification states
   const [allNotification, setAllNotification] = useState<Notification[]>([]);
   const [offerNotifications, setOfferNotifications] = useState<Notification[]>(
