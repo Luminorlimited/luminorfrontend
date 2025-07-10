@@ -3,11 +3,11 @@ import { useDecodedToken } from "@/components/common/DecodeToken";
 import Footer from "@/components/shared/footer/Footer";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { useGetNotificationQuery } from "@/redux/Api/messageApi";
-import { useGetProfileQuery } from "@/redux/Api/userApi";
-import { RootState } from "@/redux/store";
+// import { useGetProfileQuery } from "@/redux/Api/userApi";
+// import { RootState } from "@/redux/store";
 import { usePathname } from "next/navigation";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 interface Notification {
   toUser: string
@@ -26,9 +26,9 @@ interface Notification {
 const CommonLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
 
-  const { data: getprofile } = useGetProfileQuery(undefined);
-  const [showAlert, setShowAlert] = useState(false);
-  const user = useSelector((state: RootState) => state.Auth.user?.role);
+  // const { data: getprofile } = useGetProfileQuery(undefined);
+  // const [showAlert, setShowAlert] = useState(false);
+  // const user = useSelector((state: RootState) => state.Auth.user?.role);
   const socketRef = useRef<Socket | null>(null);
   const [, setIsSocketReady] = useState(false);
   const token = useDecodedToken();
@@ -45,12 +45,12 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
   const [messageNotificationCount, setMessageNotificationCount] = useState(0);
 
   // Check activation status
-  useEffect(() => {
-    const isActivated =
-      getprofile?.data?.client?.isActivated ||
-      getprofile?.data?.retireProfessional?.isActivated;
-    setShowAlert(!isActivated);
-  }, [getprofile]);
+  // useEffect(() => {
+  //   const isActivated =
+  //     getprofile?.data?.client?.isActivated ||
+  //     getprofile?.data?.retireProfessional?.isActivated;
+  //   setShowAlert(!isActivated);
+  // }, [getprofile]);
 
   // Initialize notifications from API
   useEffect(() => {
@@ -168,7 +168,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Activation Alert */}
-      {(user === "client" || user === "retireProfessional") && showAlert && (
+      {/* {(user === "client" || user === "retireProfessional") && showAlert && (
         <div className="bg-yellow-100 border border-yellow-400 text-bg_primary px-4 py-3 rounded relative" role="alert">
           <strong className="font-bold">
             Hi {getprofile?.data?.client?.name?.firstName || getprofile?.data?.retireProfessional?.name?.firstName}
@@ -187,7 +187,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
             </svg>
           </span>
         </div>
-      )}
+      )} */}
 
       {/* Navbar */}
       {shouldShowNavFooter && (
