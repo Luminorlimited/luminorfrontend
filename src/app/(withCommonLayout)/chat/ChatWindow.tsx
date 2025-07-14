@@ -12,8 +12,8 @@ import { useGetProfileQuery } from "@/redux/Api/userApi";
 import ModalImage from "react-modal-image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-// import { useGetuserQuery } from "@/redux/Api/messageApi";
-// import { useParams } from "next/navigation";
+import { useGetuserQuery } from "@/redux/Api/messageApi";
+import { useParams } from "next/navigation";
 
 export interface userInfo {
   _id: string;
@@ -77,10 +77,11 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 }) => {
   const isSender = message?.sender._id == currentUser;
   const mediaSrc = typeof message?.media === "string" ? message.media : "";
-  // const params = useParams();
-  // const getUser = useGetuserQuery(params?.id as string);
+  const params = useParams();
+  const getUser = useGetuserQuery(params?.id as string);
   // console.log("currentUser", currentUser);
-  // const senderUserName =getUser?.data?.data?.retireProfessional?.name?.firstName;
+  const senderUserName =
+    getUser?.data?.data?.retireProfessional?.name?.firstName;
   // console.log("getUser", getUser?.data?.data?.retireProfessional?.name?.firstName);
 
   const { data: profileData } = useGetProfileQuery(undefined);
@@ -198,23 +199,32 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                   return (
                     <>
                       {isSender ? (
-                        <Link
-                          href={`/clientOrder/${extractDeliverId(url)}`}
-                          // target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 cursor-pointer hover:underline"
-                        >
-                          {`View details`}
-                        </Link>
+                        <div>
+                          <p>
+                            Your offer has been accepted By {senderUserName}
+                          </p>
+                          <Link
+                            href={`/clientOrder/${extractDeliverId(url)}`}
+                            // target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 cursor-pointer hover:underline"
+                          >
+                            View details
+                          </Link>
+                        </div>
                       ) : (
-                        <Link
-                          href={`/deliver-details/${extractDeliverId(url)}`}
-                          // target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 cursor-pointer hover:underline"
-                        >
-                          {`View details`}
-                        </Link>
+                        <div>
+                          <p>Your offer has been accepted By {userName}</p>
+
+                          <Link
+                            href={`/deliver-details/${extractDeliverId(url)}`}
+                            // target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 cursor-pointer hover:underline"
+                          >
+                            View details
+                          </Link>
+                        </div>
                       )}
                     </>
                   );
@@ -233,23 +243,30 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                   return (
                     <>
                       {isSender ? (
-                        <Link
-                          href={`/deliver-details/${extractProjectId(url)}`}
-                          // target="_blank"
-                          // rel="noopener noreferrer"
-                          className="text-blue-600 cursor-pointer hover:underline"
-                        >
-                          {`View details`}
-                        </Link>
+                        <div>
+                          <p>You received a delivery request.</p>
+                          <Link
+                            href={`/deliver-details/${extractProjectId(url)}`}
+                            // target="_blank"
+                            // rel="noopener noreferrer"
+                            className="text-blue-600 cursor-pointer hover:underline"
+                          >
+                            {`View details`}
+                          </Link>
+                        </div>
                       ) : (
-                        <Link
-                          href={`/project/${extractProjectId(url)}`}
-                          // target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 cursor-pointer hover:underline"
-                        >
-                          {`View details`}
-                        </Link>
+                        <div>
+                          <p>You received a delivery request.</p>
+
+                          <Link
+                            href={`/project/${extractProjectId(url)}`}
+                            // target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 cursor-pointer hover:underline"
+                          >
+                            {`View details`}
+                          </Link>
+                        </div>
                       )}
                     </>
                   );
@@ -270,12 +287,16 @@ const MessageBubble: FC<MessageBubbleProps> = ({
             ) : message?.message?.startsWith(
                 "You have a revision request from"
               ) ? (
-              <Link
-                href={`/deliver-details/${extractOrderId(message?.message)}`}
-                className="text-blue-600 cursor-pointer hover:underline"
-              >
-                View Details
-              </Link>
+              <div>
+                <p>You have a revision request </p>
+                <Link
+                  href={`/deliver-details/${extractOrderId(message?.message)}`}
+                  className="text-blue-600 cursor-pointer hover:underline"
+                >
+                  {/* {message?.message} */}
+                  View details
+                </Link>
+              </div>
             ) : (
               <span>{message?.message}</span>
             )}
