@@ -235,21 +235,21 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                     <>
                       {isSender ? (
                         <Link
-                          href={`/project/${extractProjectId(url)}`}
+                          href={`/deliver-details/${extractProjectId(url)}`}
                           // target="_blank"
                           // rel="noopener noreferrer"
                           className="text-blue-600 cursor-pointer hover:underline"
                         >
-                          {`You received  a delivery request. ${senderUserName}. View details`}
+                          {`View details`}
                         </Link>
                       ) : (
                         <Link
-                          href={`/deliver-details/${extractProjectId(url)}`}
+                          href={`/project/${extractProjectId(url)}`}
                           // target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-600 cursor-pointer hover:underline"
                         >
-                          {`You received  a delivery request. View details`}
+                          {`View details`}
                         </Link>
                       )}
                     </>
