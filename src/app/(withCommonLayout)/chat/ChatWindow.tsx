@@ -274,7 +274,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                 href={`/deliver-details/${extractOrderId(message?.message)}`}
                 className="text-blue-600 cursor-pointer hover:underline"
               >
-                {message?.message}da
+                View Details
               </Link>
             ) : (
               <span>{message?.message}</span>
