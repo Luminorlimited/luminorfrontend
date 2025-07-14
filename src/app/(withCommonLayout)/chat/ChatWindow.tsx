@@ -12,8 +12,8 @@ import { useGetProfileQuery } from "@/redux/Api/userApi";
 import ModalImage from "react-modal-image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useGetuserQuery } from "@/redux/Api/messageApi";
-import { useParams } from "next/navigation";
+// import { useGetuserQuery } from "@/redux/Api/messageApi";
+// import { useParams } from "next/navigation";
 
 export interface userInfo {
   _id: string;
@@ -77,11 +77,10 @@ const MessageBubble: FC<MessageBubbleProps> = ({
 }) => {
   const isSender = message?.sender._id == currentUser;
   const mediaSrc = typeof message?.media === "string" ? message.media : "";
-  const params = useParams();
-  const getUser = useGetuserQuery(params?.id as string);
+  // const params = useParams();
+  // const getUser = useGetuserQuery(params?.id as string);
   // console.log("currentUser", currentUser);
-  const senderUserName =
-    getUser?.data?.data?.retireProfessional?.name?.firstName;
+  // const senderUserName =getUser?.data?.data?.retireProfessional?.name?.firstName;
   // console.log("getUser", getUser?.data?.data?.retireProfessional?.name?.firstName);
 
   const { data: profileData } = useGetProfileQuery(undefined);
@@ -205,7 +204,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                           rel="noopener noreferrer"
                           className="text-blue-600 cursor-pointer hover:underline"
                         >
-                          {`Your offer has been accepted By ${senderUserName}. View details`}
+                          {`View details`}
                         </Link>
                       ) : (
                         <Link
@@ -214,7 +213,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
                           rel="noopener noreferrer"
                           className="text-blue-600 cursor-pointer hover:underline"
                         >
-                          {`Your offer has been accepted By ${userName}. View details`}
+                          {`View details`}
                         </Link>
                       )}
                     </>
