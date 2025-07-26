@@ -106,7 +106,7 @@ export default function OrderCard({ getSingleOrder }: { getSingleOrder: any }) {
           toast.success(
             "Your order delivery has been sent to the client to accept."
           );
-          router.push("/");
+          router.push("/project-list/client");
         }
       } else {
         toast.error("Failed to deliver order");
