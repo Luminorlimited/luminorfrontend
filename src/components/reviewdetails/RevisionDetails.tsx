@@ -4,6 +4,7 @@ import {  Card,  CardDescription, CardHeader, CardTitle } from "@/components/ui/
 import { Badge } from "@/components/ui/badge"
 import { CalendarIcon, UserIcon,  MessageSquareTextIcon } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import Link from "next/link"
 
 
 
@@ -26,6 +27,7 @@ export default function RevisionDetails({ getSingleOrder }: { getSingleOrder: an
 
   // Calculate revision count from array length if not provided
   const revisionCount = getSingleOrder?.data?.result?.revisionCount 
+  // const userInfo = getSingleOrder?.data?.result?.orderFrom?.name?.firstName
 
   return (
     <div>
@@ -51,7 +53,7 @@ export default function RevisionDetails({ getSingleOrder }: { getSingleOrder: an
               <div className="flex items-center gap-2">
                 <UserIcon className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Requested By:</span>
-                <span className="text-sm text-muted-foreground">{rev.requestedBy}</span>
+                <Link href={`/chat/${getSingleOrder?.data?.result?.orderFrom?._id}`} className="text-sm text-muted-foreground">{getSingleOrder?.data?.result?.orderFrom?.name?.firstName} {getSingleOrder?.data?.result?.orderFrom?.name?.lastName}</Link>
               </div>
 
               <div className="flex items-center gap-2">
