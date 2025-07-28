@@ -62,12 +62,7 @@ export default function RevisionDetails({ getSingleOrder }: { getSingleOrder: an
                 <span className="text-sm text-muted-foreground">{rev.description}</span>
               </div>
 
-              {/* <div className="flex items-center gap-2">
-                <ClockIcon className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Time Length:</span>
-                <span className="text-sm text-muted-foreground">{formatDate(rev.timeLength)}</span>
-              </div> */}
-
+        
               <div className="flex items-center gap-2">
                 <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Revision set At:</span>
