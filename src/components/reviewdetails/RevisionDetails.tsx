@@ -53,7 +53,7 @@ export default function RevisionDetails({ getSingleOrder }: { getSingleOrder: an
               <div className="flex items-center gap-2">
                 <UserIcon className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Requested By:</span>
-                <Link href={`/chat/${getSingleOrder?.data?.result?.orderFrom?._id}`} className="text-sm text-muted-foreground">{getSingleOrder?.data?.result?.orderFrom?.name?.firstName} {getSingleOrder?.data?.result?.orderFrom?.name?.lastName}</Link>
+                <Link href={`/chat/${getSingleOrder?.data?.result?.orderFrom?._id}`} className="text-sm text-bg_primary hover:underline">{getSingleOrder?.data?.result?.orderFrom?.name?.firstName} {getSingleOrder?.data?.result?.orderFrom?.name?.lastName}</Link>
               </div>
 
               <div className="flex items-center gap-2">
