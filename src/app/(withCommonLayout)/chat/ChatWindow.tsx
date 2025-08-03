@@ -290,7 +290,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               <div>
                 <p>You have a revision request </p>
                 <Link
-                  href={`/deliver-details/${extractOrderId(message?.message)}`}
+                  href={`${isSender? `/project/${extractOrderId(message?.message)}`: `/deliver-details/${extractOrderId(message?.message)}`}`}
                   className="text-blue-600 cursor-pointer hover:underline"
                 >
                   {/* {message?.message} */}

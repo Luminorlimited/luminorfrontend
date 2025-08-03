@@ -42,6 +42,9 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
   const [messageNotificationCount, setMessageNotificationCount] = useState(0);
 
 
+  
+
+
   useEffect(() => {
     if (getAllNotification?.data?.result) {
       const allNotifs = getAllNotification.data.result;

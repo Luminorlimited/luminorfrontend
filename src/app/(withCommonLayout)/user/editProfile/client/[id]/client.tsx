@@ -14,9 +14,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { jwtDecode } from "jwt-decode";
 import { useParams, useRouter } from "next/navigation";
-import avatar from "@/assets/placeholderimg.png"
+import avatar from "@/assets/placeholderimg.png";
 import { toast } from "sonner";
-import bgCover from "@/assets/images/bannerimg.jpg"
+import bgCover from "@/assets/images/bannerimg.jpg";
 import {
   useEditclientprofileMutation,
   useGetProfileQuery,
@@ -65,8 +65,8 @@ const servicesData = [
 ];
 
 // const minGap = 0;
-const minPrice = 1;
-const maxPrice = 400;
+// const minPrice = 1;
+// const maxPrice = 400;
 interface DecodedToken {
   id: string;
   email: string;
@@ -79,7 +79,7 @@ export default function Client() {
   const token = useSelector((state: RootState) => state.Auth.token);
 
   const { id: userIdValue } = useParams();
-  const [, setImageUrl] = useState<any>(bgCover)
+  const [, setImageUrl] = useState<any>(bgCover);
 
   // Decode the token
   try {
@@ -93,91 +93,25 @@ export default function Client() {
   const [editclientProfile] = useEditclientprofileMutation();
 
   const { data: profileData, isLoading } = useGetProfileQuery(undefined);
-  const [budgetMinValue, setBudgetMinValue] = useState<number | null>(null);
-  const [budgetMaxValue, setBudgetMaxValue] = useState<number | null>(null);
-  const [durationMinValue, setDurationMinValue] = useState<number | null>(null);
-  const [durationMaxValue, setDurationMaxValue] = useState<number | null>(null);
+  // const [budgetMinValue, setBudgetMinValue] = useState<number | null>(null);
+  // const [budgetMaxValue, setBudgetMaxValue] = useState<number | null>(null);
+  // const [durationMinValue, setDurationMinValue] = useState<number | null>(null);
+  // const [durationMaxValue, setDurationMaxValue] = useState<number | null>(null);
 
   // Set values when profileData is available
-  useEffect(() => {
-    if (profileData?.data?.budgetRange) {
-      setBudgetMinValue(profileData.data.budgetRange.min ?? 0);
-      setBudgetMaxValue(profileData.data.budgetRange.max ?? maxPrice);
-    }
-    if (profileData?.data?.projectDurationRange) {
-      setDurationMinValue(profileData.data.projectDurationRange.min ?? 0);
-      setDurationMaxValue(profileData.data.projectDurationRange.max ?? maxPrice);
-    }
-  }, [profileData]);
-
-  // const [latitude, setLatitude] = useState(0);
-  // const [longitude, setLongitude] = useState(0);
-  // const [location, setLocation] = useState("");
-  // console.log("my old location is", location)
-
   // useEffect(() => {
-  //   if (
-  //     profileData?.data?.location?.coordinates[1] &&
-  //     profileData?.data?.location?.coordinates[0]
-  //   ) {
-  //     const fetchLocation = async () => {
-  //       try {
-  //         const response = await fetch(
-  //           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
-  //         );
-  //         const data = await response.json();
-  //         if (data?.display_name) {
-  //           setLocation(data.display_name); // Set location from API response
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching location:", error);
-  //       }
-  //     };
-
-  //     fetchLocation();
+  //   if (profileData?.data?.budgetRange) {
+  //     setBudgetMinValue(profileData.data.budgetRange.min ?? 0);
+  //     setBudgetMaxValue(profileData.data.budgetRange.max ?? maxPrice);
   //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   profileData?.data?.location?.coordinates[1],
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   profileData?.data?.location?.coordinates[0],
-  // ]);
+  //   if (profileData?.data?.projectDurationRange) {
+  //     setDurationMinValue(profileData.data.projectDurationRange.min ?? 0);
+  //     setDurationMaxValue(
+  //       profileData.data.projectDurationRange.max ?? maxPrice
+  //     );
+  //   }
+  // }, [profileData]);
 
-
-  // useEffect(() => {
-  //   let autocomplete: google.maps.places.Autocomplete;
-
-  //   const initAutocomplete = () => {
-  //     const input = document.getElementById("search-input") as HTMLInputElement;
-  //     if (input) {
-  //       autocomplete = new google.maps.places.Autocomplete(input);
-
-  //       autocomplete.addListener("place_changed", () => {
-  //         const place = autocomplete.getPlace();
-
-  //         if (!place.geometry || !place.geometry.location) {
-  //           alert(`No details available for input: '${place.name}'`);
-  //           return;
-  //         }
-
-  //         setLatitude(place.geometry.location.lat());
-  //         setLongitude(place.geometry.location.lng());
-  //         setLocation(place.formatted_address || "");
-  //       });
-  //     }
-  //   };
-
-  //   const script = document.createElement("script");
-  //   script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
-  //   script.async = true;
-  //   script.onload = initAutocomplete;
-  //   document.body.appendChild(script);
-
-  //   return () => {
-  //     document.body.removeChild(script);
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (profileData) {
@@ -185,36 +119,48 @@ export default function Client() {
         firstName: profileData.data.client.name.firstName,
         lastName: profileData.data.client.name.lastName,
         companyName: profileData.data.companyName,
-        companyWebsite: profileData.data.companyWebsite === "null" ? "" : profileData.data.companyWebsite,
+        companyWebsite:
+          profileData.data.companyWebsite === "null"
+            ? ""
+            : profileData.data.companyWebsite,
         phoneNumber: profileData.data.phoneNumber,
-        problemAreas: profileData.data.problemAreas === "null" ? "" : profileData.data.problemAreas,
-        description: profileData.data.description === "null" ? "" : profileData.data.description,
+        maxBudget: profileData?.data?.budgetRange?.max,
+        maxduration: profileData?.data?.projectDurationRange?.max,
+        problemAreas:
+          profileData.data.problemAreas === "null"
+            ? ""
+            : profileData.data.problemAreas,
+        description:
+          profileData.data.description === "null"
+            ? ""
+            : profileData.data.description,
         servicePreference: profileData.data.servicePreference,
-        projectListing: profileData.data.projectListing === "null" ? "" : profileData.data.projectListing,
+        projectListing:
+          profileData.data.projectListing === "null"
+            ? ""
+            : profileData.data.projectListing,
         projectPreference: profileData.data.projectPreference,
       });
     }
   }, [profileData, reset]);
 
-
+  console.log("object", profileData);
   const [selectProject, setSelectProject] = useState<File | null>(null);
-
-
 
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
   );
   // console.log("my client profile url is", profileData?.data?.profileUrl);
   const [loading, setLoading] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
     // data.latitude = latitude
     // data.longitude = longitude
-    data.minBudget = budgetMinValue;
-    data.maxBudget = budgetMaxValue;
-    data.minDuration = durationMinValue;
-    data.maxDuration = durationMaxValue;
+    // data.minBudget = budgetMinValue;
+    // data.maxBudget = budgetMaxValue;
+    // data.minDuration = durationMinValue;
+    // data.maxDuration = durationMaxValue;
     data.projectPreference = inputs;
 
     const formData = new FormData();
@@ -232,10 +178,10 @@ export default function Client() {
     formData.append("location[type]", "Point");
     // formData.append("location[coordinates][0]", longitude.toString());
     // formData.append("location[coordinates][1]", latitude.toString());
-    formData.append("projectDurationRange[max]", String(data.maxDuration));
-    formData.append("projectDurationRange[min]", String(data.minDuration));
-    formData.append("budgetRange[min]", String(data.minBudget));
-    formData.append("budgetRange[max]", String(data.maxBudget));
+    // formData.append("projectDurationRange[max]", String(data.maxDuration));
+    // formData.append("projectDurationRange[min]", String(data.minDuration));
+    // formData.append("budgetRange[min]", String(data.minBudget));
+    // formData.append("budgetRange[max]", String(data.maxBudget));
 
     // // console.log(data?.firstName, data?.lastName); return
 
@@ -264,7 +210,7 @@ export default function Client() {
 
       if (res) {
         toast.success(res?.data?.message);
-        router.push('/project-list/retireProfessional')
+        router.push("/project-list/retireProfessional");
       } else {
         throw new Error("Failed to update profile");
       }
@@ -342,7 +288,8 @@ export default function Client() {
     // console.log("selectProject state updated:", selectProject);
   }, [selectProject]);
   // console.log("image url", imageUrl);
-  const [updateCoverPhoto, { isLoading: iscoverPhotoLoading }] = useUpdateCoverPhotoMutation();
+  const [updateCoverPhoto, { isLoading: iscoverPhotoLoading }] =
+    useUpdateCoverPhotoMutation();
 
   const handleCoverPhotoChange = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -360,19 +307,24 @@ export default function Client() {
         if (response) {
           toast.success("Cover photo updated successfully");
           const newCoverPhotoUrl = URL.createObjectURL(file);
-          setImageUrl(newCoverPhotoUrl)
-
+          setImageUrl(newCoverPhotoUrl);
         }
       } catch (error) {
         console.error("Error updating cover photo:", error);
         toast.error("Image is too large. Please upload a smaller image");
       }
     }
-  }
+  };
 
   if (isLoading) {
-    return <div className="min-h-screen"><LoaderAnimation/></div>
+    return (
+      <div className="min-h-screen">
+        <LoaderAnimation />
+      </div>
+    );
   }
+
+  // clg
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -381,22 +333,17 @@ export default function Client() {
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
             <span className="text-gray-500">Loading...</span>
           </div>
+        ) : profileData?.data?.coverUrl ? (
+          <Image
+            className="w-full h-full object-cover"
+            src={profileData?.data?.coverUrl}
+            width={1200}
+            height={400}
+            alt="cover image"
+          />
         ) : (
-          profileData?.data?.coverUrl ? (
-
-            <Image
-              className="w-full h-full object-cover"
-              src={profileData?.data?.coverUrl}
-              width={1200}
-              height={400}
-              alt="cover image"
-            />
-          ):(
-            <div className="w-full h-full bg-[#71c8fe]"></div>
-
-          )
+          <div className="w-full h-full bg-[#71c8fe]"></div>
         )}
-
       </div>
 
       <button
@@ -470,7 +417,8 @@ export default function Client() {
               </div>
 
               <h1 className="text-2xl font-semibold mt-4">
-                {watch("firstName") || profileData?.data?.client?.name?.firstName}{" "}
+                {watch("firstName") ||
+                  profileData?.data?.client?.name?.firstName}{" "}
                 {watch("lastName") || profileData?.data?.client?.name?.lastName}
               </h1>
               {/* <p className="text-gray-600">
@@ -485,7 +433,9 @@ export default function Client() {
                   </label>
                   <input
                     id="fname"
-                    defaultValue={profileData?.data?.client?.name?.firstName || ""}
+                    defaultValue={
+                      profileData?.data?.client?.name?.firstName || ""
+                    }
                     {...register("firstName")}
                     // onChange={(e) => setValue("firstName", e.target.value)}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
@@ -498,7 +448,9 @@ export default function Client() {
                   </label>
                   <input
                     id="lname"
-                    defaultValue={profileData?.data?.client?.name?.lastName || ""}
+                    defaultValue={
+                      profileData?.data?.client?.name?.lastName || ""
+                    }
                     {...register("lastName")}
                     className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
                     // onChange={(e) => setValue("lastName", e.target.value)}
@@ -633,36 +585,20 @@ export default function Client() {
                     Budget Preference ($)
                   </label>
                   <div className="w-full py-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* <div>
-                        <label htmlFor="budgetMin" className="block text-sm mb-2">
-                          Min Budget
-                        </label>
-                        <input
-                          type="number"
-                          id="budgetMin"
-                          min={minPrice}
-                          max={maxPrice}
-                          // value={budgetMinValue}
-                          value={budgetMinValue ?? ''}
-                          onChange={(e) => setBudgetMinValue(Number(e.target.value))}
-                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
-                        />
-                      </div> */}
-                      <div>
-                        <label htmlFor="budgetMax" className="block text-sm mb-2">
-                          Max Budget
-                        </label>
-                        <input
-                          type="number"
-                          id="budgetMax"
-                          min={minPrice}
-                          max={maxPrice}
-                          value={budgetMaxValue ?? ""}
-                          onChange={(e) => setBudgetMaxValue(Number(e.target.value))}
-                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
-                        />
-                      </div>
+                    <div>
+                      <label htmlFor="budgetMax" className="block text-sm mb-2">
+                        Max Budget
+                      </label>
+                      <input
+                        type="number"
+                        id="budgetMax"
+                        // value={budgetMaxValue ?? ""}
+                        // onChange={(e) =>
+                        //   setBudgetMaxValue(Number(e.target.value))
+                        // }
+                        {...register("maxBudget")}
+                        className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
+                      />
                     </div>
                   </div>
                 </div>
@@ -671,39 +607,28 @@ export default function Client() {
                     Project Duration Range (Days)
                   </label>
                   <div className="w-full py-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* <div>
-                        <label htmlFor="durationMin" className="block text-sm mb-2">
-                          Min Duration
-                        </label>
-                        <input
-                          type="number"
-                          id="durationMin"
-                          min={minPrice}
-                          max={maxPrice}
-                          value={durationMinValue ?? ""}
-                          onChange={(e) => setDurationMinValue(Number(e.target.value))}
-                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                        />
-                      </div> */}
-                      <div>
-                        <label htmlFor="durationMax" className="block text-sm mb-2">
-                          Max Duration
-                        </label>
-                        <input
-                          type="number"
-                          id="durationMax"
-                          min={minPrice}
-                          max={maxPrice}
-                          value={durationMaxValue ?? ""}
-                          onChange={(e) => setDurationMaxValue(Number(e.target.value))}
-                          className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
-                        />
-                      </div>
+                    <div>
+                      <label
+                        htmlFor="durationMax"
+                        className="block text-sm mb-2"
+                      >
+                        Max Duration
+                      </label>
+                      <input
+                        type="number"
+                        id="durationMax"
+                        // value={durationMaxValue ?? ""}
+                        // onChange={(e) =>
+                        //   setDurationMaxValue(Number(e.target.value))
+                        // }
+                         {...register("maxduration")}
+                        className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
+
               <div>
                 <div className="flex flex-col">
                   {/* Header Section */}
@@ -773,10 +698,11 @@ export default function Client() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className={` py-5 px-7 rounded-[50px] my-14 ${loading
-                    ? "bg-gray-500 text-white"
-                    : "bg-primary text-white "
-                    }`}
+                  className={` py-5 px-7 rounded-[50px] my-14 ${
+                    loading
+                      ? "bg-gray-500 text-white"
+                      : "bg-primary text-white "
+                  }`}
                   disabled={loading}
                 >
                   {loading ? "Saving..." : "Save Information"}

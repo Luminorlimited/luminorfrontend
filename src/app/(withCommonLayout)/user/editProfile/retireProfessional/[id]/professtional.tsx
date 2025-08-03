@@ -673,7 +673,7 @@ export default function Professional() {
                 <textarea
                   id="mainDesc"
                   {...register("description")}
-                  defaultValue={profileData?.data?.description || ""}
+                  // defaultValue={profileData?.data?.description || ""}
                   // onChange={(e) => setValue("description", e.target.value)}
                   placeholder="Write your Description"
                   className="w-full border p-3 rounded-[10px]  focus:border-primary focus:outline-none"

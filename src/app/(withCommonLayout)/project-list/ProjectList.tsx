@@ -100,7 +100,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
     setCurrentPage(pageNumber);
   };
   // const test = route === '/project-list/client' ? servicesToShow?.data : professionalServicesToShow?.data
-  // console.log("My test is", currentItems);
+  console.log("My test is", currentItems);
   return (
     <div>
       {loading || loading2 ? <div className="min-h-screen"><LoaderAnimation/></div> : null}
@@ -219,7 +219,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                 <div className="flex max-w-[150px] items-center gap-2 rounded-[5px] bg-primary px-2 py-1 text-white">
                   <BiTime className="h-4 w-4" />
                   <span className="text-xs">
-                    {data?.projectDurationRange?.max || 0} days | Duration
+                    {data?.duration || 0} days | Duration
                   </span>
                 </div>
                 
@@ -285,7 +285,7 @@ const ProjectList: React.FC<ProjectListProps> = ({ FilteredData }) => {
                   <div className="text-xl">
                     <span className="text-gray-500">Budget: </span>
                     <span className="font-medium text-gray-900">
-                      ${data.budgetRange?.max || "N/A"}
+                      ${data.hourlyRate || "N/A"}
                     </span>
                   </div>
                   <Link
