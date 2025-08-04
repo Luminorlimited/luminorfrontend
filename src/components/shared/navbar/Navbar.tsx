@@ -38,26 +38,30 @@ import {
 } from "@/redux/Api/messageApi";
 
 interface Notification {
-  toUser: string
-  message: string
-  fromUser: string
-  notificationId: string
-  orderId: string
-  _id: string
-  type: "offer" | "delivery" | "privateMessage" | string
-  status: string
-  count?: number
-  sender?: string
-  createdAt?: string
+  toUser: string;
+  message: string;
+  fromUser: string;
+  notificationId: string;
+  orderId: string;
+  _id: string;
+  type: "offer" | "delivery" | "privateMessage" | string;
+  status: string;
+  count?: number;
+  sender?: string;
+  createdAt?: string;
 }
 
 interface NavbarProps {
-  offerNotifications: Notification[]
-  offerNotificationCount: number
-  setOfferNotificationCount: (count: number | ((prev: number) => number)) => void
-  messageNotificationCount: number
-  setMessageNotificationCount: (count: number | ((prev: number) => number)) => void
-  allNotifications?: Notification[]
+  offerNotifications: Notification[];
+  offerNotificationCount: number;
+  setOfferNotificationCount: (
+    count: number | ((prev: number) => number)
+  ) => void;
+  messageNotificationCount: number;
+  setMessageNotificationCount: (
+    count: number | ((prev: number) => number)
+  ) => void;
+  allNotifications?: Notification[];
 }
 
 const Navbar = ({
@@ -68,153 +72,187 @@ const Navbar = ({
   setMessageNotificationCount,
   allNotifications = [],
 }: NavbarProps) => {
-  const dispatch = useDispatch()
-  const router = useRouter()
-  const [seenNotification] = useSeenNotificationMutation({})
-  const user = useSelector((state: any) => state.Auth.user)
-  const [sseMessageCount, setSseMessageCount] = useState(0)
-  const [, setIsLoading] = useState(true)
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [seenNotification] = useSeenNotificationMutation({});
+  const user = useSelector((state: any) => state.Auth.user);
+  const [sseMessageCount, setSseMessageCount] = useState(0);
+  // const [, setIsLoading] = useState(true);
 
   // State for dropdown menus
-  const [fileBtn, showFileBtn] = useState<boolean>(false)
-  const [notificationOpen, setNotificationOpen] = useState(false)
-  const [messageOpen, setMessageOpen] = useState(false)
+  const [fileBtn, showFileBtn] = useState<boolean>(false);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
 
   // Refs
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const notificationRef = useRef<HTMLDivElement | null>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement | null>(null);
 
   // Get profile data
-  const { data: profileData } = useGetProfileQuery({})
+  const { data: profileData } = useGetProfileQuery({});
 
   // Filter message notifications
-  const messageNotifications = allNotifications.filter((notif) => notif.type === "privateMessage")
+  const messageNotifications = allNotifications.filter(
+    (notif) => notif.type === "privateMessage"
+  );
+  // console.log("message all notification", messageNotifications);
 
   // SSE for message count (backup/additional source)
-  useEffect(() => {
-    if (!user?.id) {
-      console.error("User ID is missing")
-      return
-    }
+  // useEffect(() => {
+  //   if (!user?.id) {
+  //     console.error("User ID is missing");
+  //     return;
+  //   }
 
-    const eventSource = new EventSource(`https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`)
-
-    console.log("EventSource URL: ", `https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`)
-
-    eventSource.onopen = () => {
-      console.log("SSE connection established")
-    }
-
-    eventSource.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data)
-        console.log("SSE data: ", data)
-
-        if (data?.messageCount !== undefined) {
-          setSseMessageCount(data.messageCount)
-          setMessageNotificationCount(data.messageCount)
-        }
-      } catch (error) {
-        console.error("Error parsing SSE data:", error)
-      }
-    }
-
-    eventSource.onerror = (error) => {
-      console.error("SSE error:", error)
-      setIsLoading(false)
-    }
-
-    return () => {
-      eventSource.close()
-    }
-  }, [user?.id, setMessageNotificationCount])
+  //   const eventSource = new EventSource(
+  //     `https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`
+  //   );
 
 
+  //   eventSource.onopen = () => {
+  //     console.log("SSE connection established");
+  //   };
 
+  //   eventSource.onmessage = (event) => {
+  //     try {
+  //       const data = JSON.parse(event.data);
+  //       console.log(data, "check data");
 
+  //       if (data?.messageCount !== undefined) {
+  //         setSseMessageCount(data.messageCount);
+  //         setMessageNotificationCount(data.messageCount);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error parsing SSE data:", error);
+  //     }
+  //   };
 
+  //   eventSource.onerror = (error) => {
+  //     console.error("SSE error:", error);
+  //     setIsLoading(false);
+  //   };
+
+  //   return () => {
+  //     eventSource.close();
+  //   };
+  // }, [user?.id, setMessageNotificationCount]);
+
+  console.log("offer notification", offerNotifications);
   // Handle logout
   const handleLogOut = () => {
-    dispatch(logOut())
-    Cookies.remove("token")
-    window.location.href = "/"
-  }
+    dispatch(logOut());
+    Cookies.remove("token");
+    window.location.href = "/";
+  };
 
   // Check if user is deleted
   useEffect(() => {
     if (profileData?.data?.client?.isDeleted) {
-      handleLogOut()
+      handleLogOut();
     }
-  }, [profileData])
+  }, [profileData]);
 
   // Handle seen notification for offers
-  const handleSeenButton = async (notificationId: string, sender: string) => {
-    if (!notificationId) return
+  const handleSeenButton = async (
+    notificationId: string,
+    sender: string,
+    type: string,
+    message: string
+  ) => {
+    if (!notificationId) return;
+    console.log("notificationId", notificationId);
+    console.log("sender", message);
 
     try {
-      await seenNotification(notificationId).unwrap()
-      setOfferNotificationCount((prev) => Math.max(0, prev - 1))
-      router.push(`/chat/${sender}`)
+      if (type === "offer") {
+        await seenNotification(sender).unwrap();
+        // await seenNotification(sender).unwrap();
+        // if(message.startsWith("Your offer has been accepted By")){
+        //   await seenNotification(sender).unwrap();
+
+        // }
+        router.push(`/chat/${sender}`);
+
+        // setOfferNotificationCount((prev) => Math.max(0, prev - 1));
+      } else if (type === "delivery") {
+        await seenNotification(notificationId).unwrap();
+        router.push(`/chat/${sender}`);
+      } else if (type === "revision") {
+        await seenNotification(notificationId).unwrap();
+        router.push(`/chat/${sender}`);
+      } else {
+        await seenNotification(notificationId).unwrap();
+        router.push(`/chat/${sender}`);
+      }
+      setOfferNotificationCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      console.error("Failed to mark notification as seen", error)
+      console.error("Failed to mark notification as seen", error);
     }
-  }
+  };
 
   // Handle seen notification for messages
-  const handleMessageSeenButton = async (notificationId: string, sender: string) => {
-    if (!notificationId) return
+  const handleMessageSeenButton = async (
+    notificationId: string,
+    sender: string
+  ) => {
+    if (!notificationId) return;
+    // console.log("Notification ID:", notificationId);
+    // console.log("sender ID:", sender);
 
     try {
-      await seenNotification(notificationId).unwrap()
-      setMessageNotificationCount((prev) => Math.max(0, prev - 1))
-      setMessageOpen(false)
-      router.push(`/chat/${sender}`)
+      await seenNotification(notificationId).unwrap();
+      setMessageNotificationCount((prev) => Math.max(0, prev - 1));
+      setMessageOpen(false);
+      router.push(`/chat/${sender}`);
     } catch (error) {
-      console.error("Failed to mark message notification as seen", error)
+      console.error("Failed to mark message notification as seen", error);
     }
-  }
+  };
 
   // Handle profile dropdown
   const handleClick = () => {
-    showFileBtn((prev) => !prev)
-  }
+    showFileBtn((prev) => !prev);
+  };
 
   // Handle click outside
   const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as Node
+    const target = event.target as Node;
 
     if (dropdownRef.current && !dropdownRef.current.contains(target)) {
-      showFileBtn(false)
+      showFileBtn(false);
     }
-  }
+  };
 
   // Handle order navigation
   const handleOrder = (orderId: string) => {
-    router.push(`/deliver-details/${orderId}`)
-    setOfferNotificationCount((prev) => Math.max(0, prev - 1))
-    setNotificationOpen(false)
-  }
+    router.push(`/deliver-details/${orderId}`);
+    setOfferNotificationCount((prev) => Math.max(0, prev - 1));
+    setNotificationOpen(false);
+  };
 
   // Handle chat click (legacy function for direct chat link)
   const handleChatClick = () => {
-    setMessageNotificationCount(0)
-    setSseMessageCount(0)
-  }
+    setMessageNotificationCount(0);
+    setSseMessageCount(0);
+  };
 
   // Get menu items
-  const menus = navbarLinks(user as any)
+  const menus = navbarLinks(user as any);
 
   // Use the higher of socket count or SSE count for display
-  const displayMessageCount = Math.max(messageNotificationCount, sseMessageCount)
+  const displayMessageCount = Math.max(
+    messageNotificationCount,
+    sseMessageCount
+  );
 
   // Setup click outside listener
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-  console.log("offerNotifications");
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  console.log("messageNotifications", messageNotifications);
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">
@@ -229,18 +267,23 @@ const Navbar = ({
               <li key={item.id}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="flex items-center gap-2 font-medium hover:text-primary">{item.title}</button>
+                    <button className="flex items-center gap-2 font-medium hover:text-primary">
+                      {item.title}
+                    </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent></DropdownMenuContent>
                 </DropdownMenu>
               </li>
             ) : (
               <li key={item.id}>
-                <Link className="font-medium hover:text-primary" href={item.link}>
+                <Link
+                  className="font-medium hover:text-primary"
+                  href={item.link}
+                >
                   {item.title}
                 </Link>
               </li>
-            ),
+            )
           )}
         </ul>
 
@@ -266,7 +309,9 @@ const Navbar = ({
                 <Card className="border-0 shadow-none">
                   <CardHeader className="border-b p-4 pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">Offer Notifications</CardTitle>
+                      <CardTitle className="text-lg">
+                        Offer Notifications
+                      </CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent className="p-0 max-h-[300px] overflow-auto">
@@ -275,16 +320,30 @@ const Navbar = ({
                         {offerNotifications.length > 0 ? (
                           <ul className="space-y-2">
                             {offerNotifications.map((item) => (
-                              <li key={item._id}>
+                              <li key={item.notificationId}>
                                 <button
                                   onClick={
-                                    item.orderId
+                                    item.type === "order"
                                       ? () => handleOrder(item.orderId)
-                                      : () => handleSeenButton(item._id, item.sender || "")
+                                      : item.type === "offer"
+                                      ? () =>
+                                          handleSeenButton(
+                                            item.notificationId,
+                                            item.fromUser ?? "",
+                                            item.type,
+                                            item.message
+                                          )
+                                      : () =>
+                                          handleSeenButton(
+                                            item.notificationId,
+                                            item.sender ?? "",
+                                            item.type,
+                                            item.message
+                                          )
                                   }
                                   type="button"
                                   className={cn(
-                                    "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full",
+                                    "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
                                   )}
                                 >
                                   <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -295,7 +354,22 @@ const Navbar = ({
                                   </div>
                                   <div className="flex-1 overflow-hidden justify-start">
                                     <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
-                                      {item.message}
+                                      {item.message.startsWith(
+                                        "Your offer has been accepted"
+                                      )
+                                        ? item.message.split("\n")[0]
+                                        : item.message}
+                                    </p>
+                                    <p className="text-sm text-left text-gray-700">
+                                      {new Date(
+                                        item.createdAt || item._id
+                                      ).toLocaleString("en-US", {
+                                        month: "short",
+                                        day: "numeric",
+                                        hour: "numeric",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                      })}
                                     </p>
                                   </div>
                                 </button>
@@ -303,7 +377,9 @@ const Navbar = ({
                             ))}
                           </ul>
                         ) : (
-                          <div className="p-4 text-center text-gray-500">No offer notifications available</div>
+                          <div className="p-4 text-center text-gray-500">
+                            No offer notifications available
+                          </div>
                         )}
                       </ul>
                     </div>
@@ -333,7 +409,11 @@ const Navbar = ({
                     <CardHeader className="border-b p-4 pb-3">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-lg">Messages</CardTitle>
-                        <Link href="/chat" onClick={handleChatClick} className="text-sm text-primary hover:underline">
+                        <Link
+                          href="/chat"
+                          onClick={handleChatClick}
+                          className="text-sm text-primary hover:underline"
+                        >
                           View All
                         </Link>
                       </div>
@@ -344,12 +424,17 @@ const Navbar = ({
                           {messageNotifications.length > 0 ? (
                             <ul className="space-y-2">
                               {messageNotifications.map((item) => (
-                                <li key={item._id}>
+                                <li key={item.notificationId}>
                                   <button
-                                    onClick={() => handleMessageSeenButton(item._id, item.sender || item.fromUser)}
+                                    onClick={() =>
+                                      handleMessageSeenButton(
+                                        item.notificationId,
+                                        item.fromUser
+                                      )
+                                    }
                                     type="button"
                                     className={cn(
-                                      "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full",
+                                      "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
                                     )}
                                   >
                                     <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -362,9 +447,17 @@ const Navbar = ({
                                       <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
                                         {item.message}
                                       </p>
-                                      {item.createdAt && (
+                                      {item._id && (
                                         <p className="text-left text-xs text-gray-500 mt-1">
-                                          {new Date(item.createdAt).toLocaleDateString()}
+                                          {new Date(
+                                            item.createdAt || item._id
+                                          ).toLocaleString([], {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })}
                                         </p>
                                       )}
                                     </div>
@@ -373,7 +466,9 @@ const Navbar = ({
                               ))}
                             </ul>
                           ) : (
-                            <div className="p-4 text-center text-gray-500">No messages available</div>
+                            <div className="p-4 text-center text-gray-500">
+                              No messages available
+                            </div>
                           )}
                         </ul>
                       </div>
@@ -382,7 +477,10 @@ const Navbar = ({
                 </PopoverContent>
               </Popover>
 
-              <div ref={notificationRef} className="w-[40px] h-[40px] cursor-pointer">
+              <div
+                ref={notificationRef}
+                className="w-[40px] h-[40px] cursor-pointer"
+              >
                 <Image
                   src={profileData?.data?.profileUrl ?? demoprofile.src}
                   width={40}
@@ -393,15 +491,26 @@ const Navbar = ({
                 />
                 <ul
                   className={`p-2 flex flex-col gap-y-3 rounded-[10px] bg-white w-[120px] absolute top-10 right-0 transition-all duration-300 ${
-                    fileBtn ? "opacity-100 translate-y-0 z-[50]" : "opacity-0 translate-y-5 pointer-events-none z-[10]"
+                    fileBtn
+                      ? "opacity-100 translate-y-0 z-[50]"
+                      : "opacity-0 translate-y-5 pointer-events-none z-[10]"
                   }`}
                 >
                   <Link
-                    href={`${user?.role === "admin" ? `/dashboard/profile` : `/user/editProfile/${user?.role}/${user?.id}`}`}
+                    href={`${
+                      user?.role === "admin"
+                        ? `/dashboard/profile`
+                        : `/user/editProfile/${user?.role}/${user?.id}`
+                    }`}
                   >
-                    <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">Edit Profile</li>
+                    <li className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
+                      Edit Profile
+                    </li>
                   </Link>
-                  <li onClick={handleLogOut} className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer">
+                  <li
+                    onClick={handleLogOut}
+                    className="hover:bg-slate-100 bg-white text-sm font-medium cursor-pointer"
+                  >
                     Logout
                   </li>
                 </ul>
@@ -433,7 +542,7 @@ const Navbar = ({
         <MobileNavbar />
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

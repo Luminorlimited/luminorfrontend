@@ -49,7 +49,7 @@ export function MobileNavbar() {
   
     const [allNotification, setAllNotification] = useState(getAllNotification)
   
-  
+  // console.log("getAllNotification", getAllNotification);
   
     useEffect(() => {
       if (getAllNotification?.data) {
@@ -197,7 +197,7 @@ export function MobileNavbar() {
                                 <div className="px-3">
                                   <ul className="space-y-2">
                 
-                                    {getAllNotification?.data?.result.map((item: any, index: number) => (
+                                    {getAllNotification?.data?.map((item: any, index: number) => (
                                       <li key={index}>
                                         <button
                                           onClick={() => handleSeenButton(item._id, item.sender)}
@@ -206,18 +206,15 @@ export function MobileNavbar() {
                                             "group flex items-center gap-4 rounded-lg p-4 transition-all hover:bg-gray-100 shadow-sm w-full"
                                           )}
                                         >
-                                          {/* Icon Container */}
                                           <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                                             {item?.type === "offer" ? <Bell className="h-5 w-5" /> : <LuMessageSquareMore className="h-5 w-5" />
                                             }
                 
-                                            {/* Red Bullet for Unseen Notifications */}
                                             {item?.status === "unseen" && (
                                               <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-red-500"></span>
                                             )}
                                           </div>
                 
-                                          {/* Message & Status */}
                                           <div className="flex-1 overflow-hidden justify-start">
                                             <p className="text-left text-sm font-medium text-foreground group-hover:text-primary">
                                               {item?.message}

@@ -3,6 +3,7 @@ import { useDecodedToken } from "@/components/common/DecodeToken";
 import Footer from "@/components/shared/footer/Footer";
 import Navbar from "@/components/shared/navbar/Navbar";
 import { useGetNotificationQuery } from "@/redux/Api/messageApi";
+// import { conforms } from "lodash";
 // import { useGetProfileQuery } from "@/redux/Api/userApi";
 // import { RootState } from "@/redux/store";
 import { usePathname } from "next/navigation";
@@ -10,17 +11,17 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 // import { useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 interface Notification {
-  toUser: string
-  message: string
-  fromUser: string
-  notificationId: string
-  orderId: string
-  _id: string
-  type: "offer" | "delivery" | "privateMessage" | string
-  status: string
-  count: number
-  createdAt?: string
-  sender?: string
+  toUser: string;
+  message: string;
+  fromUser: string;
+  notificationId: string;
+  orderId: string;
+  _id: string;
+  type: "offer" | "delivery" | "privateMessage" | "order" | "revision" | string;
+  status: string;
+  count: number;
+  createdAt?: string;
+  sender?: string;
 }
 
 const CommonLayout = ({ children }: { children: ReactNode }) => {
@@ -32,18 +33,12 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
   const { data: getAllNotification } = useGetNotificationQuery(undefined);
 
   const isChatPage = pathname.includes("/chat");
-  // console.log(isChatPage, "check chatpage");
-  // Notification states
   const [allNotification, setAllNotification] = useState<Notification[]>([]);
   const [offerNotifications, setOfferNotifications] = useState<Notification[]>(
     []
   );
   const [offerNotificationCount, setOfferNotificationCount] = useState(0);
   const [messageNotificationCount, setMessageNotificationCount] = useState(0);
-
-
-  
-
 
   useEffect(() => {
     if (getAllNotification?.data?.result) {
@@ -70,7 +65,6 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [getAllNotification]);
 
-  // Socket connection and event handlers
   useEffect(() => {
     if (!socketRef.current && token?.id && !isChatPage) {
       const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!);
@@ -82,25 +76,42 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       });
 
       socket.on("sendNotification", (data: Notification) => {
-        console.log("New Notification Received:", data);
+        console.log(data, "check notification");
+        // console.log("New Notification Received:", data);
+
+        // Add missing id and createdAt properties if not available
+        const notificationWithDefaults = {
+          ...data,
+          _id: data._id || new Date().toISOString(),
+          createdAt: data.createdAt || new Date().toISOString(),
+        };
 
         // Update all notifications
         setAllNotification((prev) => {
-          const filtered = prev.filter((notif) => notif._id !== data._id);
-          return [data, ...filtered];
+          const filtered = prev.filter(
+            (notif) => notif._id !== notificationWithDefaults._id
+          );
+          return [notificationWithDefaults, ...filtered];
         });
 
         // Handle offer notifications
-        if (data.type === "offer" || data.type === "order" || data.type === "delivery" || data.type === "revision") {
+        if (
+          notificationWithDefaults.type === "offer" ||
+          notificationWithDefaults.type === "order" ||
+          notificationWithDefaults.type === "delivery" ||
+          notificationWithDefaults.type === "revision"
+        ) {
           setOfferNotifications((prev) => {
-            const filtered = prev.filter((notif) => notif._id !== data._id);
-            return [data, ...filtered];
+            const filtered = prev.filter(
+              (notif) => notif._id !== notificationWithDefaults._id
+            );
+            return [notificationWithDefaults, ...filtered];
           });
           setOfferNotificationCount((prev) => prev + 1);
         }
 
         // Handle private message notifications
-        if (data.type === "privateMessage") {
+        if (notificationWithDefaults.type === "privateMessage") {
           setMessageNotificationCount((prev) => prev + 1);
         }
       });
@@ -153,14 +164,12 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
     "/user/auth/forgetPass/otpVerify",
     "/user/auth/forgetPass/otpVerify/resetPassword",
     "/user/verification",
-  ]
+  ];
 
-  const shouldShowNavFooter = !noNavFooterPaths.includes(pathname)
+  const shouldShowNavFooter = !noNavFooterPaths.includes(pathname);
 
   return (
     <div className="min-h-screen flex flex-col">
-     
-
       {/* Navbar */}
       {shouldShowNavFooter && (
         <Navbar
@@ -179,7 +188,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       {/* Footer */}
       {shouldShowNavFooter && <Footer />}
     </div>
-  )
-}
+  );
+};
 
-export default CommonLayout
+export default CommonLayout;
