@@ -95,47 +95,7 @@ const Navbar = ({
   const messageNotifications = allNotifications.filter(
     (notif) => notif.type === "privateMessage"
   );
-  // console.log("message all notification", messageNotifications);
-
-  // SSE for message count (backup/additional source)
-  // useEffect(() => {
-  //   if (!user?.id) {
-  //     console.error("User ID is missing");
-  //     return;
-  //   }
-
-  //   const eventSource = new EventSource(
-  //     `https://api.luminor-ltd.com/api/v1/notification/message-count/${user?.id}`
-  //   );
-
-
-  //   eventSource.onopen = () => {
-  //     console.log("SSE connection established");
-  //   };
-
-  //   eventSource.onmessage = (event) => {
-  //     try {
-  //       const data = JSON.parse(event.data);
-  //       console.log(data, "check data");
-
-  //       if (data?.messageCount !== undefined) {
-  //         setSseMessageCount(data.messageCount);
-  //         setMessageNotificationCount(data.messageCount);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error parsing SSE data:", error);
-  //     }
-  //   };
-
-  //   eventSource.onerror = (error) => {
-  //     console.error("SSE error:", error);
-  //     setIsLoading(false);
-  //   };
-
-  //   return () => {
-  //     eventSource.close();
-  //   };
-  // }, [user?.id, setMessageNotificationCount]);
+ 
 
   console.log("offer notification", offerNotifications);
   // Handle logout
@@ -157,7 +117,8 @@ const Navbar = ({
     notificationId: string,
     sender: string,
     type: string,
-    message: string
+    message: string, 
+    orderId: string
   ) => {
     if (!notificationId) return;
     console.log("notificationId", notificationId);
@@ -165,21 +126,31 @@ const Navbar = ({
 
     try {
       if (type === "offer") {
+        console.log(type, "type");
         await seenNotification(sender).unwrap();
-        // await seenNotification(sender).unwrap();
-        // if(message.startsWith("Your offer has been accepted By")){
-        //   await seenNotification(sender).unwrap();
 
-        // }
-        router.push(`/chat/${sender}`);
+        if(message.startsWith("Your offer has been accepted By")){
+          await seenNotification(notificationId).unwrap();
+          router.push(`/deliver-details/${orderId}`);
+        }else if(message.startsWith("Your project has been successfully accepted by")){
+          await seenNotification(notificationId).unwrap();
+          router.push(`/deliver-details/${orderId}`);
+
+        }else{
+          router.push(`/chat/${sender}`);
+
+        }
 
         // setOfferNotificationCount((prev) => Math.max(0, prev - 1));
       } else if (type === "delivery") {
         await seenNotification(notificationId).unwrap();
-        router.push(`/chat/${sender}`);
+        router.push(`/project/${orderId}`);
       } else if (type === "revision") {
+        // if(message.startsWith("Your order has been cancelled.")){
+          
+        // }
         await seenNotification(notificationId).unwrap();
-        router.push(`/chat/${sender}`);
+        router.push(`/deliver-details/${orderId}`);
       } else {
         await seenNotification(notificationId).unwrap();
         router.push(`/chat/${sender}`);
@@ -325,20 +296,13 @@ const Navbar = ({
                                   onClick={
                                     item.type === "order"
                                       ? () => handleOrder(item.orderId)
-                                      : item.type === "offer"
-                                      ? () =>
+                                      : () =>
                                           handleSeenButton(
                                             item.notificationId,
                                             item.fromUser ?? "",
                                             item.type,
-                                            item.message
-                                          )
-                                      : () =>
-                                          handleSeenButton(
-                                            item.notificationId,
-                                            item.sender ?? "",
-                                            item.type,
-                                            item.message
+                                            item.message,
+                                            item.orderId
                                           )
                                   }
                                   type="button"
