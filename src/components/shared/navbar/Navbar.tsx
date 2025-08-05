@@ -97,7 +97,7 @@ const Navbar = ({
   );
  
 
-  console.log("offer notification", offerNotifications);
+  // console.log("offer notification", offerNotifications);
   // Handle logout
   const handleLogOut = () => {
     dispatch(logOut());
@@ -121,12 +121,12 @@ const Navbar = ({
     orderId: string
   ) => {
     if (!notificationId) return;
-    console.log("notificationId", notificationId);
-    console.log("sender", message);
+    // console.log("notificationId", notificationId);
+    // console.log("sender", message);
 
     try {
       if (type === "offer") {
-        console.log(type, "type");
+        // console.log(type, "type");
         await seenNotification(sender).unwrap();
 
         if(message.startsWith("Your offer has been accepted By")){
@@ -223,7 +223,7 @@ const Navbar = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  console.log("messageNotifications", messageNotifications);
+  // console.log("messageNotifications", messageNotifications);
 
   return (
     <nav className="p-5 2xl:px-[115px] flex items-center justify-between bg-gradient-to-r from-[#FFC06B1A] via-[#FF78AF1A] to-[#74C5FF1A] shadow-sm border-b">

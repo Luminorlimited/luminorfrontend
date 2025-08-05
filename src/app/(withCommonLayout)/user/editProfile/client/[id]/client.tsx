@@ -144,7 +144,7 @@ export default function Client() {
     }
   }, [profileData, reset]);
 
-  console.log("object", profileData);
+  // console.log("object", profileData);
   const [selectProject, setSelectProject] = useState<File | null>(null);
 
   const [selectedImage, setSelectedImage] = useState<string | File>(

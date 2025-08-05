@@ -33,7 +33,7 @@ export default function Page() {
       };
       const res: any = await verifyOtp(payload);
       if (res?.data?.success) {
-        console.log("data", res);
+        // console.log("data", res);
         // localStorage.setItem("email", otp);
         toast.success(res?.data?.message);
         dispatch(

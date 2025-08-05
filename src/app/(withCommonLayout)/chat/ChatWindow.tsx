@@ -237,7 +237,7 @@ const MessageBubble: FC<MessageBubbleProps> = ({
               (() => {
                 const match = message?.message.match(/:?\s*(https:\/\/[^\s]+)/);
                 const url = match ? match[0] : ""; // Extract the URL if present
-                console.log("url", url);
+                // console.log("url", url);
 
                 if (url) {
                   return (

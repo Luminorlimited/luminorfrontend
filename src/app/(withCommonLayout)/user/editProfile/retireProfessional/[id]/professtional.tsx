@@ -115,9 +115,9 @@ export default function Professional() {
   const handleonboarding = async () => {
     try {
       const res = await generateOnboardingUrl({}).unwrap();
-      console.log("response is", res);
+      // console.log("response is", res);
       if (res?.success) {
-        console.log("response is", res);
+        // console.log("response is", res);
         toast.success(res?.message);
       }
     } catch (e) {
@@ -360,7 +360,7 @@ export default function Professional() {
       if (!res || typeof res !== "object") {
         throw new Error("Invalid response from the server");
       } else {
-        console.log("respponse is", res?.data?.message);
+        // console.log("respponse is", res?.data?.message);
         toast.success(res?.data?.message);
         setWorkSample("");
         router.push("/project-list/client");

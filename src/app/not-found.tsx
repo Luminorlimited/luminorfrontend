@@ -78,7 +78,7 @@ const NotFound = () => {
       });
 
       socket.on("sendNotification", (data: Notification) => {
-        console.log("New Notification Received:", data);
+        // console.log("New Notification Received:", data);
 
         // Update all notifications
         setAllNotification((prev) => {
@@ -122,7 +122,7 @@ const NotFound = () => {
 
       // Listen for real-time message count updates
       socket.on("messageCountUpdate", (data: { messageCount: number }) => {
-        console.log("Message count update received:", data);
+        // console.log("Message count update received:", data);
         setMessageNotificationCount(data.messageCount);
       });
 

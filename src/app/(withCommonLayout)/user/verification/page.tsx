@@ -38,7 +38,7 @@ export default function Page() {
       if (res?.success) {
         toast.success("Verification Complete");
 
-        console.log("my stripe", res);
+        // console.log("my stripe", res);
 
         const accessToken = res.data.accessToken;
         const user = res?.data?.user;

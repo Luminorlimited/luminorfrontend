@@ -120,7 +120,7 @@ const Page: React.FC = () => {
       });
       mysocket.on("privateMessage", (data) => {
         const { message, fromUserId } = data;
-        console.log("all privat message  data", data);
+        // console.log("all privat message  data", data);
         // console.log("all message" , message);
         // console.log("all fromUserId" , fromUserId);
         if (

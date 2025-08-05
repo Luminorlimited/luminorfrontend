@@ -76,7 +76,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
       });
 
       socket.on("sendNotification", (data: Notification) => {
-        console.log(data, "check notification");
+        // console.log(data, "check notification");
         // console.log("New Notification Received:", data);
 
         // Add missing id and createdAt properties if not available
@@ -137,7 +137,7 @@ const CommonLayout = ({ children }: { children: ReactNode }) => {
 
       // Listen for real-time message count updates
       socket.on("messageCountUpdate", (data: { messageCount: number }) => {
-        console.log("Message count update received:", data);
+        // console.log("Message count update received:", data);
         setMessageNotificationCount(data.messageCount);
       });
 

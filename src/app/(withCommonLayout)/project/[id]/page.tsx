@@ -84,7 +84,7 @@ export default function OrderDetailsPage() {
         }
     }
 
-    console.log("object",);
+    // console.log("object",);
 
     const onSubmit = async (data: any) => {
         const res = await revisionProject({ id: offerId.id, data })

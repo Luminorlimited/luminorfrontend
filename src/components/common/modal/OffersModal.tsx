@@ -87,7 +87,7 @@ const OffersModal: React.FC<OffersModalProps> = ({
     ? offers
     : [latestOffer, ...offers];
     
-    console.log("my offer is", updatedOffers);
+    // console.log("my offer is", updatedOffers);
     return (
         <div className="absolute z-[999999] top-[-95px] inset-0  flex justify-center items-center">
             <div className=" mt-4 relative bg-white shadow-lg rounded-[20px] w-[462px] h-[505px] z-50  p-4 overflow-hidden overflow-y-scroll">

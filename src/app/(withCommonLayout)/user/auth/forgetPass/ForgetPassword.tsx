@@ -27,7 +27,7 @@ export default function ForgetPassword() {
       const res: any = await forgetPass(data);
 
       if (res?.data?.success) {
-          console.log("response is", res);
+          // console.log("response is", res);
           localStorage.setItem("email", email);
           toast.success(res?.data?.message);
             router.push("/user/auth/forgetPass/otpVerify");

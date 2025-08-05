@@ -34,7 +34,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
 
     const handleSubmit = async (e: any) => {
         e.preventDefault()
-        console.log("Form submission started")
+        // console.log("Form submission started")
 
         if (!stripe || !elements) {
             console.error("Stripe or Elements not loaded")
@@ -48,7 +48,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
         }
 
         try {
-            console.log("Creating payment method...")
+            // console.log("Creating payment method...")
             const { error, paymentMethod: stripePaymentMethod } = await stripe.createPaymentMethod({
                 type: "card",
                 card: cardElement,
@@ -59,7 +59,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                 return
             }
 
-            console.log("Payment method created successfully:", stripePaymentMethod)
+            // console.log("Payment method created successfully:", stripePaymentMethod)
 
             const formData = new FormData()
 
@@ -74,16 +74,16 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                 lastName: lastName,
             }
 
-            console.log("Preparing data for submission:", data)
+            // console.log("Preparing data for submission:", data)
 
             formData.append("data", JSON.stringify(data))
 
             if (requirementdata?.clientRequirement && requirementdata.clientRequirement.length > 0) {
-                console.log("Adding client requirements to form data")
+                // console.log("Adding client requirements to form data")
                 requirementdata.clientRequirement.forEach((upload: { file: File }, index: number) => {
                     if (upload.file instanceof File) {
                         formData.append("clientRequirement", upload.file)
-                        console.log(`Added file at index ${index}:`, upload.file.name)
+                        // console.log(`Added file at index ${index}:`, upload.file.name)
                     } else {
                         console.warn(`Invalid file at index ${index}:`, upload.file)
                     }
@@ -92,12 +92,12 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                 console.warn("No valid files in clientRequirement")
             }
 
-            console.log("Submitting payment to API...")
+            // console.log("Submitting payment to API...")
             const response = await offerPayment(formData)
-            console.log("API response received:", response)
+            // console.log("API response received:", response)
 
             if ("data" in response) {
-                console.log("Payment successful!", response.data)
+                // console.log("Payment successful!", response.data)
                 toast.success("Payment Successful!")
                 router.push(`/clientOrder`)
             } else if ("error" in response) {
@@ -375,7 +375,7 @@ const PaymentForm: React.FC<PaymentInfoStepProps> = ({ getSingleOffer, requireme
                             <button
                                 type="button"
                                 onClick={() => {
-                                    console.log("Payment button clicked")
+                                    // console.log("Payment button clicked")
                                     document
                                         .getElementById("paymentForm")
                                         ?.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }))
