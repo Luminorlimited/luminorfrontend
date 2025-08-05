@@ -8,13 +8,26 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { BiRevision } from "react-icons/bi";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarIcon, CreditCard, Package, ShoppingBag } from "lucide-react";
 import { useTransactionListQuery } from "@/redux/Api/paymentApi";
+import { useState } from "react";
+import CustomPagination from "@/utils/CustomPagination";
 
 export default function OrdersPage() {
-  const { data: orderList, isLoading } = useTransactionListQuery(undefined);
-  console.log("order list", orderList);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Fixed items per page for this layout
+
+  const { data: orderListData, isLoading } = useTransactionListQuery({
+    currentPage,
+    itemsPerPage,
+  });
+  const orderList = orderListData?.data || [];
+  const totalRecords = orderListData?.totalRecords || 0;
+  const totalPages = Math.ceil(totalRecords / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
   if (isLoading) {
     return (
       <div className="container p-4 mx-auto">
@@ -34,18 +47,29 @@ export default function OrdersPage() {
         <h1 className="text-3xl font-bold">My Orders</h1>
         <Badge variant="outline" className="px-3 py-1 text-sm">
           <ShoppingBag className="w-4 h-4 mr-2" />
-          {orderList?.data?.length || 0} Orders
+          {orderList?.length || 0} Orders
         </Badge>
       </div>
-
-      {orderList?.data?.length > 0 ? (
+      {orderList?.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {orderList.data.map((order: any) => (
+          {orderList.map((order: any) => (
             <OrderCard key={order.transaction.orderId} order={order} />
           ))}
         </div>
       ) : (
         <EmptyOrderState />
+      )}
+      {orderList?.length > 0 && (
+        <div className="py-6">
+          <CustomPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalRecords}
+            startIndex={startIndex}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       )}
     </div>
   );
@@ -55,23 +79,24 @@ function OrderCard({ order }: { order: any }) {
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "completed":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "pending":
-        return "bg-amber-100 text-amber-800 border-amber-200";
+        return "bg-green-600 hover:bg-green-700";
+      case "Pending":
+        return "bg-yellow-500 hover:bg-yellow-600";
+      case "revision":
+        return "bg-orange-600 hover:bg-orange-700";
       case "refunded":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "bg-red-600 hover:bg-red-800";
       default:
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-gray-500";
     }
   };
-
   return (
     <Link href={`/deliver-details/${order?.transaction?.orderId}`}>
-      <Card className="overflow-hidden transition-all duration-300 border hover:shadow-lg hover:border-primary/20 rounded-[10px]">
+      <Card className="overflow-hidden transition-all duration-300 border hover:shadow-lg hover:border-primary/20 rounded-[10px] h-full">
         <CardHeader className="p-4 pb-0">
           <div className="flex items-start justify-between">
             <h2 className="text-lg font-semibold line-clamp-1">
-              {order?.project?.projectName}
+              {order?.project?.projectName.slice(0, 15)}...
             </h2>
           </div>
         </CardHeader>
@@ -94,28 +119,25 @@ function OrderCard({ order }: { order: any }) {
               </span>
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
-              <Package className="w-4 h-4 mr-2" />
+              <BiRevision className="w-4 h-4 mr-2" />
               <span>
                 {" "}
-                <b>Revision</b> {order?.revisionCount}
+                <b>Revision: </b> {order?.revisionCount}
               </span>
             </div>
             <div className="flex items-center text-sm text-muted-foreground">
               <Package className="w-4 h-4 mr-2" />
-              <span>Order #{order?.transaction?.orderId.slice(-8)}</span>
+              <span>Order No: #{order?.transaction?.orderId}</span>
             </div>
-            {/* <Badge variant="outline" className={`${order?.revisionCount > 0 ? "bg-red-900 text-white" : "bg-green-700 text-white"} `}>
-              {order?.revisionCount > 0 ? "In Revision" : "Order Accepted"}
-            </Badge> */}
             <span className="flex gap-2 items-center">
               <p className="text-sm">Status:</p>
               <Badge
-                variant="outline"
                 className={`${getStatusColor(
                   order?.transaction?.paymentStatus
-                )} border`}
+                )} border text-white`}
               >
-                {order?.transaction?.paymentStatus}
+                {order?.transaction?.paymentStatus.charAt(0).toUpperCase() +
+                  order?.transaction?.paymentStatus.slice(1).toLowerCase()}
               </Badge>
             </span>
           </div>
@@ -132,7 +154,7 @@ function OrderCard({ order }: { order: any }) {
 
 function OrderCardSkeleton() {
   return (
-    <Card className="overflow-hidden border">
+    <Card className="overflow-hidden border h-full">
       <CardHeader className="p-4 pb-0">
         <div className="flex items-start justify-between">
           <Skeleton className="w-3/4 h-6" />

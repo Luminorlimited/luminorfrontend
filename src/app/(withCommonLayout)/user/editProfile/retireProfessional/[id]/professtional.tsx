@@ -129,34 +129,6 @@ export default function Professional() {
     }
   };
 
-  // useEffect(() => {
-  //   if (
-  //     profileData?.data?.location?.coordinates[1] &&
-  //     profileData?.data?.location?.coordinates[0]
-  //   ) {
-  //     const fetchLocation = async () => {
-  //       try {
-  //         const response = await fetch(
-  //           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${profileData?.data?.location?.coordinates[1]}&lon=${profileData?.data?.location?.coordinates[0]}`
-  //         );
-  //         const data = await response.json();
-  //         if (data?.display_name) {
-  //           setLocation(data.display_name); // Set location from API response
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching location:", error);
-  //       }
-  //     };
-
-  //     fetchLocation();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   profileData?.data?.location?.coordinates[1],
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   profileData?.data?.location?.coordinates[0],
-  // ]);
 
   const timeSlots = ["Morning", "Afternoon", "Evening"];
   const days = [
@@ -178,41 +150,6 @@ export default function Professional() {
     Saturday: "Sat",
     Sunday: "Sun",
   };
-
-  // useEffect(() => {
-  //   let autocomplete: google.maps.places.Autocomplete;
-
-  //   const initAutocomplete = () => {
-  //     const input = document.getElementById("search-input") as HTMLInputElement;
-  //     // console.log("input is", input);
-  //     if (input) {
-  //       autocomplete = new google.maps.places.Autocomplete(input);
-
-  //       autocomplete.addListener("place_changed", () => {
-  //         const place = autocomplete.getPlace();
-
-  //         if (!place.geometry || !place.geometry.location) {
-  //           alert(`No details available for input: '${place.name}'`);
-  //           return;
-  //         }
-
-  //         setLatitude(place.geometry.location.lat());
-  //         setLongitude(place.geometry.location.lng());
-  //         setLocation(place.formatted_address || "");
-  //       });
-  //     }
-  //   };
-
-  //   const script = document.createElement("script");
-  //   script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBZ0plDgHg98kDg9lfyL-BFDf-qis9y02g&libraries=places`;
-  //   script.async = true;
-  //   script.onload = initAutocomplete;
-  //   document.body.appendChild(script);
-
-  //   return () => {
-  //     document.body.removeChild(script);
-  //   };
-  // }, []);
 
   useEffect(() => {
     if (profileData) {
@@ -470,11 +407,9 @@ export default function Professional() {
         ) : (
           <div className="w-full h-full bg-[#71c8fe]"></div>
         )}
-      </div>
-
       <button
         type="button"
-        className="cog-button absolute top-[430px] right-4 z-[10000]"
+        className="cog-button absolute bottom-[10px] right-4 z-[10000]"
         onClick={() => {
           const fileInput = document.getElementById(
             "coverPhotoInput"
@@ -488,6 +423,8 @@ export default function Professional() {
           <PiNotePencilBold className="cog-icon text-lg text-white " />
         </div>
       </button>
+      </div>
+
 
       <input
         type="file"

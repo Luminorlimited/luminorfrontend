@@ -64,9 +64,6 @@ const servicesData = [
   },
 ];
 
-// const minGap = 0;
-// const minPrice = 1;
-// const maxPrice = 400;
 interface DecodedToken {
   id: string;
   email: string;
@@ -93,25 +90,6 @@ export default function Client() {
   const [editclientProfile] = useEditclientprofileMutation();
 
   const { data: profileData, isLoading } = useGetProfileQuery(undefined);
-  // const [budgetMinValue, setBudgetMinValue] = useState<number | null>(null);
-  // const [budgetMaxValue, setBudgetMaxValue] = useState<number | null>(null);
-  // const [durationMinValue, setDurationMinValue] = useState<number | null>(null);
-  // const [durationMaxValue, setDurationMaxValue] = useState<number | null>(null);
-
-  // Set values when profileData is available
-  // useEffect(() => {
-  //   if (profileData?.data?.budgetRange) {
-  //     setBudgetMinValue(profileData.data.budgetRange.min ?? 0);
-  //     setBudgetMaxValue(profileData.data.budgetRange.max ?? maxPrice);
-  //   }
-  //   if (profileData?.data?.projectDurationRange) {
-  //     setDurationMinValue(profileData.data.projectDurationRange.min ?? 0);
-  //     setDurationMaxValue(
-  //       profileData.data.projectDurationRange.max ?? maxPrice
-  //     );
-  //   }
-  // }, [profileData]);
-
 
   useEffect(() => {
     if (profileData) {
@@ -155,37 +133,27 @@ export default function Client() {
   const router = useRouter();
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
-    // data.latitude = latitude
-    // data.longitude = longitude
-    // data.minBudget = budgetMinValue;
-    // data.maxBudget = budgetMaxValue;
-    // data.minDuration = durationMinValue;
-    // data.maxDuration = durationMaxValue;
+
     data.projectPreference = inputs;
 
     const formData = new FormData();
 
-    // Append valid data fields
+    // Properly handle nested fields like 'budgetRange' and 'projectDurationRange'
+    if (data.maxBudget) {
+      data.budgetRange = { max: data.maxBudget };
+    }
+    if (data.maxDuration) {
+      data.projectDurationRange = { max: data.maxDuration };
+    }
+
+    // Loop over the data and append non-empty fields to formData
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined && value !== "") {
-        formData.append(key, String(value));
+        formData.append(key, JSON.stringify(value)); // stringify if it's an object
       }
     });
 
-    // Append structured fields
-    formData.append("name[firstName]", data.firstName);
-    formData.append("name[lastName]", data.lastName);
-    formData.append("location[type]", "Point");
-    // formData.append("location[coordinates][0]", longitude.toString());
-    // formData.append("location[coordinates][1]", latitude.toString());
-    // formData.append("projectDurationRange[max]", String(data.maxDuration));
-    // formData.append("projectDurationRange[min]", String(data.minDuration));
-    // formData.append("budgetRange[min]", String(data.minBudget));
-    // formData.append("budgetRange[max]", String(data.maxBudget));
-
-    // // console.log(data?.firstName, data?.lastName); return
-
-    // Append project preferences array
+    // Append the project preferences if present
     if (Array.isArray(data.projectPreference)) {
       data.projectPreference.forEach((preference: string) => {
         if (preference.trim()) {
@@ -194,28 +162,25 @@ export default function Client() {
       });
     }
 
-    // Append projectUrl if available
+    // Append other fields like 'projectUrl' or 'profileUrl' if available
     if (selectProject) {
       formData.append("projectUrl", selectProject);
     }
-
-    // Append the profile image if it's a file
     if (selectedImage instanceof File) {
       formData.append("profileUrl", selectedImage);
     }
 
-    const res = await editclientProfile({ id: userIdValue, data: formData });
     try {
-      // console.log("profile data is", data);
-
+      const res = await editclientProfile({ id: userIdValue, data: formData });
       if (res) {
         toast.success(res?.data?.message);
+        // Optional redirection after successful profile update
         router.push("/project-list/retireProfessional");
       } else {
         throw new Error("Failed to update profile");
       }
-    } catch (error) {
-      toast.error(res?.data?.message);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update profile");
       console.error(error);
     } finally {
       setLoading(false);
@@ -344,24 +309,24 @@ export default function Client() {
         ) : (
           <div className="w-full h-full bg-[#71c8fe]"></div>
         )}
-      </div>
 
-      <button
-        type="button"
-        className="cog-button absolute top-[410px] right-4 cursor-pointer z-[10000]"
-        onClick={() => {
-          const fileInput = document.getElementById(
-            "coverPhotoInput"
-          ) as HTMLInputElement | null;
-          if (fileInput) {
-            fileInput.click();
-          }
-        }}
-      >
-        <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
-          <PiNotePencilBold className="cog-icon text-lg text-white " />
-        </div>
-      </button>
+        <button
+          type="button"
+          className="cog-button absolute bottom-[10px] right-4 cursor-pointer z-[10000]"
+          onClick={() => {
+            const fileInput = document.getElementById(
+              "coverPhotoInput"
+            ) as HTMLInputElement | null;
+            if (fileInput) {
+              fileInput.click();
+            }
+          }}
+        >
+          <div className="p-2 bg-bg_primary hover:bg-[#5334c5] hover:scale-105 transition-all rounded-[5px]">
+            <PiNotePencilBold className="cog-icon text-lg text-white " />
+          </div>
+        </button>
+      </div>
       <input
         type="file"
         accept="image/*"
@@ -509,18 +474,6 @@ export default function Client() {
                   />
                 </div>
               </div>
-              {/* <div>
-                <label className="block text-sm mb-2" htmlFor="search-input">
-                  Location
-                </label>
-                <input
-                  id="search-input"
-                  className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3"
-                  value={location} // Show selected location
-                  onChange={(e) => setLocation(e.target.value)} // Update state when user types
-                  placeholder="Search for a location..."
-                />
-              </div> */}
 
               <div>
                 <label className="block text-sm mb-2" htmlFor="problemArea">
@@ -592,11 +545,7 @@ export default function Client() {
                       <input
                         type="number"
                         id="budgetMax"
-                        // value={budgetMaxValue ?? ""}
-                        // onChange={(e) =>
-                        //   setBudgetMaxValue(Number(e.target.value))
-                        // }
-                        {...register("maxBudget")}
+                        {...register("maxBudget")} // Ensure correct field registration
                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                       />
                     </div>
@@ -617,11 +566,7 @@ export default function Client() {
                       <input
                         type="number"
                         id="durationMax"
-                        // value={durationMaxValue ?? ""}
-                        // onChange={(e) =>
-                        //   setDurationMaxValue(Number(e.target.value))
-                        // }
-                         {...register("maxduration")}
+                        {...register("maxDuration")} // Ensure correct field registration
                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                       />
                     </div>

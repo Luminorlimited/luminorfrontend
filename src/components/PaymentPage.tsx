@@ -36,17 +36,34 @@ export default function PaymentPage() {
     return fullName.includes(searchTerm.toLowerCase());
   });
 
-   if(clientPayment?.data?.length === 0) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
+  if (clientPayment?.data?.length === 0) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="container mx-auto py-8 px-4 text-center ">
+          <h1 className="text-3xl font-bold text-primary mb-2">
+            {" "}
+            Payment List
+          </h1>
+          <p className="text-gray-500">You have no transaction yet.</p>
+        </div>
+      </div>
+    );
+  }
 
-            <div className="container mx-auto py-8 px-4 text-center ">
-                <h1 className="text-3xl font-bold text-primary mb-2"> Payment List</h1>
-                <p className="text-gray-500">You have no transaction yet.</p>
-            </div>
-            </div>
-        )
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "completed":
+        return "bg-green-600 hover:bg-green-700";
+      case "Pending":
+        return "bg-yellow-500 hover:bg-yellow-600";
+      case "revision":
+        return "bg-orange-600 hover:bg-orange-700";
+      case "refunded":
+        return "bg-red-700 hover:bg-red-700";
+      default:
+        return "bg-gray-500";
     }
+  };
 
   return (
     <div className="container mx-auto py-6 px-4 md:px-6">
@@ -170,19 +187,18 @@ export default function PaymentPage() {
                         </TableCell>
                         <TableCell>
                           <Badge
-                            className={`${
-                              item?.transaction?.paymentStatus === "refunded"
-                                ? "text-white bg-red-700"
-                                : item?.transaction?.paymentStatus ===
-                                  "completed"
-                                ? "bg-green-500 hover:bg-green-600"
-                                : item?.transaction.paymentStatus === "revision"
-                                ? "text-white bg-red-900"
-                                : "bg-amber-600 hover:bg-amber-600"
-                            } font-medium text-sm mx-auto`}
+                            className={`${getStatusColor(
+                              item?.transaction?.paymentStatus
+                            )} text-white`}
                           >
-                            {item?.transaction?.paymentStatus}
+                            {/* {item?.transaction?.paymentStatus
+                              .charAt(0)
+                              .toUpperCase() +
+                              item?.transaction?.paymentStatus.slice(1)} */}
+                              {item?.transaction?.paymentStatus}
                           </Badge>
+                          {/* {console.log(item?.transaction?.paymentStatus)} */}
+                          {/* <Badge></Badge> */}
                         </TableCell>
                       </TableRow>
                     ))
