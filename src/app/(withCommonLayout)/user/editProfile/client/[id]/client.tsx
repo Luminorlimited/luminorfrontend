@@ -123,7 +123,7 @@ export default function Client() {
   }, [profileData, reset]);
 
   // console.log("object", profileData);
-  const [selectProject, setSelectProject] = useState<File | null>(null);
+  // const [selectProject, setSelectProject] = useState<File | null>(null);
 
   const [selectedImage, setSelectedImage] = useState<string | File>(
     profileData?.data?.profileUrl
@@ -134,11 +134,10 @@ export default function Client() {
   const handleSubmitForm = async (data: any) => {
     setLoading(true);
 
-    data.projectPreference = inputs;
+    // data.projectPreference = inputs;
 
     const formData = new FormData();
 
-    // Properly handle nested fields like 'budgetRange' and 'projectDurationRange'
     if (data.maxBudget) {
       data.budgetRange = { max: data.maxBudget };
     }
@@ -154,18 +153,14 @@ export default function Client() {
     });
 
     // Append the project preferences if present
-    if (Array.isArray(data.projectPreference)) {
-      data.projectPreference.forEach((preference: string) => {
-        if (preference.trim()) {
-          formData.append("projectPreference[]", preference);
-        }
-      });
-    }
+    // if (Array.isArray(data.projectPreference)) {
+    //   data.projectPreference.forEach((preference: string) => {
+    //     if (preference.trim()) {
+    //       formData.append("projectPreference[]", preference);
+    //     }
+    //   });
+    // }
 
-    // Append other fields like 'projectUrl' or 'profileUrl' if available
-    if (selectProject) {
-      formData.append("projectUrl", selectProject);
-    }
     if (selectedImage instanceof File) {
       formData.append("profileUrl", selectedImage);
     }
@@ -227,31 +222,30 @@ export default function Client() {
   }, [selectedImage]);
 
   // Handle file input change
-  const handleProjectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null; // Get the selected file
-    if (file) {
-      setSelectProject(file);
+  // const handleProjectChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0] || null; // Get the selected file
+  //   if (file) {
+  //     setSelectProject(file);
 
-      // console.log("File selected:", file.name);
-    }
-  };
+  //   }
+  // };
 
-  const [inputs, setInputs] = useState<string[]>(
-    profileData?.data?.projectPreference || []
-  );
+  // const [inputs, setInputs] = useState<string[]>(
+  //   profileData?.data?.projectPreference || []
+  // );
 
-  const handleAddInput = () => {
-    setInputs((prevInputs) => [...prevInputs, ""]);
-  };
-  const handleDeleteInput = (index: number) => {
-    const updatedInputs = inputs.filter((_, i) => i !== index);
-    setInputs(updatedInputs);
-  };
+  // const handleAddInput = () => {
+  //   setInputs((prevInputs) => [...prevInputs, ""]);
+  // };
+  // const handleDeleteInput = (index: number) => {
+  //   const updatedInputs = inputs.filter((_, i) => i !== index);
+  //   setInputs(updatedInputs);
+  // };
 
   // Use useEffect to log state changes
-  useEffect(() => {
-    // console.log("selectProject state updated:", selectProject);
-  }, [selectProject]);
+  // useEffect(() => {
+  //   // console.log("selectProject state updated:", selectProject);
+  // }, [selectProject]);
   // console.log("image url", imageUrl);
   const [updateCoverPhoto, { isLoading: iscoverPhotoLoading }] =
     useUpdateCoverPhotoMutation();
@@ -563,10 +557,20 @@ export default function Client() {
                       >
                         Max Duration
                       </label>
+                      {/* <input
+                        type="number"
+                        id="durationMax"
+                        {...register("maxDuration")} // Ensure correct field registration
+                        className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
+                      /> */}
+
                       <input
                         type="number"
                         id="durationMax"
                         {...register("maxDuration")} // Ensure correct field registration
+                        defaultValue={
+                          profileData?.data?.projectDurationRange?.max || ""
+                        } 
                         className="w-full border outline-none focus:outline-none focus:border-primary rounded-[10px] p-3 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none  [&::-webkit-outer-spin-button]:appearance-none"
                       />
                     </div>
@@ -575,8 +579,7 @@ export default function Client() {
               </div>
 
               <div>
-                <div className="flex flex-col">
-                  {/* Header Section */}
+                {/* <div className="flex flex-col">
                   <div>
                     {inputs.map((inputValue, index) => (
                       <div key={index} className="flex items-center gap-2 my-2">
@@ -615,7 +618,6 @@ export default function Client() {
                     </button>
                   </div>
 
-                  {/* Hidden File Input */}
                   <input
                     type="file"
                     id="fileInput"
@@ -623,16 +625,14 @@ export default function Client() {
                     onChange={handleProjectChange}
                   />
 
-                  {/* Display Selected File */}
                   {selectProject && (
                     <div className="mt-2 text-sm text-gray-600">
                       <strong>Selected File:</strong> {selectProject.name}
                     </div>
                   )}
-                </div>
+                </div> */}
 
                 <textarea
-                  // defaultValue={profileData?.data?.z === "null" ?  "": profileData?.data?.projectListing}
                   id="projectListing')}"
                   placeholder="Write your listing project"
                   {...register("projectListing")}
