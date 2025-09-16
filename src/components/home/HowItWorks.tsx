@@ -60,7 +60,7 @@ export default function HowItWorks() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-bold text-[48px]">How It Works</h2>
+          <h2 className="font-bold text-[48px]">How It Works section</h2>
           <p className="text-lg text-[#475467]">
             Connect with expert retirees, book consultations, and gain valuable <br /> insights to confidently grow your
             journey.

@@ -72,7 +72,7 @@ export default function page() {
                 </section>
 
                 <section className="mb-16 bg-white rounded-xl shadow-sm p-8 transition-all hover:shadow-md">
-                    <h2 className="text-2xl font-bold text-slate-800 mb-6">How It Works</h2>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-6">How It Works </h2>
                     <ol className="space-y-5">
                         <li className="flex items-center">
                             <div className="flex items-center justify-center bg-primary text-white rounded-full w-8 h-8 mr-4 font-bold">
